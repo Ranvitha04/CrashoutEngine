@@ -1,14 +1,12 @@
-#pragma once
-
 /*!
 @file       changevaluecommand.h
 @author     m.biniswandi@digipen.edu
 @date       29/11/2025
 @brief      command to change a value with undo/redo support
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
-
+#pragma once
 #include "undomanager.h"
 
 namespace CrashoutsEngine
@@ -42,3 +40,4 @@ namespace CrashoutsEngine
     };
 
 }
+

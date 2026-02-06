@@ -1,3 +1,11 @@
+/*!
+@file       deleteentitycommand.h
+@author     m.biniswandi@digipen.edu
+@date       13/01/2026
+@brief      [Brief description of deleteentitycommand.h]
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 #pragma once
 #include "undomanager.h"
 #include "sceneasset.h"
@@ -22,3 +30,4 @@ namespace CrashoutsEngine {
     };
 
 }
+

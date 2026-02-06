@@ -1,3 +1,11 @@
+/*!
+@file       debugmenu_internals.h
+@author     mohamadamirakmal.b@digipen.edu
+@date       01/12/2025
+@brief      [Brief description of debugmenu_internals.h]
+
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 #pragma once
 
 // --- 1. ImGui & Visuals ---

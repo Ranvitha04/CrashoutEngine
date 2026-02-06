@@ -1,13 +1,12 @@
-///*!
-//@file       aimanager.h
-//@author     miratristan.d@digipen.edu
-//@date       31/10/2025
-//@brief      Static AI utility functions for spatial queries (exposed to C#).
-//
-//All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
-//
-////__________________________________________________________________________*/
-//
+/*!
+@file       aimanager.h
+@author     m.biniswandi@digipen.edu
+@date       04/11/2025
+@brief      [Brief description of aimanager.h]
+
+All content ï¿½ 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
+
 //#pragma once
 //
 //#include "entitymanager.h"
@@ -23,3 +22,4 @@
 //	bool IsIntersecting(CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
 //	bool EntityInRange(CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2, float tolerance);
 //}
+

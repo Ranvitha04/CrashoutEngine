@@ -1,3 +1,11 @@
+/*!
+@file       camera.h
+@author     lee.r@digipen.edu
+@date       30/10/2025
+@brief      [Brief description of camera.h]
+
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 #ifndef CAMERA_H
 #define CAMERA_H
 
@@ -87,3 +95,4 @@ namespace CrashoutsEngine {
 
 
 #endif
+

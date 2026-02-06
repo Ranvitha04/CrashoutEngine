@@ -1,3 +1,11 @@
+/*!
+@file       hierarchycomponent.h
+@author     lee.r@digipen.edu
+@date       30/12/2025
+@brief      Component definitions for hierarchy system.
+
+All content ï¿½ 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 
 #pragma once
 #include <vector>
@@ -7,7 +15,7 @@
 #include "CEColor.h" 
 
 /*!
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -30,3 +38,4 @@ namespace Component {
     };
 
 } 
+

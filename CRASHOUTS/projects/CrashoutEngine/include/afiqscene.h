@@ -1,3 +1,11 @@
+/*!
+@file       afiqscene.h
+@author     lee.r@digipen.edu
+@date       16/10/2025
+@brief      [Brief description of afiqscene.h]
+
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 #pragma once
 
 /*!

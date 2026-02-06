@@ -5,7 +5,7 @@
 
 Declares the function to validate if a given class name corresponds to a valid script behaviour class.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 #pragma once

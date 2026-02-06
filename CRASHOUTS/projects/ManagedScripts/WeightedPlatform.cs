@@ -1,3 +1,11 @@
+/*!
+@file       WeightedPlatform.cs
+@author     lee.r@digipen.edu
+@date       27/11/2025
+@brief      Weighted Platform Script - Makes a platform that moves and sinks under player weight.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System;
 using System.Runtime.InteropServices;
 

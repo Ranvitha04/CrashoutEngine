@@ -1,11 +1,10 @@
 /*!
 @file		videoloader.cpp
 @author     m.biniswandi@digipen.edu
-@date       01/02/2026
-@brief		Definition of the VideoLoader class, responsible for loading and playing video files using FFmpeg and FMOD.
+@date       31/01/2026
+@brief		Implementation of the VideoLoader class, responsible for loading and playing video files using FFmpeg and FMOD.
 
-All content ? 2025 Digipen Institute of Technology Singapore. All rights reserved.
-
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 #include "videoloader.h"
 #include "audioSystem.h"

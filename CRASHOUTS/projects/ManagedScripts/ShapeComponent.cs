@@ -1,3 +1,11 @@
+/*!
+@file       ShapeComponent.cs
+@author     lee.r@digipen.edu
+@date       28/11/2025
+@brief      C# Script for Shape Component
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine

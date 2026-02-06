@@ -1,11 +1,10 @@
 /*!
 @file		videobindings.cpp
 @author     m.biniswandi@digipen.edu
-@date       01/02/2026
-@brief		Definition of Video System to update Video Components.
+@date       31/01/2026
+@brief		Exposes Video System functionality to C# scripts via Mono internal calls.
 
-All content ? 2025 Digipen Institute of Technology Singapore. All rights reserved.
-
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 #include "videobindings.h"
 #include "videocomponent.h"

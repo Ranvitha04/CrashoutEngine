@@ -1,4 +1,12 @@
-﻿using System;
+/*!
+@file       VolumeSlider.cs
+@author     mohamadamirakmal.b@digipen.edu
+@date       26/11/2025
+@brief      Handles volume slider UI logic for music and SFX volume control.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
+using System;
 
 namespace CrashoutsEngine
 {

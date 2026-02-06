@@ -1,3 +1,11 @@
+/*!
+@file       deleteentitycommand.cpp
+@author     m.biniswandi@digipen.edu
+@date       13/01/2026
+@brief      Implementation of DeleteEntityCommand for entity deletion with undo/redo functionality.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 #include "deleteentitycommand.h"
 #include "sceneasset.h"
 #include "entitymanager.h"
@@ -146,3 +154,4 @@ namespace CrashoutsEngine {
         }
     }
 }
+

@@ -1,15 +1,15 @@
-#pragma once
 /*!
 @file       animatorbindings.h
 @author     m.biniswandi@digipen.edu
-@date       29/11/2025
-@brief      Declaration for registering animator bindings to the scripting engine
+@date       20/11/2025
+@brief      declaration of animator bindings registration function
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
-
-//__________________________________________________________________________*/
+All content ï¿½ 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
+#pragma once
 
 namespace CrashoutsEngine::Bindings
 {
     void RegisterAnimatorBindings();
 }
+
