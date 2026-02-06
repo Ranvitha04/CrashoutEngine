@@ -6057,6 +6057,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -6109,7 +6140,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -6123,14 +6154,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -6183,37 +6214,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -9744,7 +9744,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 98.51133728027344,
-                    "y": -241.4049530029297,
+                    "y": -265.0728454589844,
                     "z": 0.0
                 },
                 "size": {
@@ -9771,7 +9771,7 @@
                 "enabled": true,
                 "position": {
                     "x": 99.21133422851563,
-                    "y": -244.9049530029297,
+                    "y": -268.5728454589844,
                     "z": 0.0
                 },
                 "offset": {
@@ -9781,12 +9781,12 @@
                 },
                 "min": {
                     "x": 84.31130981445313,
-                    "y": -255.10499572753907,
+                    "y": -278.77288818359377,
                     "z": 0.0
                 },
                 "max": {
                     "x": 114.11135864257813,
-                    "y": -234.7049102783203,
+                    "y": -258.372802734375,
                     "z": 0.0
                 }
             },
@@ -9829,7 +9829,7 @@
                     {
                         "name": "slimeMove1",
                         "path": "slime 1.wav",
-                        "volume": 0.125,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9838,7 +9838,7 @@
                     {
                         "name": "slimeMove2",
                         "path": "slime 2.wav",
-                        "volume": 0.125,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9847,7 +9847,7 @@
                     {
                         "name": "slimeMove3",
                         "path": "slime 3.wav",
-                        "volume": 0.125,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9856,7 +9856,7 @@
                     {
                         "name": "slimeMove4",
                         "path": "slime 4.wav",
-                        "volume": 0.125,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9865,7 +9865,7 @@
                     {
                         "name": "slimeMove5",
                         "path": "slime 5.wav",
-                        "volume": 0.125,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9874,7 +9874,7 @@
                     {
                         "name": "slimeImpact",
                         "path": "slime impact.wav",
-                        "volume": 0.125,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -9890,8 +9890,8 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 141.5,
+                            "stopAudioDistance": 200.0,
+                            "detectionRange": 90.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
                             "minThrowSpeed": 50.0,
@@ -9958,37 +9958,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeHold",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -10011,6 +9980,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10224,7 +10224,7 @@
                     {
                         "name": "slimeMove1",
                         "path": "slime 1.wav",
-                        "volume": 0.125,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -10233,7 +10233,7 @@
                     {
                         "name": "slimeMove2",
                         "path": "slime 2.wav",
-                        "volume": 0.125,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -10242,7 +10242,7 @@
                     {
                         "name": "slimeMove3",
                         "path": "slime 3.wav",
-                        "volume": 0.125,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -10251,7 +10251,7 @@
                     {
                         "name": "slimeMove4",
                         "path": "slime 4.wav",
-                        "volume": 0.125,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -10260,7 +10260,7 @@
                     {
                         "name": "slimeMove5",
                         "path": "slime 5.wav",
-                        "volume": 0.125,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -10269,7 +10269,7 @@
                     {
                         "name": "slimeImpact",
                         "path": "slime impact.wav",
-                        "volume": 0.125,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -10285,8 +10285,8 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 141.5,
+                            "stopAudioDistance": 200.0,
+                            "detectionRange": 90.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
                             "minThrowSpeed": 50.0,
@@ -10353,37 +10353,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeHold",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -10406,6 +10375,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0

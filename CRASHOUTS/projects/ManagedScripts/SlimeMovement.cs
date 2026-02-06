@@ -308,6 +308,47 @@ namespace CrashoutsEngine
             if (flipCooldown > 0) flipCooldown -= dt;
             if (ignoreHomeTimer > 0) ignoreHomeTimer -= dt;
 
+            if (!wasThrown && !isGrabbed && !isStunned && playerScript != null && playerScript.alive)
+            {
+                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                if (playerTf != null)
+                {
+                    float distToPlayer = Distance(tf.Position, playerTf.Position);
+
+                    // 1. Check for Chase Start
+                    if (distToPlayer < detectionRange)
+                    {
+                        isChasing = true;
+                        returningHome = false;
+
+                        // Face the player
+                        if (playerTf.Position.x > tf.Position.x) moveRight = true;
+                        else moveRight = false;
+                    }
+                    // 2. Stop Chasing (Player too far)
+                    else
+                    {
+                        isChasing = false;
+
+                        // Optional: Logic to return to startPos
+                        float distToHome = Distance(tf.Position, startPos);
+                        if (distToHome > 50.0f && ignoreHomeTimer <= 0)
+                        {
+                            returningHome = true;
+                            // Face home
+                            if (startPos.x > tf.Position.x) moveRight = true;
+                            else moveRight = false;
+                        }
+                        else
+                        {
+                            returningHome = false;
+                            // Standard Patrol logic would go here (timer based flipping)
+                        }
+                    }
+                }
+            }
+
+
             // 5. MOVEMENT LOGIC
             // Only calculate movement forces if the player is ALIVE and slime wasn't thrown
             // If player is dead, we skip this block, effectively making the slime "Idle" but still subject to gravity
