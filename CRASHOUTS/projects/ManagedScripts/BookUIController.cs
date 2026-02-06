@@ -1,6 +1,6 @@
 /*!
 @file       BookUIController.cs
-@author     afiq.m@digipen.edu
+@author     b.mohamadafiq@digipen.edu
 @date       04/02/2026
 @brief      Handles the book UI interactions in the game.
 
