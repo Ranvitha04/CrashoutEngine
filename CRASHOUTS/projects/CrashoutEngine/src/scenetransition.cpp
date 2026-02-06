@@ -1,3 +1,11 @@
+/*!
+@file       scenetransition.cpp
+@author     m.biniswandi@digipen.edu
+@date       31/01/2026
+@brief      Handles scene transition effects like fade in/out.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 #include "scenetransition.h"
 #include "shapes.h"
 #include "rendering.h"
@@ -150,3 +158,4 @@ namespace CrashoutsEngine {
         return s_active;
     }
 }
+

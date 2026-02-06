@@ -1,4 +1,12 @@
-﻿using System;
+/*!
+@file       ScriptBehaviourAttribute.cs
+@author     mohamadamirakmal.b@digipen.edu
+@date       25/11/2025
+@brief      Defines the ScriptBehaviourAttribute class used to mark script behaviour classes.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
+using System;
 
 namespace CrashoutsEngine
 {

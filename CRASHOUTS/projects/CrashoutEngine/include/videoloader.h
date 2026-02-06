@@ -1,3 +1,12 @@
+/*!
+@file		videoloader.h
+@author     m.biniswandi@digipen.edu
+@date       01/02/2026
+@brief		declaration of Video Loader using FFmpeg and FMOD.
+
+All content ? 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
+*/
 #pragma once
 #include <string>
 #include <GL/glew.h>

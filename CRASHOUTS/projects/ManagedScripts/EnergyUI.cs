@@ -1,3 +1,11 @@
+/*!
+@file       EnergyUI.cs
+@author     lee.r@digipen.edu
+@date       03/02/2026
+@brief      Manages the energy UI display for the player.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 
 using System;
 using System.Runtime.CompilerServices;

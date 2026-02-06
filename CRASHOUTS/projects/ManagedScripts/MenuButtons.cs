@@ -1,3 +1,11 @@
+/*!
+@file       MenuButtons.cs
+@author     lee.r@digipen.edu
+@date       26/11/2025
+@brief      Handles menu button interactions in the game.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System;
 
 

@@ -1,3 +1,11 @@
+/*!
+@file       WinGame.cs
+@author     lee.r@digipen.edu
+@date       28/11/2025
+@brief      Script to handle winning the game when the player enters a designated win zone.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System;
 using CrashoutsEngine;
 

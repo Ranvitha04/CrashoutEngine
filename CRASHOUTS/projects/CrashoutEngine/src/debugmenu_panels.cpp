@@ -1,4 +1,14 @@
-﻿#include "debugmenu_internals.h"
+﻿/*!
+@file       debugmenu_panels.cpp
+@author     mohamadamirakmal.b@digipen.edu
+@date       25/12/2025
+@brief      File containing the implementation of the ECS Debug Panel for the Debug Menu.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
+//__________________________________________________________________________*/
+
+#include "debugmenu_internals.h"
 #include "debugmenu.h"
 #include "physicsmanager.h"
 #include "deleteentitycommand.h"

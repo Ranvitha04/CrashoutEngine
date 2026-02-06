@@ -1,9 +1,12 @@
-#pragma once
-
 /*!
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@file       spritesheet.h
+@author     b.mohamadafiq@digipen.edu
+@date       19/11/2025
+@brief      This file contains the declaration of sprite sheet related components
 
-//__________________________________________________________________________*/
+All content ï¿½ 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
+#pragma once
 
 namespace CrashoutsEngine { class ECS; using Entity = unsigned; }
 
@@ -13,3 +16,4 @@ namespace UI
         CrashoutsEngine::Entity selected);
     void SpriteSheet_SetTexturePath(const char* path);
 }
+

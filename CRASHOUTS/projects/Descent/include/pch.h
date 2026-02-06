@@ -1,8 +1,16 @@
+/*!
+@file       pch.h
+@author     lee.r@digipen.edu
+@date       13/11/2025
+@brief      precompiled header file
+
+All content ï¿½ 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 // This file will be precompiled
 
 #pragma once
 /*!
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 

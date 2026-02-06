@@ -1,3 +1,11 @@
+/*!
+@file       SlimeMovement.cs
+@author     m.biniswandi@digipen.edu
+@date       27/11/2025
+@brief      Handles the AI movement, state machine, and pathfinding logic for Slime enemies.
+
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System;
 using System.Net;
 using System.Numerics;

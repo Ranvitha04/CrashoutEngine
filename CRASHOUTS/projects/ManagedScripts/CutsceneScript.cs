@@ -1,3 +1,11 @@
+/*!
+@file       CutsceneScript.cs
+@author     lee.r@digipen.edu
+@date       02/02/2026
+@brief      Script to manage cutscene sequences with images and dialogues.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;

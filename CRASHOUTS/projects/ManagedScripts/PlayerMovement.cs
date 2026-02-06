@@ -1,3 +1,12 @@
+/*!
+@file       PlayerMovement.cs
+@author     lee.r@digipen.edu
+@date       19/11/2025
+@brief      This file contains the PlayerMovement class which handles the player's movement, 
+            jumping, state switching (normal/light mass), and interaction logic.
+
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System;
 using System.Runtime.CompilerServices;
 

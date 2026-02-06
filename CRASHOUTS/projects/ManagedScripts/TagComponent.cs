@@ -1,3 +1,10 @@
+/*!
+@file       TagComponent.cs
+@author     lee.r@digipen.edu
+@date       29/01/2026
+@brief      Tag Component for Entity Tagging System
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine

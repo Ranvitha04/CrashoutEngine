@@ -1,3 +1,12 @@
+/*!
+@file       VideoComponent.cs
+@author     m.biniswandi@digipen.edu
+@date       31/01/2026
+@brief      C# ScriptBehaviour wrapper for the engine's VideoComponent, 
+            providing script-side control for video playback.
+
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System;
 using System.Runtime.CompilerServices;
 

@@ -1,3 +1,11 @@
+/*!
+@file       scenetransition.h
+@author     m.biniswandi@digipen.edu
+@date       31/01/2026
+@brief      Header file for scene transition functionalities.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 #pragma once
 #include <string>
 
@@ -25,3 +33,4 @@ namespace CrashoutsEngine {
 	};
 
 }
+

@@ -1,18 +1,15 @@
+/*!
+@file       collidercomponent.h
+@author     miratristan.d@digipen.edu
+@date       29/10/2025
+@brief      Collider component to hold custom colliders for entities
+
+All content ï¿½ 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 #pragma once
 
 #include "colliders.h"
 #include <memory>
-
-/*!
-@file       collidercomponent.h
-@author     miratristan.d@digipen.edu
-@date       29/11/2025
-@brief      Collider component to hold custom colliders for entities
-
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
-
-//__________________________________________________________________________*/
-
 namespace Component {
 	/*!
 	@struct	ColliderComponent

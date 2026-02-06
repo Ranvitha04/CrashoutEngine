@@ -1,3 +1,12 @@
+/*!
+@file       tutorial1door.cs
+@author     shahrinidzuan.m@digipen.edu
+@date       02/02/2026
+@brief      Script to handle player interaction with the tutorial door in the first tutorial level.
+            When the player collides with or triggers the door, it loads the next tutorial scene.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System;
 using CrashoutsEngine;
 

@@ -1,3 +1,11 @@
+/*!
+@file       BookUIController.cs
+@author     b.mohamadafiq@digipen.edu
+@date       04/02/2026
+@brief      Handles the book UI interactions in the game.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 using System;
 
 namespace CrashoutsEngine
@@ -130,3 +138,4 @@ namespace CrashoutsEngine
         }
     }
 }
+

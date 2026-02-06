@@ -1,3 +1,11 @@
+/*!
+@file       GroundSensor.cs
+@author     lee.r@digipen.edu
+@date       26/11/2025
+@brief      Ground Sensor Script to detect if player is on ground.
+
+All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+*/
 //using System;
 
 //namespace CrashoutsEngine

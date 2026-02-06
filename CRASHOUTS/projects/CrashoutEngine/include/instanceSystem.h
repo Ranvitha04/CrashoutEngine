@@ -1,7 +1,5 @@
-#pragma once
-
 /*!
-@file        ranvitha.h
+@file        instanceSystem.h
 @author      ranvitha@digipen.edu
 @date        11/06/2025
 @brief
@@ -28,7 +26,7 @@ generate procedurally varied, GPU-efficient visuals.
 All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
-
+#pragma once
 #include "CEVec3.h"
 #include "CEVec2.h"
 #include "CEColor.h"
@@ -330,3 +328,4 @@ namespace InstancingSystem {
 
     void ShutdownInstancing();
 }
+

@@ -1,3 +1,12 @@
+/*!
+@file       debugmenu_assets.cpp
+@author     mohamadamirakmal.b@digipen.edu
+@date       25/12/2025
+@brief      File containing the implementation of the Asset Browser panel in the debug menu.
+
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
+//__________________________________________________________________________*/
 #include "debugmenu_internals.h"
 
 namespace UI {
