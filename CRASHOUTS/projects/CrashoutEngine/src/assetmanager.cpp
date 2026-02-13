@@ -63,14 +63,23 @@ namespace CrashoutsEngine {
 			if (FT_Init_FreeType(&ftLibrary)) {
 				std::cerr << "ERROR::FREETYPE: Could not init FreeType library" << std::endl;
 			}
+
+			// Start background loader thread
+			loaderThread = std::thread(&AssetManager::LoaderThreadLoop, this);
 		}
 
 		AssetManager::~AssetManager() {
-			// Delete FT_Library
-			//FT_Done_FreeType(ftLibrary);
+			Shutdown();
 		}
 
 		void AssetManager::Shutdown() {
+			// Signal background thread to exit
+			exitThread = true;
+			condition.notify_all();
+			if (loaderThread.joinable()) {
+				loaderThread.join();
+			}
+
 			assets.clear();
 			assetNames.clear();
 
@@ -82,6 +91,112 @@ namespace CrashoutsEngine {
 			if (ftLibrary) {
 				FT_Done_FreeType(ftLibrary);
 				ftLibrary = nullptr; 
+			}
+		}
+
+		void AssetManager::EnqueueLoad(const std::string& name, const std::string& path, AssetType type) {
+			{
+				std::lock_guard<std::mutex> lock(queueMutex);
+				loadQueue.push({ name, path, type });
+			}
+			condition.notify_one();
+		}
+
+		void AssetManager::Update() {
+			while (true) {
+				std::pair<std::string, std::unique_ptr<IAsset>> completed;
+				bool hasAsset = false;
+
+				{
+					std::lock_guard<std::mutex> lock(queueMutex);
+					if (!completedQueue.empty()) {
+						completed = std::move(completedQueue.front());
+						completedQueue.pop();
+						hasAsset = true;
+					}
+				}
+
+				if (!hasAsset) break;
+
+				std::string& name = completed.first;
+				std::unique_ptr<IAsset>& asset = completed.second;
+
+				// Finalize asset on main thread (GPU uploads etc)
+				if (asset) {
+					TextureAsset* tex = dynamic_cast<TextureAsset*>(asset.get());
+					if (tex) {
+						if (tex->UploadToGPU()) {
+							tex->SetState(AssetState::Loaded);
+							std::cout << "[AssetManager] Async load completed: " << name << std::endl;
+						}
+						else {
+							tex->SetState(AssetState::Failed);
+							std::cerr << "[AssetManager] Async GPU upload FAILED: " << name << std::endl;
+						}
+					}
+					// Add other asset types as needed
+					else {
+						asset->SetState(AssetState::Loaded);
+						std::cout << "[AssetManager] Async load completed (no GPU step): " << name << std::endl;
+					}
+
+					Load(name, std::move(asset));
+				}
+			}
+		}
+
+		void AssetManager::LoaderThreadLoop() {
+			while (!exitThread) {
+				LoadJob job;
+				{
+					std::unique_lock<std::mutex> lock(queueMutex);
+					condition.wait(lock, [this] { return !loadQueue.empty() || exitThread; });
+
+					if (exitThread && loadQueue.empty()) {
+						break;
+					}
+
+					if (!loadQueue.empty()) {
+						job = std::move(loadQueue.front());
+						loadQueue.pop();
+					}
+					else {
+						continue;
+					}
+				}
+
+				std::unique_ptr<IAsset> loadedAsset = nullptr;
+
+				switch (job.type) {
+				case AssetType::Texture:
+				case AssetType::SpriteSheet:
+					loadedAsset = TextureAsset::Create(job.path);
+					break;
+				case AssetType::Scene:
+					loadedAsset = SceneAsset::Create(job.path);
+					break;
+				case AssetType::TileMap:
+					loadedAsset = TileMapAsset::Create(job.path);
+					break;
+				case AssetType::Font:
+					// FontAsset::Create currently does OpenGL calls, needs refactoring
+					// For now, let's skip or implement synchronously if needed
+					break;
+				// Add other cases...
+				default:
+					break;
+				}
+
+				if (loadedAsset) {
+					loadedAsset->SetState(AssetState::Loading); // Ready for GPU upload
+					{
+						std::lock_guard<std::mutex> lock(queueMutex);
+						completedQueue.push({ job.name, std::move(loadedAsset) });
+					}
+				}
+				else {
+					std::cerr << "[AssetManager] Background load FAILED: " << job.name << " (" << job.path << ")" << std::endl;
+				}
 			}
 		}
 
@@ -209,7 +324,7 @@ namespace CrashoutsEngine {
 
 			// --- Loading IMAGES ---
 			if (doc.HasMember("images") && doc["images"].IsArray()) {
-				std::cout << "Loading Textures..." << std::endl;
+				std::cout << "Loading Textures (Async)..." << std::endl;
 				const rapidjson::Value& imageArray = doc["images"];
 				for (rapidjson::SizeType i = 0; i < imageArray.Size(); ++i) {
 					const rapidjson::Value& asset = imageArray[i];
@@ -217,44 +332,24 @@ namespace CrashoutsEngine {
 						std::string name = asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
 						std::string fullPath = rootAssetPath + "images/" + relativePath;
-                        std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
-                        if (newTexture) {
-                            if (newTexture->UploadToGPU()) {
-                                std::cout << "AssetManager loaded texture: " << name << "(" << fullPath << ") ["
-                                          << newTexture->GetWidth() << "x" << newTexture->GetHeight() << "]" << std::endl;
-                                AssetManager::GetInstance().Load(name, std::move(newTexture));
-                            } else {
-                                std::cerr << "FAILED to upload texture: " << name << " (" << fullPath << ")" << std::endl;
-                            }
-                        } else {
-                            std::cerr << "FAILED to load texture: " << name << " (" << fullPath << ") — possibly exceeds 4096x4096 or unsupported format." << std::endl;
-                        }
+						
+						EnqueueLoad(name, fullPath, AssetType::Texture);
 					}
 				}
 			}
 			
 			// NEW: --- Loading SPRITE_SHEET ---
 			if (doc.HasMember("spritesheet") && doc["spritesheet"].IsArray()) {
-				std::cout << "Loading Sprite Sheet Textures..." << std::endl;
-				const rapidjson::Value& sheetArray = doc["sprite_sheet"];
+				std::cout << "Loading Sprite Sheet Textures (Async)..." << std::endl;
+				const rapidjson::Value& sheetArray = doc["spritesheet"];
 				for (rapidjson::SizeType i = 0; i < sheetArray.Size(); ++i) {
 					const rapidjson::Value& asset = sheetArray[i];
 					if (asset.HasMember("name") && asset.HasMember("path")) {
 						std::string name = asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
 						std::string fullPath = rootAssetPath + "spritesheet/" + relativePath;
-                        std::unique_ptr<TextureAsset> newTexture = TextureAsset::Create(fullPath);
-                        if (newTexture) {
-                            if (newTexture->UploadToGPU()) {
-                                std::cout << "AssetManager loaded sprite sheet: " << name << "(" << fullPath << ") ["
-                                          << newTexture->GetWidth() << "x" << newTexture->GetHeight() << "]" << std::endl;
-                                AssetManager::GetInstance().Load(name, std::move(newTexture));
-                            } else {
-                                std::cerr << "FAILED to upload sprite sheet: " << name << " (" << fullPath << ")" << std::endl;
-                            }
-                        } else {
-                            std::cerr << "FAILED to load sprite sheet: " << name << " (" << fullPath << ") — possibly exceeds 4096x4096 or unsupported format." << std::endl;
-                        }
+						
+						EnqueueLoad(name, fullPath, AssetType::SpriteSheet);
 					}
 				}
 			}
@@ -440,7 +535,7 @@ namespace CrashoutsEngine {
 		
 			// --- Loading TileMaps ---
 			if (doc.HasMember("tilemaps") && doc["tilemaps"].IsArray()) {
-				std::cout << "Loading TileMap Assets..." << std::endl;
+				std::cout << "Loading TileMap Assets (Async)..." << std::endl;
 
 				const rapidjson::Value& tilemapArray = doc["tilemaps"];
 
@@ -451,19 +546,7 @@ namespace CrashoutsEngine {
 						name += asset["name"].GetString();
 						std::string relativePath = asset["path"].GetString();
 
-						// Create TileMapAsset object from file data (JSON)
-						std::unique_ptr<TileMapAsset> newTileMap = TileMapAsset::Create(relativePath);
-
-						// Validate 
-						if (newTileMap) {
-							// Load the TileMapAsset into AssetManager
-							AssetManager::GetInstance().Load(name, std::move(newTileMap));
-							std::cout << "AssetManager loaded tilemap data: " << name << "(" << relativePath << ")"
-								<< std::endl;
-						}
-						else {
-							std::cerr << "Failed to create TileMapAsset: " << name << " at " << relativePath << std::endl;
-						}
+						EnqueueLoad(name, relativePath, AssetType::TileMap);
 					}
 					else {
 						std::cerr << "Warning: TileMap asset entry missing 'name' or 'path' in manifest." << std::endl;
@@ -510,11 +593,8 @@ namespace CrashoutsEngine {
 			{
 				if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga")
 				{
-					std::unique_ptr<TextureAsset> tex = TextureAsset::Create(fullPath);
-					if (tex && tex->UploadToGPU()) {
-						Load(name, std::move(tex));
-						std::cout << "[SingleAsset] Loaded image: " << name << std::endl;
-					}
+					EnqueueLoad(name, fullPath, AssetType::Texture);
+					std::cout << "[SingleAsset] Enqueued image: " << name << std::endl;
 				}
 				return;
 			}
@@ -524,11 +604,8 @@ namespace CrashoutsEngine {
 			{
 				if (ext == ".png" || ext == ".jpg" || ext == ".jpeg")
 				{
-					std::unique_ptr<TextureAsset> tex = TextureAsset::Create(fullPath);
-					if (tex && tex->UploadToGPU()) {
-						Load(name, std::move(tex));
-						std::cout << "[SingleAsset] Loaded sprite sheet: " << name << std::endl;
-					}
+					EnqueueLoad(name, fullPath, AssetType::SpriteSheet);
+					std::cout << "[SingleAsset] Enqueued sprite sheet: " << name << std::endl;
 				}
 				return;
 			}

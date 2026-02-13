@@ -331,6 +331,7 @@ Ensure time per frame and FPS are recorded.
 Let application Update state changes (such as animation).
 */
 void Update(double const& dt) {
+    CrashoutsEngine::Assets::AssetManager::GetInstance().Update();
     MonoManager::CheckHotReload();
     if(PerformPendingSceneLoad()) return;
 

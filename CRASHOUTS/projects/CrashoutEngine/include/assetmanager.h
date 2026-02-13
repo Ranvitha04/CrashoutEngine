@@ -7,7 +7,7 @@
 		class responsible for managing and providing access to various game assets.
 		It uses a two-map approach for efficient asset retrieval by name.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 #pragma once
@@ -19,6 +19,13 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <string>
 #include <utility>
 #include <ft2build.h>
+#include <thread>
+#include <mutex>
+#include <queue>
+#include <condition_variable>
+#include <atomic>
+#include <functional>
+#include <iostream>
 
 #include FT_FREETYPE_H
 
@@ -31,6 +38,22 @@ namespace CrashoutsEngine {
 		extern const std::string rootPath;
 		extern const std::string assetManifestPath;
 
+		enum class AssetType {
+			Texture,
+			SpriteSheet,
+			Audio,
+			Scene,
+			Font,
+			Shader,
+			TileMap
+		};
+
+		struct LoadJob {
+			std::string name;
+			std::string path;
+			AssetType type;
+		};
+
 		// Function to load assets in a json
 		/*!
 		@brief Scans asset directories and generates a JSON manifest file.
@@ -40,6 +63,13 @@ namespace CrashoutsEngine {
 		*/
 		void GenerateAssetManifest(const std::string& rootAssetPath = rootPath,
 			const std::string& outputManifestPath = assetManifestPath);
+
+		enum class AssetState {
+			Unloaded,
+			Loading,
+			Loaded,
+			Failed
+		};
 
 		/*!
 		@brief Interface class for all assets.
@@ -64,6 +94,27 @@ namespace CrashoutsEngine {
 			@return A constant reference to the asset's name.
 			*/
 			std::string GetName() const { return name; }
+
+			/*!
+			@brief Gets the current state of the asset.
+			@return The asset's state.
+			*/
+			AssetState GetState() const { return state; }
+
+			/*!
+			@brief Sets the state of the asset.
+			@param newState The new state to set.
+			*/
+			void SetState(AssetState newState) { state = newState; }
+
+			/*!
+			@brief Checks if the asset is fully loaded and ready for use.
+			@return True if loaded, false otherwise.
+			*/
+			bool IsReady() const { return state == AssetState::Loaded; }
+
+		protected:
+			AssetState state = AssetState::Unloaded;
 
 		private:
 			std::string name;
@@ -97,6 +148,20 @@ namespace CrashoutsEngine {
 			void LoadSingleAsset(const std::string& fullPath);
 
 			/*!
+			@brief Enqueues an asset for asynchronous loading.
+			@param name The name to associate with the asset.
+			@param path The path to the asset file.
+			@param type The type of asset to load.
+			*/
+			void EnqueueLoad(const std::string& name, const std::string& path, AssetType type);
+
+			/*!
+			@brief Processes completed asset loads on the main thread.
+			Should be called once per frame in the main loop.
+			*/
+			void Update();
+
+			/*!
 			@brief Loads and stores a new asset.
 
 			This function takes a unique_ptr to an IAsset and stores it
@@ -125,6 +190,9 @@ namespace CrashoutsEngine {
 
 				// Store the unique_ptr in the main map
 				// Use unique_ptr for automatic memory management
+				if (asset->GetState() == AssetState::Unloaded) {
+					asset->SetState(AssetState::Loaded);
+				}
 				assets[id] = std::move(asset);
 
 				// Increment nextId
@@ -189,8 +257,18 @@ namespace CrashoutsEngine {
             AssetManager(const AssetManager&) = delete;
             AssetManager& operator=(const AssetManager&) = delete;
 
+			void LoaderThreadLoop();
+
 			std::unordered_map<unsigned int, std::unique_ptr<IAsset>> assets;
 			std::unordered_map<std::string, unsigned int> assetNames;
+
+			// Async loading members
+			std::queue<LoadJob> loadQueue;
+			std::queue<std::pair<std::string, std::unique_ptr<IAsset>>> completedQueue;
+			std::mutex queueMutex;
+			std::condition_variable condition;
+			std::thread loaderThread;
+			std::atomic<bool> exitThread{ false };
 
 			// The single FreeType library instance (Only needs 1)
 			FT_Library ftLibrary;

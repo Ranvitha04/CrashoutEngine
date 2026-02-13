@@ -26,7 +26,7 @@ Usage:
 Clean-up functions are provided to release GPU resources and clear caches
 when shutting down the engine.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -555,10 +555,23 @@ namespace Component {
         // Try manifest lookup first
         TextureAsset* texture = AssetManager::GetInstance().Get<TextureAsset>(key);
         if (texture) {
+            if (texture->IsReady()) {
+                return texture->GetGLHandle();
+            }
+            else if (texture->GetState() == AssetState::Loading) {
+                // Asset is enqueued but not yet finished GPU upload
+                // Return 0 so it doesn't render, but don't spam errors
+                return 0;
+            }
+            else if (texture->GetState() == AssetState::Failed) {
+                std::cerr << "Error: TextureAsset '" << key << "' failed to load." << std::endl;
+                return 0;
+            }
+            
+            // If it's Unloaded but exists as an object, it might be in transition
             if (texture->IsUploaded()) {
                 return texture->GetGLHandle();
             }
-            std::cerr << "Warning: TextureAsset '" << key << "' found but not uploaded to GPU." << std::endl;
             return 0;
         }
 
