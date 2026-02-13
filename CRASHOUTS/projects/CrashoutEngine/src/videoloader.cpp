@@ -185,6 +185,11 @@ namespace CrashoutsEngine {
 		}
 
 		isValid = true;
+		
+		// Start decoding thread
+		exitThread = false;
+		decodingThread = std::thread(&VideoLoader::DecodingThreadLoop, this);
+
 		return true;
 #endif
 		return false;
@@ -200,7 +205,10 @@ namespace CrashoutsEngine {
 			return;
 		}
 
-		// --- Audio Sync ---
+		// Advance local master clock
+		currentTime = currentTime + dt;
+
+		// --- Audio Sync (FMOD is the master) ---
 		if (hasAudio && audioSound) {
 			if (!audioChannel) {
 				FMOD::System* core = Audio::AudioSystem::instance().core();
@@ -215,31 +223,80 @@ namespace CrashoutsEngine {
 			audioChannel->getPosition(&ms, FMOD_TIMEUNIT_MS);
 			double audioTime = (double)ms / 1000.0;
 
-			// Use audio clock to drive the video clock if drift is detected
+			// Sync master clock to audio
 			if (abs(currentTime - audioTime) > 0.05) {
-				double drift = audioTime - currentTime;
 				currentTime = audioTime;
-				frameTimer += drift; // Adjust timer to trigger catch-up or delay
 			}
 		}
 
-		currentTime += dt;
-		frameTimer += dt;
+		// Process the frame queue
+		{
+			std::lock_guard<std::mutex> lock(queueMutex);
+			
+			// While there are frames in the queue, check if it's time to show them
+			while (!frameQueue.empty()) {
+				// If we have at least two frames, check if we should skip the first one
+				if (frameQueue.size() > 1) {
+					// We can't easily peek at the second element of std::queue without popping.
+					// However, if the current clock is already PAST the front frame...
+					if (currentTime >= frameQueue.front().pts) {
+						// ...we check if we should just discard it because the next one is also due.
+						// To avoid std::queue limitations, we'll just check the PTS of the front.
+						// If we're WAY ahead of the front PTS, pop it and keep looking.
+						if (currentTime > frameQueue.front().pts + 0.1) {
+							frameQueue.pop();
+							continue;
+						}
+					}
+				}
 
-		// Catch-up / Frame Skipping logic
-		// If we fall behind, decode multiple frames but only the last one 
-		// will be uploaded to the GPU (efficiently keeping time sync).
-		int safetyLimit = 0;
-		while (frameTimer >= frameDelay && safetyLimit < 5) {
-			frameTimer -= frameDelay;
-			if (!ReadFrame()) break;
-			safetyLimit++;
+				if (currentTime >= frameQueue.front().pts) {
+					VideoFrame& frame_data = frameQueue.front();
+
+					// Upload current frame to GPU
+					glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+					glBindTexture(GL_TEXTURE_2D, textureHandle);
+					glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, frame_data.pixels.data());
+					glBindTexture(GL_TEXTURE_2D, 0);
+					glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+					
+					frameQueue.pop(); // Done with this frame
+					queueCond.notify_one(); // Wake up decoder if it was full
+					break; // Show one frame per engine update
+				}
+				else {
+					// Future frame, stop checking
+					break;
+				}
+			}
+		}
+	}
+
+	void VideoLoader::DecodingThreadLoop() {
+		while (!exitThread) {
+			if (!isPlaying || !isValid) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+				continue;
+			}
+
+			{
+				std::unique_lock<std::mutex> lock(queueMutex);
+				// Wait if queue is full
+				queueCond.wait(lock, [this] { return frameQueue.size() < maxQueueSize || exitThread; });
+				if (exitThread) break;
+			}
+
+			// Decode next frame
+			if (!ReadFrame()) {
+				// EOF or error
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			}
 		}
 	}
 
 	/**
-	 * @brief Decodes the next video frame and uploads it to the GPU texture.
-	 * @return True if a frame was successfully read and uploaded, false otherwise.
+	 * @brief Decodes the next video frame into the frame queue.
+	 * @return True if a frame was successfully read and decoded, false otherwise.
 	 */
 	bool VideoLoader::ReadFrame() {
 #ifdef USE_FFMPEG
@@ -247,15 +304,23 @@ namespace CrashoutsEngine {
 			if (packet->stream_index == videoStreamIndex) {
 				if (avcodec_send_packet(codecCtx, packet) == 0) {
 					if (avcodec_receive_frame(codecCtx, frame) == 0) {
+						VideoFrame vFrame;
+						vFrame.pixels.resize(width * height * 4);
+
 						sws_scale(swsCtx, (uint8_t const* const*)frame->data,
 							frame->linesize, 0, height,
 							frameRGB->data, frameRGB->linesize);
 
-						glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-						glBindTexture(GL_TEXTURE_2D, textureHandle);
-						glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, frameRGB->data[0]);
-						glBindTexture(GL_TEXTURE_2D, 0);
-						glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+						memcpy(vFrame.pixels.data(), frameRGB->data[0], width * height * 4);
+						
+						double pts = (double)frame->best_effort_timestamp;
+						pts *= av_q2d(formatCtx->streams[videoStreamIndex]->time_base);
+						vFrame.pts = pts;
+
+						{
+							std::lock_guard<std::mutex> lock(queueMutex);
+							frameQueue.push(std::move(vFrame));
+						}
 
 						av_packet_unref(packet);
 						return true;
@@ -265,12 +330,27 @@ namespace CrashoutsEngine {
 			av_packet_unref(packet);
 		}
 		if (isLooping) {
+			std::lock_guard<std::mutex> lock(queueMutex);
 			avio_seek(formatCtx->pb, 0, SEEK_SET);
-			avformat_seek_file(formatCtx, videoStreamIndex, 0, 0, 0, AVSEEK_FLAG_BACKWARD);
+			avformat_seek_file(formatCtx, -1, 0, 0, 0, AVSEEK_FLAG_BACKWARD);
+			avcodec_flush_buffers(codecCtx);
+			currentTime = 0;
+			if (audioChannel) audioChannel->setPosition(0, FMOD_TIMEUNIT_MS);
+			
+			// Clear queue on loop to prevent old frames from being shown
+			while(!frameQueue.empty()) frameQueue.pop();
 		}
 		else isPlaying = false;
 #endif
 		return false;
+	}
+
+	void VideoLoader::Play() {
+		isPlaying = true;
+	}
+
+	void VideoLoader::Pause() {
+		isPlaying = false;
 	}
 
 	/**
@@ -285,8 +365,11 @@ namespace CrashoutsEngine {
 		}
 #ifdef USE_FFMPEG
 		if (isValid) {
+			std::lock_guard<std::mutex> lock(queueMutex);
 			avio_seek(formatCtx->pb, 0, SEEK_SET);
 			avformat_seek_file(formatCtx, videoStreamIndex, 0, 0, 0, AVSEEK_FLAG_BACKWARD);
+			avcodec_flush_buffers(codecCtx);
+			while(!frameQueue.empty()) frameQueue.pop();
 		}
 #endif
 	}
@@ -304,7 +387,13 @@ namespace CrashoutsEngine {
 	/**
 	 * @brief Cleans up and releases all allocated video and audio resources.
 	 */
-	void VideoLoader::Cleanup() {
+		void VideoLoader::Cleanup() {
+			// Stop thread first
+			exitThread = true;
+			queueCond.notify_all(); // Wake up decoder if it's waiting on queueCond
+			if (decodingThread.joinable()) {
+				decodingThread.join();
+			}
 		if (audioChannel) {
 			audioChannel->stop();
 			audioChannel = nullptr;
