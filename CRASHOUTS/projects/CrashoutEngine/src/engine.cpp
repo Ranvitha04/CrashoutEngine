@@ -58,6 +58,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "jobsystem.h"
 #include <iostream>
 
 #include "frameratecontroller.h"
@@ -280,6 +281,7 @@ void Init() {
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
     InputManager::Init(GLApp::ptr_window);
+    CrashoutsEngine::JobSystem::Get().Initialize();
 
     #if USE_IMGUI_EDITOR
     engineState = EngineState::STOP;
@@ -793,6 +795,7 @@ void CleanUp() {
     CrashoutsEngine::ECS::DestroyInstance();
 
     // 5. CLEANUP RESOURCES & WINDOW (Low level stuff)
+    CrashoutsEngine::JobSystem::Get().Shutdown();
     CrashoutsEngine::Assets::AssetManager::GetInstance().Shutdown();
     GLApp::cleanup();
 }

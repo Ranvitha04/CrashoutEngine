@@ -21,6 +21,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <algorithm>
 #include "camera.h"
 #include "colliders.h"
+#include "jobsystem.h"
 
 /*UTILS RIGHT HERE*/
 namespace Collision {
@@ -1102,103 +1103,129 @@ namespace Collision {
 			quadTree.Insert(entity1);
 		}
 
-		static std::vector<CrashoutsEngine::Entity> collidableObjects{};
-
 		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
-		for (CrashoutsEngine::Entity& entity1 : colliderEntities) {
-			if (!IsEntityActive(globalECS, entity1)) continue;
+		struct ThreadResult {
+			std::vector<CollisionEvent> events;
+			std::vector<ContactInformation> contacts;
+			struct Msg {
+				Messaging::EventType type;
+				CollisionManifold manifold;
+				CrashoutsEngine::Entity e1, e2;
+			};
+			std::vector<Msg> messages;
+		};
 
-			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
-			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
-			if (!collider || !collider->collider) continue;
-			if (!collider->collider->enabled) continue;
+		unsigned int numThreads = CrashoutsEngine::JobSystem::Get().GetThreadCount();
+		if (numThreads == 0) numThreads = 1;
+		std::vector<ThreadResult> threadResults(numThreads);
 
-			collidableObjects.clear();
+		CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)colliderEntities.size(), [&](unsigned int start, unsigned int end) {
+			// Get thread index (simplified, but works for ParallelFor if we use i / chunkSize)
+			unsigned int threadIdx = start / (std::max(1u, (unsigned int)colliderEntities.size() / numThreads));
+			if (threadIdx >= numThreads) threadIdx = numThreads - 1;
+			auto& result = threadResults[threadIdx];
 
-			Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
-			Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
+			std::vector<CrashoutsEngine::Entity> localCollidableObjects;
 
-			AABBRect region{ GetAABB(*(collider1->collider), transform1->position) };
-			quadTree.Query(region, collidableObjects);
+			for (unsigned int i = start; i < end; ++i) {
+				CrashoutsEngine::Entity entity1 = colliderEntities[i];
 
-			for (CrashoutsEngine::Entity const& entity2 : collidableObjects) {
-				if (!IsEntityActive(globalECS, entity2)) continue;
+				if (!IsEntityActive(globalECS, entity1)) continue;
 
-				if (entity1 == entity2) continue;
+				if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
+				auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
+				if (!collider || !collider->collider) continue;
+				if (!collider->collider->enabled) continue;
 
-				// Prevents double checks, only process if ID1 < ID2
-				// Ensures pair (A,B) is processed, and skip (B,A)
-				if (entity1 > entity2) continue;
+				localCollidableObjects.clear();
 
-				if (CrashoutsEngine::IsAlreadyChildOf(globalECS, entity1, entity2) ||
-					CrashoutsEngine::IsAlreadyChildOf(globalECS, entity2, entity1)) continue;
+				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
+				Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
 
-				Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
-				Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
+				AABBRect region{ GetAABB(*(collider1->collider), transform1->position) };
+				quadTree.Query(region, localCollidableObjects);
 
-				Collision::CollisionManifold collisionManifold;
+				for (CrashoutsEngine::Entity const& entity2 : localCollidableObjects) {
+					if (!IsEntityActive(globalECS, entity2)) continue;
 
-				// Optimization: Skip two static rigidbodies
-				if (globalECS.HasComponent<Component::RigidBodyComponent>(entity1) &&
-					globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) {
-					auto* rb1 = globalECS.GetComponent<Component::RigidBodyComponent>(entity1);
-					auto* rb2 = globalECS.GetComponent<Component::RigidBodyComponent>(entity2);
-					if (rb1->getMass() == 0.f && rb2->getMass() == 0.f) continue;
-					if (rb1 == nullptr || rb2 == nullptr) continue;
+					if (entity1 == entity2) continue;
 
-					// Check Collision
-					collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
-						Collision::CollisionProps{ collider1->collider, rb1->GetVelocity(), transform1->position },
-						Collision::CollisionProps{ collider2->collider, rb2->GetVelocity(), transform2->position }
+					// Prevents double checks, only process if ID1 < ID2
+					// Ensures pair (A,B) is processed, and skip (B,A)
+					if (entity1 > entity2) continue;
+
+					if (CrashoutsEngine::IsAlreadyChildOf(globalECS, entity1, entity2) ||
+						CrashoutsEngine::IsAlreadyChildOf(globalECS, entity2, entity1)) continue;
+
+					Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
+					Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
+
+					Collision::CollisionManifold collisionManifold;
+
+					// Optimization: Skip two static rigidbodies
+					if (globalECS.HasComponent<Component::RigidBodyComponent>(entity1) &&
+						globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) {
+						auto* rb1 = globalECS.GetComponent<Component::RigidBodyComponent>(entity1);
+						auto* rb2 = globalECS.GetComponent<Component::RigidBodyComponent>(entity2);
+						if (rb1->getMass() == 0.f && rb2->getMass() == 0.f) continue;
+						if (rb1 == nullptr || rb2 == nullptr) continue;
+
+						// Check Collision
+						collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
+							Collision::CollisionProps{ collider1->collider, rb1->GetVelocity(), transform1->position },
+							Collision::CollisionProps{ collider2->collider, rb2->GetVelocity(), transform2->position }
+							);
+
+					}
+
+					if (collisionManifold.collisionOccured) {
+						// Populate master list
+						result.events.push_back(
+							CollisionEvent{ collisionManifold, entity1, entity2 }
 						);
 
-				}
+						// Gameplay messaging only when in play mode
 
-				if (collisionManifold.collisionOccured) {
-					// Populate master list
-					m_FrameCollisions.push_back(
-						CollisionEvent{ collisionManifold, entity1, entity2 }
-					);
+						if (state == EngineState::PLAY) {
+							// If EITHER collider is a trigger, it is a Trigger Event.
+							// Otherwise, it is a Collision Event.
+							bool isTriggerInteraction = collider1->collider->isTrigger || collider2->collider->isTrigger;
 
-					// Gameplay messaging only when in play mode
+							using namespace Messaging;
+							EventType enterType = isTriggerInteraction ? EventType::TriggerEnter : EventType::CollisionEnter;
+							EventType stayType = isTriggerInteraction ? EventType::TriggerStay : EventType::CollisionStay;
 
-					if (state == EngineState::PLAY) {
-						// If EITHER collider is a trigger, it is a Trigger Event.
-						// Otherwise, it is a Collision Event.
-						bool isTriggerInteraction = collider1->collider->isTrigger || collider2->collider->isTrigger;
-
-						using namespace Messaging;
-						EventType enterType = isTriggerInteraction ? EventType::TriggerEnter : EventType::CollisionEnter;
-						EventType stayType = isTriggerInteraction ? EventType::TriggerStay : EventType::CollisionStay;
-
-						// Check if this pair was already processed this frame (e.g. duplicate query)
-						bool isIn{ false };
-						for (ContactInformation const& test : currentFrameCollision) {
-							if (test.contacts.first == entity1 && test.contacts.second == entity2) isIn = true;
-						}
-
-						if (!isIn) {
 							ContactPair pair{ entity1, entity2 };
 
 							// Check if this pair existed Last Frame
 							if (isPairInCollection(pair, lastFrameCollision)) {
 								// STAY
-								CollisionMessage stayMessage{ stayType, collisionManifold, entity1, entity2 };
-								sendMessage(stayMessage);
+								result.messages.push_back({ stayType, collisionManifold, entity1, entity2 });
 							}
 							else {
 								// ENTER
-								CollisionMessage enterMessage{ enterType, collisionManifold, entity1, entity2 };
-								sendMessage(enterMessage);
+								result.messages.push_back({ enterType, collisionManifold, entity1, entity2 });
 							}
 
 							// Save contact
-							currentFrameCollision.push_back(std::move(ContactInformation{ pair, collisionManifold }));
+							result.contacts.push_back({ pair, collisionManifold });
 						}
 					}
 				}
 			}
+		});
+
+		// Merge results back to main thread
+		for (auto& res : threadResults) {
+			m_FrameCollisions.insert(m_FrameCollisions.end(), res.events.begin(), res.events.end());
+			currentFrameCollision.insert(currentFrameCollision.end(), res.contacts.begin(), res.contacts.end());
+			
+			for (auto& msg : res.messages) {
+				CollisionMessage cmsg{ msg.type, msg.manifold, msg.e1, msg.e2 };
+				sendMessage(cmsg);
+			}
 		}
+
 		if (state == EngineState::PLAY) {
 			// --- EXIT EVENT LOOP ---
 			for (ContactInformation const& contactInfo : lastFrameCollision) {
