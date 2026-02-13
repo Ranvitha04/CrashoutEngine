@@ -549,6 +549,10 @@ namespace UI {
 
         ImGui::Separator();
 
+        ImGui::Text("Draw Calls: %u", Component::Rendering::Get().drawCalls);
+
+        ImGui::Separator();
+
         if (ImGui::BeginTable("perf_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
             ImGui::TableSetupColumn("System");
             ImGui::TableSetupColumn("ms");

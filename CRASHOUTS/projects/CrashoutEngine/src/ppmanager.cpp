@@ -15,6 +15,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "ppcomponent.h"
 #include "assetmanager.h"
 #include "shaderasset.h"
+#include "rendering.h"
 #include "ppmanager.h"
 #include "engine.h"
 #include <iostream>
@@ -146,6 +147,7 @@ namespace CrashoutsEngine {
 			// Draw full-screen quad
 			glBindVertexArray(quadvao);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
+			Component::Rendering::Get().drawCalls++;
 
 			// Unbind
 			glBindVertexArray(0);

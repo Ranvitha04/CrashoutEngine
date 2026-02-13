@@ -833,6 +833,7 @@ namespace InstancingSystem {
 		glBindTextureUnit(0, textureHandle); // DSA or standard
 		int elements = segments * 3;
 		glDrawElementsInstanced(GL_TRIANGLES, elements, GL_UNSIGNED_SHORT, 0, count);
+		renderer.drawCalls++;
 		glBindTextureUnit(0, 0);
 
 		glBindVertexArray(0);
@@ -1307,6 +1308,7 @@ namespace InstancingSystem {
 		if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.0f);
 
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
+		renderer.drawCalls++;
 
 		glBindVertexArray(0);
 
@@ -1379,6 +1381,7 @@ namespace InstancingSystem {
 		//glBindTextureUnit(0, textureHandle);
 		glBindTextureUnit(0, handle);
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
+		renderer.drawCalls++;
 		glBindTextureUnit(0, 0);
 
 		glBindVertexArray(0);
@@ -1809,6 +1812,7 @@ namespace InstancingSystem {
 		if (tint_loc != -1) glUniform4f(tint_loc, 1.0f, 1.0f, 1.0f, 1.0f);
 
 		glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0, count);
+		renderer.drawCalls++;
 		glBindVertexArray(0);
 
 		//glDepthMask(GL_TRUE); // Re-enable depth writing for next objects
@@ -1870,6 +1874,7 @@ namespace InstancingSystem {
 
 		glBindTextureUnit(0, textureHandle);
 		glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0, count);
+		renderer.drawCalls++;
 		glBindTextureUnit(0, 0);
 
 		glBindVertexArray(0);

@@ -520,6 +520,7 @@ Call application to draw and then swap front and back frame buffers ...
 Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
 */
 void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
+    Component::Rendering::Get().drawCalls = 0;
 
 #if !USE_IMGUI_EDITOR 
     (void)globalSelectedEntity;

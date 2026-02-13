@@ -203,6 +203,7 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        Component::Rendering::Get().drawCalls++;
         x += (ch.Advance >> 6) * scale + (letterSpacing * scale); // Apply letter spacing
     }
 

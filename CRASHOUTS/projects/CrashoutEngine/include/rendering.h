@@ -181,6 +181,7 @@ namespace Component {
 		size_t current_vbo_size{ 0 };
 		size_t current_ebo_size{ 0 };
 
+		unsigned int drawCalls{ 0 };
 
 		void* mapped_vbo_ptr{ nullptr };
 		void* mapped_ebo_ptr{ nullptr };

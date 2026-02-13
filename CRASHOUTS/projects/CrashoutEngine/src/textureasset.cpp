@@ -713,6 +713,7 @@ namespace Component {
         // Use shared VAO for rendering (no buffer creation/deletion per call)
         glBindVertexArray(sharedVAO);
         glDrawElements(GL_TRIANGLES, INDICES_COUNT, GL_UNSIGNED_SHORT, 0);
+        renderer.drawCalls++;
         glBindVertexArray(0);
 
         glDepthMask(GL_TRUE);
@@ -823,6 +824,7 @@ namespace Component {
 
         // Render the quad
         glDrawElements(GL_TRIANGLES, INDICES_COUNT, GL_UNSIGNED_SHORT, 0);
+        renderer.drawCalls++;
 
         // Unbind shared resources
         glBindVertexArray(0);

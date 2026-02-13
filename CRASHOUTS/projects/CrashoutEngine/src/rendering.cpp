@@ -950,6 +950,7 @@ namespace Component {
 		shdr_pgm->Use();
 		glBindVertexArray(vaoid);
 		glDrawElements(primitive_type, idx_elem_cnt, GL_UNSIGNED_SHORT, NULL);
+		drawCalls++;
 
 		// Ensure the GPU has finished reading from the persistently-mapped buffers
 		// before we overwrite them for the next draw.
