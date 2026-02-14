@@ -1282,6 +1282,7 @@
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
                             "dialogueCooldown": 1.0,
+                            "isDialogueActive": false,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -1455,9 +1456,9 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 200.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0
                         }
                     }
                 ]
@@ -1616,9 +1617,9 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 200.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0
                         }
                     }
                 ]
@@ -1777,9 +1778,9 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 200.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0
                         }
                     }
                 ]
@@ -1985,7 +1986,7 @@
                 "z": 0
             },
             "video": {
-                "videoPath": "videos/Shrek - All star _ Intro HD  - Trim.mp4",
+                "videoPath": "videos/Shrek - All star _ Intro HD (1080p) - Trim.mp4",
                 "isPlaying": true,
                 "loop": true,
                 "isCutscene": false,

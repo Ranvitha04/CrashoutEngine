@@ -15,6 +15,13 @@ namespace CrashoutsEngine
 {
 	namespace
 	{
+		static MonoMethod* s_RegisterScript = nullptr;
+		static MonoMethod* s_UnregisterScript = nullptr;
+
+		typedef void(__stdcall* ScriptRegistrationThunk)(MonoObject* instance, MonoObject** exc);
+		static ScriptRegistrationThunk s_RegisterScriptThunk = nullptr;
+		static ScriptRegistrationThunk s_UnregisterScriptThunk = nullptr;
+
 		bool InitializeOne(MonoDomain* domain, MonoAssembly* assembly, uint32_t entityID, ScriptInstance& script)
 		{
 			if (!assembly) {
@@ -118,6 +125,28 @@ namespace CrashoutsEngine
 				std::cout << "[Mono] No OnDestroy() in " << script.ClassName << '\n';
 			}
 
+			// Register in ScriptManager
+			if (!s_RegisterScript) {
+				MonoClass* scriptManagerClass = mono_class_from_name(image, "CrashoutsEngine", "ScriptManager");
+				if (scriptManagerClass) {
+					s_RegisterScript = mono_class_get_method_from_name(scriptManagerClass, "RegisterScript", 1);
+					s_UnregisterScript = mono_class_get_method_from_name(scriptManagerClass, "UnregisterScript", 1);
+
+					if (s_RegisterScript) s_RegisterScriptThunk = (ScriptRegistrationThunk)mono_method_get_unmanaged_thunk(s_RegisterScript);
+					if (s_UnregisterScript) s_UnregisterScriptThunk = (ScriptRegistrationThunk)mono_method_get_unmanaged_thunk(s_UnregisterScript);
+				}
+			}
+
+			if (s_RegisterScriptThunk) {
+				MonoObject* exc = nullptr;
+				s_RegisterScriptThunk(instance, &exc);
+				if (exc) mono_print_unhandled_exception(exc);
+			}
+			else if (s_RegisterScript) {
+				void* args[1] = { instance };
+				mono_runtime_invoke(s_RegisterScript, nullptr, args, nullptr);
+			}
+
 			std::cout << "[Mono] ScriptInstance for class " << script.ClassName
 				<< " initialized successfully\n";
 
@@ -130,11 +159,23 @@ namespace CrashoutsEngine
 			if (script.GCHandle)
 			{
 				MonoObject* instance = mono_gchandle_get_target(script.GCHandle);
-				if (instance && script.MethodOnDestroy)
-				{
-					MonoObject* exc = nullptr;
-					mono_runtime_invoke(script.MethodOnDestroy, instance, nullptr, &exc);
-					if (exc) mono_print_unhandled_exception(exc);
+				if (instance) {
+					if (s_UnregisterScriptThunk) {
+						MonoObject* exc = nullptr;
+						s_UnregisterScriptThunk(instance, &exc);
+						if (exc) mono_print_unhandled_exception(exc);
+					}
+					else if (s_UnregisterScript) {
+						void* args[1] = { instance };
+						mono_runtime_invoke(s_UnregisterScript, nullptr, args, nullptr);
+					}
+
+					if (script.MethodOnDestroy)
+					{
+						MonoObject* exc = nullptr;
+						mono_runtime_invoke(script.MethodOnDestroy, instance, nullptr, &exc);
+						if (exc) mono_print_unhandled_exception(exc);
+					}
 				}
 				mono_gchandle_free(script.GCHandle);
 				script.GCHandle = 0;
@@ -258,88 +299,12 @@ namespace Component {
 
 	void ScriptComponent::Update()
 	{
-		// 1. Capture ID locally in case 'this' becomes invalid (component destroyed/moved)
-		uint32_t myEntityID = this->EntityID;
-
-		// 2. Safe copy of script list
-		std::vector<ScriptInstance> scriptsCopy = Scripts;
-
-		for (auto& script : scriptsCopy)
-		{
-			// 3. Verify Component Liveness via ECS
-			auto* ecs = ECS::getInstance();
-			if (!ecs) return;
-
-			// If the entity or component was destroyed during the loop, abort
-			if (!ecs->HasComponent<ScriptComponent>(myEntityID)) {
-				return;
-			}
-
-			// 4. Re-acquire the live component pointer
-			// (Important if the component array reallocated or 'this' is otherwise stale)
-			ScriptComponent* liveComp = ecs->GetComponent<ScriptComponent>(myEntityID);
-			if (!liveComp) return;
-
-			// 5. Verify Script Liveness using the LIVE component's data
-			bool stillAlive = false;
-			for (const auto& liveScript : liveComp->Scripts) {
-				if (liveScript.GCHandle == script.GCHandle) {
-					stillAlive = true;
-					break;
-				}
-			}
-			if (!stillAlive) continue; // Script was removed
-
-			// 6. Invoke
-			if (!script.MethodUpdate || !script.GCHandle)
-				continue;
-
-			MonoObject* target = mono_gchandle_get_target(script.GCHandle);
-			if (!target) continue;
-
-			MonoObject* exc = nullptr;
-			mono_runtime_invoke(script.MethodUpdate, target, nullptr, &exc);
-			if (exc) mono_print_unhandled_exception(exc);
-		}
+		// NO-OP: Handled by ScriptManager batch update
 	}
 
 	void ScriptComponent::FixedUpdate()
 	{
-		uint32_t myEntityID = this->EntityID;
-		std::vector<ScriptInstance> scriptsCopy = Scripts;
-
-		for (auto& script : scriptsCopy)
-		{
-			auto* ecs = ECS::getInstance();
-			if (!ecs) return;
-
-			if (!ecs->HasComponent<ScriptComponent>(myEntityID)) {
-				return;
-			}
-
-			ScriptComponent* liveComp = ecs->GetComponent<ScriptComponent>(myEntityID);
-			if (!liveComp) return;
-
-			bool stillAlive = false;
-			for (const auto& liveScript : liveComp->Scripts) {
-				if (liveScript.GCHandle == script.GCHandle) {
-					stillAlive = true;
-					break;
-				}
-			}
-			if (!stillAlive) continue;
-
-			if (!script.MethodFixedUpdate || !script.GCHandle)
-				continue;
-
-			MonoObject* target = mono_gchandle_get_target(script.GCHandle);
-			if (!target) continue;
-
-			MonoObject* exc = nullptr;
-			mono_runtime_invoke(script.MethodFixedUpdate, target, nullptr, &exc);
-
-			if (exc) mono_print_unhandled_exception(exc);
-		}
+		// NO-OP: Handled by ScriptManager batch update
 	}
 
 	void ScriptComponent::DrawGizmos()

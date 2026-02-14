@@ -35,6 +35,16 @@ namespace CrashoutsEngine
 {
 	using namespace Component;
 
+	static MonoMethod* s_ScriptManagerUpdate = nullptr;
+	static MonoMethod* s_ScriptManagerFixedUpdate = nullptr;
+	static MonoMethod* s_ScriptManagerOnDrawGizmos = nullptr;
+	static MonoMethod* s_ScriptManagerClear = nullptr;
+
+	typedef void(__stdcall* ScriptManagerUpdateThunk)(MonoObject** exc);
+	static ScriptManagerUpdateThunk s_ScriptManagerUpdateThunk = nullptr;
+	static ScriptManagerUpdateThunk s_ScriptManagerFixedUpdateThunk = nullptr;
+	static ScriptManagerUpdateThunk s_ScriptManagerOnDrawGizmosThunk = nullptr;
+
 	// Helper to get field value based on type
 	FieldBackup CaptureFieldValue(MonoObject* instance, MonoClassField* field) {
 		FieldBackup backup;
@@ -278,6 +288,22 @@ namespace CrashoutsEngine
 		{
 			scriptComp->Initialize(domain, assembly);
 		}
+
+		// Cache ScriptManager methods
+		if (assembly) {
+			MonoImage* image = mono_assembly_get_image(assembly);
+			MonoClass* scriptManagerClass = mono_class_from_name(image, "CrashoutsEngine", "ScriptManager");
+			if (scriptManagerClass) {
+				s_ScriptManagerUpdate = mono_class_get_method_from_name(scriptManagerClass, "UpdateAll", 0);
+				s_ScriptManagerFixedUpdate = mono_class_get_method_from_name(scriptManagerClass, "FixedUpdateAll", 0);
+				s_ScriptManagerOnDrawGizmos = mono_class_get_method_from_name(scriptManagerClass, "OnDrawGizmosAll", 0);
+				s_ScriptManagerClear = mono_class_get_method_from_name(scriptManagerClass, "ClearAll", 0);
+
+				if (s_ScriptManagerUpdate) s_ScriptManagerUpdateThunk = (ScriptManagerUpdateThunk)mono_method_get_unmanaged_thunk(s_ScriptManagerUpdate);
+				if (s_ScriptManagerFixedUpdate) s_ScriptManagerFixedUpdateThunk = (ScriptManagerUpdateThunk)mono_method_get_unmanaged_thunk(s_ScriptManagerFixedUpdate);
+				if (s_ScriptManagerOnDrawGizmos) s_ScriptManagerOnDrawGizmosThunk = (ScriptManagerUpdateThunk)mono_method_get_unmanaged_thunk(s_ScriptManagerOnDrawGizmos);
+			}
+		}
 	}
 
 	void ScriptSystem::UpdateAll()
@@ -285,78 +311,58 @@ namespace CrashoutsEngine
 		auto& ecs = *ECS::getInstance();
 		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
 
+		// 1. Process Start() for any new scripts (must stay in C++ loop for now to track Started flag)
 		for (size_t i = 0; i < scripts.dense.size(); ++i)
 		{
 			Entity entityID = scripts.indexToEntity[i];
-
-			// --- ACTIVE CHECK ---
 			if (ecs.HasComponent<ActiveComponent>(entityID)) {
-				if (!IsEntityActive(ecs, entityID)) {
-					continue; // Skip Start/Update if disabled
-				}
+				if (!IsEntityActive(ecs, entityID)) continue;
 			}
-			// --------------------
 
-			// Re-fetch component safely before usage to handle potential reallocation
 			if (ecs.HasComponent<ScriptComponent>(entityID))
 			{
 				ecs.GetComponent<ScriptComponent>(entityID)->Start();
 			}
+		}
 
-			// Re-fetch again for Update, as Start() might have triggered reallocation
-			if (ecs.HasComponent<ScriptComponent>(entityID))
-			{
-				ecs.GetComponent<ScriptComponent>(entityID)->Update();
-			}
+		// 2. Batch Update via ScriptManager
+		if (s_ScriptManagerUpdateThunk) {
+			MonoObject* exc = nullptr;
+			s_ScriptManagerUpdateThunk(&exc);
+			if (exc) mono_print_unhandled_exception(exc);
+		}
+		else if (s_ScriptManagerUpdate) {
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(s_ScriptManagerUpdate, nullptr, nullptr, &exc);
+			if (exc) mono_print_unhandled_exception(exc);
 		}
 	}
 
 	void ScriptSystem::FixedUpdateAll()
 	{
-		auto& ecs = *ECS::getInstance();
-		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
-
-		for (size_t i = 0; i < scripts.dense.size(); ++i)
-		{
-			Entity entityID = scripts.indexToEntity[i];
-
-			// --- ACTIVE CHECK ---
-			if (ecs.HasComponent<ActiveComponent>(entityID)) {
-				if (!IsEntityActive(ecs, entityID)) {
-					continue; // Skip FixedUpdate if disabled
-				}
-			}
-			// --------------------
-
-			// Re-fetch component safely
-			if (ecs.HasComponent<ScriptComponent>(entityID))
-			{
-				ecs.GetComponent<ScriptComponent>(entityID)->FixedUpdate();
-			}
+		if (s_ScriptManagerFixedUpdateThunk) {
+			MonoObject* exc = nullptr;
+			s_ScriptManagerFixedUpdateThunk(&exc);
+			if (exc) mono_print_unhandled_exception(exc);
+		}
+		else if (s_ScriptManagerFixedUpdate) {
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(s_ScriptManagerFixedUpdate, nullptr, nullptr, &exc);
+			if (exc) mono_print_unhandled_exception(exc);
 		}
 	}
 
 	void ScriptSystem::DrawGizmosAll()
 	{
-		auto& ecs = *ECS::getInstance();
-		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
-
-		for (size_t i = 0; i < scripts.dense.size(); ++i)
-		{
-			Entity entityID = scripts.indexToEntity[i];
-
-			// --- ACTIVE CHECK ---
-			if (ecs.HasComponent<ActiveComponent>(entityID)) {
-				if (!IsEntityActive(ecs, entityID)) {
-					continue;
-				}
-			}
-			// --------------------
-
-			if (ecs.HasComponent<ScriptComponent>(entityID))
-			{
-				ecs.GetComponent<ScriptComponent>(entityID)->DrawGizmos();
-			}
+		if (s_ScriptManagerOnDrawGizmosThunk) {
+			MonoObject* exc = nullptr;
+			s_ScriptManagerOnDrawGizmosThunk(&exc);
+			if (exc) mono_print_unhandled_exception(exc);
+		}
+		else if (s_ScriptManagerOnDrawGizmos) {
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(s_ScriptManagerOnDrawGizmos, nullptr, nullptr, &exc);
+			if (exc) mono_print_unhandled_exception(exc);
 		}
 	}
 
@@ -369,6 +375,11 @@ namespace CrashoutsEngine
 		{
 			scriptComp->Destroy();
 		}
+
+		if (s_ScriptManagerClear) {
+			mono_runtime_invoke(s_ScriptManagerClear, nullptr, nullptr, nullptr);
+		}
+
 		std::cout << "[Mono] All script instances destroyed.\n";
 	}
 
@@ -380,6 +391,10 @@ namespace CrashoutsEngine
 		std::cout << "[Mono] Backing up script state...\n";
 		GlobalScriptBackup backup = BackupScripts(ecs);
 		CollisionEventManager::GetInstance().Clear();
+
+		if (s_ScriptManagerClear) {
+			mono_runtime_invoke(s_ScriptManagerClear, nullptr, nullptr, nullptr);
+		}
 
 		// 2. RELOAD DOMAIN
 		// This destroys all GCHandles and MonoObjects
