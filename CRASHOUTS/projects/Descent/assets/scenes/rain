@@ -1458,7 +1458,8 @@
                             "stunDuration": 1.0,
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]
@@ -1619,7 +1620,8 @@
                             "stunDuration": 1.0,
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]
@@ -1770,7 +1772,7 @@
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
+                            "detectionRange": 87.19999694824219,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
                             "minThrowSpeed": 50.0,
@@ -1778,9 +1780,10 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
+                            "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]

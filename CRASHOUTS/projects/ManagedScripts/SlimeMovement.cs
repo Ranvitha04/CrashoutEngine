@@ -38,6 +38,7 @@ namespace CrashoutsEngine
         [SerializeField] private float ledgeBuffer = 40.0f; // Distance from edge of collider to check
         [SerializeField] private float ledgeRayCastDistance = 50.0f;
         [SerializeField] private float grabEnergyDrainRate = 5.0f;
+        [SerializeField] private float patrolTurnInterval = 3.0f;
 
         private RigidBodyComponent rb;
         private TransformComponent tf;
@@ -58,9 +59,54 @@ namespace CrashoutsEngine
         private float flipCooldown = 0.0f;
         //private float stuckTimer = 0.0f;
         private float ignoreHomeTimer = 0.0f;
+        private float patrolTurnTimer = 0.0f;
 
         private CEVec3 startPos;
         private bool returningHome = false;
+
+        private bool HasLineOfSight(CEVec3 targetPos)
+        {
+            CEVec3 start = tf.Position;
+            CEVec3 end = targetPos;
+            uint hitID;
+            
+            if (InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID))
+            {
+                Entity hitEnt = new Entity(hitID);
+                if (hitEnt.ID == playerScript.Entity.ID) return true; 
+
+                var tag = hitEnt.GetComponent<TagComponent>();
+                if (tag != null && (tag.HasTag("Ground") || tag.HasTag("Wall") || tag.HasTag("Platform")))
+                {
+                    return false; 
+                }
+            }
+            return true; 
+        }
+
+        private bool IsNearLedge()
+        {
+            float checkDir = moveRight ? 1.0f : -1.0f;
+            float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
+            float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
+            
+            CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y, tf.Position.z);
+            CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
+
+            uint hitID;
+            if (InternalCalls.Raycast(ref rayStart, ref rayEnd, out hitID, Entity.ID))
+            {
+                Entity hitEnt = new Entity(hitID);
+                var tag = hitEnt.GetComponent<TagComponent>();
+                if (tag != null && (tag.HasTag("Ground") || tag.HasTag("Platform")))
+                {
+                    return false; 
+                }
+            }
+            return true; 
+        }
+
+        //private void CheckGrounded()
 
         // PATH FOLLOWING STATE
         private List<CEVec3> activePath = new List<CEVec3>();
@@ -323,8 +369,8 @@ namespace CrashoutsEngine
                 {
                     float distToPlayer = Distance(tf.Position, playerTf.Position);
 
-                    // 1. Check for Chase Start
-                    if (distToPlayer < detectionRange)
+                    // 1. Check for Chase Start (With Line of Sight)
+                    if (distToPlayer < detectionRange && HasLineOfSight(playerTf.Position))
                     {
                         isChasing = true;
                         returningHome = false;
@@ -333,24 +379,34 @@ namespace CrashoutsEngine
                         if (playerTf.Position.x > tf.Position.x) moveRight = true;
                         else moveRight = false;
                     }
-                    // 2. Stop Chasing (Player too far)
+                    // 2. Stop Chasing (Player too far or out of sight)
                     else
                     {
                         isChasing = false;
 
-                        // Optional: Logic to return to startPos
+                        // Return to home if far away
                         float distToHome = Distance(tf.Position, startPos);
-                        if (distToHome > 50.0f && ignoreHomeTimer <= 0)
+                        if (distToHome > 100.0f && ignoreHomeTimer <= 0)
                         {
                             returningHome = true;
-                            // Face home
                             if (startPos.x > tf.Position.x) moveRight = true;
                             else moveRight = false;
                         }
                         else
                         {
                             returningHome = false;
-                            // Standard Patrol logic would go here (timer based flipping)
+                            
+                            // Patrol logic: Flip if hit ledge or timer expires
+                            if (isGrounded && flipCooldown <= 0)
+                            {
+                                patrolTurnTimer -= dt;
+                                if (IsNearLedge() || patrolTurnTimer <= 0)
+                                {
+                                    moveRight = !moveRight;
+                                    patrolTurnTimer = patrolTurnInterval;
+                                    flipCooldown = 0.5f;
+                                }
+                            }
                         }
                     }
                 }
