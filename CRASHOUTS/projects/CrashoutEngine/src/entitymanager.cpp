@@ -165,6 +165,11 @@ CrashoutsEngine::Entity CrashoutsEngine::ECS::FindEntityByName(std::string name)
 bool CrashoutsEngine::IsEntityActive(ECS& ecs, Entity entity) {
 	using namespace Component;
 
+	// Optimization: Use cached value if ActiveComponent exists
+	if (ecs.HasComponent<ActiveComponent>(entity)) {
+		return ecs.GetComponent<ActiveComponent>(entity)->worldActive;
+	}
+
 	Entity current = entity;
 
 	// Loop until we run out of parents (current == 0)

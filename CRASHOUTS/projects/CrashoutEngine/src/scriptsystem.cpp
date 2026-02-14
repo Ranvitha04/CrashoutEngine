@@ -30,6 +30,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "particleComponent.h"
 #include <mono/metadata/attrdefs.h>
 #include "collidereventmanager.h"
+#include "performanceSystem.h"
 
 namespace CrashoutsEngine
 {
@@ -308,6 +309,7 @@ namespace CrashoutsEngine
 
 	void ScriptSystem::UpdateAll()
 	{
+		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "MonoUpdate");
 		auto& ecs = *ECS::getInstance();
 		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
 
@@ -340,6 +342,7 @@ namespace CrashoutsEngine
 
 	void ScriptSystem::FixedUpdateAll()
 	{
+		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "MonoFixedUpdate");
 		if (s_ScriptManagerFixedUpdateThunk) {
 			MonoObject* exc = nullptr;
 			s_ScriptManagerFixedUpdateThunk(&exc);

@@ -5,7 +5,7 @@
 
 @brief	This file defines the ActiveComponent, it determines if the gameobject.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 #pragma once
@@ -23,6 +23,7 @@ namespace Component {
 	*/
 	struct ActiveComponent {
 		bool isActive{ true };
+		bool worldActive{ true }; // Cached result of hierarchy traversal
 	};
 
 }

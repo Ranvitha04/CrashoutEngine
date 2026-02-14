@@ -41,6 +41,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "spriteAnimation.h"
 #include "hierarchycomponent.h"
 //#include "camera.h"
+#include "performanceSystem.h"
 
 #include <fstream>
 #include <sstream>
@@ -899,6 +900,7 @@ namespace Scene {
 	@param   globalECS Reference to ECS registry.
 	*/
 	void RenderScene(CrashoutsEngine::ECS& globalECS) {
+		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "RenderScene");
 		using namespace CrashoutsEngine;
 		using Component::Rendering;
 		Rendering& renderer = Rendering::Get();
@@ -936,11 +938,14 @@ namespace Scene {
 			RenderType type;
 		};
 
-		std::vector<RenderEntry> worldEntries;
-		std::vector<RenderEntry> screenEntries;
+		static std::vector<RenderEntry> worldEntries;
+		static std::vector<RenderEntry> screenEntries;
+		worldEntries.clear();
+		screenEntries.clear();
+
 		size_t reserveSize = shapeArray.indexToEntity.size() + textArray.indexToEntity.size();
-		worldEntries.reserve(reserveSize);
-		screenEntries.reserve(reserveSize);
+		if (worldEntries.capacity() < reserveSize) worldEntries.reserve(reserveSize);
+		if (screenEntries.capacity() < reserveSize) screenEntries.reserve(reserveSize);
 
 		// 2. PRE-SORT SHAPES
 		for (const Entity& id : shapeArray.indexToEntity) {

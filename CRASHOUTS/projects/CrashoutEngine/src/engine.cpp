@@ -357,6 +357,7 @@ void Update(double const& dt) {
 
     CrashoutsEngine::ECS& ecs = *CrashoutsEngine::ECS::getInstance();
 
+    CrashoutsEngine::UpdateActiveHierarchy(ecs);
     CrashoutsEngine::UpdateHierarchy(ecs);
 
     if (engineState == EngineState::PLAY) {

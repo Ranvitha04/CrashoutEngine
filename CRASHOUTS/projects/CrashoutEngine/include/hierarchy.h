@@ -4,7 +4,7 @@
 @date        7/11/2025
 @brief
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #pragma once
@@ -18,6 +18,7 @@ namespace CrashoutsEngine {
     bool IsAlreadyChildOf(ECS& ecs, Entity parent, Entity child);
 
     void UpdateHierarchy(ECS& ecs);
+    void UpdateActiveHierarchy(ECS& ecs);
     void RebuildHierarchyLinks(ECS& ecs);
 
     Entity GetRoot(ECS& ecs, Entity e);

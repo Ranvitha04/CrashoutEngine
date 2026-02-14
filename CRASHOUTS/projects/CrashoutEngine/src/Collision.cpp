@@ -22,6 +22,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "camera.h"
 #include "colliders.h"
 #include "jobsystem.h"
+#include "performanceSystem.h"
 
 /*UTILS RIGHT HERE*/
 namespace Collision {
@@ -1058,6 +1059,7 @@ namespace Collision {
 	}
 
 	void CollisionHandler::Update([[maybe_unused]] double deltaTime, EngineState state) {
+		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "CollisionDetection");
 		m_FrameCollisions.clear();
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());

@@ -20,6 +20,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <cmath> 
 #include "shapes.h"              
 #include <glm/gtc/matrix_transform.hpp>
+#include "performanceSystem.h"
 
 namespace CrashoutsEngine {
 
@@ -309,94 +310,7 @@ namespace CrashoutsEngine {
 	// Per-frame propagation entry point.
 	void UpdateHierarchy(ECS& ecs)
 	{
-
-		//ValidateHierarchy(ecs);
-
-#if 0
-		auto applyWorldFrom = [&](Entity parent, Entity child) {
-			auto* parentTransform = ecs.GetComponent<TransformComponent>(parent);
-			auto* childTransform = ecs.GetComponent<TransformComponent>(child);
-			auto* pointerParentComp = ecs.GetComponent<ParentComponent>(child);
-
-			if (!parentTransform || !childTransform || !pointerParentComp) return;
-
-			// ----------------------------------------------------------
-			// 1. SCALE (Multiplicative)
-			// ----------------------------------------------------------
-			childTransform->size.x = parentTransform->size.x * pointerParentComp->localScale.x;
-			childTransform->size.y = parentTransform->size.y * pointerParentComp->localScale.y;
-
-			// ----------------------------------------------------------
-			// 2. ROTATION (Additive)
-			// ----------------------------------------------------------
-			childTransform->rotation = parentTransform->rotation + pointerParentComp->localRot;
-
-			// ----------------------------------------------------------
-			// 3. POSITION (Orbit Logic)
-			// ----------------------------------------------------------
-			// The child's local position must be SCALED by the parent's size,
-			// and then ROTATED by the parent's rotation.
-
-			const float DEG_TO_RAD = 0.0174532925f;
-			float parentRad = parentTransform->rotation * DEG_TO_RAD;
-			float s = std::sin(parentRad);
-			float c = std::cos(parentRad);
-
-			// A. Apply Parent Scale to the Offset
-			// (If parent grows, child moves further away)
-			float scaledOffsetX = pointerParentComp->localPos.x * parentTransform->size.x;
-			float scaledOffsetY = pointerParentComp->localPos.y * parentTransform->size.y;
-
-			// B. Rotate the Scaled Offset
-			// Standard Rotation Matrix: x' = x*c - y*s, y' = x*s + y*c
-			float rotatedX = (c * scaledOffsetX) - (s * scaledOffsetY);
-			float rotatedY = (s * scaledOffsetX) + (c * scaledOffsetY);
-
-			// C. Add to Parent World Position
-			childTransform->position.x = parentTransform->position.x + rotatedX;
-			childTransform->position.y = parentTransform->position.y + rotatedY;
-
-			// D. Z-Axis (Simple addition for 2D layers)
-			childTransform->position.z = parentTransform->position.z + pointerParentComp->localPos.z;
-
-			//if (ecs.HasComponent<ColliderComponent>(child)) {
-			//    auto* colliderComp = ecs.GetComponent<ColliderComponent>(child);
-			//    if (colliderComp && colliderComp->collider) {
-			//        // 1. Sync Position
-			//        colliderComp->collider->UpdateCollider(childTransform->position);
-			//
-			//        // 2. Sync Rotation (Add parent's rotation influence)
-			//        // If your OBB/Polygon supports rotation, pass the new child rotation
-			//        colliderComp->collider->UpdateRotation(childTransform->rotation);
-			//    }
-			//}
-
-			// ----------------------------------------------------------
-			// 4. COLOR
-			// ----------------------------------------------------------
-			if (ecs.HasComponent<ShapeComponent>(parent)) {
-				ForceInheritColorFromParent(ecs, child);
-			}
-			};
-
-
-		std::function<void(Entity)> dfs = [&](Entity p) {
-			auto* kids = ecs.GetComponent<ChildrenComponent>(p);
-			if (!kids) return;
-			for (Entity c : kids->children) {
-				applyWorldFrom(p, c);
-				dfs(c);
-			}
-			};
-
-
-		for (Entity e : ecs.GetComponentArray<ChildrenComponent>().indexToEntity) {
-			if (!ecs.HasComponent<ChildrenComponent>(e)) continue;
-			if (ecs.HasComponent<ParentComponent>(e)) continue;
-			dfs(e);
-		}
-#endif
-
+		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "HierarchyUpdate");
 
 		std::function<void(Entity, const TransformComponent*)> processChildren =
 			[&](Entity parentEntity, const TransformComponent* parentTransform)
@@ -469,6 +383,48 @@ namespace CrashoutsEngine {
 				if (auto* rootTransform = ecs.GetComponent<TransformComponent>(e)) {
 					processChildren(e, rootTransform);
 				}
+			}
+		}
+	}
+
+	void UpdateActiveHierarchy(ECS& ecs)
+	{
+		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ActiveHierarchyUpdate");
+
+		auto& activeArr = ecs.GetComponentArray<ActiveComponent>();
+
+		// Helper for recursion
+		std::function<void(Entity, bool)> propagateActive = [&](Entity parent, bool parentWorldActive) {
+			auto* comp = ecs.GetComponent<ActiveComponent>(parent);
+			if (!comp) return;
+
+			// Current entity is active ONLY if it is active itself AND its parent is active.
+			comp->worldActive = comp->isActive && parentWorldActive;
+
+			// Recurse to children
+			if (ecs.HasComponent<ChildrenComponent>(parent)) {
+				auto* kids = ecs.GetComponent<ChildrenComponent>(parent);
+				for (Entity child : kids->children) {
+					if (ecs.HasComponent<ActiveComponent>(child)) {
+						propagateActive(child, comp->worldActive);
+					}
+				}
+			}
+		};
+
+		// 1. Identify roots and start propagation
+		for (Entity e : activeArr.indexToEntity) {
+			// A root is either someone with NO ParentComponent, or someone whose parent doesn't have an ActiveComponent.
+			bool isRoot = true;
+			if (ecs.HasComponent<ParentComponent>(e)) {
+				Entity p = ecs.GetComponent<ParentComponent>(e)->parent;
+				if (p != 0 && ecs.HasComponent<ActiveComponent>(p)) {
+					isRoot = false;
+				}
+			}
+
+			if (isRoot) {
+				propagateActive(e, true); // Root's "parent" is implicitly always active
 			}
 		}
 	}

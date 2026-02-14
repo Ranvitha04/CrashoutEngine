@@ -52,6 +52,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "spriteAnimation.h"
 #include "transformcomponent.h"
 #include <algorithm>
+#include "performanceSystem.h"
 
 namespace Component {
 
@@ -1066,12 +1067,13 @@ namespace Component {
 	- Disables GL depth/cull during sorted draw to preserve order
 	*/
 	void Rendering::RenderAllSorted(CrashoutsEngine::ECS& registry, std::function<void(CrashoutsEngine::Entity)> drawCallback) {
+		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "RenderAllSorted");
 		auto& zOrders = registry.GetComponentArray<LayerComponent>();
 
 		// Static to reuse capacity across frames (avoids realloc)
 		static std::vector<RenderItem> renderList;
 		renderList.clear();
-		renderList.reserve(zOrders.dense.size());
+		if (renderList.capacity() < zOrders.dense.size()) renderList.reserve(zOrders.dense.size());
 
 		for (size_t i = 0; i < zOrders.dense.size(); ++i) {
 			const auto& z = *zOrders.dense[i];
