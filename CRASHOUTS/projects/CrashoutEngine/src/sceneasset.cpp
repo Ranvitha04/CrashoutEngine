@@ -442,21 +442,22 @@ namespace CrashoutsEngine {
 					MonoObject* instance = inst.GCHandle ? mono_gchandle_get_target(inst.GCHandle) : nullptr;
 					if (instance && inst.Class) {
 						rapidjson::Value fields(rapidjson::kObjectType);
-						void* iter = nullptr;
-						while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
-							const char* fName = mono_field_get_name(field);
-							uint32_t flags = mono_field_get_flags(field);
-							if (flags & MONO_FIELD_ATTR_STATIC) continue;
-							bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
-							bool hasAttr = false;
-							static MonoClass* attrClass = mono_class_from_name(MonoManager::GetImage(), "CrashoutsEngine", "SerializeField");
-							if (attrClass) {
-								MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
-								if (attrInfo) {
-									hasAttr = mono_custom_attrs_has_attr(attrInfo, attrClass);
-									mono_custom_attrs_free(attrInfo);
-								}
-							}
+												void* iter = nullptr;
+												while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
+													const char* fName = mono_field_get_name(field);
+													uint32_t flags = mono_field_get_flags(field);
+													if (flags & MONO_FIELD_ATTR_STATIC) continue;
+						
+													bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
+													bool hasAttr = false;
+													MonoClass* attrClass = MonoManager::GetSerializeFieldClass();
+													if (attrClass) {
+														MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
+														if (attrInfo) {
+															hasAttr = mono_custom_attrs_has_attr(attrInfo, attrClass);
+															mono_custom_attrs_free(attrInfo);
+														}
+													}
 							if (isPublic || hasAttr) {
 								MonoType* type = mono_field_get_type(field);
 								int tEnum = mono_type_get_type(type);

@@ -1202,7 +1202,7 @@ namespace UI {
             // Play Stop Pause buttons
             // Play
             if (ImGui::Button("PLAY", ImVec2(70, 25))) {
-                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+                if (engineState != EngineState::PLAY && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PLAY;
 
                 ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(false);
@@ -1217,7 +1217,7 @@ namespace UI {
             ImGui::SameLine();
             // Pause
             if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
-                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+                if (engineState != EngineState::PLAY && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
                 engineState = EngineState::PAUSE;
 
                 ::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
@@ -1226,7 +1226,8 @@ namespace UI {
             ImGui::SameLine();
             // Stop
             if (ImGui::Button("STOP", ImVec2(70, 25))) {
-                if (engineState == EngineState::STOP && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+                // If we were in STOP or PAUSE, save our tweaks before reloading
+                if (engineState != EngineState::PLAY && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
 
                 if (currSceneName.empty()) RestartGameState();       // Legacy scene system
                 else {

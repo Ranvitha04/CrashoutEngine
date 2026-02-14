@@ -15,11 +15,14 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <map>
 #include <string>
 #include <variant>
+#include "CEVec2.h"
+#include "CEVec3.h"
+#include "CEColor.h"
 
 // A container to hold the value of a single field
 struct FieldBackup {
     int monoType; // To ensure we don't restore mismatching types
-    std::variant<int, float, bool, std::string, CEVec3> value;
+    std::variant<int, float, bool, std::string, CEVec2, CEVec3, CEColor> value;
     // Add more types to variant as needed (CEVec2, CEColor, etc.)
 };
 

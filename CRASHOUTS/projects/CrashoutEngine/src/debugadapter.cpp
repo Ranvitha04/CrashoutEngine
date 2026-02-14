@@ -1778,10 +1778,17 @@ namespace {
 					break; // list changed
 				}
 
-				// --- MONO REFLECTION UNDO ---
-				if (inst.GCHandle && inst.Class) {
+				// --- MONO REFLECTION ---
+				if (inst.GCHandle) {
 					MonoObject* instance = mono_gchandle_get_target(inst.GCHandle);
 					if (!instance) continue;
+
+					// Robustness: ensure Class pointer is fresh if Mono reloaded
+					if (!inst.Class || mono_object_get_class(instance) != inst.Class) {
+						inst.Class = mono_object_get_class(instance);
+					}
+
+					if (!inst.Class) continue;
 
 					ImGui::Indent();
 					void* iter = nullptr;

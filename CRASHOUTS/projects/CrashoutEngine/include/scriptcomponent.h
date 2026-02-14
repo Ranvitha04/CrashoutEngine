@@ -55,6 +55,7 @@ namespace Component {
         void RemoveScript(size_t index);
 
         bool Initialize(MonoDomain* domain, MonoAssembly* assembly);
+        static void ResetThunks();
         void Start();
         void Update();
         void FixedUpdate();

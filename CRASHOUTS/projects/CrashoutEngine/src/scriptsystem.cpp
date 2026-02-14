@@ -21,6 +21,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "namebindings.h"
 #include "audiobindings.h"
 #include "scenebindings.h"
+#include "sceneasset.h"
 #include "uibindings.h"
 #include "tagbindings.h"
 #include "timebindings.h"
@@ -49,6 +50,10 @@ namespace CrashoutsEngine
 	// Helper to get field value based on type
 	FieldBackup CaptureFieldValue(MonoObject* instance, MonoClassField* field) {
 		FieldBackup backup;
+		backup.monoType = MONO_TYPE_END;
+
+		if (!instance || !field) return backup;
+
 		MonoType* type = mono_field_get_type(field);
 		int typeEnum = mono_type_get_type(type);
 		backup.monoType = typeEnum;
@@ -95,6 +100,18 @@ namespace CrashoutsEngine
 				mono_field_get_value(instance, field, &val);
 				backup.value = val;
 			}
+			// CEVec2
+			else if (std::string(className) == "CEVec2") {
+				CEVec2 val;
+				mono_field_get_value(instance, field, &val);
+				backup.value = val;
+			}
+			// CEColor
+			else if (std::string(className) == "CEColor") {
+				CEColor val;
+				mono_field_get_value(instance, field, &val);
+				backup.value = val;
+			}
 		}
 
 		return backup;
@@ -102,9 +119,14 @@ namespace CrashoutsEngine
 
 	// Helper to restore value
 	void RestoreFieldValue(MonoObject* instance, MonoClassField* field, const FieldBackup& backup) {
+		if (!instance || !field) return;
+
 		// Safety: Check if types match (in case user changed float to int in code)
 		int currentType = mono_type_get_type(mono_field_get_type(field));
-		if (currentType != backup.monoType) return;
+		if (currentType != backup.monoType) {
+			// Don't log spam for type mismatches (they happen if user edits code)
+			return;
+		}
 
 		// FLOAT
 		if (std::holds_alternative<float>(backup.value)) {
@@ -129,10 +151,25 @@ namespace CrashoutsEngine
 		}
 		// VECTORS (CEVec3)
 		else if (std::holds_alternative<CEVec3>(backup.value)) {
-			// Only restore if the field is actually a CEVec3
 			MonoClass* fieldClass = mono_type_get_class(mono_field_get_type(field));
 			if (std::string(mono_class_get_name(fieldClass)) == "CEVec3") {
 				CEVec3 val = std::get<CEVec3>(backup.value);
+				mono_field_set_value(instance, field, &val);
+			}
+		}
+		// VECTORS (CEVec2)
+		else if (std::holds_alternative<CEVec2>(backup.value)) {
+			MonoClass* fieldClass = mono_type_get_class(mono_field_get_type(field));
+			if (std::string(mono_class_get_name(fieldClass)) == "CEVec2") {
+				CEVec2 val = std::get<CEVec2>(backup.value);
+				mono_field_set_value(instance, field, &val);
+			}
+		}
+		// COLOR
+		else if (std::holds_alternative<CEColor>(backup.value)) {
+			MonoClass* fieldClass = mono_type_get_class(mono_field_get_type(field));
+			if (std::string(mono_class_get_name(fieldClass)) == "CEColor") {
+				CEColor val = std::get<CEColor>(backup.value);
 				mono_field_set_value(instance, field, &val);
 			}
 		}
@@ -145,6 +182,16 @@ namespace CrashoutsEngine
 	GlobalScriptBackup BackupScripts(ECS& ecs) {
 		GlobalScriptBackup globalData;
 		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
+
+		MonoImage* image = MonoManager::GetImage();
+		if (!image) {
+			std::cerr << "[Backup] Failed to get Mono image!\n";
+			return globalData;
+		}
+		MonoClass* attrClass = mono_class_from_name(image, "CrashoutsEngine", "SerializeField");
+
+		int entityCount = 0;
+		int fieldCount = 0;
 
 		for (size_t i = 0; i < scripts.dense.size(); ++i) {
 			Entity entityID = scripts.indexToEntity[i];
@@ -165,8 +212,6 @@ namespace CrashoutsEngine
 					bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
 					bool hasAttr = false;
 
-					// Note: You might need to cache the Attribute Class pointer to avoid looking it up every loop
-					static MonoClass* attrClass = mono_class_from_name(MonoManager::GetImage(), "CrashoutsEngine", "SerializeField");
 					if (attrClass) {
 						MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
 						if (attrInfo) {
@@ -178,10 +223,14 @@ namespace CrashoutsEngine
 					if (isPublic || hasAttr) {
 						const char* fieldName = mono_field_get_name(field);
 						globalData[entityID][inst.ClassName][fieldName] = CaptureFieldValue(object, field);
+						// std::cout << "[Backup] Captured field: " << inst.ClassName << "." << fieldName << "\n";
+						fieldCount++;
 					}
 				}
 			}
+			entityCount++;
 		}
+		std::cout << "[Backup] Captured " << fieldCount << " fields from " << entityCount << " script components.\n";
 		return globalData;
 	}
 
@@ -191,6 +240,7 @@ namespace CrashoutsEngine
 	@param  data - Script backup data to reference
 	*/
 	void RestoreAllScripts(ECS& ecs, const GlobalScriptBackup& data) {
+		int restoredCount = 0;
 		for (auto const& [entityID, scriptData] : data) {
 			// Ensure entity still exists and has script component
 			if (!ecs.HasComponent<ScriptComponent>(entityID)) continue;
@@ -204,11 +254,31 @@ namespace CrashoutsEngine
 						MonoObject* object = mono_gchandle_get_target(inst.GCHandle);
 						if (!object) continue;
 
+						// Refresh Class and Method pointers for the inspector
+						MonoImage* image = MonoManager::GetImage();
+						inst.Class = mono_class_from_name(image, "CrashoutsEngine", inst.ClassName.c_str());
+						
+						// Try fallback to no namespace if not found
+						if (!inst.Class) {
+							inst.Class = mono_class_from_name(image, "", inst.ClassName.c_str());
+						}
+
+						if (inst.Class) {
+							inst.MethodStart = mono_class_get_method_from_name(inst.Class, "Start", 0);
+							inst.MethodUpdate = mono_class_get_method_from_name(inst.Class, "Update", 0);
+							inst.MethodFixedUpdate = mono_class_get_method_from_name(inst.Class, "FixedUpdate", 0);
+							inst.MethodOnDrawGizmos = mono_class_get_method_from_name(inst.Class, "OnDrawGizmos", 0);
+							inst.MethodOnDestroy = mono_class_get_method_from_name(inst.Class, "OnDestroy", 0);
+						}
+
 						// Restore fields
 						for (auto const& [fieldName, value] : fields) {
+							if (!inst.Class) break;
 							MonoClassField* field = mono_class_get_field_from_name(inst.Class, fieldName.c_str());
 							if (field) {
 								RestoreFieldValue(object, field, value);
+								// std::cout << "[Restore] Applied field: " << className << "." << fieldName << "\n";
+								restoredCount++;
 							}
 						}
 						break;
@@ -216,6 +286,7 @@ namespace CrashoutsEngine
 				}
 			}
 		}
+		std::cout << "[Restore] Applied " << restoredCount << " fields back to scripts.\n";
 	}
 
 	// Helper to find a specific C# script instance on an entity
@@ -287,6 +358,8 @@ namespace CrashoutsEngine
 
 		for (auto* scriptComp : scripts.dense)
 		{
+			// Reset GCHandle to 0 so Initialize actually does work after a hot reload
+			for (auto& inst : scriptComp->Scripts) inst.GCHandle = 0;
 			scriptComp->Initialize(domain, assembly);
 		}
 
@@ -399,23 +472,36 @@ namespace CrashoutsEngine
 			mono_runtime_invoke(s_ScriptManagerClear, nullptr, nullptr, nullptr);
 		}
 
+		// Reset static pointers as they belong to the old domain
+		s_ScriptManagerUpdate = nullptr;
+		s_ScriptManagerFixedUpdate = nullptr;
+		s_ScriptManagerOnDrawGizmos = nullptr;
+		s_ScriptManagerClear = nullptr;
+		s_ScriptManagerUpdateThunk = nullptr;
+		s_ScriptManagerFixedUpdateThunk = nullptr;
+		s_ScriptManagerOnDrawGizmosThunk = nullptr;
+
+		Component::ScriptComponent::ResetThunks();
+
 		// 2. RELOAD DOMAIN
 		// This destroys all GCHandles and MonoObjects
-		// MonoManager::ReloadScripts() typically calls mono_domain_unload / mono_domain_create
+		// MonoManager::ReloadAssembly() typically calls mono_domain_unload / mono_domain_create
 		MonoManager::ReloadAssembly();
 
 		// 3. RE-INITIALIZE
 		// Recreate the ScriptInstances (get new Class pointers, create new Objects)
-		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
-		for (auto* scriptComp : scripts.dense)
-		{
-			// This creates NEW 'empty' C# objects with default values
-			scriptComp->Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
-		}
+		InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
 		// 4. RESTORE STATE
 		std::cout << "[Mono] Restoring script state...\n";
 		RestoreAllScripts(ecs, backup);
+
+		// 5. PERSIST TO DISK
+		// This prevents "STOP" from reloading old values from disk
+		if (!Serialization::currSceneName.empty()) {
+			Serialization::SaveScenes(Serialization::currSceneName);
+			std::cout << "[Mono] Persisted restored values to scene: " << Serialization::currSceneName << "\n";
+		}
 
 		std::cout << "[Mono] Hot Reload Complete.\n";
 	}

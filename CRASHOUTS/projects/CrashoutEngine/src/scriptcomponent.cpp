@@ -226,6 +226,14 @@ namespace Component {
 		return ok;
 	}
 
+	void ScriptComponent::ResetThunks()
+	{
+		s_RegisterScript = nullptr;
+		s_UnregisterScript = nullptr;
+		s_RegisterScriptThunk = nullptr;
+		s_UnregisterScriptThunk = nullptr;
+	}
+
 	void ScriptComponent::Start()
 	{
 		// Snapshot class names to iterate safely. 
