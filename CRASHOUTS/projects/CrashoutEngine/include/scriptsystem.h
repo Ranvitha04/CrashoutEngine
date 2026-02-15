@@ -18,6 +18,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "CEVec2.h"
 #include "CEVec3.h"
 #include "CEColor.h"
+#include "ScriptComponent.h"
 
 // A container to hold the value of a single field
 struct FieldBackup {
@@ -45,5 +46,7 @@ namespace CrashoutsEngine
 
         static void DestroyAll();
         static void ReloadAll();
+
+        static void DeserializeFields(const rapidjson::Value& scriptsArray, Component::ScriptComponent& scriptComp);
     };
 }

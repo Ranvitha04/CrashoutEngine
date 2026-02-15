@@ -1851,6 +1851,10 @@
             "path": "Slime V2.json"
         },
         {
+            "name": "Slime V3",
+            "path": "Slime V3.json"
+        },
+        {
             "name": "Slime",
             "path": "Slime.json"
         },

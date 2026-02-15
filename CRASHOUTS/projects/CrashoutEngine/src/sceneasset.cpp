@@ -65,6 +65,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <mono/metadata/reflection.h>
 #include <mono/metadata/attrdefs.h>
 
+#include "scriptsystem.h"
+
 // File I/O Util Functions
 namespace {
 	/*!
@@ -966,29 +968,7 @@ namespace CrashoutsEngine {
 				}
 				if (MonoManager::GetDomain() && MonoManager::GetAssembly()) s.Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
 				if (v.HasMember("scripts") && v["scripts"].IsArray()) {
-					const auto& arr = v["scripts"];
-					for (rapidjson::SizeType k = 0; k < arr.Size(); ++k) {
-						if (k >= s.Scripts.size()) break;
-						auto& inst = s.Scripts[k];
-						const auto& item = arr[k];
-						MonoObject* instance = inst.GCHandle ? mono_gchandle_get_target(inst.GCHandle) : nullptr;
-						if (item.IsObject() && item.HasMember("fields") && instance && inst.Class) {
-							const auto& fields = item["fields"];
-							for (auto it = fields.MemberBegin(); it != fields.MemberEnd(); ++it) {
-								MonoClassField* field = mono_class_get_field_from_name(inst.Class, it->name.GetString());
-								if (field) {
-									int typeEnum = mono_type_get_type(mono_field_get_type(field));
-									if (typeEnum == MONO_TYPE_I4 && it->value.IsInt()) { int val = it->value.GetInt(); mono_field_set_value(instance, field, &val); }
-									else if (typeEnum == MONO_TYPE_R4 && it->value.IsNumber()) { float val = it->value.GetFloat(); mono_field_set_value(instance, field, &val); }
-									else if (typeEnum == MONO_TYPE_BOOLEAN && it->value.IsBool()) { bool val = it->value.GetBool(); mono_field_set_value(instance, field, &val); }
-									else if (typeEnum == MONO_TYPE_STRING && it->value.IsString()) {
-										MonoString* str = mono_string_new(MonoManager::GetDomain(), it->value.GetString());
-										mono_field_set_value(instance, field, str);
-									}
-								}
-							}
-						}
-					}
+					ScriptSystem::DeserializeFields(v["scripts"], s);
 				}
 			}
 

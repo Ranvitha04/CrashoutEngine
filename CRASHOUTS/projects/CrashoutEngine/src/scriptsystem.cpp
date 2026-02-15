@@ -32,6 +32,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <mono/metadata/attrdefs.h>
 #include "collidereventmanager.h"
 #include "performanceSystem.h"
+#include "rapidjson/document.h"
 
 namespace CrashoutsEngine
 {
@@ -287,6 +288,44 @@ namespace CrashoutsEngine
 			}
 		}
 		std::cout << "[Restore] Applied " << restoredCount << " fields back to scripts.\n";
+	}
+
+	void ScriptSystem::DeserializeFields(const rapidjson::Value& scriptsArray, Component::ScriptComponent& scriptComp) {
+		if (!scriptsArray.IsArray()) return;
+
+		for (rapidjson::SizeType k = 0; k < scriptsArray.Size(); ++k) {
+			if (k >= scriptComp.Scripts.size()) break;
+			auto& inst = scriptComp.Scripts[k];
+			const auto& item = scriptsArray[k];
+
+			MonoObject* instance = inst.GCHandle ? mono_gchandle_get_target(inst.GCHandle) : nullptr;
+			if (item.IsObject() && item.HasMember("fields") && instance && inst.Class) {
+				const auto& fields = item["fields"];
+				for (auto it = fields.MemberBegin(); it != fields.MemberEnd(); ++it) {
+					MonoClassField* field = mono_class_get_field_from_name(inst.Class, it->name.GetString());
+					if (field) {
+						int typeEnum = mono_type_get_type(mono_field_get_type(field));
+						if (typeEnum == MONO_TYPE_I4 && it->value.IsInt()) {
+							int val = it->value.GetInt();
+							mono_field_set_value(instance, field, &val);
+						}
+						else if (typeEnum == MONO_TYPE_R4 && it->value.IsNumber()) {
+							float val = it->value.GetFloat();
+							mono_field_set_value(instance, field, &val);
+						}
+						else if (typeEnum == MONO_TYPE_BOOLEAN && it->value.IsBool()) {
+							bool val = it->value.GetBool();
+							mono_field_set_value(instance, field, &val);
+						}
+						else if (typeEnum == MONO_TYPE_STRING && it->value.IsString()) {
+							MonoString* str = mono_string_new(MonoManager::GetDomain(), it->value.GetString());
+							mono_field_set_value(instance, field, str);
+						}
+						// Support for custom types like CEVec2, CEVec3, CEColor can be added here
+					}
+				}
+			}
+		}
 	}
 
 	// Helper to find a specific C# script instance on an entity

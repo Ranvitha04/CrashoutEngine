@@ -21,6 +21,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "camera.h"
 #include "cameracomponent.h"
 #include "scriptcomponent.h"
+#include "ScriptSystem.h"
 #include "audiocomponent.h"
 #include "guicomponent.h"
 #include "ppcomponent.h"
@@ -37,6 +38,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "particleComponent.h"
 #include "rendering.h"
 #include "tagcomponent.h"
+#include <mono/metadata/attrdefs.h>
 
 // RapidJSON
 #include "rapidjson/document.h"
@@ -51,6 +53,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <unordered_map>
 #include <filesystem>
 #include <iostream>
+
+#include "monomanager.h"
 
 // --- Static Registry ---
 namespace {
@@ -147,7 +151,7 @@ namespace CaptureData {
 	struct ShapeData { bool hasComp{ false }; ShapeComponent c; };
 	struct TextData { bool hasComp{ false }; TextComponent c; };
 	struct AudioData { bool hasComp{ false }; AudioEmitterComponent c; };
-	struct ScriptData { bool hasComp{ false }; std::vector<std::string> classes; };
+	struct ScriptData { bool hasComp{ false }; std::string scriptsJson; };
 	struct ParticleData { bool hasComp{ false }; ParticleComponent c; };
 	struct CameraData { bool hasComp{ false }; CameraComponent c; };
 	struct SpriteData { bool hasComp{ false }; SpriteAnimatorComponent c; };
@@ -361,13 +365,10 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
 			scD.hasComp = true;
 			const auto& s = prefabs["script"];
 			if (s.HasMember("scripts") && s["scripts"].IsArray()) {
-				for (auto& v : s["scripts"].GetArray()) {
-					if (v.HasMember("className") && v["className"].IsString())
-						scD.classes.push_back(v["className"].GetString());
-				}
-			}
-			else if (s.HasMember("className")) {
-				scD.classes.push_back(s["className"].GetString());
+				rapidjson::StringBuffer buffer;
+				rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+				s["scripts"].Accept(writer);
+				scD.scriptsJson = buffer.GetString();
 			}
 		}
 		// Particle
@@ -774,11 +775,24 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
 			if (txD.hasComp) ecs.AddComponent<TextComponent>(e, txD.c);
 
 			// Scripts
-			if (scD.hasComp) {
-				ScriptComponent sc;
+			if (scD.hasComp && !scD.scriptsJson.empty()) {
+				auto& sc = ecs.AddComponent<ScriptComponent>(e);
 				sc.EntityID = (uint32_t)e;
-				for (const auto& s : scD.classes) sc.AddScript(s);
-				ecs.AddComponent<ScriptComponent>(e, sc);
+
+				rapidjson::Document sDoc;
+				sDoc.Parse(scD.scriptsJson.c_str());
+				if (!sDoc.HasParseError() && sDoc.IsArray()) {
+					for (const auto& item : sDoc.GetArray()) {
+						if (item.IsObject() && item.HasMember("className")) {
+							sc.AddScript(item["className"].GetString());
+						}
+					}
+
+					if (MonoManager::GetDomain() && MonoManager::GetAssembly()) {
+						sc.Initialize(MonoManager::GetDomain(), MonoManager::GetAssembly());
+						CrashoutsEngine::ScriptSystem::DeserializeFields(sDoc, sc);
+					}
+				}
 			}
 
 			// Audio
@@ -1122,10 +1136,50 @@ namespace CrashoutsEngine {
 		if (auto* script = ecs.GetComponent<ScriptComponent>(e)) {
 			Value sObj(kObjectType);
 			Value arr(kArrayType);
-			for (const auto& s : script->Scripts) {
-				if (s.ClassName.empty()) continue;
+			for (const auto& inst : script->Scripts) {
+				if (inst.ClassName.empty()) continue;
 				Value item(kObjectType);
-				item.AddMember("className", Value(s.ClassName.c_str(), allocator), allocator);
+				item.AddMember("className", Value(inst.ClassName.c_str(), allocator), allocator);
+
+				// Serialize Fields
+				if (inst.GCHandle && inst.Class) {
+					MonoObject* instance = mono_gchandle_get_target(inst.GCHandle);
+					if (instance) {
+						Value fields(kObjectType);
+						void* iter = nullptr;
+						while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
+							const char* fName = mono_field_get_name(field);
+							uint32_t flags = mono_field_get_flags(field);
+							if (flags & MONO_FIELD_ATTR_STATIC) continue;
+
+							bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
+							bool hasAttr = false;
+							MonoClass* attrClass = MonoManager::GetSerializeFieldClass();
+							if (attrClass) {
+								MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
+								if (attrInfo) {
+									hasAttr = mono_custom_attrs_has_attr(attrInfo, attrClass);
+									mono_custom_attrs_free(attrInfo);
+								}
+							}
+
+							if (isPublic || hasAttr) {
+								MonoType* type = mono_field_get_type(field);
+								int tEnum = mono_type_get_type(type);
+								rapidjson::Value key(fName, allocator);
+
+								if (tEnum == MONO_TYPE_I4) { int v; mono_field_get_value(instance, field, &v); fields.AddMember(key, v, allocator); }
+								else if (tEnum == MONO_TYPE_R4) { float v; mono_field_get_value(instance, field, &v); fields.AddMember(key, v, allocator); }
+								else if (tEnum == MONO_TYPE_BOOLEAN) { bool v; mono_field_get_value(instance, field, &v); fields.AddMember(key, v, allocator); }
+								else if (tEnum == MONO_TYPE_STRING) {
+									MonoString* ms = nullptr; mono_field_get_value(instance, field, &ms);
+									if (ms) { char* s = mono_string_to_utf8(ms); fields.AddMember(key, rapidjson::Value(s, allocator), allocator); mono_free(s); }
+								}
+							}
+						}
+						item.AddMember("fields", fields, allocator);
+					}
+				}
 				arr.PushBack(item, allocator);
 			}
 			sObj.AddMember("scripts", arr, allocator);
