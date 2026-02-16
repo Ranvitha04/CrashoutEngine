@@ -28,6 +28,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "shapebindings.h"
 #include "activecomponent.h"
 #include "videobindings.h"
+#include "checkpointbindings.h"
+#include "triggerbindings.h"
 #include "particleComponent.h"
 #include <mono/metadata/attrdefs.h>
 #include "collidereventmanager.h"
@@ -384,6 +386,8 @@ namespace CrashoutsEngine
         Bindings::RegisterTimeBindings();
         Bindings::RegisterShapeBindings();
         Bindings::RegisterVideoBindings();
+        Bindings::RegisterCheckpointBindings();
+        Bindings::RegisterTriggerBindings();
 
 		mono_add_internal_call("CrashoutsEngine.InternalCalls::GetScript", (const void*)InternalGetScript);
 		mono_add_internal_call("CrashoutsEngine.InternalCalls::Particle_SetEmitting", (const void*)InternalSetParticleEmitting);

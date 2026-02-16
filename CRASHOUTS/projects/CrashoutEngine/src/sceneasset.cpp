@@ -65,7 +65,9 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <mono/metadata/reflection.h>
 #include <mono/metadata/attrdefs.h>
 
+#include "checkpointcomponent.h"
 #include "scriptsystem.h"
+#include "triggercomponent.h"
 
 // File I/O Util Functions
 namespace {
@@ -200,6 +202,8 @@ namespace CrashoutsEngine {
 			const char* const PARENT_COMPONENT = "parent";
 			const char* const Z_ORDER_COMPONENT = "zorder";
 			const char* const VIDEO_COMPONENT = "video";
+			const char* const CHECKPOINT_COMPONENT = "checkpoint";
+			const char* const TRIGGER_COMPONENT = "trigger_metadata";
 		}
 
 		namespace JsonHelpers {
@@ -718,6 +722,25 @@ namespace CrashoutsEngine {
 				entityValue.AddMember(rapidjson::StringRef(Keys::VIDEO_COMPONENT), vVal, allocator);
 			}
 
+			if (gECS.HasComponent<CheckpointComponent>(id)) {
+				const auto& c = *gECS.GetComponent<CheckpointComponent>(id);
+				rapidjson::Value val(rapidjson::kObjectType);
+				WriteVec3(val, "respawnPosition", c.respawnPosition, allocator);
+				val.AddMember("targetRespawnEntity", c.targetRespawnEntity, allocator);
+				val.AddMember("targetEntityName", rapidjson::Value(c.targetEntityName.c_str(), allocator), allocator);
+				val.AddMember("activated", c.activated, allocator);
+				entityValue.AddMember(rapidjson::StringRef(Keys::CHECKPOINT_COMPONENT), val, allocator);
+			}
+
+			if (gECS.HasComponent<TriggerComponent>(id)) {
+				const auto& c = *gECS.GetComponent<TriggerComponent>(id);
+				rapidjson::Value val(rapidjson::kObjectType);
+				val.AddMember("triggerID", rapidjson::Value(c.triggerID.c_str(), allocator), allocator);
+				val.AddMember("oneTimeUse", c.oneTimeUse, allocator);
+				val.AddMember("triggered", c.triggered, allocator);
+				entityValue.AddMember(rapidjson::StringRef(Keys::TRIGGER_COMPONENT), val, allocator);
+			}
+
 			return entityValue;
 		}
 
@@ -1201,6 +1224,25 @@ namespace CrashoutsEngine {
 				pc.useTexture = GetBool(v, "useTexture", false);
 				pc.textureName = GetString(v, "textureName", "");
 				if (v.HasMember("textureUV")) pc.textureUV = ReadVec2(v["textureUV"], { 1.f, 1.f });
+			}
+
+			// CheckpointComponent
+			if (entityValue.HasMember(Keys::CHECKPOINT_COMPONENT)) {
+				const auto& v = entityValue[Keys::CHECKPOINT_COMPONENT];
+				auto& c = gECS.AddComponent<CheckpointComponent>(newEntity);
+				if (v.HasMember("respawnPosition")) c.respawnPosition = ReadVec3(v["respawnPosition"]);
+				if (v.HasMember("targetRespawnEntity")) c.targetRespawnEntity = v["targetRespawnEntity"].GetUint();
+				if (v.HasMember("targetEntityName")) c.targetEntityName = v["targetEntityName"].GetString();
+				c.activated = GetBool(v, "activated");
+			}
+
+			// TriggerComponent
+			if (entityValue.HasMember(Keys::TRIGGER_COMPONENT)) {
+				const auto& v = entityValue[Keys::TRIGGER_COMPONENT];
+				auto& c = gECS.AddComponent<TriggerComponent>(newEntity);
+				c.triggerID = GetString(v, "triggerID");
+				c.oneTimeUse = GetBool(v, "oneTimeUse");
+				c.triggered = GetBool(v, "triggered");
 			}
 
 			return newEntity;

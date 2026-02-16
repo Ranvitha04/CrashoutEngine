@@ -9762,7 +9762,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -180.6522674560547,
-                    "y": -9.94857406616211,
+                    "y": -28.500001907348634,
                     "z": 50.0
                 },
                 "size": {
@@ -9789,7 +9789,7 @@
                 "enabled": true,
                 "position": {
                     "x": -180.6522674560547,
-                    "y": -14.94857406616211,
+                    "y": -33.5,
                     "z": 50.0
                 },
                 "offset": {
@@ -9799,12 +9799,12 @@
                 },
                 "min": {
                     "x": -199.4523162841797,
-                    "y": -45.44857406616211,
+                    "y": -64.0,
                     "z": 50.0
                 },
                 "max": {
                     "x": -161.8522186279297,
-                    "y": 15.55142593383789,
+                    "y": -3.0,
                     "z": 50.0
                 }
             },
@@ -9970,7 +9970,7 @@
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
                             "dialogueCooldown": 1.0,
-                            "isDialogueActive": false,
+                            "isDialogueActive": true,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -10038,40 +10038,9 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 10.750007629394532,
+                "t": 14.233287811279297,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -10125,7 +10094,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -10139,14 +10108,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10199,6 +10168,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -11824,7 +11824,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1452.900146484375,
-                    "y": -436.7168884277344,
+                    "y": -375.0220642089844,
                     "z": 0.0
                 },
                 "size": {
@@ -11851,7 +11851,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1452.900146484375,
-                    "y": -436.7168884277344,
+                    "y": -375.0220642089844,
                     "z": 0.0
                 },
                 "offset": {
@@ -11862,7 +11862,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1452.900146484375,
-                    "y": -436.7168884277344,
+                    "y": -375.0220642089844,
                     "z": 0.0
                 }
             },
@@ -11880,7 +11880,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.125,
+                    "x": 0.25,
                     "y": 0.0
                 },
                 "color": {
@@ -11959,7 +11959,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 31.049697875976564,
+                "t": 14.233287811279297,
                 "playing": true,
                 "clips": [
                     {
@@ -12079,7 +12079,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 97.74189758300781,
-                    "y": -720.60986328125,
+                    "y": -658.9169921875,
                     "z": 0.0
                 },
                 "size": {
@@ -12106,7 +12106,7 @@
                 "enabled": true,
                 "position": {
                     "x": 97.74189758300781,
-                    "y": -720.60986328125,
+                    "y": -658.9169921875,
                     "z": 0.0
                 },
                 "offset": {
@@ -12117,7 +12117,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 97.74189758300781,
-                    "y": -720.60986328125,
+                    "y": -658.9169921875,
                     "z": 0.0
                 }
             },
@@ -12135,7 +12135,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.125,
+                    "x": 0.25,
                     "y": 0.0
                 },
                 "color": {
@@ -12214,7 +12214,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 31.049697875976564,
+                "t": 14.233287811279297,
                 "playing": true,
                 "clips": [
                     {
@@ -13185,8 +13185,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1061.1080322265626,
-                    "y": -357.0424499511719,
+                    "x": 1066.3165283203126,
+                    "y": -355.3426513671875,
                     "z": 0.0
                 },
                 "size": {
@@ -13212,8 +13212,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1061.1080322265626,
-                    "y": -357.0424499511719,
+                    "x": 1066.3165283203126,
+                    "y": -355.3426513671875,
                     "z": 0.0
                 },
                 "offset": {
@@ -13222,13 +13222,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1011.108154296875,
-                    "y": -365.0424499511719,
+                    "x": 1016.316650390625,
+                    "y": -363.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1111.10791015625,
-                    "y": -349.0424499511719,
+                    "x": 1116.31640625,
+                    "y": -347.3426513671875,
                     "z": 0.0
                 }
             },
@@ -13295,8 +13295,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1171.990966796875,
-                    "y": -410.2161865234375,
+                    "x": 1173.759765625,
+                    "y": -411.9925537109375,
                     "z": 0.0
                 },
                 "size": {
@@ -13322,8 +13322,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1171.990966796875,
-                    "y": -410.2161865234375,
+                    "x": 1173.759765625,
+                    "y": -411.9925537109375,
                     "z": 0.0
                 },
                 "offset": {
@@ -13332,13 +13332,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1121.990966796875,
-                    "y": -418.2161865234375,
+                    "x": 1123.759765625,
+                    "y": -419.9925537109375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1221.990966796875,
-                    "y": -402.2161865234375,
+                    "x": 1223.759765625,
+                    "y": -403.9925537109375,
                     "z": 0.0
                 }
             },
@@ -13405,8 +13405,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 302.7169494628906,
-                    "y": -317.8236083984375,
+                    "x": 368.6055603027344,
+                    "y": -326.5159606933594,
                     "z": 0.0
                 },
                 "size": {
@@ -13432,8 +13432,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 302.7169494628906,
-                    "y": -317.8236083984375,
+                    "x": 368.6055603027344,
+                    "y": -326.5159606933594,
                     "z": 0.0
                 },
                 "offset": {
@@ -13442,13 +13442,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 227.71694946289063,
-                    "y": -325.8236083984375,
+                    "x": 293.6055603027344,
+                    "y": -334.5159606933594,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 377.7169494628906,
-                    "y": -309.8236083984375,
+                    "x": 443.6055603027344,
+                    "y": -318.5159606933594,
                     "z": 0.0
                 }
             },
@@ -13515,12 +13515,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 843.4519653320313,
-                    "y": -754.411376953125,
+                    "x": 838.9472045898438,
+                    "y": -758.3055419921875,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 150.0,
+                    "x": 178.10000610351563,
                     "y": 16.0
                 }
             },
@@ -13542,8 +13542,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 843.4519653320313,
-                    "y": -754.411376953125,
+                    "x": 838.9472045898438,
+                    "y": -758.3055419921875,
                     "z": 0.0
                 },
                 "offset": {
@@ -13552,13 +13552,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 768.4519653320313,
-                    "y": -762.411376953125,
+                    "x": 749.8971557617188,
+                    "y": -766.3055419921875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 918.4519653320313,
-                    "y": -746.411376953125,
+                    "x": 927.9972534179688,
+                    "y": -750.3055419921875,
                     "z": 0.0
                 }
             },
@@ -14125,8 +14125,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 313.6810302734375,
-                    "y": -822.7566528320313,
+                    "x": 245.84835815429688,
+                    "y": -832.4600830078125,
                     "z": 0.0
                 },
                 "size": {
@@ -14152,8 +14152,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 313.6810302734375,
-                    "y": -822.7566528320313,
+                    "x": 245.84835815429688,
+                    "y": -832.4600830078125,
                     "z": 0.0
                 },
                 "offset": {
@@ -14162,13 +14162,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 263.68115234375,
-                    "y": -830.7566528320313,
+                    "x": 195.84841918945313,
+                    "y": -840.4600830078125,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 363.680908203125,
-                    "y": -814.7566528320313,
+                    "x": 295.8482971191406,
+                    "y": -824.4600830078125,
                     "z": 0.0
                 }
             },
@@ -15813,7 +15813,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -180.6522674560547,
-                    "y": 48.42133712768555,
+                    "y": 29.869909286499025,
                     "z": 50.0
                 },
                 "size": {
@@ -15930,7 +15930,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -180.6522674560547,
-                    "y": 48.42133712768555,
+                    "y": 29.869909286499025,
                     "z": 50.0
                 },
                 "size": {
@@ -15974,7 +15974,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "Heh. It's less fire and brimstone than I thought.",
+                "text": "Heh. It’s less fire and brimstone than I thought.",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -16038,7 +16038,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "PlayerDialogue_3",
             "tag": {
                 "tagMask": 0
@@ -16047,7 +16047,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -180.6522674560547,
-                    "y": 48.42133712768555,
+                    "y": 29.869909286499025,
                     "z": 50.0
                 },
                 "size": {
@@ -16164,7 +16164,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -180.6522674560547,
-                    "y": 48.42133712768555,
+                    "y": 29.869909286499025,
                     "z": 50.0
                 },
                 "size": {
@@ -16281,7 +16281,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -466.446533203125,
-                    "y": -209.30612182617188,
+                    "y": -227.8575439453125,
                     "z": 50.0
                 },
                 "size": {
@@ -16325,7 +16325,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "I wonder, if at the end of this journey, I'll find you, Keiran?",
+                "text": "I wonder, if at the end of this journey, I’ll find you, Keiran?",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -18388,6 +18388,14 @@
                     "z": 0.0
                 }
             },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "Checkpoint",
+                        "fields": {}
+                    }
+                ]
+            },
             "parent": {
                 "parentName": "Foreground",
                 "localPos": {
@@ -18411,6 +18419,21 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
+            },
+            "checkpoint": {
+                "respawnPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "targetRespawnEntity": 0,
+                "targetEntityName": "respawn1",
+                "activated": false
+            },
+            "trigger_metadata": {
+                "triggerID": "",
+                "oneTimeUse": true,
+                "triggered": false
             }
         },
         {
@@ -19539,7 +19562,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "ClosedBook",
             "tag": {
                 "tagMask": 0
@@ -21312,7 +21335,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -178.39144897460938,
-                    "y": -58.067474365234378,
+                    "y": -76.61890411376953,
                     "z": 0.0
                 },
                 "size": {
@@ -22287,6 +22310,429 @@
                 "textureNormal": "",
                 "textureHovered": "",
                 "texturePressed": ""
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "TriggerCP1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1510.4632568359376,
+                    "y": -336.0650329589844,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 1510.4632568359376,
+                    "y": -336.0650329589844,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1499.9632568359376,
+                    "y": -480.7650146484375,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1520.9632568359376,
+                    "y": -191.36505126953126,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "Checkpoint",
+                        "fields": {}
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "checkpoint": {
+                "respawnPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "targetRespawnEntity": 0,
+                "targetEntityName": "respawn1",
+                "activated": false
+            },
+            "trigger_metadata": {
+                "triggerID": "",
+                "oneTimeUse": true,
+                "triggered": false
+            }
+        },
+        {
+            "active": true,
+            "name": "respawn1",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1700.7083740234376,
+                    "y": -431.22198486328127,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "TriggerCP2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 759.8993530273438,
+                    "y": -271.84503173828127,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 759.8993530273438,
+                    "y": -271.84503173828127,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 752.8993530273438,
+                    "y": -384.14501953125,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 766.8993530273438,
+                    "y": -159.5450439453125,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "Checkpoint",
+                        "fields": {}
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "checkpoint": {
+                "respawnPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "targetRespawnEntity": 2051,
+                "targetEntityName": "respawn2",
+                "activated": false
+            },
+            "trigger_metadata": {
+                "triggerID": "",
+                "oneTimeUse": true,
+                "triggered": false
+            }
+        },
+        {
+            "active": true,
+            "name": "respawn2",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 733.44384765625,
+                    "y": -366.86444091796877,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "TriggerCP3",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -208.21926879882813,
+                    "y": -567.4074096679688,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": -208.21926879882813,
+                    "y": -567.4074096679688,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -288.81927490234377,
+                    "y": -573.2073974609375,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": -127.6192626953125,
+                    "y": -561.607421875,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "Checkpoint",
+                        "fields": {}
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "checkpoint": {
+                "respawnPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "targetRespawnEntity": 123,
+                "targetEntityName": "respawn3",
+                "activated": false
+            },
+            "trigger_metadata": {
+                "triggerID": "",
+                "oneTimeUse": true,
+                "triggered": false
+            }
+        },
+        {
+            "active": true,
+            "name": "respawn3",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -201.06007385253907,
+                    "y": -816.1256103515625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "TriggerCP4",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 611.2012939453125,
+                    "y": -769.891357421875,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 611.2012939453125,
+                    "y": -769.891357421875,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 607.601318359375,
+                    "y": -867.2913818359375,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 614.80126953125,
+                    "y": -672.4913330078125,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "Checkpoint",
+                        "fields": {}
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "checkpoint": {
+                "respawnPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "targetRespawnEntity": 125,
+                "targetEntityName": "respawn4",
+                "activated": false
+            }
+        },
+        {
+            "active": true,
+            "name": "respawn4",
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 663.0928955078125,
+                    "y": -795.4078979492188,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
             },
             "layer": {
                 "layerName": "",

@@ -9901,7 +9901,8 @@
                             "stunDuration": 1.0,
                             "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]
@@ -10296,7 +10297,8 @@
                             "stunDuration": 1.0,
                             "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]

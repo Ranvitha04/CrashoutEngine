@@ -54,7 +54,9 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <filesystem>
 #include <iostream>
 
+#include "checkpointcomponent.h"
 #include "monomanager.h"
+#include "triggercomponent.h"
 
 // --- Static Registry ---
 namespace {
@@ -164,6 +166,8 @@ namespace CaptureData {
 	struct LayoutData { bool hasComp{ false }; UILayoutComponent c; };
 	struct PPData { bool hasComp{ false }; PPComponent c; };
 	struct ActiveData { bool hasComp{ false }; ActiveComponent c; };
+	struct CheckpointData { bool hasComp{ false }; CheckpointComponent c; };
+	struct TriggerData { bool hasComp{ false }; TriggerComponent c; };
 }
 
 // Helper to read color from JSON object {x,y,z,w}
@@ -673,6 +677,25 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
 			if (p.HasMember("saturation")) ppD.c.saturation = p["saturation"].GetFloat();
 		}
 
+		CheckpointData cpD;
+		if (prefabs.HasMember("checkpoint")) {
+			cpD.hasComp = true;
+			const auto& c = prefabs["checkpoint"];
+			if (c.HasMember("respawnPosition")) cpD.c.respawnPosition = ReadVectorFromJson{}(c["respawnPosition"]);
+			if (c.HasMember("targetRespawnEntity")) cpD.c.targetRespawnEntity = c["targetRespawnEntity"].GetUint();
+			if (c.HasMember("targetEntityName")) cpD.c.targetEntityName = c["targetEntityName"].GetString();
+			if (c.HasMember("activated")) cpD.c.activated = c["activated"].GetBool();
+		}
+
+		TriggerData trgD;
+		if (prefabs.HasMember("trigger_metadata")) {
+			trgD.hasComp = true;
+			const auto& c = prefabs["trigger_metadata"];
+			if (c.HasMember("triggerID")) trgD.c.triggerID = c["triggerID"].GetString();
+			if (c.HasMember("oneTimeUse")) trgD.c.oneTimeUse = c["oneTimeUse"].GetBool();
+			if (c.HasMember("triggered")) trgD.c.triggered = c["triggered"].GetBool();
+		}
+
 
 		// -------------------------------------------------------------------------
 		// 2. REGISTER LAMBDA FACTORY
@@ -832,6 +855,18 @@ static bool LoadPrefabsFromJson_RJ(const std::string& path) {
 
 			// PP
 			if (ppD.hasComp) ecs.AddComponent<PPComponent>(e, ppD.c);
+
+			// Checkpoint
+			if (cpD.hasComp) {
+				auto& cp = ecs.AddComponent<CheckpointComponent>(e);
+				cp.respawnPosition = cpD.c.respawnPosition;
+				cp.targetRespawnEntity = cpD.c.targetRespawnEntity;
+				cp.targetEntityName = cpD.c.targetEntityName;
+				cp.activated = cpD.c.activated;
+			}
+
+			// Trigger
+			if (trgD.hasComp) ecs.AddComponent<TriggerComponent>(e, trgD.c);
 
 			// Parent (Data only)
 			if (parD.hasComp) ecs.AddComponent<ParentComponent>(e, parD.c);
@@ -1368,6 +1403,27 @@ namespace CrashoutsEngine {
 			if (!btn->texturePressed.empty()) bObj.AddMember("texturePressed", Value(btn->texturePressed.c_str(), allocator), allocator);
 
 			obj.AddMember("button", bObj, allocator);
+		}
+
+		// Checkpoint
+		if (auto* c = ecs.GetComponent<CheckpointComponent>(e)) {
+			Value val(kObjectType);
+			Value pos(kObjectType);
+			pos.AddMember("x", c->respawnPosition.x, allocator).AddMember("y", c->respawnPosition.y, allocator).AddMember("z", c->respawnPosition.z, allocator);
+			val.AddMember("respawnPosition", pos, allocator);
+			val.AddMember("targetRespawnEntity", c->targetRespawnEntity, allocator);
+			val.AddMember("targetEntityName", Value(c->targetEntityName.c_str(), allocator), allocator);
+			val.AddMember("activated", c->activated, allocator);
+			obj.AddMember("checkpoint", val, allocator);
+		}
+
+		// Trigger
+		if (auto* c = ecs.GetComponent<TriggerComponent>(e)) {
+			Value val(kObjectType);
+			val.AddMember("triggerID", Value(c->triggerID.c_str(), allocator), allocator);
+			val.AddMember("oneTimeUse", c->oneTimeUse, allocator);
+			val.AddMember("triggered", c->triggered, allocator);
+			obj.AddMember("trigger_metadata", val, allocator);
 		}
 
 		// Upsert

@@ -27,6 +27,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "hierarchycomponent.h"
 #include "activecomponent.h"
 #include "tagcomponent.h"
+#include "checkpointcomponent.h"
+#include "triggercomponent.h"
 // UI COMPONENTS
 #include "buttoncomponent.h"
 #include "guicomponent.h"

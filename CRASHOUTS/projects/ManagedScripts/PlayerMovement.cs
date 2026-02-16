@@ -72,6 +72,7 @@ namespace CrashoutsEngine
 
         public bool alive = true;
         public bool isPaused = false; // Controls the state
+        private CEVec3 respawnPos;
 
         private string currentAnimState = "";
         private bool isLight = false;
@@ -124,6 +125,7 @@ namespace CrashoutsEngine
             IsGrounded = false;
             CurrentEnergy = MaxEnergy;
             swapPauseTimer = 0.0f;
+            respawnPos = tf.Position;
 
             // Setup Dialogues
             dialogueEntities = new Entity[5];
@@ -529,7 +531,24 @@ namespace CrashoutsEngine
         {
             Debug.Log("Player Died");
             alive = false;
-            InternalCalls.SetActive(InternalCalls.FindEntityByName("GameOverScreen"), true);
+            // InternalCalls.SetActive(InternalCalls.FindEntityByName("GameOverScreen"), true);
+            Respawn();
+        }
+
+        public void UpdateCheckpoint(CEVec3 newPos)
+        {
+            respawnPos = newPos;
+        }
+
+        public void Respawn()
+        {
+            alive = true;
+            tf.Position = respawnPos;
+            rb.LinearVelocity = new CEVec3(0, 0, 0);
+            CurrentEnergy = MaxEnergy;
+            isPassthrough = false;
+            canPassthrough = false;
+            Debug.Log("Player Respawned at " + respawnPos);
         }
 
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }

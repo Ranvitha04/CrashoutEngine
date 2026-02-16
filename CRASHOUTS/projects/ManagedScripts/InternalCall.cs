@@ -258,5 +258,49 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern string GetText(uint entityID);
+
+        // Checkpoint
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void AddCheckpoint(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasCheckpoint(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void RemoveCheckpoint(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Checkpoint_GetRespawnPosition(uint entityID, out CEVec3 pos);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Checkpoint_SetRespawnPosition(uint entityID, ref CEVec3 pos);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern uint Checkpoint_GetTargetEntity(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Checkpoint_SetTargetEntity(uint entityID, uint targetID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern string Checkpoint_GetTargetName(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Checkpoint_SetTargetName(uint entityID, string name);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool Checkpoint_GetActivated(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Checkpoint_SetActivated(uint entityID, bool activated);
+
+        // Trigger
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void AddTrigger(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasTrigger(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void RemoveTrigger(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern string Trigger_GetID(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Trigger_SetID(uint entityID, string id);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool Trigger_GetOneTimeUse(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Trigger_SetOneTimeUse(uint entityID, bool oneTime);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool Trigger_GetTriggered(uint entityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Trigger_SetTriggered(uint entityID, bool triggered);
     }
 }

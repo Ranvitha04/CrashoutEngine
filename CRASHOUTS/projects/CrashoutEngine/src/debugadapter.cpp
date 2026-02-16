@@ -54,6 +54,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "spritecomponent.h"
 #include "videocomponent.h"
 #include "videoloader.h"
+#include "checkpointcomponent.h"
+#include "triggercomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -3508,6 +3510,123 @@ namespace CrashoutsEngine
 	@brief Physics debug provider (global forces / integrators).
 	@details Exposes gravity vector and linear damping via PhysicsHandler getters/setters.
 	*/
+	struct CheckpointAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "Checkpoint"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::CheckpointComponent>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			if (!has(ecs, e)) ecs.AddComponent<Component::CheckpointComponent>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::CheckpointComponent>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			auto* cp = ecs.GetComponent<Component::CheckpointComponent>(e);
+			if (!cp) return;
+			ImGui::SeparatorText("Checkpoint Settings");
+			UIHelpers::DrawUndoableVec3("Respawn Position", cp->respawnPosition);
+			
+			// --- Entity Picker with Searchable List ---
+			ImGui::Text("Target Respawn Entity:");
+			
+			std::string currentName = "None (0)";
+			if (!cp->targetEntityName.empty()) {
+				currentName = cp->targetEntityName;
+			}
+			else if (cp->targetRespawnEntity != 0) {
+				if (ecs.HasComponent<NameComponent>(cp->targetRespawnEntity)) {
+					currentName = ecs.GetComponent<NameComponent>(cp->targetRespawnEntity)->name + " (" + std::to_string(cp->targetRespawnEntity) + ")";
+				} else {
+					currentName = "Missing Entity (" + std::to_string(cp->targetRespawnEntity) + ")";
+				}
+			}
+
+			if (ImGui::Button(currentName.c_str(), ImVec2(ImGui::GetContentRegionAvail().x - 30, 0))) {
+				ImGui::OpenPopup("CheckpointEntityPicker");
+			}
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIER_ENTITY")) {
+					uint32_t droppedID = *(const uint32_t*)payload->Data;
+					cp->targetRespawnEntity = droppedID;
+					if (ecs.HasComponent<NameComponent>(droppedID)) {
+						cp->targetEntityName = ecs.GetComponent<NameComponent>(droppedID)->name;
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("X##clear_cp")) {
+				cp->targetRespawnEntity = 0;
+				cp->targetEntityName = "";
+			}
+
+			if (ImGui::BeginPopup("CheckpointEntityPicker")) {
+				static char searchBuf[64] = "";
+				ImGui::InputTextWithHint("##search", "Search...", searchBuf, sizeof(searchBuf));
+				ImGui::Separator();
+
+				if (ImGui::BeginChild("EntityList", ImVec2(250, 200))) {
+					if (ImGui::Selectable("None (0)", cp->targetRespawnEntity == 0 && cp->targetEntityName.empty())) {
+						cp->targetRespawnEntity = 0;
+						cp->targetEntityName = "";
+						ImGui::CloseCurrentPopup();
+					}
+
+					auto& nameArr = ecs.GetComponentArray<NameComponent>();
+					for (size_t i = 0; i < nameArr.dense.size(); ++i) {
+						Entity ent = nameArr.indexToEntity[i];
+						std::string const& n = nameArr.dense[i]->name;
+
+						if (searchBuf[0] != '\0') {
+							std::string lowerName = n;
+							std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+							std::string lowerSearch = searchBuf;
+							std::transform(lowerSearch.begin(), lowerSearch.end(), lowerSearch.begin(), ::tolower);
+							if (lowerName.find(lowerSearch) == std::string::npos) continue;
+						}
+
+						std::string label = n + " (" + std::to_string(ent) + ")";
+						if (ImGui::Selectable(label.c_str(), cp->targetEntityName == n || cp->targetRespawnEntity == ent)) {
+							cp->targetRespawnEntity = ent;
+							cp->targetEntityName = n;
+							ImGui::CloseCurrentPopup();
+						}
+					}
+					ImGui::EndChild();
+				}
+				ImGui::EndPopup();
+			}
+			
+			UIHelpers::DrawUndoableString("Target Name (Manual)", cp->targetEntityName);
+
+			ImGui::TextDisabled("If Target is set, it overrides Respawn Position.");
+
+			UIHelpers::DrawUndoableBool("Activated", cp->activated);
+		}
+	};
+
+	struct TriggerMetadataAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "Trigger Metadata"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::TriggerComponent>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			if (!has(ecs, e)) ecs.AddComponent<Component::TriggerComponent>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::TriggerComponent>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			auto* tc = ecs.GetComponent<Component::TriggerComponent>(e);
+			if (!tc) return;
+			ImGui::SeparatorText("Trigger Metadata");
+			UIHelpers::DrawUndoableString("Trigger ID", tc->triggerID);
+			UIHelpers::DrawUndoableBool("One Time Use", tc->oneTimeUse);
+			UIHelpers::DrawUndoableBool("Triggered", tc->triggered);
+		}
+	};
+
 	struct BuiltinPhysicsProvider final : DebugReflection::IPhysicsProvider {
 		const char* name() const override { return "Global Forces"; }
 		void draw(CrashoutsEngine::ECS&) override {
@@ -3559,6 +3678,8 @@ namespace CrashoutsEngine
 	static TagAdapter gTagAdapter;     
 	static DebugZOverrideAdapter gDebugZOverrideAdapter;
 	static VideoAdapter gVideoAdapter;
+	static CheckpointAdapter gCheckpointAdapter;
+	static TriggerMetadataAdapter gTriggerMetadataAdapter;
 }
 
 /*!
@@ -3592,6 +3713,8 @@ extern "C" void RegisterBuiltinComponentAdapters() {
 	ComponentRegistry::instance().registerAdapter(&gKeyframeAdapter);
 	ComponentRegistry::instance().registerAdapter(&gParticleAdapter);
 	ComponentRegistry::instance().registerAdapter(&gVideoAdapter);
+	ComponentRegistry::instance().registerAdapter(&gCheckpointAdapter);
+	ComponentRegistry::instance().registerAdapter(&gTriggerMetadataAdapter);
 	DebugReflection::SetGameStateProvider(&gProvider);
 	DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 
