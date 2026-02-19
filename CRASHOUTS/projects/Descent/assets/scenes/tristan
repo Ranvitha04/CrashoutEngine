@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "Backdrop",
+            "uuid": 9888474125066234417,
             "tag": {
                 "tagMask": 0
             },
@@ -60,6 +61,7 @@
         {
             "active": true,
             "name": "sampleShape",
+            "uuid": 6715364468790717483,
             "tag": {
                 "tagMask": 0
             },
@@ -151,6 +153,7 @@
         {
             "active": true,
             "name": "sampleShape",
+            "uuid": 11406618259557629304,
             "tag": {
                 "tagMask": 0
             },
@@ -242,6 +245,7 @@
         {
             "active": true,
             "name": "sampleShape",
+            "uuid": 14508633779145625171,
             "tag": {
                 "tagMask": 0
             },

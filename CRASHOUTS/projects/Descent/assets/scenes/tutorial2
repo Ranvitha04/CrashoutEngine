@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "Tilemap",
+            "uuid": 6285869650744100183,
             "tag": {
                 "tagMask": 0
             },
@@ -5770,6 +5771,7 @@
         {
             "active": true,
             "name": "Player",
+            "uuid": 17834012032629923121,
             "tag": {
                 "tagMask": 1
             },
@@ -6057,37 +6059,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -6140,7 +6111,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -6154,14 +6125,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -6214,6 +6185,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -6498,6 +6500,7 @@
         {
             "active": false,
             "name": "Pause",
+            "uuid": 5902727101797292141,
             "tag": {
                 "tagMask": 0
             },
@@ -6555,6 +6558,7 @@
         {
             "active": false,
             "name": "ClosedBook",
+            "uuid": 12643534286287117821,
             "tag": {
                 "tagMask": 0
             },
@@ -6604,26 +6608,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Pause",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.9599999785423279,
-                    "y": 0.5400000214576721
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UI",
                 "z": 5
@@ -6632,6 +6616,7 @@
         {
             "active": false,
             "name": "OpenedBook",
+            "uuid": 1283893283595460769,
             "tag": {
                 "tagMask": 0
             },
@@ -6681,26 +6666,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Pause",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.9599999785423279,
-                    "y": 0.5400000214576721
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UI",
                 "z": 5
@@ -6709,6 +6674,7 @@
         {
             "active": true,
             "name": "ResumeButton",
+            "uuid": 4782052456846739656,
             "tag": {
                 "tagMask": 0
             },
@@ -6810,26 +6776,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "ClosedBook",
-                "localPos": {
-                    "x": 0.12083333730697632,
-                    "y": 0.13425925374031068,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.1145833358168602,
-                    "y": 0.02222222276031971
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 10
@@ -6838,6 +6784,7 @@
         {
             "active": true,
             "name": "RestartLevelButton",
+            "uuid": 3509773181465018329,
             "tag": {
                 "tagMask": 0
             },
@@ -6939,26 +6886,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "ClosedBook",
-                "localPos": {
-                    "x": 0.12083333730697632,
-                    "y": 0.05833333358168602,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.1223958358168602,
-                    "y": 0.02222222276031971
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 10
@@ -6967,6 +6894,7 @@
         {
             "active": true,
             "name": "SettingsButton",
+            "uuid": 12948367843709221375,
             "tag": {
                 "tagMask": 0
             },
@@ -7068,26 +6996,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "ClosedBook",
-                "localPos": {
-                    "x": 0.12083333730697632,
-                    "y": -0.018518518656492235,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.07760416716337204,
-                    "y": 0.024074073880910875
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 10
@@ -7096,6 +7004,7 @@
         {
             "active": true,
             "name": "QuitButton",
+            "uuid": 16595636032651771090,
             "tag": {
                 "tagMask": 0
             },
@@ -7197,26 +7106,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "ClosedBook",
-                "localPos": {
-                    "x": 0.12083333730697632,
-                    "y": -0.0962962955236435,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.04010416567325592,
-                    "y": 0.028703702613711358
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 10
@@ -7225,6 +7114,7 @@
         {
             "active": false,
             "name": "RestartCheck",
+            "uuid": 911086462289076569,
             "tag": {
                 "tagMask": 0
             },
@@ -7274,26 +7164,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "ClosedBook",
-                "localPos": {
-                    "x": 0.12031250447034836,
-                    "y": 0.05925925448536873,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.13697916269302369,
-                    "y": 0.04999999701976776
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 20
@@ -7302,6 +7172,7 @@
         {
             "active": true,
             "name": "No",
+            "uuid": 4628459558769210617,
             "tag": {
                 "tagMask": 0
             },
@@ -7403,26 +7274,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "RestartCheck",
-                "localPos": {
-                    "x": 0.2750000059604645,
-                    "y": 0.028999999165534974,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.27399998903274538,
-                    "y": 0.5860000252723694
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 10
@@ -7431,6 +7282,7 @@
         {
             "active": true,
             "name": "Yes",
+            "uuid": 7724294454948592597,
             "tag": {
                 "tagMask": 0
             },
@@ -7532,26 +7384,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "RestartCheck",
-                "localPos": {
-                    "x": -0.2840000092983246,
-                    "y": 0.013000000268220902,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.2980000078678131,
-                    "y": 0.5149999856948853
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 10
@@ -7560,6 +7392,7 @@
         {
             "active": true,
             "name": "PauseScript",
+            "uuid": 5334594761840019971,
             "tag": {
                 "tagMask": 0
             },
@@ -7593,6 +7426,7 @@
         {
             "active": true,
             "name": "CloseBookBtn",
+            "uuid": 1625354989458678762,
             "tag": {
                 "tagMask": 0
             },
@@ -7711,26 +7545,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "OpenedBook",
-                "localPos": {
-                    "x": 0.15600000321865083,
-                    "y": 0.16200000047683717,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.13854166865348817,
-                    "y": 0.8361110687255859
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -7739,6 +7553,7 @@
         {
             "active": true,
             "name": "SFX",
+            "uuid": 4944310445317652659,
             "tag": {
                 "tagMask": 0
             },
@@ -7784,26 +7599,6 @@
                 "dialogueFilePath": "",
                 "dialogueID": ""
             },
-            "parent": {
-                "parentName": "OpenedBook",
-                "localPos": {
-                    "x": -0.11249605566263199,
-                    "y": -0.028682123869657518,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -7812,6 +7607,7 @@
         {
             "active": true,
             "name": "SFXBar",
+            "uuid": 4270241524433472564,
             "tag": {
                 "tagMask": 0
             },
@@ -7837,26 +7633,6 @@
                     }
                 ]
             },
-            "parent": {
-                "parentName": "OpenedBook",
-                "localPos": {
-                    "x": 0.029999999329447748,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -7865,6 +7641,7 @@
         {
             "active": true,
             "name": "MusicBar",
+            "uuid": 6947545279299899766,
             "tag": {
                 "tagMask": 0
             },
@@ -7890,26 +7667,6 @@
                     }
                 ]
             },
-            "parent": {
-                "parentName": "OpenedBook",
-                "localPos": {
-                    "x": -0.15000000596046449,
-                    "y": 0.19790679216384889,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -7918,6 +7675,7 @@
         {
             "active": true,
             "name": "Music",
+            "uuid": 7204490794687522537,
             "tag": {
                 "tagMask": 0
             },
@@ -7963,26 +7721,6 @@
                 "dialogueFilePath": "",
                 "dialogueID": ""
             },
-            "parent": {
-                "parentName": "OpenedBook",
-                "localPos": {
-                    "x": 0.06013471260666847,
-                    "y": 0.04432688653469086,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -7991,6 +7729,7 @@
         {
             "active": true,
             "name": "SFXBar_BG",
+            "uuid": 13049177404712675321,
             "tag": {
                 "tagMask": 0
             },
@@ -8040,26 +7779,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "OpenedBook",
-                "localPos": {
-                    "x": 0.09196213632822037,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.125,
-                    "y": 0.020999999716877939
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 58
@@ -8068,6 +7787,7 @@
         {
             "active": true,
             "name": "MusicBar_BG",
+            "uuid": 14189821905198892750,
             "tag": {
                 "tagMask": 0
             },
@@ -8117,26 +7837,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "OpenedBook",
-                "localPos": {
-                    "x": -0.0903487578034401,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.125,
-                    "y": 0.021299999207258226
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 15
@@ -8145,6 +7845,7 @@
         {
             "active": true,
             "name": "MusicBar_Image",
+            "uuid": 6656124486153101180,
             "tag": {
                 "tagMask": 0
             },
@@ -8204,26 +7905,6 @@
                     }
                 ]
             },
-            "parent": {
-                "parentName": "MusicBar",
-                "localPos": {
-                    "x": 0.06000000238418579,
-                    "y": -0.19790679216384889,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.125,
-                    "y": 0.020999999716877939
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 150
@@ -8232,6 +7913,7 @@
         {
             "active": true,
             "name": "SFXBar_Child",
+            "uuid": 15350512725142066790,
             "tag": {
                 "tagMask": 0
             },
@@ -8291,26 +7973,6 @@
                     }
                 ]
             },
-            "parent": {
-                "parentName": "SFXBar",
-                "localPos": {
-                    "x": 0.061000000685453418,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.125,
-                    "y": 0.020999999716877939
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 61
@@ -8319,6 +7981,7 @@
         {
             "active": true,
             "name": "LandingDust",
+            "uuid": 11364433862482068819,
             "tag": {
                 "tagMask": 0
             },
@@ -8332,26 +7995,6 @@
                 "size": {
                     "x": 140.97999572753907,
                     "y": 101.0
-                }
-            },
-            "parent": {
-                "parentName": "Player",
-                "localPos": {
-                    "x": 0.016148703172802926,
-                    "y": -0.4811890125274658,
-                    "z": -50.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0069999694824219,
-                    "y": 1.0099999904632569
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             },
             "layer": {
@@ -8423,6 +8066,7 @@
         {
             "active": false,
             "name": "GameOverScreen",
+            "uuid": 12781599637949462904,
             "tag": {
                 "tagMask": 0
             },
@@ -8521,6 +8165,7 @@
         {
             "active": true,
             "name": "RestartLevelButton2",
+            "uuid": 7517683697836189735,
             "tag": {
                 "tagMask": 0
             },
@@ -8622,26 +8267,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "GameOverScreen",
-                "localPos": {
-                    "x": -0.099671870470047,
-                    "y": -0.1259259283542633,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.14374999701976777,
-                    "y": 0.04537037014961243
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 10
@@ -8650,6 +8275,7 @@
         {
             "active": true,
             "name": "QuitButton2",
+            "uuid": 5021456493348945167,
             "tag": {
                 "tagMask": 0
             },
@@ -8751,26 +8377,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "GameOverScreen",
-                "localPos": {
-                    "x": 0.08038020879030228,
-                    "y": -0.1259259283542633,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.08802083134651184,
-                    "y": 0.04537037014961243
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 10
@@ -8779,6 +8385,7 @@
         {
             "active": false,
             "name": "RestartCheck2",
+            "uuid": 501723635690538149,
             "tag": {
                 "tagMask": 0
             },
@@ -8794,26 +8401,6 @@
                     "y": 108.0
                 }
             },
-            "parent": {
-                "parentName": "GameOverScreen",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "",
                 "z": 0
@@ -8822,6 +8409,7 @@
         {
             "active": true,
             "name": "Yes2",
+            "uuid": 12854520630963374976,
             "tag": {
                 "tagMask": 0
             },
@@ -8923,26 +8511,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "RestartCheck2",
-                "localPos": {
-                    "x": -0.14522917568683625,
-                    "y": -0.12129630148410797,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0546875,
-                    "y": 0.034259259700775149
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 61
@@ -8951,6 +8519,7 @@
         {
             "active": true,
             "name": "No2",
+            "uuid": 2209376871433092940,
             "tag": {
                 "tagMask": 0
             },
@@ -9052,26 +8621,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "RestartCheck2",
-                "localPos": {
-                    "x": -0.054484378546476367,
-                    "y": -0.12129630148410797,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.04270833358168602,
-                    "y": 0.034259259700775149
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 61
@@ -9080,6 +8629,7 @@
         {
             "active": false,
             "name": "WinScreen",
+            "uuid": 8129812411768718653,
             "tag": {
                 "tagMask": 0
             },
@@ -9178,6 +8728,7 @@
         {
             "active": true,
             "name": "RestartLevelButton3",
+            "uuid": 3720111146337015331,
             "tag": {
                 "tagMask": 0
             },
@@ -9279,26 +8830,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "WinScreen",
-                "localPos": {
-                    "x": -0.099671870470047,
-                    "y": -0.1259259283542633,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.14374999701976777,
-                    "y": 0.04537037014961243
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 10
@@ -9307,6 +8838,7 @@
         {
             "active": true,
             "name": "QuitButton3",
+            "uuid": 15133350333384995718,
             "tag": {
                 "tagMask": 0
             },
@@ -9408,26 +8940,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "WinScreen",
-                "localPos": {
-                    "x": 0.08038020879030228,
-                    "y": -0.1259259283542633,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.08802083134651184,
-                    "y": 0.04537037014961243
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 10
@@ -9436,6 +8948,7 @@
         {
             "active": false,
             "name": "RestartCheck3",
+            "uuid": 797044297116056904,
             "tag": {
                 "tagMask": 0
             },
@@ -9451,26 +8964,6 @@
                     "y": 108.0
                 }
             },
-            "parent": {
-                "parentName": "WinScreen",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "",
                 "z": 0
@@ -9479,6 +8972,7 @@
         {
             "active": true,
             "name": "Yes3",
+            "uuid": 2062208823268769768,
             "tag": {
                 "tagMask": 0
             },
@@ -9580,26 +9074,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "RestartCheck3",
-                "localPos": {
-                    "x": -0.14522917568683625,
-                    "y": -0.12129630148410797,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0546875,
-                    "y": 0.034259259700775149
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 61
@@ -9608,6 +9082,7 @@
         {
             "active": true,
             "name": "No3",
+            "uuid": 14853213955390007304,
             "tag": {
                 "tagMask": 0
             },
@@ -9709,26 +9184,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "RestartCheck3",
-                "localPos": {
-                    "x": -0.054484378546476367,
-                    "y": -0.12129630148410797,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.04270833358168602,
-                    "y": 0.034259259700775149
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 61
@@ -9737,6 +9192,7 @@
         {
             "active": true,
             "name": "Slime V2",
+            "uuid": 13467747073361246097,
             "tag": {
                 "tagMask": 20
             },
@@ -9959,37 +9415,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeHold",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -10012,6 +9437,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeHold",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 3.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10133,6 +9589,7 @@
         {
             "active": true,
             "name": "Slime V2 (2)",
+            "uuid": 3690432272913172450,
             "tag": {
                 "tagMask": 20
             },
@@ -10355,37 +9812,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeHold",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -10408,6 +9834,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeHold",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 3.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10529,6 +9986,7 @@
         {
             "active": true,
             "name": "PressurePlate",
+            "uuid": 8731522054906942659,
             "tag": {
                 "tagMask": 2
             },
@@ -10690,6 +10148,7 @@
         {
             "active": true,
             "name": "WinDoor",
+            "uuid": 4565632354060468153,
             "tag": {
                 "tagMask": 0
             },
@@ -10835,6 +10294,7 @@
         {
             "active": true,
             "name": "EnergyBall",
+            "uuid": 9196197899818134139,
             "tag": {
                 "tagMask": 0
             },
@@ -11103,6 +10563,7 @@
         {
             "active": true,
             "name": "PressurePlate_Win",
+            "uuid": 755071055173098117,
             "tag": {
                 "tagMask": 2
             },
@@ -11265,6 +10726,7 @@
         {
             "active": true,
             "name": "movingplatform",
+            "uuid": 15355864860909980842,
             "tag": {
                 "tagMask": 18
             },
@@ -11417,6 +10879,7 @@
         {
             "active": true,
             "name": "WinMovingWall",
+            "uuid": 11348822246385630262,
             "tag": {
                 "tagMask": 0
             },
@@ -11623,6 +11086,7 @@
         {
             "active": true,
             "name": "MovingWall",
+            "uuid": 4085835288634143122,
             "tag": {
                 "tagMask": 0
             },
@@ -11849,6 +11313,7 @@
         {
             "active": true,
             "name": "MovingWall2",
+            "uuid": 13144101062120269596,
             "tag": {
                 "tagMask": 0
             },
@@ -12180,6 +11645,7 @@
         {
             "active": true,
             "name": "PressurePlate2",
+            "uuid": 8790988618552678697,
             "tag": {
                 "tagMask": 2
             },
@@ -12341,6 +11807,7 @@
         {
             "active": true,
             "name": "GoalText",
+            "uuid": 18101931043937822403,
             "tag": {
                 "tagMask": 0
             },
@@ -12404,6 +11871,7 @@
         {
             "active": true,
             "name": "Background",
+            "uuid": 5704001614893370315,
             "tag": {
                 "tagMask": 16
             },
@@ -12441,6 +11909,7 @@
         {
             "active": true,
             "name": "Tex_bg colour",
+            "uuid": 18106404885772375993,
             "tag": {
                 "tagMask": 0
             },
@@ -12498,6 +11967,7 @@
         {
             "active": true,
             "name": "Tex_bg 1 base",
+            "uuid": 7026888124293007040,
             "tag": {
                 "tagMask": 0
             },
@@ -12547,26 +12017,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Background",
-                "localPos": {
-                    "x": 581.734375,
-                    "y": 7.3304443359375,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1613.1954345703126,
-                    "y": 746.9531860351563
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Background",
                 "z": -100
@@ -12575,6 +12025,7 @@
         {
             "active": true,
             "name": "Tex_bg 1 pillar 2",
+            "uuid": 7753796154320752871,
             "tag": {
                 "tagMask": 0
             },
@@ -12624,26 +12075,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Background",
-                "localPos": {
-                    "x": 1670.98828125,
-                    "y": -253.37962341308595,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 858.08154296875,
-                    "y": 1309.2261962890626
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Background",
                 "z": -100
@@ -12652,6 +12083,7 @@
         {
             "active": true,
             "name": "Tex_bg 1 top",
+            "uuid": 4087664906742837505,
             "tag": {
                 "tagMask": 0
             },
@@ -12701,26 +12133,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Background",
-                "localPos": {
-                    "x": 154.46868896484376,
-                    "y": -165.07293701171876,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1059.8824462890626,
-                    "y": 667.4451293945313
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Background",
                 "z": -100
@@ -12729,6 +12141,7 @@
         {
             "active": true,
             "name": "Tex_bg 1 top",
+            "uuid": 15753521527516706422,
             "tag": {
                 "tagMask": 0
             },
@@ -12778,26 +12191,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Background",
-                "localPos": {
-                    "x": 1374.1396484375,
-                    "y": -153.86849975585938,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1305.8382568359376,
-                    "y": 635.3853149414063
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Background",
                 "z": -100
@@ -12806,6 +12199,7 @@
         {
             "active": true,
             "name": "Middleground",
+            "uuid": 4015633494042804755,
             "tag": {
                 "tagMask": 32
             },
@@ -12843,6 +12237,7 @@
         {
             "active": true,
             "name": "Tex_bg2 base",
+            "uuid": 12194015363874612628,
             "tag": {
                 "tagMask": 0
             },
@@ -12892,26 +12287,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Middleground",
-                "localPos": {
-                    "x": 158.5076904296875,
-                    "y": -160.05599975585938,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 899.2402954101563,
-                    "y": 408.6402587890625
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -12920,6 +12295,7 @@
         {
             "active": true,
             "name": "Tex_bg2 base",
+            "uuid": 638521603277376508,
             "tag": {
                 "tagMask": 0
             },
@@ -12969,26 +12345,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Middleground",
-                "localPos": {
-                    "x": 1006.0128784179688,
-                    "y": -150.32870483398438,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 882.5747680664063,
-                    "y": 394.365478515625
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -12997,6 +12353,7 @@
         {
             "active": true,
             "name": "Tex_bg2 base",
+            "uuid": 7209552184089001082,
             "tag": {
                 "tagMask": 0
             },
@@ -13046,26 +12403,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Middleground",
-                "localPos": {
-                    "x": 1918.3841552734376,
-                    "y": -137.36431884765626,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1053.9906005859376,
-                    "y": 394.30517578125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -13074,6 +12411,7 @@
         {
             "active": true,
             "name": "Tex_bg2 p2",
+            "uuid": 11744105388488188554,
             "tag": {
                 "tagMask": 0
             },
@@ -13123,26 +12461,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Middleground",
-                "localPos": {
-                    "x": 340.7841491699219,
-                    "y": -149.532958984375,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 465.0,
-                    "y": 1195.7991943359376
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -13151,6 +12469,7 @@
         {
             "active": true,
             "name": "Tex_bg 2 p1",
+            "uuid": 14722681173754697087,
             "tag": {
                 "tagMask": 0
             },
@@ -13200,26 +12519,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Middleground",
-                "localPos": {
-                    "x": -4.106727600097656,
-                    "y": -234.98837280273438,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 381.43994140625,
-                    "y": 1292.1982421875
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -13228,6 +12527,7 @@
         {
             "active": true,
             "name": "Tex_bg2 top",
+            "uuid": 16087425393375382376,
             "tag": {
                 "tagMask": 0
             },
@@ -13277,26 +12577,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Middleground",
-                "localPos": {
-                    "x": 56.40332794189453,
-                    "y": -47.27287292480469,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 802.6097412109375,
-                    "y": 494.47113037109377
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -13305,6 +12585,7 @@
         {
             "active": true,
             "name": "Tex_bg2 top",
+            "uuid": 17688593216849298982,
             "tag": {
                 "tagMask": 0
             },
@@ -13354,26 +12635,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Middleground",
-                "localPos": {
-                    "x": 835.1759033203125,
-                    "y": -73.43397521972656,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 811.2728271484375,
-                    "y": 554.7788696289063
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -13382,6 +12643,7 @@
         {
             "active": true,
             "name": "Tex_bg2 top",
+            "uuid": 529111444042347675,
             "tag": {
                 "tagMask": 0
             },
@@ -13431,26 +12693,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Middleground",
-                "localPos": {
-                    "x": 1533.8104248046876,
-                    "y": -62.828495025634769,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 965.4572143554688,
-                    "y": 531.1934814453125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -13459,6 +12701,7 @@
         {
             "active": true,
             "name": "Foreground",
+            "uuid": 12699045741174763190,
             "tag": {
                 "tagMask": 64
             },
@@ -13496,6 +12739,7 @@
         {
             "active": true,
             "name": "Tex_bg3 base",
+            "uuid": 1811493419793195747,
             "tag": {
                 "tagMask": 0
             },
@@ -13545,26 +12789,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Foreground",
-                "localPos": {
-                    "x": -76.36267852783203,
-                    "y": -188.97373962402345,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 488.4152526855469,
-                    "y": 329.4999694824219
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -13573,6 +12797,7 @@
         {
             "active": true,
             "name": "Tex_bg3 base",
+            "uuid": 3163971970973967551,
             "tag": {
                 "tagMask": 0
             },
@@ -13622,26 +12847,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Foreground",
-                "localPos": {
-                    "x": 372.75244140625,
-                    "y": -166.88943481445313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 422.59716796875,
-                    "y": 381.333251953125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -13650,6 +12855,7 @@
         {
             "active": true,
             "name": "Tex_bg3 base",
+            "uuid": 14889594281459289973,
             "tag": {
                 "tagMask": 0
             },
@@ -13699,26 +12905,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Foreground",
-                "localPos": {
-                    "x": 819.28759765625,
-                    "y": -154.73805236816407,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 490.1760559082031,
-                    "y": 421.6575012207031
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -13727,6 +12913,7 @@
         {
             "active": true,
             "name": "Tex_bg3 base",
+            "uuid": 10336364022810864392,
             "tag": {
                 "tagMask": 0
             },
@@ -13776,26 +12963,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Foreground",
-                "localPos": {
-                    "x": 1792.2890625,
-                    "y": -149.14682006835938,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 653.0842895507813,
-                    "y": 348.306396484375
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -13804,6 +12971,7 @@
         {
             "active": true,
             "name": "Tex_bg3 p2",
+            "uuid": 8735383555362210096,
             "tag": {
                 "tagMask": 0
             },
@@ -13853,26 +13021,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Foreground",
-                "localPos": {
-                    "x": 1213.509765625,
-                    "y": -352.1566467285156,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 357.1152038574219,
-                    "y": 1320.8106689453126
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -13881,6 +13029,7 @@
         {
             "active": true,
             "name": "Tex_bg3 top",
+            "uuid": 3866424247403007408,
             "tag": {
                 "tagMask": 0
             },
@@ -13930,26 +13079,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Foreground",
-                "localPos": {
-                    "x": 924.9457397460938,
-                    "y": -21.102645874023439,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 685.0269775390625,
-                    "y": 340.42999267578127
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -13958,6 +13087,7 @@
         {
             "active": true,
             "name": "Tex_bg3 top",
+            "uuid": 14403171217823162986,
             "tag": {
                 "tagMask": 0
             },
@@ -14007,26 +13137,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Foreground",
-                "localPos": {
-                    "x": 1674.5880126953126,
-                    "y": -19.822601318359376,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 823.7294921875,
-                    "y": 326.0249938964844
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -14035,6 +13145,7 @@
         {
             "active": true,
             "name": "Tex_bg3 top",
+            "uuid": 16723932180306506403,
             "tag": {
                 "tagMask": 0
             },
@@ -14084,26 +13195,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "Foreground",
-                "localPos": {
-                    "x": 143.6941375732422,
-                    "y": -28.600387573242189,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 941.5947265625,
-                    "y": 415.3025817871094
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -14112,6 +13203,7 @@
         {
             "active": false,
             "name": "Entity 2006",
+            "uuid": 11107063986904859190,
             "tag": {
                 "tagMask": 0
             },
@@ -14161,26 +13253,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "GoalText",
-                "localPos": {
-                    "x": 2.319999933242798,
-                    "y": 1.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 4.800000190734863,
-                    "y": 4.300000190734863
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "",
                 "z": 0
@@ -14189,6 +13261,7 @@
         {
             "active": true,
             "name": "Tex_tenth",
+            "uuid": 656173817126623403,
             "tag": {
                 "tagMask": 0
             },
@@ -14246,6 +13319,7 @@
         {
             "active": true,
             "name": "Tex_eleventh",
+            "uuid": 10742834895796695399,
             "tag": {
                 "tagMask": 0
             },
@@ -14303,6 +13377,7 @@
         {
             "active": true,
             "name": "PlayerEnergy",
+            "uuid": 1552554211580383695,
             "tag": {
                 "tagMask": 0
             },
@@ -14340,6 +13415,7 @@
         {
             "active": true,
             "name": "BallBG_0",
+            "uuid": 3787811377672007619,
             "tag": {
                 "tagMask": 0
             },
@@ -14387,26 +13463,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "EnergyBall_0",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             },
             "layer": {
@@ -14417,6 +13473,7 @@
         {
             "active": true,
             "name": "EnergyBall_0",
+            "uuid": 17017781420818394357,
             "tag": {
                 "tagMask": 0
             },
@@ -14466,26 +13523,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "PlayerEnergy",
-                "localPos": {
-                    "x": -83.0,
-                    "y": 33.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 30.0,
-                    "y": 15.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14494,6 +13531,7 @@
         {
             "active": true,
             "name": "EnergyBall_1",
+            "uuid": 16795059353399256914,
             "tag": {
                 "tagMask": 0
             },
@@ -14541,26 +13579,6 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
-                }
-            },
-            "parent": {
-                "parentName": "PlayerEnergy",
-                "localPos": {
-                    "x": -78.0,
-                    "y": 33.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 30.0,
-                    "y": 15.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             },
             "layer": {
@@ -14571,6 +13589,7 @@
         {
             "active": true,
             "name": "EnergyBall_2",
+            "uuid": 10277593250216309801,
             "tag": {
                 "tagMask": 0
             },
@@ -14620,26 +13639,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "PlayerEnergy",
-                "localPos": {
-                    "x": -73.0,
-                    "y": 33.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 30.0,
-                    "y": 15.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14648,6 +13647,7 @@
         {
             "active": true,
             "name": "EnergyBall_3",
+            "uuid": 1228121126866719719,
             "tag": {
                 "tagMask": 0
             },
@@ -14697,26 +13697,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "PlayerEnergy",
-                "localPos": {
-                    "x": -68.0,
-                    "y": 33.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 30.0,
-                    "y": 15.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14725,6 +13705,7 @@
         {
             "active": true,
             "name": "EnergyBall_4",
+            "uuid": 8529998538086240199,
             "tag": {
                 "tagMask": 0
             },
@@ -14774,26 +13755,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "PlayerEnergy",
-                "localPos": {
-                    "x": -63.0,
-                    "y": 33.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 30.0,
-                    "y": 15.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14802,6 +13763,7 @@
         {
             "active": true,
             "name": "EnergyBall_5",
+            "uuid": 4582340149693976271,
             "tag": {
                 "tagMask": 0
             },
@@ -14851,26 +13813,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "PlayerEnergy",
-                "localPos": {
-                    "x": -58.0,
-                    "y": 33.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 30.0,
-                    "y": 15.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14879,6 +13821,7 @@
         {
             "active": true,
             "name": "EnergyBall_6",
+            "uuid": 15737135816398138580,
             "tag": {
                 "tagMask": 0
             },
@@ -14928,26 +13871,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "PlayerEnergy",
-                "localPos": {
-                    "x": -53.0,
-                    "y": 33.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 30.0,
-                    "y": 15.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14956,6 +13879,7 @@
         {
             "active": true,
             "name": "EnergyBall_7",
+            "uuid": 662534382297618199,
             "tag": {
                 "tagMask": 0
             },
@@ -15005,26 +13929,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "PlayerEnergy",
-                "localPos": {
-                    "x": -48.0,
-                    "y": 33.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 30.0,
-                    "y": 15.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -15033,6 +13937,7 @@
         {
             "active": true,
             "name": "EnergyBall_8",
+            "uuid": 3161453174340259749,
             "tag": {
                 "tagMask": 0
             },
@@ -15082,26 +13987,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "PlayerEnergy",
-                "localPos": {
-                    "x": -43.0,
-                    "y": 33.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 30.0,
-                    "y": 15.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -15110,6 +13995,7 @@
         {
             "active": true,
             "name": "EnergyBall_9",
+            "uuid": 8029775022707842739,
             "tag": {
                 "tagMask": 0
             },
@@ -15159,26 +14045,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "PlayerEnergy",
-                "localPos": {
-                    "x": -38.0,
-                    "y": 33.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 30.0,
-                    "y": 15.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -15187,6 +14053,7 @@
         {
             "active": true,
             "name": "BallBG_1",
+            "uuid": 12079904615880545448,
             "tag": {
                 "tagMask": 0
             },
@@ -15236,26 +14103,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "EnergyBall_1",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15264,6 +14111,7 @@
         {
             "active": true,
             "name": "BallBG_2",
+            "uuid": 16960019030243579733,
             "tag": {
                 "tagMask": 0
             },
@@ -15313,26 +14161,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "EnergyBall_2",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15341,6 +14169,7 @@
         {
             "active": true,
             "name": "BallBG_3",
+            "uuid": 5519693705186459585,
             "tag": {
                 "tagMask": 0
             },
@@ -15390,26 +14219,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "EnergyBall_3",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15418,6 +14227,7 @@
         {
             "active": true,
             "name": "BallBG_4",
+            "uuid": 8629334817444457421,
             "tag": {
                 "tagMask": 0
             },
@@ -15467,26 +14277,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "EnergyBall_4",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15495,6 +14285,7 @@
         {
             "active": true,
             "name": "BallBG_5",
+            "uuid": 10002785415714881801,
             "tag": {
                 "tagMask": 0
             },
@@ -15544,26 +14335,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "EnergyBall_5",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15572,6 +14343,7 @@
         {
             "active": true,
             "name": "BallBG_6",
+            "uuid": 1202661297230015888,
             "tag": {
                 "tagMask": 0
             },
@@ -15621,26 +14393,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "EnergyBall_6",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15649,6 +14401,7 @@
         {
             "active": true,
             "name": "BallBG_7",
+            "uuid": 11599696062474017266,
             "tag": {
                 "tagMask": 0
             },
@@ -15698,26 +14451,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "EnergyBall_7",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15726,6 +14459,7 @@
         {
             "active": true,
             "name": "BallBG_8",
+            "uuid": 16862252219420173398,
             "tag": {
                 "tagMask": 0
             },
@@ -15775,26 +14509,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "EnergyBall_8",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15803,6 +14517,7 @@
         {
             "active": true,
             "name": "BallBG_9",
+            "uuid": 5203166302649576873,
             "tag": {
                 "tagMask": 0
             },
@@ -15852,26 +14567,6 @@
                     "z": 0.0
                 }
             },
-            "parent": {
-                "parentName": "EnergyBall_9",
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15880,6 +14575,7 @@
         {
             "active": true,
             "name": "BGMManager",
+            "uuid": 11475334039274591349,
             "tag": {
                 "tagMask": 0
             },
@@ -15995,6 +14691,7 @@
         {
             "active": true,
             "name": "AmbianceManager",
+            "uuid": 4423047889439126144,
             "tag": {
                 "tagMask": 0
             },

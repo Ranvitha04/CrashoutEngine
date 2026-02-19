@@ -30,7 +30,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "videobindings.h"
 #include "checkpointbindings.h"
 #include "triggerbindings.h"
-#include "particleComponent.h"
+#include "particlecomponent.h"
 #include <mono/metadata/attrdefs.h>
 #include "collidereventmanager.h"
 #include "performanceSystem.h"

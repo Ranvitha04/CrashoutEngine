@@ -113,6 +113,9 @@ namespace UI {
             if (!ecs.HasComponent<Component::TransformComponent>(e)) {
                 ecs.AddComponent<Component::TransformComponent>(e);
             }
+            if (!ecs.HasComponent<Component::UUIDComponent>(e)) {
+                ecs.AddComponent<Component::UUIDComponent>(e);
+            }
         }
         ImGui::SeparatorText("Prefab Creator");
         ImGui::Text("Entity Counter: %d", ecs.GetComponentArray<Component::NameComponent>().dense.size());
@@ -483,23 +486,53 @@ namespace UI {
 
             ImGui::PushID(ad);
 
-            ImGui::Separator();
-            ImGui::TextUnformatted(ad->name());
+            // --- 1. SETUP COLLAPSIBLE HEADER ---
+            // Framed makes it look like a distinct block (like Unity).
+            // AllowItemOverlap lets us put the Remove button on the same line.
+            ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen |
+                ImGuiTreeNodeFlags_Framed |
+                ImGuiTreeNodeFlags_AllowOverlap;
 
-            // Right-align "Remove"
-            float remove_w = ImGui::CalcTextSize("Remove").x + ImGui::GetStyle().FramePadding.x * 2.0f;
-            float x = ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - remove_w;
-            ImGui::SameLine(x);
-            if (ImGui::SmallButton("Remove")) {
-                ad->remove(ecs, selected);
-                ImGui::PopID();
-                break;
+            ImGui::Separator();
+            //ImGui::TextUnformatted();
+
+            bool isOpen = ImGui::TreeNodeEx((void*)ad, headerFlags, "%s", ad->name());
+
+            // --- 2. RIGHT-ALIGNED REMOVE BUTTON ---
+            // Safety Check: We hide the Remove button for "Core Settings" 
+            // so users don't accidentally delete the Name and UUID!
+            bool isCoreSettings = (std::strcmp(ad->name(), "Core Settings") == 0);
+
+            if (!isCoreSettings) {
+                float remove_w = ImGui::CalcTextSize("Remove").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+                // Calculate position pushed to the far right edge
+                float rightAlignX = ImGui::GetWindowWidth() - remove_w - ImGui::GetStyle().WindowPadding.x;
+
+                ImGui::SameLine(rightAlignX);
+
+                if (ImGui::SmallButton("Remove")) {
+                    ad->remove(ecs, selected);
+
+                    // Cleanup ImGui state before breaking the loop
+                    if (isOpen) ImGui::TreePop();
+                    ImGui::PopID();
+                    break;
+                }
             }
 
+            // --- 3. DRAW INNER COMPONENT UI ---
+            if (isOpen) {
+                ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 6));
+                ImGui::Spacing(); // Add a little breathing room at the top
 
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 6));
-            ad->drawInspector(ecs, selected);
-            ImGui::PopStyleVar();
+                ad->drawInspector(ecs, selected);
+
+                ImGui::Spacing(); // Add a little breathing room at the bottom
+                ImGui::PopStyleVar();
+
+                // TreeNodeEx requires a TreePop if it evaluates to true!
+                ImGui::TreePop();
+            }
 
             ImGui::PopID();
         }

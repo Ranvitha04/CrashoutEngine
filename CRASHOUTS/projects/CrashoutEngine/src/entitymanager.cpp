@@ -16,6 +16,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 // Include components here:
 #include "namecomponent.h"
 #include "layercomponent.h"
+#include "uuidcomponent.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
 #include "rigidbodycomponent.h"
@@ -123,15 +124,22 @@ CrashoutsEngine::Entity CrashoutsEngine::ECS::CloneEntity(CrashoutsEngine::Entit
 
 	// Iterate over all component arrays
 	for (auto const& pair : componentArrays) {
+		// If the component array we are looking at is the UUID array...
+		if (pair.first == std::type_index(typeid(Component::UUIDComponent))) {
+			// Give the clone a BRAND NEW UUID instead of copying the original!
+			if (HasComponent<Component::UUIDComponent>(srcEntityId)) {
+				AddComponent<Component::UUIDComponent>(dstEntityId);
+			}
+			continue; // Skip the standard clone process for UUIDs
+		}
+		// ---------------------------------
+
 		// pair.second is std::unique_ptr<IComponentArray>
 		IComponentArray* componentArray = pair.second.get();
 
 		// Call clonecomponent for this type
 		componentArray->CloneComponent(srcEntityId, dstEntityId);
 	}
-
-	NameComponent* newName = GetComponent<NameComponent>(dstEntityId);
-	if (newName) newName->name += "_Clone" + std::to_string(dstEntityId);
 
 	return dstEntityId;
 }
@@ -160,6 +168,28 @@ CrashoutsEngine::Entity CrashoutsEngine::ECS::FindEntityByName(std::string name)
 	}
 
 	// Return 0 if not found
+	return 0;
+}
+
+/*!
+@brief Finds an entity by its UUID.
+
+@param uuid The 64-bit UUID to search for.
+@return Entity The ID of the found entity, or 0 if not found.
+*/
+CrashoutsEngine::Entity CrashoutsEngine::ECS::FindEntityByUUID(uint64_t uuid) {
+	// If no entities have a UUID yet, just return 0
+	if (componentArrays.find(typeid(Component::UUIDComponent)) == componentArrays.end()) {
+		return 0;
+	}
+
+	auto& uuidCompArray = GetComponentArray<Component::UUIDComponent>();
+	for (size_t i = 0; i < uuidCompArray.dense.size(); ++i) {
+		if (uuidCompArray.dense[i]->id == uuid) {
+			return uuidCompArray.indexToEntity[i];
+		}
+	}
+
 	return 0;
 }
 

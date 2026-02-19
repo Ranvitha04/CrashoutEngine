@@ -37,6 +37,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 // Components
 #include "namecomponent.h"
 #include "transformcomponent.h"
+#include "uuidcomponent.h"
 #include "shapescomponent.h"
 #include "videocomponent.h"
 #include "videoloader.h"
@@ -51,7 +52,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "tilemapcomponent.h"
 #include "hierarchycomponent.h"
 #include "transientcomponent.h"
-#include "particleComponent.h"
+#include "particlecomponent.h"
 #include "activecomponent.h"
 #include "tagcomponent.h"
 
@@ -177,6 +178,7 @@ namespace CrashoutsEngine {
 			const char* const ENTITY_ID = "id";
 			const char* const ACTIVE_COMPONENT = "active";
 			const char* const NAME_COMPONENT = "name";
+			const char* const UUID_COMPONENT = "uuid";
 			const char* const LAYER_COMPONENT = "layer";
 			const char* const TAG_COMPONENT = "tag";
 			const char* const TRANSFORM_COMPONENT = "transform";
@@ -285,6 +287,11 @@ namespace CrashoutsEngine {
 			if (gECS.HasComponent<NameComponent>(id)) {
 				entityValue.AddMember(rapidjson::StringRef(Keys::NAME_COMPONENT),
 					rapidjson::Value(gECS.GetComponent<NameComponent>(id)->name.c_str(), allocator), allocator);
+			}
+
+			if (gECS.HasComponent<Component::UUIDComponent>(id)) {
+				entityValue.AddMember(rapidjson::StringRef(Keys::UUID_COMPONENT), 
+					gECS.GetComponent<Component::UUIDComponent>(id)->id, allocator);
 			}
 
 			// Tag (formerly Layer)
@@ -586,8 +593,9 @@ namespace CrashoutsEngine {
 				const auto& c = *gECS.GetComponent<Component::ParentComponent>(id);
 				if (c.parent != 0) {
 					rapidjson::Value val(rapidjson::kObjectType);
-					if (gECS.HasComponent<NameComponent>(c.parent)) {
-						val.AddMember("parentName", rapidjson::Value(gECS.GetComponent<NameComponent>(c.parent)->name.c_str(), allocator), allocator);
+					if (gECS.HasComponent<Component::UUIDComponent>(c.parent)) {
+						uint64_t pUUID = gECS.GetComponent<Component::UUIDComponent>(c.parent)->id;
+						val.AddMember("parentUUID", pUUID, allocator);
 					}
 					WriteVec3(val, "localPos", c.localPos, allocator);
 					val.AddMember("localRot", c.localRot, allocator);
@@ -747,6 +755,15 @@ namespace CrashoutsEngine {
 		uint32_t DeserializeEntity(const rapidjson::Value& entityValue, std::vector<ParentLinkInfo>* outParentLinks) {
 			ECS& gECS = *ECS::getInstance();
 			Entity newEntity = gECS.CreateEntity();
+
+			if (entityValue.HasMember(Keys::UUID_COMPONENT)) {
+				uint64_t savedUUID = entityValue[Keys::UUID_COMPONENT].GetUint64();
+				gECS.AddComponent<Component::UUIDComponent>(newEntity, savedUUID);
+			}
+			else {
+				// Backward compatibility: If an old scene doesn't have a UUID, generate a new one
+				gECS.AddComponent<Component::UUIDComponent>(newEntity);
+			}
 
 			NameComponent& nameComp = gECS.AddComponent<NameComponent>(newEntity, ("Entity" + std::to_string(newEntity)));
 			gECS.AddComponent<Component::TagComponent>(newEntity); // Tag
@@ -1161,10 +1178,11 @@ namespace CrashoutsEngine {
 			if (entityValue.HasMember(Keys::PARENT_COMPONENT)) {
 				const auto& v = entityValue[Keys::PARENT_COMPONENT];
 				auto& p = gECS.AddComponent<Component::ParentComponent>(newEntity);
-				if (outParentLinks) {
-					const char* pName = GetString(v, "parentName");
-					if (*pName) outParentLinks->push_back({ static_cast<uint32_t>(newEntity), pName });
+
+				if (outParentLinks && v.HasMember("parentUUID")) {
+					outParentLinks->push_back({ static_cast<uint32_t>(newEntity), v["parentUUID"].GetUint64() });
 				}
+
 				if (v.HasMember("localPos")) p.localPos = ReadVec3(v["localPos"]);
 				p.localRot = GetFloat(v, "localRot");
 				if (v.HasMember("localScale")) p.localScale = ReadVec2(v["localScale"]);
@@ -1385,7 +1403,6 @@ namespace CrashoutsEngine {
 			ECS& gECS = *ECS::getInstance();
 
 			{
-
 				auto ids = gECS.GetComponentArray<Component::NameComponent>().indexToEntity;
 
 				for (Entity e : ids) {
@@ -1407,21 +1424,19 @@ namespace CrashoutsEngine {
 			// =========================================================
 			// POST-LOAD: Reconstruct Hierarchy Links
 			// =========================================================
-			// We need to find the entity ID for every parentName we saved.
-			// Since NameComponent isn't usually a map, we iterate (or you can build a temporary map for speed).
+			// Optimization: Build a map of UUID -> EntityID for the loaded scene
+			std::unordered_map<uint64_t, Entity> uuidToEntityMap;
+			const auto& uuidArr = gECS.GetComponentArray<Component::UUIDComponent>();
 
-			// Optimization: Build a map of Name -> EntityID for the loaded scene
-			std::unordered_map<std::string, Entity> nameToEntityMap;
-			const auto& nameArr = gECS.GetComponentArray<NameComponent>();
-			for (Entity e : nameArr.indexToEntity) {
-				if (gECS.HasComponent<NameComponent>(e)) {
-					nameToEntityMap[gECS.GetComponent<NameComponent>(e)->name] = e;
+			for (Entity e : uuidArr.indexToEntity) {
+				if (gECS.HasComponent<Component::UUIDComponent>(e)) {
+					uuidToEntityMap[gECS.GetComponent<Component::UUIDComponent>(e)->id] = e;
 				}
 			}
 
 			for (const auto& req : parentLinksToProcess) {
-				auto it = nameToEntityMap.find(req.parentName);
-				if (it != nameToEntityMap.end()) {
+				auto it = uuidToEntityMap.find(req.parentUUID);
+				if (it != uuidToEntityMap.end()) {
 					Entity parentEntity = it->second;
 
 					// 1. Set the ID in the child's ParentComponent
@@ -1430,8 +1445,6 @@ namespace CrashoutsEngine {
 					}
 
 					// 2. Add to parent's ChildrenComponent
-					// We manually do this instead of calling AttachChild to avoid re-calculating 
-					// the local transforms (since we just loaded the correct local values from file).
 					if (!gECS.HasComponent<Component::ChildrenComponent>(parentEntity)) {
 						gECS.AddComponent<Component::ChildrenComponent>(parentEntity);
 					}
@@ -1440,7 +1453,7 @@ namespace CrashoutsEngine {
 					childComp->children.push_back(req.childEntity);
 				}
 				else {
-					std::cout << "WARNING: Could not find parent '" << req.parentName
+					std::cout << "WARNING: Could not find parent UUID '" << req.parentUUID
 						<< "' for child Entity " << req.childEntity << std::endl;
 				}
 			}

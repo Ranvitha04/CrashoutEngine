@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "box",
+            "uuid": 4013384216326270183,
             "tag": {
                 "tagMask": 0
             },
@@ -98,6 +99,7 @@
         {
             "active": true,
             "name": "camera",
+            "uuid": 12987101646256315762,
             "tag": {
                 "tagMask": 0
             },
@@ -132,6 +134,7 @@
         {
             "active": true,
             "name": "Circle",
+            "uuid": 4055571468677838983,
             "tag": {
                 "tagMask": 0
             },
@@ -223,6 +226,7 @@
         {
             "active": true,
             "name": "box_OBB",
+            "uuid": 9116116225431277193,
             "tag": {
                 "tagMask": 0
             },
@@ -319,6 +323,7 @@
         {
             "active": true,
             "name": "Platform",
+            "uuid": 14920924153357791528,
             "tag": {
                 "tagMask": 0
             },
@@ -414,6 +419,7 @@
         {
             "active": true,
             "name": "Platform_Clone7_Clone8_Clone9",
+            "uuid": 6901265516548289108,
             "tag": {
                 "tagMask": 0
             },
@@ -509,6 +515,7 @@
         {
             "active": true,
             "name": "Platform_Clone7_Clone8",
+            "uuid": 5305178426144241984,
             "tag": {
                 "tagMask": 0
             },
@@ -604,6 +611,7 @@
         {
             "active": true,
             "name": "Slope",
+            "uuid": 8216098320799423315,
             "tag": {
                 "tagMask": 0
             },
@@ -707,6 +715,7 @@
         {
             "active": true,
             "name": "triangle",
+            "uuid": 102628735235516516,
             "tag": {
                 "tagMask": 0
             },
@@ -810,6 +819,7 @@
         {
             "active": true,
             "name": "Line",
+            "uuid": 16242885115960622311,
             "tag": {
                 "tagMask": 0
             },
@@ -880,6 +890,7 @@
         {
             "active": true,
             "name": "PressurePlate",
+            "uuid": 10231239256673630464,
             "tag": {
                 "tagMask": 2
             },
@@ -1029,6 +1040,7 @@
         {
             "active": true,
             "name": "PressurePlate",
+            "uuid": 8565784916484954160,
             "tag": {
                 "tagMask": 2
             },
@@ -1178,6 +1190,7 @@
         {
             "active": true,
             "name": "MovingWall",
+            "uuid": 8842800936241447908,
             "tag": {
                 "tagMask": 0
             },
@@ -1354,53 +1367,20 @@
         {
             "active": true,
             "name": "testparticle",
+            "uuid": 17589972502405964632,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 102.92765808105469,
-                    "y": 17.808773040771486,
+                    "x": 14.017520904541016,
+                    "y": 26.4129638671875,
                     "z": 0.0
                 },
                 "size": {
                     "x": 1.0,
                     "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
                 }
             },
             "layer": {
@@ -1409,7 +1389,7 @@
             },
             "particle": {
                 "isEmitting": true,
-                "useWorldSpace": true,
+                "useWorldSpace": false,
                 "maxParticles": 1000,
                 "emitRate": 100.0,
                 "playOnStop": true,
@@ -1472,14 +1452,15 @@
         {
             "active": true,
             "name": "texttest",
+            "uuid": 6272208849524642146,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 96.31597900390625,
-                    "y": 38.53355026245117,
+                    "x": 74.15126037597656,
+                    "y": 3.3518996238708498,
                     "z": 0.0
                 },
                 "size": {
@@ -1490,7 +1471,163 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "TEST",
-                "scale": 6.599999904632568,
+                "scale": 5.900000095367432,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 105
+            }
+        },
+        {
+            "active": true,
+            "name": "Entity 26",
+            "uuid": 12767836390771735915,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Entity 27",
+            "uuid": 4830011979600231058,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "texttest_Clone28_29",
+            "uuid": 2259181766745073121,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 74.15126037597656,
+                    "y": 3.3518996238708498,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "TEST",
+                "scale": 5.900000095367432,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 105
+            }
+        },
+        {
+            "active": true,
+            "name": "texttest_Clone28_29_Clone29_30",
+            "uuid": 6510727778447069403,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 74.15126037597656,
+                    "y": 3.3518996238708498,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "TEST",
+                "scale": 5.900000095367432,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0

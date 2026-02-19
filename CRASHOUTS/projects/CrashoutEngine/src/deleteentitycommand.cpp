@@ -10,7 +10,7 @@ All content � 2025 DigiPen Institute of Technology Singapore. All rights reser
 #include "sceneasset.h"
 #include "entitymanager.h"
 #include "hierarchycomponent.h"
-#include "namecomponent.h"
+#include "uuidcomponent.h"
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
@@ -96,10 +96,10 @@ namespace CrashoutsEngine {
         // B) Outside the restored group (the original parent of the root)
 
         // Optimization: Map Name -> NewEntityID for the restored group
-        std::unordered_map<std::string, Entity> restoredMap;
+        std::unordered_map<uint64_t, Entity> restoredMap;
         for (Entity e : restoredEntities) {
-            if (ecs.HasComponent<Component::NameComponent>(e)) {
-                restoredMap[ecs.GetComponent<Component::NameComponent>(e)->name] = e;
+            if (ecs.HasComponent<Component::UUIDComponent>(e)) {
+                restoredMap[ecs.GetComponent<Component::UUIDComponent>(e)->id] = e;
             }
         }
 
@@ -108,13 +108,13 @@ namespace CrashoutsEngine {
             Entity parent = 0;
 
             // Try to find parent in restored group first
-            auto it = restoredMap.find(req.parentName);
+            auto it = restoredMap.find(req.parentUUID);
             if (it != restoredMap.end()) {
                 parent = it->second;
             }
             // Else look globally (for external parent)
             else {
-                parent = ecs.FindEntityByName(req.parentName);
+                parent = ecs.FindEntityByUUID(req.parentUUID);
             }
 
             if (parent != 0) {
@@ -131,8 +131,8 @@ namespace CrashoutsEngine {
 
         // Force re-attach root to original parent ID if valid
         if (m_originalParentId != 0) {
-            // Check if parent still exists has NameComponent is a good proxy for 'alive'
-            if (ecs.HasComponent<Component::NameComponent>(m_originalParentId)) {
+            // Check if parent still exists has UUIDComponent is a good proxy for 'alive'
+            if (ecs.HasComponent<Component::UUIDComponent>(m_originalParentId)) {
                 
                 // Fix ParentComponent on Child
                 if (!ecs.HasComponent<Component::ParentComponent>(newRootId)) {

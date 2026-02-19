@@ -10,7 +10,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "debugmenu_internals.h"
 #include "deleteentitycommand.h"
 
-#include "particleComponent.h"
+#include "particlecomponent.h"
 #include "textcomponent.h"
 
 using namespace CrashoutsEngine;

@@ -26,7 +26,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "glapp.h"
 
 #include "guicomponent.h"
-#include "particleComponent.h"
+#include "particlecomponent.h"
 #include "shapescomponent.h"
 #include "transformcomponent.h"
 //#include "namecomponent.h"
@@ -149,7 +149,7 @@ namespace Scene {
 		/*!
 		@brief       Renders a single text component and handles the blinking cursor.
 		*/
-		static void RenderSingleText(ECS& globalECS, Entity id, const glm::mat4& viewMat, const glm::mat4& projMat) {
+		static void RenderSingleText(ECS& globalECS, Entity id) {
 
 			// 1. Reset Shader
 			Component::Rendering& renderer = Component::Rendering::Get();
@@ -617,7 +617,7 @@ namespace Scene {
 
 				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
 				if (pc) {
-					// Call the Update function declared in particleComponent.h
+					// Call the Update function declared in particlecomponent.h
 					if (engineState == EngineState::PLAY || pc->playOnStop) ParticleSystem::ParticleUpdate(id, *pc, dt);
 					else pc->data.activeCount = 0;
 				}
@@ -636,8 +636,6 @@ namespace Scene {
 			// Temp buffers for transforms
 			static std::vector<CEVec3> s_posBuffer;
 			static std::vector<CEVec2> s_uvOffsetBuffer;
-
-			auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
 
 			ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
 			TransformComponent* tc = globalECS.GetComponent<TransformComponent>(id);
@@ -1058,7 +1056,7 @@ namespace Scene {
 					batcher.Flush();
 
 					// 2. Draw the text immediately using the new single-text function
-					Scene::UI::RenderSingleText(globalECS, item.entity, viewMat, projMat);
+					Scene::UI::RenderSingleText(globalECS, item.entity);
 
 					// 3. Restore Instanced Shader & Uniforms for next shapes
 					renderer.shdr_pgm_instanced->Use();

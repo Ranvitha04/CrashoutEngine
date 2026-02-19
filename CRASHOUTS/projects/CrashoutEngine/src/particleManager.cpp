@@ -9,7 +9,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 */
 
-#include "particleComponent.h"
+#include "particlecomponent.h"
 #include "entitymanager.h"
 #include "transformcomponent.h"
 #include "CEMath.h"

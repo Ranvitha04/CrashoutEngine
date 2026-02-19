@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "Rock_TileMap",
+            "uuid": 4618076568854425896,
             "tag": {
                 "tagMask": 0
             },
@@ -14332,6 +14333,7 @@
         {
             "active": true,
             "name": "Player",
+            "uuid": 11363379617508584852,
             "tag": {
                 "tagMask": 8
             },
@@ -14550,37 +14552,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerSwitch",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
@@ -14647,6 +14618,37 @@
                         ]
                     },
                     {
+                        "name": "playerJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerIdleLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
@@ -14669,6 +14671,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14730,37 +14763,6 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerJumpLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
@@ -14783,37 +14785,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14866,6 +14837,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14977,6 +14979,7 @@
         {
             "active": true,
             "name": "Post-Processing",
+            "uuid": 4364668184050056988,
             "tag": {
                 "tagMask": 0
             },
@@ -15006,6 +15009,7 @@
         {
             "active": true,
             "name": "BG_TileMap",
+            "uuid": 11560634710822674468,
             "tag": {
                 "tagMask": 0
             },
@@ -15998,6 +16002,7 @@
         {
             "active": true,
             "name": "Tex_foreground base",
+            "uuid": 1778011090916187262,
             "tag": {
                 "tagMask": 0
             },
@@ -16055,6 +16060,7 @@
         {
             "active": true,
             "name": "Tex_foreground top",
+            "uuid": 340827855800711802,
             "tag": {
                 "tagMask": 0
             },
@@ -16112,6 +16118,7 @@
         {
             "active": true,
             "name": "foreground",
+            "uuid": 5985779190249277891,
             "tag": {
                 "tagMask": 0
             },
@@ -16135,6 +16142,7 @@
         {
             "active": true,
             "name": "background 1",
+            "uuid": 17964738744556523070,
             "tag": {
                 "tagMask": 0
             },
@@ -16158,6 +16166,7 @@
         {
             "active": true,
             "name": "Tex_bg 1 base",
+            "uuid": 3209072509045439752,
             "tag": {
                 "tagMask": 0
             },
@@ -16215,6 +16224,7 @@
         {
             "active": true,
             "name": "Tex_lava near",
+            "uuid": 14219880653685768663,
             "tag": {
                 "tagMask": 0
             },
@@ -16272,6 +16282,7 @@
         {
             "active": true,
             "name": "Tex_bg 1 top",
+            "uuid": 5311767257368469917,
             "tag": {
                 "tagMask": 0
             },
@@ -16329,6 +16340,7 @@
         {
             "active": true,
             "name": "Tex_bg 1 top (2)",
+            "uuid": 14122443473407758915,
             "tag": {
                 "tagMask": 0
             },
@@ -16386,6 +16398,7 @@
         {
             "active": true,
             "name": "Tex_bg 1 pillar",
+            "uuid": 5702078135642127526,
             "tag": {
                 "tagMask": 0
             },
@@ -16443,6 +16456,7 @@
         {
             "active": true,
             "name": "Tex_bg 1 pillar 2",
+            "uuid": 14219778882892847769,
             "tag": {
                 "tagMask": 0
             },
@@ -16500,6 +16514,7 @@
         {
             "active": true,
             "name": "background 2",
+            "uuid": 11231763315920366268,
             "tag": {
                 "tagMask": 0
             },
@@ -16523,6 +16538,7 @@
         {
             "active": true,
             "name": "Tex_bg2 top",
+            "uuid": 16426729389700142538,
             "tag": {
                 "tagMask": 0
             },
@@ -16580,6 +16596,7 @@
         {
             "active": true,
             "name": "Tex_bg2 top_Clone(2)",
+            "uuid": 12731974004489973995,
             "tag": {
                 "tagMask": 0
             },
@@ -16637,6 +16654,7 @@
         {
             "active": true,
             "name": "Tex_bg2 base",
+            "uuid": 8749932486134525294,
             "tag": {
                 "tagMask": 0
             },
@@ -16694,6 +16712,7 @@
         {
             "active": true,
             "name": "Tex_bg 2 p1",
+            "uuid": 6442622979235392965,
             "tag": {
                 "tagMask": 0
             },
@@ -16751,6 +16770,7 @@
         {
             "active": true,
             "name": "Tex_bg2 p2",
+            "uuid": 10627787867460033439,
             "tag": {
                 "tagMask": 0
             },
@@ -16808,6 +16828,7 @@
         {
             "active": true,
             "name": "Tex_bg 2 p1_Clone (2)",
+            "uuid": 17523454641803486089,
             "tag": {
                 "tagMask": 0
             },
@@ -16865,6 +16886,7 @@
         {
             "active": true,
             "name": "background 3",
+            "uuid": 18119209653528161839,
             "tag": {
                 "tagMask": 0
             },
@@ -16888,6 +16910,7 @@
         {
             "active": true,
             "name": "Tex_bg3 base",
+            "uuid": 17986835706908774213,
             "tag": {
                 "tagMask": 0
             },
@@ -16945,6 +16968,7 @@
         {
             "active": true,
             "name": "Tex_bg3 top",
+            "uuid": 1524132706490285068,
             "tag": {
                 "tagMask": 0
             },
@@ -17002,6 +17026,7 @@
         {
             "active": true,
             "name": "Tex_bg3 p2",
+            "uuid": 7818990792223933799,
             "tag": {
                 "tagMask": 0
             },
@@ -17059,6 +17084,7 @@
         {
             "active": true,
             "name": "Tex_bg3 p2(2)",
+            "uuid": 7762535076302141724,
             "tag": {
                 "tagMask": 0
             },
@@ -17116,6 +17142,7 @@
         {
             "active": true,
             "name": "Tex_lava far",
+            "uuid": 1074477290829872466,
             "tag": {
                 "tagMask": 0
             },
@@ -17173,6 +17200,7 @@
         {
             "active": true,
             "name": "Tex_bg colour",
+            "uuid": 4810279008022330842,
             "tag": {
                 "tagMask": 0
             },
@@ -17230,6 +17258,7 @@
         {
             "active": true,
             "name": "PressurePlate",
+            "uuid": 6002923542030080968,
             "tag": {
                 "tagMask": 2
             },
@@ -17337,6 +17366,7 @@
         {
             "active": true,
             "name": "Wall",
+            "uuid": 6429733633348972216,
             "tag": {
                 "tagMask": 2
             },
@@ -17409,6 +17439,7 @@
         {
             "active": true,
             "name": "Wall(1)",
+            "uuid": 16887112262824999175,
             "tag": {
                 "tagMask": 2
             },
@@ -17504,6 +17535,7 @@
         {
             "active": true,
             "name": "Wall(2)",
+            "uuid": 11786939926240677603,
             "tag": {
                 "tagMask": 2
             },
@@ -17599,6 +17631,7 @@
         {
             "active": true,
             "name": "Wall(3)",
+            "uuid": 6037534429557994028,
             "tag": {
                 "tagMask": 2
             },
@@ -17694,6 +17727,7 @@
         {
             "active": true,
             "name": "Wall(4)",
+            "uuid": 16862531316214382170,
             "tag": {
                 "tagMask": 2
             },
@@ -17789,6 +17823,7 @@
         {
             "active": true,
             "name": "Wall(5)",
+            "uuid": 14933704350519231710,
             "tag": {
                 "tagMask": 2
             },
@@ -17884,6 +17919,7 @@
         {
             "active": true,
             "name": "Wall2",
+            "uuid": 3334422752008167352,
             "tag": {
                 "tagMask": 0
             },
@@ -17995,6 +18031,7 @@
         {
             "active": true,
             "name": "PressurePlate2",
+            "uuid": 8740937981833062683,
             "tag": {
                 "tagMask": 2
             },
@@ -18101,6 +18138,7 @@
         {
             "active": true,
             "name": "PressurePlate3",
+            "uuid": 4089953153595759152,
             "tag": {
                 "tagMask": 2
             },
@@ -18203,6 +18241,7 @@
         {
             "active": true,
             "name": "Wall3",
+            "uuid": 9595602347646440348,
             "tag": {
                 "tagMask": 0
             },
@@ -18319,6 +18358,7 @@
         {
             "active": true,
             "name": "PressurePlate4",
+            "uuid": 10610065978351789022,
             "tag": {
                 "tagMask": 2
             },
@@ -18421,6 +18461,7 @@
         {
             "active": true,
             "name": "PressurePlate5",
+            "uuid": 10941605180367642041,
             "tag": {
                 "tagMask": 2
             },
@@ -18523,6 +18564,7 @@
         {
             "active": true,
             "name": "PressurePlate6",
+            "uuid": 14159749392219739397,
             "tag": {
                 "tagMask": 0
             },
@@ -18625,6 +18667,7 @@
         {
             "active": true,
             "name": "PressurePlate7",
+            "uuid": 102805502316377654,
             "tag": {
                 "tagMask": 0
             },
@@ -18727,6 +18770,7 @@
         {
             "active": true,
             "name": "Exit",
+            "uuid": 18291456481999264157,
             "tag": {
                 "tagMask": 0
             },
@@ -18826,6 +18870,7 @@
         {
             "active": true,
             "name": "Wall4",
+            "uuid": 3648841224523931559,
             "tag": {
                 "tagMask": 2
             },
@@ -18898,6 +18943,7 @@
         {
             "active": true,
             "name": "Wall4(1)",
+            "uuid": 2968894688183443622,
             "tag": {
                 "tagMask": 2
             },
@@ -18989,6 +19035,7 @@
         {
             "active": true,
             "name": "Wall4(1)_Clone2765",
+            "uuid": 6811458159547830080,
             "tag": {
                 "tagMask": 2
             },
@@ -19080,6 +19127,7 @@
         {
             "active": true,
             "name": "Wall4(1)_Clone2765_Clone2766",
+            "uuid": 7374302897992293108,
             "tag": {
                 "tagMask": 2
             },
@@ -19171,6 +19219,7 @@
         {
             "active": true,
             "name": "Wall4(1)_Clone2765_Clone2766_Clone2767",
+            "uuid": 16979350943957245981,
             "tag": {
                 "tagMask": 2
             },
@@ -19262,6 +19311,7 @@
         {
             "active": true,
             "name": "MovingPlatform",
+            "uuid": 3707781470489481329,
             "tag": {
                 "tagMask": 2
             },
@@ -19368,6 +19418,7 @@
         {
             "active": true,
             "name": "Wall5",
+            "uuid": 11807241925327031416,
             "tag": {
                 "tagMask": 0
             },
@@ -19479,6 +19530,7 @@
         {
             "active": true,
             "name": "Wall6",
+            "uuid": 8371610739498753025,
             "tag": {
                 "tagMask": 0
             },
@@ -19551,6 +19603,7 @@
         {
             "active": true,
             "name": "New Child",
+            "uuid": 15495847661094583096,
             "tag": {
                 "tagMask": 2
             },
@@ -19642,6 +19695,7 @@
         {
             "active": true,
             "name": "New Child_Clone2805",
+            "uuid": 12255217768610494892,
             "tag": {
                 "tagMask": 2
             },
@@ -19733,6 +19787,7 @@
         {
             "active": true,
             "name": "New Child_Clone2805_Clone2806",
+            "uuid": 14248450119167480927,
             "tag": {
                 "tagMask": 2
             },
@@ -19824,6 +19879,7 @@
         {
             "active": true,
             "name": "New Child_Clone2805_Clone2806_Clone2807",
+            "uuid": 15815665351749847321,
             "tag": {
                 "tagMask": 2
             },
@@ -19915,6 +19971,7 @@
         {
             "active": true,
             "name": "New Child_Clone2805_Clone2806_Clone2807_Clone2808",
+            "uuid": 7065266448852172602,
             "tag": {
                 "tagMask": 2
             },
@@ -20006,6 +20063,7 @@
         {
             "active": true,
             "name": "New Child_Clone2805_Clone2806_Clone2807_Clone2808_Clone2809",
+            "uuid": 4758600662244435278,
             "tag": {
                 "tagMask": 2
             },
@@ -20097,6 +20155,7 @@
         {
             "active": true,
             "name": "MovingPlatform(1)",
+            "uuid": 7561181714706076236,
             "tag": {
                 "tagMask": 2
             },
@@ -20203,6 +20262,7 @@
         {
             "active": true,
             "name": "PauseScreen",
+            "uuid": 10570700377950228110,
             "tag": {
                 "tagMask": 0
             },
@@ -20260,6 +20320,7 @@
         {
             "active": true,
             "name": "PauseBG",
+            "uuid": 8659543778314327843,
             "tag": {
                 "tagMask": 0
             },
@@ -20317,6 +20378,7 @@
         {
             "active": true,
             "name": "PauseQuitBtn",
+            "uuid": 3527167443323885444,
             "tag": {
                 "tagMask": 0
             },
@@ -20434,6 +20496,7 @@
         {
             "active": true,
             "name": "PauseResumeBtn",
+            "uuid": 7976777658107361377,
             "tag": {
                 "tagMask": 0
             },
@@ -20551,6 +20614,7 @@
         {
             "active": true,
             "name": "SettingsBtn",
+            "uuid": 4830102396613539380,
             "tag": {
                 "tagMask": 0
             },
@@ -20668,6 +20732,7 @@
         {
             "active": true,
             "name": "Ball",
+            "uuid": 7282712422995696631,
             "tag": {
                 "tagMask": 0
             },
@@ -20888,6 +20953,7 @@
         {
             "active": true,
             "name": "Slime",
+            "uuid": 17782517082380198275,
             "tag": {
                 "tagMask": 16
             },
@@ -21005,9 +21071,10 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 150.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]
@@ -21115,37 +21182,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21175,6 +21211,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21289,6 +21356,7 @@
         {
             "active": true,
             "name": "Slime (2)",
+            "uuid": 14616900989443730336,
             "tag": {
                 "tagMask": 16
             },
@@ -21402,9 +21470,10 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 150.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]
@@ -21512,6 +21581,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21541,37 +21641,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21686,6 +21755,7 @@
         {
             "active": true,
             "name": "Slime (3)",
+            "uuid": 1913784973030834717,
             "tag": {
                 "tagMask": 16
             },
@@ -21799,9 +21869,10 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 150.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]
@@ -21909,37 +21980,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21969,6 +22009,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22083,6 +22154,7 @@
         {
             "active": true,
             "name": "BarUI",
+            "uuid": 16736960914264265773,
             "tag": {
                 "tagMask": 0
             },
@@ -22106,6 +22178,7 @@
         {
             "active": true,
             "name": "Bar Graphic",
+            "uuid": 17817912148037649734,
             "tag": {
                 "tagMask": 0
             },
@@ -22163,6 +22236,7 @@
         {
             "active": true,
             "name": "Bar Graphic_BG",
+            "uuid": 10701232030167031522,
             "tag": {
                 "tagMask": 0
             },
@@ -22220,6 +22294,7 @@
         {
             "active": true,
             "name": "Slime (4)",
+            "uuid": 17837080616465510595,
             "tag": {
                 "tagMask": 16
             },
@@ -22333,9 +22408,10 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 50.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]
@@ -22443,6 +22519,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22472,37 +22579,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22617,6 +22693,7 @@
         {
             "active": true,
             "name": "Slime (5)",
+            "uuid": 12182531209940777311,
             "tag": {
                 "tagMask": 16
             },
@@ -22730,9 +22807,10 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 50.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]
@@ -22840,6 +22918,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22869,37 +22978,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23014,6 +23092,7 @@
         {
             "active": true,
             "name": "Slime (6)",
+            "uuid": 14218540751012625871,
             "tag": {
                 "tagMask": 16
             },
@@ -23127,9 +23206,10 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 50.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]
@@ -23237,37 +23317,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -23297,6 +23346,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23411,6 +23491,7 @@
         {
             "active": true,
             "name": "Ball (2)",
+            "uuid": 17379496894830970792,
             "tag": {
                 "tagMask": 0
             },
@@ -23631,6 +23712,7 @@
         {
             "active": true,
             "name": "GameOverScreen",
+            "uuid": 5611330434644077868,
             "tag": {
                 "tagMask": 0
             },
@@ -23688,6 +23770,7 @@
         {
             "active": true,
             "name": "GameOverBG",
+            "uuid": 1291604144154075941,
             "tag": {
                 "tagMask": 0
             },
@@ -23745,6 +23828,7 @@
         {
             "active": true,
             "name": "GAMEOVER",
+            "uuid": 16694822493380362180,
             "tag": {
                 "tagMask": 0
             },
@@ -23798,6 +23882,7 @@
         {
             "active": true,
             "name": "RestartBtn",
+            "uuid": 18207207707289040210,
             "tag": {
                 "tagMask": 0
             },
@@ -23948,6 +24033,7 @@
         {
             "active": true,
             "name": "QuitBtn",
+            "uuid": 9024496036286915686,
             "tag": {
                 "tagMask": 0
             },
@@ -24098,6 +24184,7 @@
         {
             "active": true,
             "name": "WinScreen",
+            "uuid": 8441273204163870923,
             "tag": {
                 "tagMask": 0
             },
@@ -24163,6 +24250,7 @@
         {
             "active": true,
             "name": "WinMessage",
+            "uuid": 5971964479310360538,
             "tag": {
                 "tagMask": 0
             },
@@ -24216,6 +24304,7 @@
         {
             "active": true,
             "name": "QuitBtn",
+            "uuid": 9654743412922301005,
             "tag": {
                 "tagMask": 0
             },
@@ -24366,6 +24455,7 @@
         {
             "active": true,
             "name": "Tex_foreground top_Clone2826",
+            "uuid": 1812457928474867203,
             "tag": {
                 "tagMask": 0
             },
@@ -24423,6 +24513,7 @@
         {
             "active": true,
             "name": "ReturnButton",
+            "uuid": 2469312893908795680,
             "tag": {
                 "tagMask": 0
             },
@@ -24573,6 +24664,7 @@
         {
             "active": true,
             "name": "Pause Texts",
+            "uuid": 15849544532734816077,
             "tag": {
                 "tagMask": 0
             },

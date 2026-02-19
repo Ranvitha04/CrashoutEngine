@@ -88,7 +88,7 @@ namespace CrashoutsEngine {
         
         struct ParentLinkInfo {
             uint32_t childEntity;
-            std::string parentName;
+            uint64_t parentUUID;
         };
         uint32_t DeserializeEntity(const rapidjson::Value& entityValue, std::vector<ParentLinkInfo>* outParentLinks = nullptr);
     }

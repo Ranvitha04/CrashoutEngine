@@ -35,7 +35,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "uilayoutcomponent.h"
 #include "layercomponent.h"
 #include "activecomponent.h"
-#include "particleComponent.h"
+#include "particlecomponent.h"
 #include "rendering.h"
 #include "tagcomponent.h"
 #include <mono/metadata/attrdefs.h>

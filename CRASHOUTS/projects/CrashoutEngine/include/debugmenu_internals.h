@@ -40,6 +40,7 @@ All content © 2025 DigiPen Institute of Technology Singapore. All rights reserve
 #include "entitymanager.h"
 #include "namecomponent.h"
 #include "transformcomponent.h"
+#include "uuidcomponent.h"
 #include "shapescomponent.h"
 #include "audiocomponent.h"
 #include "tilemapcomponent.h"

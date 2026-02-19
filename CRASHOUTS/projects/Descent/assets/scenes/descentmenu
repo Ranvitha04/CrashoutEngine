@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "BG",
+            "uuid": 9510683312960717333,
             "tag": {
                 "tagMask": 0
             },
@@ -64,13 +65,14 @@
                 }
             },
             "layer": {
-                "layerName": "StaticBackground",
+                "layerName": "Default",
                 "z": 0
             }
         },
         {
             "active": true,
             "name": "QuitBtn",
+            "uuid": 13676944874615048491,
             "tag": {
                 "tagMask": 0
             },
@@ -231,6 +233,7 @@
         {
             "active": true,
             "name": "StartBtn",
+            "uuid": 16826164419070565077,
             "tag": {
                 "tagMask": 0
             },
@@ -391,6 +394,7 @@
         {
             "active": true,
             "name": "SettingsBtn",
+            "uuid": 3700873745692687641,
             "tag": {
                 "tagMask": 0
             },
@@ -551,6 +555,7 @@
         {
             "active": true,
             "name": "Title",
+            "uuid": 17358051409466840617,
             "tag": {
                 "tagMask": 0
             },
@@ -608,6 +613,7 @@
         {
             "active": true,
             "name": "DONT REMOVE [CAUSES PROBLEM]",
+            "uuid": 5854174914781866955,
             "tag": {
                 "tagMask": 0
             },
@@ -665,6 +671,7 @@
         {
             "active": true,
             "name": "MusicManager",
+            "uuid": 13546630103350545041,
             "tag": {
                 "tagMask": 0
             },
@@ -780,6 +787,7 @@
         {
             "active": true,
             "name": "AmbianceManager",
+            "uuid": 7344392211008258358,
             "tag": {
                 "tagMask": 0
             },
@@ -895,6 +903,7 @@
         {
             "active": true,
             "name": "Yes",
+            "uuid": 5468238698504213394,
             "tag": {
                 "tagMask": 0
             },
@@ -1004,26 +1013,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "QuitCheck",
-                "localPos": {
-                    "x": -53.2227668762207,
-                    "y": -148.9629669189453,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 61.79999923706055,
-                    "y": 26.799999237060548
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "YesNo",
                 "z": 0
@@ -1032,6 +1021,7 @@
         {
             "active": true,
             "name": "No",
+            "uuid": 14924154652597184911,
             "tag": {
                 "tagMask": 0
             },
@@ -1141,26 +1131,6 @@
                 },
                 "uiLayout": 4
             },
-            "parent": {
-                "parentName": "QuitCheck",
-                "localPos": {
-                    "x": 51.73967742919922,
-                    "y": -148.9629669189453,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 54.5,
-                    "y": 26.799999237060548
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
                 "layerName": "YesNo",
                 "z": 0
@@ -1169,6 +1139,7 @@
         {
             "active": false,
             "name": "QuitCheck",
+            "uuid": 17994454554155245929,
             "tag": {
                 "tagMask": 0
             },
@@ -1198,8 +1169,8 @@
     },
     "layer_visibility": {
         "Default": true,
-        "Ground": false,
-        "Player": false,
+        "Ground": true,
+        "Player": true,
         "YesNo": true
     },
     "tag_mapping": {
