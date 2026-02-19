@@ -10,6 +10,9 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "debugmenu_internals.h"
 #include "deleteentitycommand.h"
 
+#include "particleComponent.h"
+#include "textcomponent.h"
+
 using namespace CrashoutsEngine;
 
 namespace UI {
@@ -367,8 +370,42 @@ namespace UI {
                     float m[16];
                     ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
 
-                    const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
-                    const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
+                    // ==========================================
+                    // DETERMINE COORDINATE SPACE
+                    // ==========================================
+                    bool isWorldSpace = true;
+
+                    // Check if it's a shape or text and if it's set to Screen Space
+                    if (ecs.HasComponent<Component::ShapeComponent>(root)) {
+                        isWorldSpace = ecs.GetComponent<Component::ShapeComponent>(root)->isWorldSpace;
+                    }
+                    else if (ecs.HasComponent<Component::TextComponent>(root)) {
+                        isWorldSpace = ecs.GetComponent<Component::TextComponent>(root)->isWorldSpace;
+                    }
+                    else if (ecs.HasComponent<Component::ParticleComponent>(root)) {
+                        isWorldSpace = ecs.GetComponent<Component::ParticleComponent>(root)->useWorldSpace;
+                    }
+
+                    glm::mat4 gizmoView;
+                    glm::mat4 gizmoProj;
+
+                    if (isWorldSpace) {
+                        // Use World Camera
+                        gizmoView = Component::Rendering::Get().viewMatrix;
+                        gizmoProj = Component::Rendering::Get().projectionMatrix;
+                    }
+                    else {
+                        // Use Screen Space UI Camera (Matches RenderScene logic)
+                        float aspect = (float)GLApp::width / (float)GLApp::height;
+                        float h = 100.0f;
+                        float w = h * aspect;
+                        gizmoProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
+                        gizmoView = glm::mat4(1.0f);
+                    }
+
+                    const float* view = glm::value_ptr(gizmoView);
+                    const float* proj = glm::value_ptr(gizmoProj);
+                    // ==========================================
 
                     const float* snapPtr = nullptr;
                     float snap[3]{};

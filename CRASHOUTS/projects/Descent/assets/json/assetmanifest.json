@@ -1799,6 +1799,10 @@
             "path": "Number1.json"
         },
         {
+            "name": "PauseParent",
+            "path": "PauseParent.json"
+        },
+        {
             "name": "Platform_Prefab",
             "path": "Platform_Prefab.json"
         },
