@@ -21,7 +21,7 @@ namespace CrashoutsEngine
         TransformComponent transform;
         RigidBodyComponent rb; // The plate's RB
 
-        public string wallName = "wall";
+        public string wallName = "MovingWall";
         private MovingWall _targetScript;
 
         void GetWall()

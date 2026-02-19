@@ -42,6 +42,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "hierarchycomponent.h"
 //#include "camera.h"
 #include "performanceSystem.h"
+#include "CEMath.h"
 
 #include <fstream>
 #include <sstream>
@@ -146,10 +147,9 @@ namespace Scene {
 		}
 
 		/*!
-		@brief       Renders all text components and handles the blinking cursor for focused inputs.
-		@param       globalECS Reference to the ECS system to retrieve components.
+		@brief       Renders a single text component and handles the blinking cursor.
 		*/
-		static void RenderTextAndCursor(ECS& globalECS) {
+		static void RenderSingleText(ECS& globalECS, Entity id, const glm::mat4& viewMat, const glm::mat4& projMat) {
 
 			// 1. Reset Shader
 			Component::Rendering& renderer = Component::Rendering::Get();
@@ -160,9 +160,7 @@ namespace Scene {
 			// 2. Reset Blending
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			// 3. Reset Culling (Text is often double-sided or winding order might vary)
 			glDisable(GL_CULL_FACE);
-			glEnable(GL_DEPTH_TEST);
 
 			// --- DEFINE UI COORDINATE SYSTEM ---
 			// [FIX] Use Game View dimensions for consistency with Input/Editor
@@ -170,7 +168,6 @@ namespace Scene {
 			CEVec2 gameSize = InputManager::GetGameWindowSize();
 			float winW = gameSize.x;
 			float winH = gameSize.y;
-
 			float aspect = winW / winH;
 			float uiHeight = 100.0f;
 			float uiWidth = uiHeight * aspect;
@@ -180,145 +177,131 @@ namespace Scene {
 				float normX = (uX + (uiWidth * 0.5f)) / uiWidth;
 				float normY = (uY + (uiHeight * 0.5f)) / uiHeight;
 				return { normX * winW, normY * winH };
-			};
-
-			// For Drawing Text Components
-			const ECS::ComponentArray<TextComponent>& textArray = globalECS.GetComponentArray<TextComponent>();
+				};
 
 			// Ensure renderer exists
 			if (!gTextRenderer) {
 				gTextRenderer = std::make_unique<TextRenderer>();
 			}
 
-			for (const Entity& id : textArray.indexToEntity) {
-				if (!IsEntityActive(globalECS, id)) continue;
+			TextComponent* tc = globalECS.GetComponent<TextComponent>(id);
+			if (!tc) return;
 
-				TextComponent* tc = globalECS.GetComponent<TextComponent>(id);
-				float depthZ = 0.0f;
+			float depthZ = 0.0f;
 
-				if (globalECS.HasComponent<TransformComponent>(id)) {
-					TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
-					UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
-					depthZ = t->position.z;
+			if (globalECS.HasComponent<TransformComponent>(id)) {
+				TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
+				UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
+				depthZ = t->position.z;
 
-					// Calculate Position in "Units" (Center Origin)
-					CEVec2 unitPos = CalculateLayoutPosition(t, u, tc->offset);
+				// Calculate Position in "Units" (Center Origin)
+				CEVec2 unitPos = CalculateLayoutPosition(t, u, tc->offset);
 
-					float finalX = unitPos.x;
-					float finalY = unitPos.y;
+				float finalX = unitPos.x;
+				float finalY = unitPos.y;
 
-					// Override for Bounded Text: Use Shape Center (ignoring UILayout shift)
-					if (tc->wrapText) {
-						finalX = t->position.x + tc->offset.x;
-						finalY = t->position.y + tc->offset.y;
-					}
+				// Override for Bounded Text: Use Shape Center (ignoring UILayout shift)
+				if (tc->wrapText) {
+					finalX = t->position.x + tc->offset.x;
+					finalY = t->position.y + tc->offset.y;
+				}
 
-					float finalScale = tc->scale;
-					std::string font = tc->font.empty() ? "Exo2-Regular" : tc->font;
+				float finalScale = tc->scale;
+				std::string font = tc->font.empty() ? "Exo2-Regular" : tc->font;
 
-					// --- TYPEWRITER LOGIC ---
-					std::string textToRender = tc->text;
-					if (tc->isRevealing && engineState == EngineState::PLAY) {
-						tc->revealTimer += (float)FrameRateController::GetInstance().DT();
-						tc->revealedCharCount = (int)(tc->revealTimer * tc->revealSpeed);
-						if (tc->revealedCharCount < 0) tc->revealedCharCount = 0;
-						if (tc->revealedCharCount > (int)tc->text.length()) tc->revealedCharCount = (int)tc->text.length();
+				// --- TYPEWRITER LOGIC ---
+				std::string textToRender = tc->text;
+				if (tc->isRevealing && engineState == EngineState::PLAY) {
+					tc->revealTimer += (float)FrameRateController::GetInstance().DT();
+					tc->revealedCharCount = (int)(tc->revealTimer * tc->revealSpeed);
+					if (tc->revealedCharCount < 0) tc->revealedCharCount = 0;
+					if (tc->revealedCharCount > (int)tc->text.length()) tc->revealedCharCount = (int)tc->text.length();
 
-						textToRender = tc->text.substr(0, tc->revealedCharCount);
-					}
-					else if (tc->isRevealing && engineState == EngineState::STOP) {
-						textToRender = tc->text; // Show full text in editor so you can see it!
-					}
+					textToRender = tc->text.substr(0, tc->revealedCharCount);
+				}
+				else if (tc->isRevealing && engineState == EngineState::STOP) {
+					textToRender = tc->text; // Show full text in editor so you can see it!
+				}
 
-					// --- COORDINATE SPACE CONVERSION ---
+				// --- COORDINATE SPACE CONVERSION ---
+				if (!tc->isWorldSpace) {
+					CEVec2 pixelPos = UnitsToPixels(finalX, finalY);
+					finalX = pixelPos.x;
+					finalY = pixelPos.y;
+				}
+
+				// Render Text
+				if (tc->wrapText) {
+					float maxWidth = t->size.x;
+					float maxHeight = t->size.y;
+
 					if (!tc->isWorldSpace) {
-						CEVec2 pixelPos = UnitsToPixels(finalX, finalY);
-						finalX = pixelPos.x;
-						finalY = pixelPos.y;
+						maxWidth = (t->size.x / uiWidth) * winW;
+						maxHeight = (t->size.y / uiHeight) * winH;
 					}
 
-					// Render Text
-					if (tc->wrapText) {
-						float maxWidth = t->size.x;
-						float maxHeight = t->size.y;
+					// Map UILayout to Text Alignment
+					int align = 1; // CENTER
+					int vAlign = 1; // MIDDLE
 
-						if (!tc->isWorldSpace) {
-							maxWidth = (t->size.x / uiWidth) * winW;
-							maxHeight = (t->size.y / uiHeight) * winH;
-						}
-
-						// Map UILayout to Text Alignment
-						int align = 1; // CENTER
-						int vAlign = 1; // MIDDLE
-
-						if (u) {
-							if (static_cast<bool>(u->uiLayout & UILayout::LEFT)) align = 0;
-							else if (static_cast<bool>(u->uiLayout & UILayout::RIGHT)) align = 2;
-							if (static_cast<bool>(u->uiLayout & UILayout::TOP)) vAlign = 0;
-							else if (static_cast<bool>(u->uiLayout & UILayout::DOWN)) vAlign = 2;
-						}
-						else {
-							align = (int)tc->alignment;
-							vAlign = (int)tc->verticalAlignment;
-						}
-
-						float boundedX = t->position.x + tc->offset.x;
-						float boundedY = t->position.y + tc->offset.y;
-
-						if (!tc->isWorldSpace) {
-							CEVec2 pixelPos = UnitsToPixels(boundedX, boundedY);
-							boundedX = pixelPos.x;
-							boundedY = pixelPos.y;
-						}
-
-						gTextRenderer->RenderTextBounded(
-							textToRender, boundedX, boundedY, depthZ,
-							maxWidth, maxHeight,
-							finalScale, tc->color, font, tc->isWorldSpace,
-							align, vAlign, tc->padding, tc->letterSpacing, tc->lineSpacing
-						);
+					if (u) {
+						if (static_cast<bool>(u->uiLayout & UILayout::LEFT)) align = 0;
+						else if (static_cast<bool>(u->uiLayout & UILayout::RIGHT)) align = 2;
+						if (static_cast<bool>(u->uiLayout & UILayout::TOP)) vAlign = 0;
+						else if (static_cast<bool>(u->uiLayout & UILayout::DOWN)) vAlign = 2;
 					}
-					else if (tc->centered)
-						gTextRenderer->RenderCenteredText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
-					else
-						gTextRenderer->RenderText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
+					else {
+						align = (int)tc->alignment;
+						vAlign = (int)tc->verticalAlignment;
+					}
 
-					// --- CURSOR LOGIC ---
-					TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
-					if (input && input->isFocused && engineState != EngineState::STOP) {
-						static float blinkTimer = 0.0f;
-						blinkTimer += (float)FrameRateController::GetInstance().DT();
-						bool showCursor = fmod(blinkTimer, 1.0f) < 0.5f;
+					float boundedX = t->position.x + tc->offset.x;
+					float boundedY = t->position.y + tc->offset.y;
 
-						if (showCursor) {
-							CEVec2 cursorPos = gTextRenderer->GetCursorPosition(
-								tc->text,
-								input->cursorPos,
-								finalX,
-								finalY,
-								1.0f,
-								font
-							);
+					if (!tc->isWorldSpace) {
+						CEVec2 pixelPos = UnitsToPixels(boundedX, boundedY);
+						boundedX = pixelPos.x;
+						boundedY = pixelPos.y;
+					}
 
-							GLfloat cursorThickness = 0.25f;
-							GLfloat cursorHeight = gTextRenderer->GetLineHeight(font, finalScale);
-							CEColor cursorColor = { 0.f, 0.f, 0.f, 1.f };
+					gTextRenderer->RenderTextBounded(
+						textToRender, boundedX, boundedY, depthZ,
+						maxWidth, maxHeight,
+						finalScale, tc->color, font, tc->isWorldSpace,
+						align, vAlign, tc->padding, tc->letterSpacing, tc->lineSpacing
+					);
+				}
+				else if (tc->centered)
+					gTextRenderer->RenderCenteredText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
+				else
+					gTextRenderer->RenderText(textToRender, finalX, finalY, depthZ, finalScale, tc->color, font, tc->isWorldSpace, tc->letterSpacing);
 
-							Assets::FontAsset* fontAsset = Assets::AssetManager::GetInstance().Get<Assets::FontAsset>(font);
-							float ascender = cursorHeight * 0.75f;
-							if (fontAsset && fontAsset->characters.count('H')) {
-								ascender = (float)fontAsset->characters.at('H').Bearing.y * finalScale;
-								if (!tc->isWorldSpace) ascender *= (winH / uiHeight * 0.02f);
-							}
+				// --- CURSOR LOGIC ---
+				TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(id);
+				if (input && input->isFocused && engineState != EngineState::STOP) {
+					static float blinkTimer = 0.0f;
+					blinkTimer += (float)FrameRateController::GetInstance().DT();
+					bool showCursor = fmod(blinkTimer, 1.0f) < 0.5f;
 
-							CEVec3 startPoint = { cursorPos.x, cursorPos.y + ascender * 0.5f, depthZ + 0.01f };
-							CEVec3 endPoint = { cursorPos.x, cursorPos.y - ascender * 0.5f, depthZ + 0.01f };
+					if (showCursor) {
+						CEVec2 cursorPos = gTextRenderer->GetCursorPosition(
+							tc->text, input->cursorPos, finalX, finalY, 1.0f, font);
 
-							Shapes::CreateLine(
-								startPoint, endPoint, cursorThickness,
-								cursorColor, tc->isWorldSpace
-							);
+						GLfloat cursorThickness = 0.25f;
+						GLfloat cursorHeight = gTextRenderer->GetLineHeight(font, finalScale);
+						CEColor cursorColor = { 0.f, 0.f, 0.f, 1.f };
+
+						Assets::FontAsset* fontAsset = Assets::AssetManager::GetInstance().Get<Assets::FontAsset>(font);
+						float ascender = cursorHeight * 0.75f;
+						if (fontAsset && fontAsset->characters.count('H')) {
+							ascender = (float)fontAsset->characters.at('H').Bearing.y * finalScale;
+							if (!tc->isWorldSpace) ascender *= (winH / uiHeight * 0.02f);
 						}
+
+						CEVec3 startPoint = { cursorPos.x, cursorPos.y + ascender * 0.5f, depthZ + 0.01f };
+						CEVec3 endPoint = { cursorPos.x, cursorPos.y - ascender * 0.5f, depthZ + 0.01f };
+
+						Shapes::CreateLine(startPoint, endPoint, cursorThickness, cursorColor, tc->isWorldSpace);
 					}
 				}
 			}
@@ -339,7 +322,7 @@ namespace Scene {
 			CEVec2 gameSize = InputManager::GetGameWindowSize();
 			float winW = gameSize.x;
 			float winH = gameSize.y;
-			
+
 			float aspect = winW / winH;
 			float baseHeight = 100.0f;
 			float baseWidth = baseHeight * aspect;
@@ -414,7 +397,7 @@ namespace Scene {
 						if (s) s->color = b->shapePressedColor;
 						if (txt) txt->color = b->textPressedColor;
 						targetScale = b->pressedScale;
-						
+
 						// Use Pressed texture if available, else Hovered, else Normal
 						if (!b->texturePressed.empty()) targetTexture = b->texturePressed;
 						else if (!b->textureHovered.empty()) targetTexture = b->textureHovered;
@@ -447,7 +430,7 @@ namespace Scene {
 				if (b->originalSize.x == 0.0f && b->originalSize.y == 0.0f) {
 					b->originalSize = t->size;
 				}
-				
+
 				// Apply target scale to Shape size
 				t->size.x = b->originalSize.x * targetScale;
 				t->size.y = b->originalSize.y * targetScale;
@@ -478,14 +461,14 @@ namespace Scene {
 			CEVec2 mouseWorld = InputManager::GetMouseWorldPos();
 
 			CEVec2 mouseUI;
-			
+
 			// [FIX] Use Game View dimensions/mouse for Editor compatibility
 			CEVec2 gameSize = InputManager::GetGameWindowSize();
 			float winW = gameSize.x;
 			float winH = gameSize.y;
-			
+
 			CEVec2 rawMouse = InputManager::GetGameMousePos(); // Top-Left Pixels (Relative to Game View)
-			
+
 			float ndcX = (rawMouse.x / winW) * 2.0f - 1.0f;
 			float ndcY = 1.0f - (rawMouse.y / winH) * 2.0f;
 
@@ -642,10 +625,9 @@ namespace Scene {
 		}
 
 		/*!
-		@brief      Render loop for the new ParticleComponent.
-		@details    Extracts data, splits Vec2 scales into float arrays, and handles Local Space transforms.
+		@brief      Renders a single particle system, applying the computed layer depth.
 		*/
-		static void RenderAllParticles(ECS& globalECS) {
+		static void RenderParticleSystem(ECS& globalECS, Entity id) {
 			// Temp buffers to split CEVec2 scale into Width/Height arrays for the renderer
 			static std::vector<float> s_scaleXBuffer;
 			static std::vector<float> s_scaleYBuffer;
@@ -657,98 +639,90 @@ namespace Scene {
 
 			auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
 
-			for (const Entity& id : particleArray.indexToEntity) {
-				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
-				TransformComponent* tc = globalECS.GetComponent<TransformComponent>(id);
+			ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
+			TransformComponent* tc = globalECS.GetComponent<TransformComponent>(id);
 
-				if (!pc || pc->data.activeCount == 0) continue;
+			if (!pc || pc->data.activeCount == 0) return;
 
-				size_t count = pc->data.activeCount;
+			size_t count = pc->data.activeCount;
 
-				// 1. Resize Temp Buffers
-				if (s_scaleXBuffer.size() < count) s_scaleXBuffer.resize(count);
-				if (s_scaleYBuffer.size() < count) s_scaleYBuffer.resize(count);
-				if (s_uniformScaleBuffer.size() < count) s_uniformScaleBuffer.resize(count, 1.0f);
-				if (s_uvOffsetBuffer.size() < count) s_uvOffsetBuffer.resize(count, { 0.f, 0.f });
+			// 1. Resize Temp Buffers
+			if (s_scaleXBuffer.size() < count) s_scaleXBuffer.resize(count);
+			if (s_scaleYBuffer.size() < count) s_scaleYBuffer.resize(count);
+			if (s_uniformScaleBuffer.size() < count) s_uniformScaleBuffer.resize(count, 1.0f);
+			if (s_uvOffsetBuffer.size() < count) s_uvOffsetBuffer.resize(count, { 0.f, 0.f });
+			if (s_posBuffer.size() < count) s_posBuffer.resize(count);
 
-				// Ensure uniform buffer is actually 1.0 (in case of resize dirty data)
-				// We map 1.0 here so we can pass the actual dimensions into Dim1/Dim2
-				std::fill(s_uniformScaleBuffer.begin(), s_uniformScaleBuffer.begin() + count, 1.0f);
+			// Ensure uniform buffer is actually 1.0 (in case of resize dirty data)
+			// We map 1.0 here so we can pass the actual dimensions into Dim1/Dim2
+			std::fill(s_uniformScaleBuffer.begin(), s_uniformScaleBuffer.begin() + count, 1.0f);
 
-				// 2. Setup Data Pointers
-				CEVec3* posPtr = pc->data.positions.data();
+			// 2. Handle Local/World Space & Split Scales
 
-				// 3. Handle Local/World Space & Split Scales
-				// We need to loop anyway to split Vec2 -> Float, Float. 
-				// We combine the Transform logic into this loop for efficiency.
+			bool isLocal = (!pc->useWorldSpace && tc);
+			CEVec3 parentPos = { 0,0,0 };
+			float c = 1.f, s = 0.f;
+			float parentScaleX = 1.0f;
+			float parentScaleY = 1.0f;
 
-				bool isLocal = (!pc->useWorldSpace && tc);
-				CEVec3 parentPos = { 0,0,0 };
-				float c = 1.f, s = 0.f;
-				float parentScaleX = 1.0f;
-				float parentScaleY = 1.0f;
+			if (isLocal) {
+				parentPos = tc->position;
+				// If Local, particles should inherit Parent's size too
+				parentScaleX = tc->size.x;
+				parentScaleY = tc->size.y;
 
-				if (isLocal) {
-					if (s_posBuffer.size() < count) s_posBuffer.resize(count);
-
-					parentPos = tc->position;
-					// If Local, particles should inherit Parent's size too
-					parentScaleX = tc->size.x;
-					parentScaleY = tc->size.y;
-
-					float rad = tc->rotation * (3.14159f / 180.0f);
-					c = cosf(rad);
-					s = sinf(rad);
-				}
-
-				// Process every particle to prepare render buffers
-				for (size_t k = 0; k < count; ++k) {
-					// A. Split Scale (Vec2 -> Float, Float)
-					// If Local, multiply by Parent Scale. If World, Parent Scale is 1.0.
-					s_scaleXBuffer[k] = pc->data.scales[k].x * parentScaleX;
-					s_scaleYBuffer[k] = pc->data.scales[k].y * parentScaleY;
-
-					// B. Transform Position (if Local)
-					if (isLocal) {
-						CEVec3 local = pc->data.positions[k];
-						float rotX = local.x * c - local.y * s;
-						float rotY = local.x * s + local.y * c;
-
-						s_posBuffer[k].x = rotX + parentPos.x;
-						s_posBuffer[k].y = rotY + parentPos.y;
-						s_posBuffer[k].z = local.z + parentPos.z;
-					}
-				}
-
-				// If Local, redirect pointer to the transformed buffer
-				if (isLocal) posPtr = s_posBuffer.data();
-
-				// 4. Submit to Renderer
-				InstancingSystem::InstancedParams params;
-				params.textured = pc->useTexture;
-				params.textureName = pc->textureName;
-				params.uvSize = pc->textureUV;
-				params.tint = { 1.0f, 1.0f, 1.0f };
-
-				InstancingSystem::RenderInstancedRectanglesBatch(
-					posPtr,                      // Correct World Position
-					pc->data.colors.data(),      // Colors
-					pc->data.rotations.data(),   // Rotations
-					s_uniformScaleBuffer.data(), // Uniform Scale (1.0)
-					s_scaleXBuffer.data(),       // Widths (X) 
-					s_scaleYBuffer.data(),       // Heights (Y)
-					s_uvOffsetBuffer.data(),     // UV Offsets (0,0)
-					(int)count,
-					params
-				);
+				float rad = tc->rotation * (CEMath::PI / 180.0f);
+				c = cosf(rad);
+				s = sinf(rad);
 			}
+
+			// Process every particle to prepare render buffers
+			for (size_t k = 0; k < count; ++k) {
+				s_scaleXBuffer[k] = pc->data.scales[k].x * parentScaleX;
+				s_scaleYBuffer[k] = pc->data.scales[k].y * parentScaleY;
+
+				// Apply positions and ENFORCE the computed depth from the layer system
+				if (isLocal) {
+					CEVec3 local = pc->data.positions[k];
+					float rotX = local.x * c - local.y * s;
+					float rotY = local.x * s + local.y * c;
+					s_posBuffer[k].x = rotX + parentPos.x;
+					s_posBuffer[k].y = rotY + parentPos.y;
+					s_posBuffer[k].z = local.z + parentPos.z;
+				}
+				else {
+					s_posBuffer[k].x = pc->data.positions[k].x;
+					s_posBuffer[k].y = pc->data.positions[k].y;
+					s_posBuffer[k].z = pc->data.positions[k].z;
+				}
+			}
+
+			// 3. Submit to Renderer
+			InstancingSystem::InstancedParams params;
+			params.textured = pc->useTexture;
+			params.textureName = pc->textureName;
+			params.uvSize = pc->textureUV;
+			params.tint = { 1.0f, 1.0f, 1.0f };
+
+			InstancingSystem::RenderInstancedRectanglesBatch(
+				s_posBuffer.data(),		     // Correct World Position
+				pc->data.colors.data(),      // Colors
+				pc->data.rotations.data(),   // Rotations
+				s_uniformScaleBuffer.data(), // Uniform Scale (1.0)
+				s_scaleXBuffer.data(),       // Widths (X) 
+				s_scaleYBuffer.data(),       // Heights (Y)
+				s_uvOffsetBuffer.data(),     // UV Offsets (0,0)
+				(int)count,
+				params
+			);
+
 		}
 	}
 
 	// ============================================================================
 	// SCENE RENDERING
 	// ============================================================================
-	
+
 	static TextureMode GetWrapMode(int mode) {
 		switch (mode) {
 		case 0: return TextureMode::ClampToEdge;
@@ -790,13 +764,13 @@ namespace Scene {
 			uvOffsets.push_back(offset);
 		}
 	};
-	
+
 	// Linear Batcher Class
 	// Manages the batching states
 	struct LinearBatcher {
 		RenderBatch batch;
 		ShapeType currentShapeType = ShapeType::Rectangle;
-		
+
 		// Cleans the render batch data
 		void Flush() {
 			if (batch.positions.empty()) return;
@@ -930,7 +904,7 @@ namespace Scene {
 		float cullMaxY = camPos.y + (camHeight * 0.6f);
 		// ---------------------------------------------------------
 
-		enum class RenderType { Shape, Text };
+		enum class RenderType { Shape, Text, Particle };
 
 		struct RenderEntry {
 			Entity entity;
@@ -947,7 +921,7 @@ namespace Scene {
 		if (worldEntries.capacity() < reserveSize) worldEntries.reserve(reserveSize);
 		if (screenEntries.capacity() < reserveSize) screenEntries.reserve(reserveSize);
 
-		// 2. PRE-SORT SHAPES
+		// 2a. PRE-SORT SHAPES
 		for (const Entity& id : shapeArray.indexToEntity) {
 			if (!IsEntityActive(globalECS, id)) continue;
 			auto* tc = globalECS.GetComponent<TransformComponent>(id);
@@ -1005,12 +979,44 @@ namespace Scene {
 			else                   screenEntries.push_back({ id, depth, RenderType::Text });
 		}
 
+		// 2c. PRE-SORT PARTICLES
+		const auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
+		for (const Entity& id : particleArray.indexToEntity) {
+			if (!IsEntityActive(globalECS, id)) continue;
+			auto* pc = globalECS.GetComponent<ParticleComponent>(id);
+			if (!pc || pc->data.activeCount == 0) continue;
+
+			auto* tc = globalECS.GetComponent<TransformComponent>(id);
+			CEVec3 basePos = tc ? tc->position : CEVec3(0, 0, 0);
+
+			// Compute Depth
+			float depth = 0.0f;
+			if (globalECS.HasComponent<Component::LayerComponent>(id)) {
+				auto* z = globalECS.GetComponent<Component::LayerComponent>(id);
+				if (Component::LayerComponent::layerVisibility.count(z->layerName)) {
+					if (!Component::LayerComponent::layerVisibility[z->layerName]) continue;
+				}
+				DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
+				depth = Component::Rendering::ComputeDepth(basePos, *z, dbg);
+			}
+			else {
+				Component::LayerComponent defaultZ{ "Default", 0 };
+				if (Component::LayerComponent::layerVisibility.count("Default")) {
+					if (!Component::LayerComponent::layerVisibility["Default"]) continue;
+				}
+				depth = Component::Rendering::ComputeDepth(basePos, defaultZ, nullptr);
+			}
+
+			if (pc->useWorldSpace) worldEntries.push_back({ id, depth, RenderType::Particle });
+			else                   screenEntries.push_back({ id, depth, RenderType::Particle });
+		}
+
 		// 3. SORT
 		auto sortFunc = [](const RenderEntry& a, const RenderEntry& b) {
 			if (a.depth != b.depth) return a.depth < b.depth;
-			// If depth is equal, draw Shape BEFORE Text (so text is on top)
-			return a.type == RenderType::Shape && b.type == RenderType::Text;
-		};
+			// If depth is equal, draw Shape & Particle BEFORE Text (so text is on top)
+			return (a.type == RenderType::Shape || a.type == RenderType::Particle) && b.type == RenderType::Text;
+			};
 		std::sort(worldEntries.begin(), worldEntries.end(), sortFunc);
 		std::sort(screenEntries.begin(), screenEntries.end(), sortFunc);
 
@@ -1051,17 +1057,29 @@ namespace Scene {
 					// 1. Flush any pending shapes so they draw BEHIND this text
 					batcher.Flush();
 
-					// 2. Draw the text immediately
-					//UI::RenderSingleText(globalECS, item.entity, gTextRenderer.get());
-					//UI::RenderTextAndCursor(globalECS);
+					// 2. Draw the text immediately using the new single-text function
+					Scene::UI::RenderSingleText(globalECS, item.entity, viewMat, projMat);
+
 					// 3. Restore Instanced Shader & Uniforms for next shapes
+					renderer.shdr_pgm_instanced->Use();
+					renderer.shdr_pgm_instanced->SetUniform("uView", viewMat);
+					renderer.shdr_pgm_instanced->SetUniform("uProjection", projMat);
+				}
+				else if (item.type == RenderType::Particle) {
+					// Flush pending shapes so they draw BEHIND particles
+					batcher.Flush();
+
+					// Draw the particle system
+					Particles::RenderParticleSystem(globalECS, item.entity);
+
+					// Restore shader state since particles use instanced rendering
 					renderer.shdr_pgm_instanced->Use();
 					renderer.shdr_pgm_instanced->SetUniform("uView", viewMat);
 					renderer.shdr_pgm_instanced->SetUniform("uProjection", projMat);
 				}
 			}
 			batcher.Flush();
-		};
+			};
 
 		// 4. DRAW WORLD SPACE (Culling ENABLED)
 		// Set uniforms for both shaders to be safe
@@ -1082,8 +1100,6 @@ namespace Scene {
 
 		// Pass 'true' to enable culling for world objects
 		ProcessSortedList(worldEntries, true, renderer.viewMatrix, renderer.projectionMatrix);
-
-		Particles::RenderAllParticles(globalECS);
 
 		// 5. DRAW SCREEN SPACE (Culling DISABLED)
 		// Screen space UI shouldn't be culled by the World Camera bounds
@@ -1111,7 +1127,6 @@ namespace Scene {
 		if (glIsEnabled(GL_CULL_FACE)) glEnable(GL_CULL_FACE);
 		renderer.shdr_pgm_instanced->Use();
 
-		Scene::UI::RenderTextAndCursor(globalECS); 
 		Component::RenderSpriteAnimationsECS();
 	}
 

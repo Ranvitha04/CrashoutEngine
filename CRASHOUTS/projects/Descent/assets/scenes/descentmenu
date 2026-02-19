@@ -838,9 +838,9 @@
                     {
                         "className": "SceneMusic",
                         "fields": {
-                            "layerName": "Ambiance",
+                            "layerName": "Music",
                             "fadeTime": 2.0,
-                            "stopLayer": true
+                            "stopLayer": false
                         }
                     }
                 ]
