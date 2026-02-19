@@ -514,6 +514,8 @@ namespace CrashoutsEngine {
 				val.AddMember("textureNormal", rapidjson::Value(c.textureNormal.c_str(), allocator), allocator);
 				val.AddMember("textureHovered", rapidjson::Value(c.textureHovered.c_str(), allocator), allocator);
 				val.AddMember("texturePressed", rapidjson::Value(c.texturePressed.c_str(), allocator), allocator);
+				val.AddMember("hoverScale", c.hoverScale, allocator);
+				val.AddMember("pressedScale", c.pressedScale, allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::BUTTON_COMPONENT), val, allocator);
 			}
 
@@ -752,11 +754,11 @@ namespace CrashoutsEngine {
 			return entityValue;
 		}
 
-		uint32_t DeserializeEntity(const rapidjson::Value& entityValue, std::vector<ParentLinkInfo>* outParentLinks) {
+		uint32_t DeserializeEntity(const rapidjson::Value& entityValue, std::vector<ParentLinkInfo>* outParentLinks, bool isPrefab) {
 			ECS& gECS = *ECS::getInstance();
 			Entity newEntity = gECS.CreateEntity();
 
-			if (entityValue.HasMember(Keys::UUID_COMPONENT)) {
+			if (entityValue.HasMember(Keys::UUID_COMPONENT) && !isPrefab) {
 				uint64_t savedUUID = entityValue[Keys::UUID_COMPONENT].GetUint64();
 				gECS.AddComponent<Component::UUIDComponent>(newEntity, savedUUID);
 			}
@@ -1035,6 +1037,8 @@ namespace CrashoutsEngine {
 				if (v.HasMember("textureNormal")) b.textureNormal = GetString(v, "textureNormal");
 				if (v.HasMember("textureHovered")) b.textureHovered = GetString(v, "textureHovered");
 				if (v.HasMember("texturePressed")) b.texturePressed = GetString(v, "texturePressed");
+				if (v.HasMember("hoverScale")) b.hoverScale = GetFloat(v, "hoverScale", 1.0f); // Default to 1.0f if not found
+				if (v.HasMember("pressedScale")) b.pressedScale = GetFloat(v, "pressedScale", 1.0f);
 				//if (auto* s = gECS.GetComponent<ShapeComponent>(newEntity)) s->color = b.shapeNormalColor;
 				//if (auto* t = gECS.GetComponent<TextComponent>(newEntity)) t->color = b.textNormalColor;
 			}

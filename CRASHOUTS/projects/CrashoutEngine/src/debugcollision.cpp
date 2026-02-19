@@ -22,6 +22,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "CEMath.h"
 #include "shapes.h"
 #include <limits>
+#include "rendering.h"
 
 using namespace CrashoutsEngine;
 using namespace Component;
@@ -30,7 +31,7 @@ static RenderCamera::Camera& GetActiveDebugCamera() {
 	return (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
 }
 
-/*                                                       internal helpers
+/* internal helpers
 ----------------------------------------------------------------------------- */
 /*!
  @brief Checks if an entity appears in any of the provided collision events.
@@ -39,7 +40,6 @@ static RenderCamera::Camera& GetActiveDebugCamera() {
  @return             True if the entity is part of at least one event; false otherwise.
 */
 [[maybe_unused]] static bool IsColliding(Entity e, const Collision::ContactCollection& events) {
-
 	if (!events.size()) return false;
 	for (Collision::ContactInformation const& ev : events) {
 		if (ev.contacts.first == e || ev.contacts.second == e) return true;
@@ -49,19 +49,13 @@ static RenderCamera::Camera& GetActiveDebugCamera() {
 
 /*!
  @brief Draws a 2D axis-aligned bounding box as a wireframe rectangle.
- @param minP         Minimum point (bottom-left).
- @param maxP         Maximum point (top-right).
- @param thickness    Line thickness.
- @param color        RGB-like color vector used by the line drawer.
 */
 static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickness, const CEColor& color) {
-	float z = GetActiveDebugCamera().GetFar();
+	float z = GetActiveDebugCamera().GetFar(); // Restored World Space Depth!
 	CEVec3 p0(minP.x, minP.y, z);
 	CEVec3 p1(maxP.x, minP.y, z);
 	CEVec3 p2(maxP.x, maxP.y, z);
 	CEVec3 p3(minP.x, maxP.y, z);
-
-	CEVec2 size = { thickness, thickness };
 
 	Shapes::CreateLine(p0, p1, thickness, color);
 	Shapes::CreateLine(p1, p2, thickness, color);
@@ -71,19 +65,14 @@ static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickn
 
 /*!
  @brief Draws a 2D oriented bounding box as a wireframe rectangle.
- @param vertices     A vertex array
- @param thickness    Line thickness.
- @param color        RGB-like color vector used by the line drawer.
 */
 static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, const CEColor& color) {
-	float z = GetActiveDebugCamera().GetFar();
-	// Create new vertices with the modified Z value
+	float z = GetActiveDebugCamera().GetFar(); // Restored World Space Depth!
 	CEVec3 v0 = { vertices->rotatedVertices[0].x, vertices->rotatedVertices[0].y, z };
 	CEVec3 v1 = { vertices->rotatedVertices[1].x, vertices->rotatedVertices[1].y, z };
 	CEVec3 v2 = { vertices->rotatedVertices[2].x, vertices->rotatedVertices[2].y, z };
 	CEVec3 v3 = { vertices->rotatedVertices[3].x, vertices->rotatedVertices[3].y, z };
 
-	// Draw the lines using the new, z-modified vertices
 	Shapes::CreateLine(v0, v1, thickness, color);
 	Shapes::CreateLine(v1, v2, thickness, color);
 	Shapes::CreateLine(v2, v3, thickness, color);
@@ -92,28 +81,23 @@ static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, 
 
 /*!
  @brief Draws a Polygon.
- @param vertices     A vertex array
- @param thickness    Line thickness.
- @param color        RGB-like color vector used by the line drawer.
 */
 static void DrawPolygon(const Collision::Polygon* vertices, float thickness, const CEColor& color) {
-	float z = GetActiveDebugCamera().GetFar();
+	float z = GetActiveDebugCamera().GetFar(); // Restored World Space Depth!
 
-	for (int i{}; i < vertices->vertexCount; ++i) {
-		int nextIdx{ (i + 1) % vertices->vertexCount };
-		// Draw the lines using the new, z-modified vertices
-		//Shapes::CreateLine({ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z }, CEVec3{ vertices->rotatedVertices[i].x + vertices->normalEdges[i].x * 10.f, vertices->rotatedVertices[i].y + vertices->normalEdges[i].y * 10.f, z}, thickness, color);
-		Shapes::CreateLine(CEVec3{ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z }, CEVec3{ vertices->rotatedVertices[nextIdx].x, vertices->rotatedVertices[nextIdx].y, z }, thickness, color);
+	for (int i = 0; i < vertices->vertexCount; ++i) {
+		int nextIdx = (i + 1) % vertices->vertexCount;
+		Shapes::CreateLine(
+			CEVec3{ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z },
+			CEVec3{ vertices->rotatedVertices[nextIdx].x, vertices->rotatedVertices[nextIdx].y, z },
+			thickness,
+			color
+		);
 	}
 }
 
 /*!
- @brief Draws a 2D circle wireframe (used for circle colliders projected to XY).
- @param c            Center position.
- @param r            Radius.
- @param segments     Number of line segments (clamped to minimum of 8).
- @param thickness    Line thickness.
- @param color        RGB-like color vector used by the line drawer.
+ @brief Draws a 2D circle wireframe.
 */
 static void DrawCircleOutline(const CEVec3& c, float r, int segments, float thickness, const CEColor& color) {
 	if (segments > 24) segments = 24;
@@ -122,8 +106,10 @@ static void DrawCircleOutline(const CEVec3& c, float r, int segments, float thic
 	const float twoPi = 6.28318530718f;
 	const float step = twoPi / segments;
 
-	CEVec3 prev(c.x + r, c.y, 0.0f);
-	float z = GetActiveDebugCamera().GetFar();
+	float z = GetActiveDebugCamera().GetFar(); // Restored World Space Depth!
+
+	// THE BUG WAS HERE: This used to be 0.0f! Now it correctly uses 'z'
+	CEVec3 prev(c.x + r, c.y, z);
 
 	for (int i = 1; i <= segments; ++i) {
 		float t = i * step;
@@ -146,13 +132,17 @@ namespace CollisionGizmos {
 		   are tinted with a hit color to visually distinguish collisions.
 	*/
 	void DrawAllColliders(ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float wireThickness) {
+		RenderCamera::Camera& cam = GetActiveDebugCamera();
+		Component::Rendering::Get().shdr_pgm->Use();
+		Component::Rendering::Get().shdr_pgm->SetUniform("uView", cam.GetViewMatrix());
+		Component::Rendering::Get().shdr_pgm->SetUniform("uProjection", cam.GetProjectionMatrix());
+
 		auto& collArr = ecs.GetComponentArray<Component::ColliderComponent>();
 		const CEColor ok(0.15f, 0.8f, 0.55f);    // non-colliding tint
 		const CEColor hit(1.0f, 0.3f, 0.3f);     // colliding tint
 
 		// Culling preperations
 
-		RenderCamera::Camera& cam = GetActiveDebugCamera();
 		CEVec3 camPos = cam.GetPosition();
 		float camHeight = cam.GetVisibleWorldHeight();
 		float camWidth = cam.GetVisibleWorldWidth();
@@ -277,6 +267,12 @@ namespace CollisionGizmos {
 		   the first contact point with length @p normalLen.
 	*/
 	void DrawContactsAndNormals(ECS& ecs, const std::vector<Collision::CollisionEvent>& events, float baseLen, float wireThickness) {
+
+		RenderCamera::Camera& cam = GetActiveDebugCamera();
+		Component::Rendering::Get().shdr_pgm->Use();
+		Component::Rendering::Get().shdr_pgm->SetUniform("uView", cam.GetViewMatrix());
+		Component::Rendering::Get().shdr_pgm->SetUniform("uProjection", cam.GetProjectionMatrix());
+
 		for (const auto& info : events) {
 			if (info.colManifold.contactPoints.empty()) continue;
 

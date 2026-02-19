@@ -23,5 +23,8 @@ namespace CrashoutsEngine {
 
     Entity GetRoot(ECS& ecs, Entity e);
     void GatherDescendants(ECS& ecs, Entity e, std::vector<Entity>& out);
+
+    // Clones an entity and all of its descendants, preserving the hierarchy structure
+    Entity DeepCloneEntity(ECS& ecs, Entity root);
 }
 

@@ -116,6 +116,12 @@ namespace UI {
             if (!ecs.HasComponent<Component::UUIDComponent>(e)) {
                 ecs.AddComponent<Component::UUIDComponent>(e);
             }
+            if (!ecs.HasComponent<Component::LayerComponent>(e)) {
+                ecs.AddComponent<Component::LayerComponent>(e);
+            }
+            if (!ecs.HasComponent<Component::TagComponent>(e)) {
+                ecs.AddComponent<Component::TagComponent>(e);
+            }
         }
         ImGui::SeparatorText("Prefab Creator");
         ImGui::Text("Entity Counter: %d", ecs.GetComponentArray<Component::NameComponent>().dense.size());
@@ -153,7 +159,7 @@ namespace UI {
             if (ImGui::Button("Clone Selected")) {
                 // Double check logic just to be safe
                 if (hasSelection) {
-                    selected = ecs.CloneEntity(selected);
+                    selected = DeepCloneEntity(ecs, selected);
                     // If we disabled, we must end it before returning!
                     if (!hasSelection) ImGui::EndDisabled();
                     return;

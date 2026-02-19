@@ -6047,7 +6047,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Player",
@@ -6058,6 +6060,37 @@
                 "t": 2.58333158493042,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -6111,7 +6144,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -6125,14 +6158,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -6185,37 +6218,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -6764,7 +6766,9 @@
                 },
                 "textureNormal": "UI/settings/updated resume.png",
                 "textureHovered": "UI/settings/updated resume large.png",
-                "texturePressed": "UI/settings/updated resume.png"
+                "texturePressed": "UI/settings/updated resume.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -6874,7 +6878,9 @@
                 },
                 "textureNormal": "UI/settings/updated restart.png",
                 "textureHovered": "UI/settings/updated restart large.png",
-                "texturePressed": "UI/settings/updated restart.png"
+                "texturePressed": "UI/settings/updated restart.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -6984,7 +6990,9 @@
                 },
                 "textureNormal": "UI/settings/updated settings.png",
                 "textureHovered": "UI/settings/updated settings large.png",
-                "texturePressed": "UI/settings/updated settings.png"
+                "texturePressed": "UI/settings/updated settings.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -7094,7 +7102,9 @@
                 },
                 "textureNormal": "UI/settings/updated quit.png",
                 "textureHovered": "UI/settings/updated quit large.png",
-                "texturePressed": "UI/settings/updated quit.png"
+                "texturePressed": "UI/settings/updated quit.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -7262,7 +7272,9 @@
                 },
                 "textureNormal": "UI/No.png",
                 "textureHovered": "UI/No.png",
-                "texturePressed": "UI/No.png"
+                "texturePressed": "UI/No.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -7372,7 +7384,9 @@
                 },
                 "textureNormal": "UI/Yes.png",
                 "textureHovered": "UI/Yes.png",
-                "texturePressed": "UI/Yes.png"
+                "texturePressed": "UI/Yes.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -7533,7 +7547,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 7
@@ -8255,7 +8271,9 @@
                 },
                 "textureNormal": "UI/settings/updated restart large.png",
                 "textureHovered": "UI/settings/updated restart large.png",
-                "texturePressed": "UI/settings/updated restart large.png"
+                "texturePressed": "UI/settings/updated restart large.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -8365,7 +8383,9 @@
                 },
                 "textureNormal": "UI/settings/updated quit large.png",
                 "textureHovered": "UI/settings/updated quit large.png",
-                "texturePressed": "UI/settings/updated quit large.png"
+                "texturePressed": "UI/settings/updated quit large.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -8499,7 +8519,9 @@
                 },
                 "textureNormal": "UI/Yes.png",
                 "textureHovered": "UI/Yes.png",
-                "texturePressed": "UI/Yes.png"
+                "texturePressed": "UI/Yes.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -8609,7 +8631,9 @@
                 },
                 "textureNormal": "UI/No.png",
                 "textureHovered": "UI/No.png",
-                "texturePressed": "UI/No.png"
+                "texturePressed": "UI/No.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -8818,7 +8842,9 @@
                 },
                 "textureNormal": "UI/settings/updated restart large.png",
                 "textureHovered": "UI/settings/updated restart large.png",
-                "texturePressed": "UI/settings/updated restart large.png"
+                "texturePressed": "UI/settings/updated restart large.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -8928,7 +8954,9 @@
                 },
                 "textureNormal": "UI/settings/updated quit large.png",
                 "textureHovered": "UI/settings/updated quit large.png",
-                "texturePressed": "UI/settings/updated quit large.png"
+                "texturePressed": "UI/settings/updated quit large.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -9062,7 +9090,9 @@
                 },
                 "textureNormal": "UI/Yes.png",
                 "textureHovered": "UI/Yes.png",
-                "texturePressed": "UI/Yes.png"
+                "texturePressed": "UI/Yes.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -9172,7 +9202,9 @@
                 },
                 "textureNormal": "UI/No.png",
                 "textureHovered": "UI/No.png",
-                "texturePressed": "UI/No.png"
+                "texturePressed": "UI/No.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -9403,7 +9435,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -9414,37 +9448,6 @@
                 "t": 0.05000000447034836,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "slimeHold",
                         "wrap": 0,
@@ -9468,6 +9471,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -9800,7 +9834,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -9811,37 +9847,6 @@
                 "t": 5.833354473114014,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "slimeHold",
                         "wrap": 0,
@@ -9865,6 +9870,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10138,7 +10174,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -10284,7 +10322,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -10442,7 +10482,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -10716,7 +10758,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -10869,7 +10913,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -10984,7 +11030,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "tilemap": {
                 "tileSize": 32,
@@ -11191,7 +11239,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "tilemap": {
                 "tileSize": 32,
@@ -11418,7 +11468,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "tilemap": {
                 "tileSize": 32,
@@ -11797,7 +11849,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -14681,7 +14735,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",
@@ -14797,7 +14853,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",

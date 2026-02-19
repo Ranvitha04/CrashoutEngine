@@ -28,7 +28,10 @@ namespace UI {
     static inline CEVec3 ViewUV_toWorld(float u, float v) {
         const float ndcX = u * 2.f - 1.f;
         const float ndcY = v * 2.f - 1.f;
-        const glm::mat4 VP = Component::Rendering::Get().projectionMatrix * Component::Rendering::Get().viewMatrix;
+
+        auto& cam = (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
+        const glm::mat4 VP = cam.GetProjectionMatrix() * cam.GetViewMatrix();
+
         const glm::mat4 invVP = glm::inverse(VP);
         glm::vec4 w = invVP * glm::vec4(ndcX, ndcY, 0.f, 1.f);
         if (w.w != 0.f) w /= w.w;
@@ -231,8 +234,8 @@ namespace UI {
 
                 auto WorldToScreen = [&](CEVec3 worldPos) -> ImVec2 {
                     glm::vec3 v(worldPos.x, worldPos.y, worldPos.z);
-                    glm::vec4 clipSpace = Component::Rendering::Get().projectionMatrix *
-                        Component::Rendering::Get().viewMatrix * glm::vec4(v, 1.f);
+                    auto& cam = (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
+                    glm::vec4 clipSpace = cam.GetProjectionMatrix() * cam.GetViewMatrix() * glm::vec4(v, 1.f);
 
                     if (clipSpace.w == 0.f) return ImVec2(-1, -1);
                     glm::vec3 ndc = glm::vec3(clipSpace) / clipSpace.w;
@@ -391,8 +394,9 @@ namespace UI {
 
                     if (isWorldSpace) {
                         // Use World Camera
-                        gizmoView = Component::Rendering::Get().viewMatrix;
-                        gizmoProj = Component::Rendering::Get().projectionMatrix;
+                        auto& cam = (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
+                        gizmoView = cam.GetViewMatrix();
+                        gizmoProj = cam.GetProjectionMatrix();
                     }
                     else {
                         // Use Screen Space UI Camera (Matches RenderScene logic)

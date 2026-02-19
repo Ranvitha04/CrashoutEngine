@@ -40,46 +40,53 @@ namespace CrashoutsEngine {
 		return &ecs.AddComponent<ParentComponent>(child, ParentComponent{});
 	}
 
-
-	// inheritance helpers
 	/*
-	static CEColor GetAncestorColor(ECS& ecs, Entity e) {
-		using namespace Component;
-		// if this direct parent has ShapeComponent, use that;
-		while (ecs.HasComponent<ParentComponent>(e)) {
-			auto* pc = ecs.GetComponent<ParentComponent>(e);
-			const Entity p = pc->parent;
-			if (p == 0) break;
+	* @brief Traverses down children entities and clone them all
+	* @param root - parent entity
+	*/
+	Entity DeepCloneEntity(ECS& ecs, Entity root) {
+		// 1. Gather all entities in this tree
+		std::vector<Entity> tree;
+		GatherDescendants(ecs, root, tree);
 
-			if (ecs.HasComponent<ShapeComponent>(p)) {
-				return ecs.GetComponent<ShapeComponent>(p)->color;
+		// 2. Clone them all and map Original ID -> Cloned ID
+		std::unordered_map<Entity, Entity> origToClone;
+		for (Entity orig : tree) {
+			origToClone[orig] = ecs.CloneEntity(orig); // Generates NEW UUIDs automatically!
+		}
+
+		// 3. Remap the Parent and Children components on the Clones
+		for (Entity orig : tree) {
+			Entity clone = origToClone[orig];
+
+			// Fix Parent Link
+			if (ecs.HasComponent<ParentComponent>(clone)) {
+				auto* pc = ecs.GetComponent<ParentComponent>(clone);
+				if (pc->parent != 0 && origToClone.count(pc->parent)) {
+					pc->parent = origToClone[pc->parent]; // Point to the cloned parent
+				}
+				else if (pc->parent != 0) {
+					// If the parent wasn't part of the clone group, sever the link
+					// (e.g., we cloned a child, it becomes a new root)
+					ecs.RemoveComponent<ParentComponent>(clone);
+				}
 			}
 
-			e = p;
+			// Fix Children Links
+			if (ecs.HasComponent<ChildrenComponent>(clone)) {
+				auto* cc = ecs.GetComponent<ChildrenComponent>(clone);
+				std::vector<Entity> newChildren;
+				for (Entity child : cc->children) {
+					if (origToClone.count(child)) {
+						newChildren.push_back(origToClone[child]); // Point to cloned children
+					}
+				}
+				cc->children = newChildren;
+			}
 		}
-		// no ancestor with a ShapeComponent
-		return CEColor{ 1.f, 1.f, 1.f, 1.f };
+
+		return origToClone[root];
 	}
-	// Force a child to take its parent's (ancestor) color every Update.
-	static void ForceInheritColorFromParent(ECS& ecs, Entity child) {
-		using namespace Component;
-
-		if (!ecs.HasComponent<ParentComponent>(child)) return;
-		if (!ecs.HasComponent<ShapeComponent>(child))  return;
-
-		auto* parentComp = ecs.GetComponent<ParentComponent>(child);
-		auto* shapeComp = ecs.GetComponent<ShapeComponent>(child);
-
-		// Always inherit
-		const CEColor parentCol = GetAncestorColor(ecs, child);
-
-		shapeComp->color.r = parentCol.r * parentComp->colorMul.r;
-		shapeComp->color.g = parentCol.g * parentComp->colorMul.g;
-		shapeComp->color.b = parentCol.b * parentComp->colorMul.b;
-		shapeComp->color.a = parentCol.a * parentComp->colorMul.a;
-
-	}
-	*/
 
 	// Check if child is already in parent’s list
 	bool IsAlreadyChildOf(ECS& ecs, Entity parent, Entity child) {

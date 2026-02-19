@@ -90,7 +90,7 @@ namespace CrashoutsEngine {
             uint32_t childEntity;
             uint64_t parentUUID;
         };
-        uint32_t DeserializeEntity(const rapidjson::Value& entityValue, std::vector<ParentLinkInfo>* outParentLinks = nullptr);
+        uint32_t DeserializeEntity(const rapidjson::Value& entityValue, std::vector<ParentLinkInfo>* outParentLinks = nullptr, bool isPrefab = false);
     }
 }
 

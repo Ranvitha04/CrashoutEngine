@@ -213,7 +213,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 7
@@ -374,7 +376,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 7
@@ -535,7 +539,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 7
@@ -687,31 +693,6 @@
                     "y": 1.0
                 }
             },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": -0.5,
-                    "y": -0.5,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 0.5,
-                    "y": 0.5,
-                    "z": 0.0
-                }
-            },
             "audio": {
                 "clips": [
                     {
@@ -777,7 +758,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -801,31 +784,6 @@
                 "size": {
                     "x": 1.0,
                     "y": 1.0
-                }
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": -0.5,
-                    "y": -0.5,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 0.5,
-                    "y": 0.5,
-                    "z": 0.0
                 }
             },
             "audio": {
@@ -893,7 +851,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -911,12 +871,12 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -53.2227668762207,
-                    "y": -148.9629669189453,
+                    "y": -148.96295166015626,
                     "z": 0.0
                 },
                 "size": {
                     "x": 61.79999923706055,
-                    "y": 26.799999237060548
+                    "y": 26.799997329711915
                 }
             },
             "shape": {
@@ -973,35 +933,37 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.5
+                    "w": 1.0
                 },
                 "shapePressedColor": {
                     "x": 0.699999988079071,
                     "y": 0.699999988079071,
                     "z": 0.699999988079071,
-                    "w": 0.699999988079071
+                    "w": 1.0
                 },
                 "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 },
                 "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 },
                 "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -1012,6 +974,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 17994454554155245929,
+                "localPos": {
+                    "x": -53.2227668762207,
+                    "y": -148.9629669189453,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 61.79999923706055,
+                    "y": 26.799999237060548
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "YesNo",
@@ -1029,12 +1011,12 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 51.73967742919922,
-                    "y": -148.9629669189453,
+                    "y": -148.96295166015626,
                     "z": 0.0
                 },
                 "size": {
                     "x": 54.5,
-                    "y": 26.799999237060548
+                    "y": 26.799997329711915
                 }
             },
             "shape": {
@@ -1055,10 +1037,10 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
                 },
                 "p1": {
                     "x": 0.0,
@@ -1091,13 +1073,13 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.5
+                    "w": 1.0
                 },
                 "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 },
                 "textNormalColor": {
                     "x": 0.30000001192092898,
@@ -1119,7 +1101,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -1130,6 +1114,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 17994454554155245929,
+                "localPos": {
+                    "x": 51.73967742919922,
+                    "y": -148.9629669189453,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 54.5,
+                    "y": 26.799999237060548
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "YesNo",
@@ -1152,7 +1156,7 @@
                 },
                 "size": {
                     "x": 1.0,
-                    "y": 1.0
+                    "y": 0.9999999403953552
                 }
             },
             "layer": {

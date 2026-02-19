@@ -16,18 +16,9 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 namespace CrashoutsEngine { class ECS; }
 
 namespace Prefab {
-
-    using Factory = std::function<CrashoutsEngine::Entity(CrashoutsEngine::ECS&)>;
-    using Fallback = std::function<CrashoutsEngine::Entity(CrashoutsEngine::ECS&, const std::string&)>;
-
-    bool Register(const std::string& name, Factory f);  
-    bool Unregister(const std::string& name);
-    bool Exists(const std::string& name);
     std::vector<std::string> Names();                                       
     void ClearRegistry();
-
-    CrashoutsEngine::Entity Create(CrashoutsEngine::ECS& ecs, const std::string& name);
-    void SetFallback(Fallback fb);    
+    CrashoutsEngine::Entity Create(CrashoutsEngine::ECS& ecs, const std::string& name);  
 } 
 
 namespace CrashoutsEngine {

@@ -10032,7 +10032,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Player",
@@ -10040,9 +10042,40 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 14.233287811279297,
+                "t": 3.0333311557769777,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -10096,7 +10129,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -10110,14 +10143,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10170,37 +10203,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -11829,7 +11831,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1452.900146484375,
-                    "y": -375.0220642089844,
+                    "y": -374.9280090332031,
                     "z": 0.0
                 },
                 "size": {
@@ -11856,7 +11858,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1452.900146484375,
-                    "y": -375.0220642089844,
+                    "y": -374.9280090332031,
                     "z": 0.0
                 },
                 "offset": {
@@ -11867,7 +11869,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1452.900146484375,
-                    "y": -375.0220642089844,
+                    "y": -374.9280090332031,
                     "z": 0.0
                 }
             },
@@ -11885,7 +11887,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.0
                 },
                 "color": {
@@ -11956,7 +11958,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -11964,7 +11968,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 14.233287811279297,
+                "t": 3.0333311557769777,
                 "playing": true,
                 "clips": [
                     {
@@ -12085,7 +12089,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 97.74189758300781,
-                    "y": -658.9169921875,
+                    "y": -658.8226318359375,
                     "z": 0.0
                 },
                 "size": {
@@ -12112,7 +12116,7 @@
                 "enabled": true,
                 "position": {
                     "x": 97.74189758300781,
-                    "y": -658.9169921875,
+                    "y": -658.8226318359375,
                     "z": 0.0
                 },
                 "offset": {
@@ -12123,7 +12127,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 97.74189758300781,
-                    "y": -658.9169921875,
+                    "y": -658.8226318359375,
                     "z": 0.0
                 }
             },
@@ -12141,7 +12145,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.0
                 },
                 "color": {
@@ -12212,7 +12216,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -12220,7 +12226,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 14.233287811279297,
+                "t": 3.0333311557769777,
                 "playing": true,
                 "clips": [
                     {
@@ -12486,7 +12492,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -12628,7 +12636,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -12768,7 +12778,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "tilemap": {
                 "tileSize": 32,
@@ -13041,7 +13053,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "tilemap": {
                 "tileSize": 32,
@@ -13196,7 +13210,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1066.3165283203126,
+                    "x": 912.98388671875,
                     "y": -355.3426513671875,
                     "z": 0.0
                 },
@@ -13223,7 +13237,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1066.3165283203126,
+                    "x": 912.98388671875,
                     "y": -355.3426513671875,
                     "z": 0.0
                 },
@@ -13233,12 +13247,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1016.316650390625,
+                    "x": 862.9840087890625,
                     "y": -363.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1116.31640625,
+                    "x": 962.9837646484375,
                     "y": -347.3426513671875,
                     "z": 0.0
                 }
@@ -13307,7 +13321,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1173.759765625,
+                    "x": 1327.1005859375,
                     "y": -411.9925537109375,
                     "z": 0.0
                 },
@@ -13334,7 +13348,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1173.759765625,
+                    "x": 1327.1005859375,
                     "y": -411.9925537109375,
                     "z": 0.0
                 },
@@ -13344,12 +13358,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1123.759765625,
+                    "x": 1277.1005859375,
                     "y": -419.9925537109375,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1223.759765625,
+                    "x": 1377.1005859375,
                     "y": -403.9925537109375,
                     "z": 0.0
                 }
@@ -13418,7 +13432,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 368.6055603027344,
+                    "x": 521.9404296875,
                     "y": -326.5159606933594,
                     "z": 0.0
                 },
@@ -13445,7 +13459,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 368.6055603027344,
+                    "x": 521.9404296875,
                     "y": -326.5159606933594,
                     "z": 0.0
                 },
@@ -13455,12 +13469,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 293.6055603027344,
+                    "x": 446.9404296875,
                     "y": -334.5159606933594,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 443.6055603027344,
+                    "x": 596.9404296875,
                     "y": -318.5159606933594,
                     "z": 0.0
                 }
@@ -13529,7 +13543,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 838.9472045898438,
+                    "x": 992.2767944335938,
                     "y": -758.3055419921875,
                     "z": 0.0
                 },
@@ -13556,7 +13570,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 838.9472045898438,
+                    "x": 992.2767944335938,
                     "y": -758.3055419921875,
                     "z": 0.0
                 },
@@ -13566,12 +13580,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 749.8971557617188,
+                    "x": 903.2266845703125,
                     "y": -766.3055419921875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 927.9972534179688,
+                    "x": 1081.326904296875,
                     "y": -750.3055419921875,
                     "z": 0.0
                 }
@@ -13655,10 +13669,10 @@
             },
             "particle": {
                 "isEmitting": true,
-                "useWorldSpace": false,
+                "useWorldSpace": true,
                 "maxParticles": 1000,
                 "emitRate": 25.0,
-                "playOnStop": false,
+                "playOnStop": true,
                 "emissionShape": 0,
                 "radiusMin": 0.0,
                 "radiusMax": 5.0,
@@ -13740,7 +13754,7 @@
             },
             "particle": {
                 "isEmitting": true,
-                "useWorldSpace": false,
+                "useWorldSpace": true,
                 "maxParticles": 1000,
                 "emitRate": 25.0,
                 "playOnStop": false,
@@ -13825,7 +13839,7 @@
             },
             "particle": {
                 "isEmitting": true,
-                "useWorldSpace": false,
+                "useWorldSpace": true,
                 "maxParticles": 1000,
                 "emitRate": 25.0,
                 "playOnStop": false,
@@ -13910,7 +13924,7 @@
             },
             "particle": {
                 "isEmitting": true,
-                "useWorldSpace": false,
+                "useWorldSpace": true,
                 "maxParticles": 100,
                 "emitRate": 25.0,
                 "playOnStop": false,
@@ -13995,7 +14009,7 @@
             },
             "particle": {
                 "isEmitting": true,
-                "useWorldSpace": false,
+                "useWorldSpace": true,
                 "maxParticles": 100,
                 "emitRate": 10.0,
                 "playOnStop": false,
@@ -14065,7 +14079,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 245.84835815429688,
+                    "x": 399.1833801269531,
                     "y": -832.4600830078125,
                     "z": 0.0
                 },
@@ -14092,7 +14106,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 245.84835815429688,
+                    "x": 399.1833801269531,
                     "y": -832.4600830078125,
                     "z": 0.0
                 },
@@ -14102,12 +14116,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 195.84841918945313,
+                    "x": 349.1834411621094,
                     "y": -840.4600830078125,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 295.8482971191406,
+                    "x": 449.1833190917969,
                     "y": -824.4600830078125,
                     "z": 0.0
                 }
@@ -14177,7 +14191,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 0.000030517578125,
-                    "y": 6.5,
+                    "y": 6.499998092651367,
                     "z": 0.0
                 },
                 "size": {
@@ -14257,6 +14271,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 372797382382276125,
+                "localPos": {
+                    "x": -83.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -14313,6 +14347,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 3452433487814910759,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14373,6 +14427,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 3404160962589938536,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14429,6 +14503,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 11395422963691994363,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14489,6 +14583,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 11243931223372640734,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14545,6 +14659,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 18383286529035885019,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14605,6 +14739,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 4114463641246402934,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14661,6 +14815,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 15146782450718660094,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14721,6 +14895,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 10986770823011974503,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14777,6 +14971,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 4620593264482202262,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14837,6 +15051,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 12369226611591080718,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
@@ -14893,6 +15127,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 372797382382276125,
+                "localPos": {
+                    "x": -78.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -14953,6 +15207,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 372797382382276125,
+                "localPos": {
+                    "x": -73.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15009,6 +15283,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 372797382382276125,
+                "localPos": {
+                    "x": -68.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -15069,6 +15363,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 372797382382276125,
+                "localPos": {
+                    "x": -63.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15125,6 +15439,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 372797382382276125,
+                "localPos": {
+                    "x": -58.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -15185,6 +15519,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 372797382382276125,
+                "localPos": {
+                    "x": -53.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15241,6 +15595,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 372797382382276125,
+                "localPos": {
+                    "x": -48.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -15301,6 +15675,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 372797382382276125,
+                "localPos": {
+                    "x": -43.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Enemy",
                 "z": 0
@@ -15357,6 +15751,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 372797382382276125,
+                "localPos": {
+                    "x": -38.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -15457,13 +15871,33 @@
                 },
                 "uiLayout": 4
             },
+            "parent": {
+                "parentUUID": 6856684253039188668,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.583699107170105,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 0.5
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "PlayerDialogue_2",
             "uuid": 15601961332814746215,
             "tag": {
@@ -15555,13 +15989,33 @@
                 },
                 "uiLayout": 4
             },
+            "parent": {
+                "parentUUID": 6856684253039188668,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.583699107170105,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 0.5
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "PlayerDialogue_3",
             "uuid": 16447629414133235068,
             "tag": {
@@ -15652,6 +16106,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 6856684253039188668,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.583699107170105,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 0.5
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -15751,6 +16225,26 @@
                 },
                 "uiLayout": 4
             },
+            "parent": {
+                "parentUUID": 6856684253039188668,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.583699107170105,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 0.5
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -15848,6 +16342,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 6856684253039188668,
+                "localPos": {
+                    "x": -2.0413875579833986,
+                    "y": -1.9935754537582398,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.699999988079071,
+                    "y": 0.5
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -16091,6 +16605,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 442153553620421166,
+                "localPos": {
+                    "x": 504.6278076171875,
+                    "y": -567.8425903320313,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1613.1954345703126,
+                    "y": 746.9531860351563
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Background",
                 "z": -100
@@ -16147,6 +16681,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 442153553620421166,
+                "localPos": {
+                    "x": 1670.98828125,
+                    "y": -361.7455749511719,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 858.08154296875,
+                    "y": 1309.2261962890626
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -16207,6 +16761,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 442153553620421166,
+                "localPos": {
+                    "x": 449.3941955566406,
+                    "y": -337.42987060546877,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 950.2628173828125,
+                    "y": 1288.4683837890626
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Background",
                 "z": -100
@@ -16265,6 +16839,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 442153553620421166,
+                "localPos": {
+                    "x": 154.46868896484376,
+                    "y": -108.80595397949219,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1059.8824462890626,
+                    "y": 667.4451293945313
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Background",
                 "z": -100
@@ -16321,6 +16915,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 442153553620421166,
+                "localPos": {
+                    "x": 1324.1243896484376,
+                    "y": -91.34979248046875,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1305.8382568359376,
+                    "y": 635.3853149414063
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -16419,6 +17033,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 11508001198511904872,
+                "localPos": {
+                    "x": 158.5076904296875,
+                    "y": -726.8931274414063,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 899.2402954101563,
+                    "y": 408.6402587890625
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -16475,6 +17109,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 11508001198511904872,
+                "localPos": {
+                    "x": 1006.0128784179688,
+                    "y": -704.6620483398438,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 882.5747680664063,
+                    "y": 394.365478515625
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -16535,6 +17189,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 11508001198511904872,
+                "localPos": {
+                    "x": 1918.3841552734376,
+                    "y": -689.61376953125,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1053.9906005859376,
+                    "y": 394.30517578125
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -16591,6 +17265,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 11508001198511904872,
+                "localPos": {
+                    "x": 340.7841491699219,
+                    "y": -272.486572265625,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 465.0,
+                    "y": 1195.7991943359376
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -16651,6 +17345,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 11508001198511904872,
+                "localPos": {
+                    "x": 179.28170776367188,
+                    "y": -310.01092529296877,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 381.43994140625,
+                    "y": 1292.1982421875
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -16707,6 +17421,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 11508001198511904872,
+                "localPos": {
+                    "x": 56.40332794189453,
+                    "y": 50.673248291015628,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 802.6097412109375,
+                    "y": 494.47113037109377
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -16767,6 +17501,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 11508001198511904872,
+                "localPos": {
+                    "x": 835.1759033203125,
+                    "y": 24.51214599609375,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 811.2728271484375,
+                    "y": 554.7788696289063
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Middleground",
                 "z": 0
@@ -16823,6 +17577,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 11508001198511904872,
+                "localPos": {
+                    "x": 1533.8104248046876,
+                    "y": 33.03370666503906,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 965.4572143554688,
+                    "y": 531.1934814453125
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -16921,6 +17695,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 5729045573354065727,
+                "localPos": {
+                    "x": -76.36267852783203,
+                    "y": -768.4155883789063,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 488.4152526855469,
+                    "y": 329.4999694824219
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -16977,6 +17771,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 5729045573354065727,
+                "localPos": {
+                    "x": 372.75244140625,
+                    "y": -746.8555908203125,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 422.59716796875,
+                    "y": 381.333251953125
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -17037,6 +17851,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 5729045573354065727,
+                "localPos": {
+                    "x": 819.28759765625,
+                    "y": -746.3095703125,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 490.1760559082031,
+                    "y": 421.6575012207031
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -17093,6 +17927,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 5729045573354065727,
+                "localPos": {
+                    "x": 1630.8089599609376,
+                    "y": -733.845703125,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 653.0842895507813,
+                    "y": 348.306396484375
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -17153,6 +18007,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 5729045573354065727,
+                "localPos": {
+                    "x": -30.838714599609376,
+                    "y": -239.60116577148438,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 304.0,
+                    "y": 1336.6590576171876
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -17209,6 +18083,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 5729045573354065727,
+                "localPos": {
+                    "x": 1228.9029541015626,
+                    "y": -262.73773193359377,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 417.55999755859377,
+                    "y": 1202.0400390625
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -17269,6 +18163,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 5729045573354065727,
+                "localPos": {
+                    "x": 1038.7623291015626,
+                    "y": -352.1566467285156,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 357.1152038574219,
+                    "y": 1320.8106689453126
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -17327,6 +18241,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 5729045573354065727,
+                "localPos": {
+                    "x": 924.9457397460938,
+                    "y": 159.19122314453126,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 685.0269775390625,
+                    "y": 340.42999267578127
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -17383,6 +18317,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 5729045573354065727,
+                "localPos": {
+                    "x": 1596.9228515625,
+                    "y": 160.47113037109376,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 678.0238647460938,
+                    "y": 326.0249938964844
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -17451,6 +18405,26 @@
                     }
                 ]
             },
+            "parent": {
+                "parentUUID": 5729045573354065727,
+                "localPos": {
+                    "x": 143.6941375732422,
+                    "y": 137.82464599609376,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 941.5947265625,
+                    "y": 415.3025817871094
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Foreground",
                 "z": 0
@@ -17469,64 +18443,6 @@
                 "triggerID": "",
                 "oneTimeUse": true,
                 "triggered": false
-            }
-        },
-        {
-            "active": false,
-            "name": "Entity 2006",
-            "uuid": 9027840449356178231,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -57.86799621582031,
-                    "y": 32.5,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 60.480003356933597,
-                    "y": 4.300000190734863
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.3466135263442993
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -17685,7 +18601,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -17847,7 +18765,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -17937,32 +18857,28 @@
                     "z": 0.0
                 }
             },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "TutorialTexts",
-            "uuid": 6142660600420007164,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
+            "parent": {
+                "parentUUID": 1393825108450217624,
+                "localPos": {
+                    "x": 313.04571533203127,
+                    "y": 56.774200439453128,
                     "z": 0.0
                 },
-                "size": {
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 79.0,
+                    "y": 59.25
+                },
+                "inheritColor": false,
+                "colorMul": {
                     "x": 1.0,
-                    "y": 1.0
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
-                "layerName": "",
+                "layerName": "Default",
                 "z": 0
             }
         },
@@ -18017,6 +18933,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 1393825108450217624,
+                "localPos": {
+                    "x": 1071.9132080078126,
+                    "y": 79.56537628173828,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 93.0,
+                    "y": 65.0999984741211
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -18077,6 +19013,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 1393825108450217624,
+                "localPos": {
+                    "x": 1717.060302734375,
+                    "y": -70.34080505371094,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 92.10552978515625,
+                    "y": 65.08757019042969
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -18133,6 +19089,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 1393825108450217624,
+                "localPos": {
+                    "x": 1295.3082275390626,
+                    "y": -430.8132019042969,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 105.44999694824219,
+                    "y": 35.14999771118164
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -18193,6 +19169,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 1393825108450217624,
+                "localPos": {
+                    "x": 1073.856201171875,
+                    "y": 8.98685073852539,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 155.51998901367188,
+                    "y": 38.87999725341797
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -18249,6 +19245,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 1393825108450217624,
+                "localPos": {
+                    "x": 737.0191650390625,
+                    "y": -295.0252685546875,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 148.95999145507813,
+                    "y": 52.1359977722168
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -18309,6 +19325,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 1393825108450217624,
+                "localPos": {
+                    "x": 126.67002868652344,
+                    "y": -403.8547668457031,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 83.42000579833985,
+                    "y": 41.71000289916992
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -18365,6 +19401,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 1393825108450217624,
+                "localPos": {
+                    "x": 2.408275604248047,
+                    "y": -721.8055419921875,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 100.0,
+                    "y": 40.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -18483,6 +19539,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 3899499466856881947,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.9599999785423279,
+                    "y": 0.5400000214576721
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "UI",
                 "z": 5
@@ -18539,6 +19615,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 3899499466856881947,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.9599999785423279,
+                    "y": 0.5400000214576721
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -18639,7 +19735,9 @@
                 },
                 "textureNormal": "UI/settings/updated resume.png",
                 "textureHovered": "UI/settings/updated resume large.png",
-                "texturePressed": "UI/settings/updated resume.png"
+                "texturePressed": "UI/settings/updated resume.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -18650,6 +19748,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 8605457662790260227,
+                "localPos": {
+                    "x": 0.12083333730697632,
+                    "y": 0.13425925374031068,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.1145833358168602,
+                    "y": 0.02222222462296486
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "UIButtons",
@@ -18749,7 +19867,9 @@
                 },
                 "textureNormal": "UI/settings/updated restart.png",
                 "textureHovered": "UI/settings/updated restart large.png",
-                "texturePressed": "UI/settings/updated restart.png"
+                "texturePressed": "UI/settings/updated restart.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -18760,6 +19880,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 8605457662790260227,
+                "localPos": {
+                    "x": 0.12083333730697632,
+                    "y": 0.05833333358168602,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.1223958358168602,
+                    "y": 0.02222222462296486
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "UIButtons",
@@ -18859,7 +19999,9 @@
                 },
                 "textureNormal": "UI/settings/updated settings.png",
                 "textureHovered": "UI/settings/updated settings large.png",
-                "texturePressed": "UI/settings/updated settings.png"
+                "texturePressed": "UI/settings/updated settings.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -18870,6 +20012,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 8605457662790260227,
+                "localPos": {
+                    "x": 0.12083333730697632,
+                    "y": -0.018518518656492235,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.07760416716337204,
+                    "y": 0.024074073880910875
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "UIButtons",
@@ -18969,7 +20131,9 @@
                 },
                 "textureNormal": "UI/settings/updated quit.png",
                 "textureHovered": "UI/settings/updated quit large.png",
-                "texturePressed": "UI/settings/updated quit.png"
+                "texturePressed": "UI/settings/updated quit.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -18980,6 +20144,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 8605457662790260227,
+                "localPos": {
+                    "x": 0.12083333730697632,
+                    "y": -0.0962962955236435,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.04010416567325592,
+                    "y": 0.028703702613711358
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "UIButtons",
@@ -19037,6 +20221,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 8605457662790260227,
+                "localPos": {
+                    "x": 0.12031250447034836,
+                    "y": 0.05925925448536873,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.13697916269302369,
+                    "y": 0.04999999701976776
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -19137,7 +20341,9 @@
                 },
                 "textureNormal": "UI/No.png",
                 "textureHovered": "UI/No.png",
-                "texturePressed": "UI/No.png"
+                "texturePressed": "UI/No.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -19148,6 +20354,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 12018865833749224043,
+                "localPos": {
+                    "x": 0.2750000059604645,
+                    "y": 0.028999999165534974,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.27399998903274538,
+                    "y": 0.5860000252723694
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "UIButtons",
@@ -19247,7 +20473,9 @@
                 },
                 "textureNormal": "UI/Yes.png",
                 "textureHovered": "UI/Yes.png",
-                "texturePressed": "UI/Yes.png"
+                "texturePressed": "UI/Yes.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -19258,6 +20486,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 12018865833749224043,
+                "localPos": {
+                    "x": -0.2840000092983246,
+                    "y": 0.01299999374896288,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.2980000078678131,
+                    "y": 0.5149999856948853
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "UIButtons",
@@ -19408,7 +20656,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 7
@@ -19419,6 +20669,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 4082988418873241213,
+                "localPos": {
+                    "x": 0.15600000321865083,
+                    "y": 0.16200001537799836,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.13854166865348817,
+                    "y": 0.8361110687255859
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -19474,6 +20744,26 @@
                 "dialogueFilePath": "",
                 "dialogueID": ""
             },
+            "parent": {
+                "parentUUID": 4082988418873241213,
+                "localPos": {
+                    "x": -0.11249605566263199,
+                    "y": -0.028682123869657518,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
@@ -19489,7 +20779,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 5.759999752044678,
+                    "x": 5.760000228881836,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -19507,6 +20797,26 @@
                         }
                     }
                 ]
+            },
+            "parent": {
+                "parentUUID": 4082988418873241213,
+                "localPos": {
+                    "x": 0.030000001192092897,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -19541,6 +20851,26 @@
                         }
                     }
                 ]
+            },
+            "parent": {
+                "parentUUID": 4082988418873241213,
+                "localPos": {
+                    "x": -0.15000000596046449,
+                    "y": 0.19790679216384889,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -19595,6 +20925,26 @@
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
                 "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 4082988418873241213,
+                "localPos": {
+                    "x": 0.06013471260666847,
+                    "y": 0.04432688653469086,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "StaticBackground",
@@ -19652,6 +21002,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 4082988418873241213,
+                "localPos": {
+                    "x": 0.09196213632822037,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.125,
+                    "y": 0.020999999716877939
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -19712,6 +21082,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 4082988418873241213,
+                "localPos": {
+                    "x": -0.0903487578034401,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.125,
+                    "y": 0.021299999207258226
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 15
@@ -19719,7 +21109,7 @@
         },
         {
             "active": true,
-            "name": "MusicBar_Image",
+            "name": "MusicBar_Child",
             "uuid": 4022660167105049544,
             "tag": {
                 "tagMask": 0
@@ -19779,6 +21169,26 @@
                         }
                     }
                 ]
+            },
+            "parent": {
+                "parentUUID": 3577795423813420893,
+                "localPos": {
+                    "x": 0.06000000238418579,
+                    "y": -0.19790679216384889,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.125,
+                    "y": 0.020999999716877939
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "UIButtons",
@@ -19848,6 +21258,26 @@
                     }
                 ]
             },
+            "parent": {
+                "parentUUID": 9367769150656733250,
+                "localPos": {
+                    "x": 0.061000000685453418,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.125,
+                    "y": 0.020999999716877939
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "UIButtons",
                 "z": 61
@@ -19872,8 +21302,28 @@
                     "y": 101.0
                 }
             },
+            "parent": {
+                "parentUUID": 6856684253039188668,
+                "localPos": {
+                    "x": 0.016148703172802926,
+                    "y": -0.4811890423297882,
+                    "z": -50.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0069999694824219,
+                    "y": 1.0099999904632569
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
-                "layerName": "",
+                "layerName": "Player",
                 "z": 0
             },
             "particle": {
@@ -20130,7 +21580,9 @@
                 },
                 "textureNormal": "UI/settings/updated restart large.png",
                 "textureHovered": "UI/settings/updated restart large.png",
-                "texturePressed": "UI/settings/updated restart large.png"
+                "texturePressed": "UI/settings/updated restart large.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -20240,7 +21692,9 @@
                 },
                 "textureNormal": "UI/settings/updated quit large.png",
                 "textureHovered": "UI/settings/updated quit large.png",
-                "texturePressed": "UI/settings/updated quit large.png"
+                "texturePressed": "UI/settings/updated quit large.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -20374,7 +21828,9 @@
                 },
                 "textureNormal": "UI/Yes.png",
                 "textureHovered": "UI/Yes.png",
-                "texturePressed": "UI/Yes.png"
+                "texturePressed": "UI/Yes.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -20385,6 +21841,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 6874116363802167147,
+                "localPos": {
+                    "x": -0.14522917568683625,
+                    "y": -0.12129630148410797,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0546875,
+                    "y": 0.034259259700775149
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "UIButtons",
@@ -20484,7 +21960,9 @@
                 },
                 "textureNormal": "UI/No.png",
                 "textureHovered": "UI/No.png",
-                "texturePressed": "UI/No.png"
+                "texturePressed": "UI/No.png",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 5
@@ -20495,6 +21973,26 @@
                     "y": 0.0
                 },
                 "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 6874116363802167147,
+                "localPos": {
+                    "x": -0.054484378546476367,
+                    "y": -0.12129630148410797,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.04270833358168602,
+                    "y": 0.034259259700775149
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "UIButtons",
@@ -20610,7 +22108,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",
@@ -20726,7 +22226,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",
@@ -21138,6 +22640,11 @@
                 "targetRespawnEntity": 125,
                 "targetEntityName": "respawn4",
                 "activated": false
+            },
+            "trigger_metadata": {
+                "triggerID": "",
+                "oneTimeUse": true,
+                "triggered": false
             }
         },
         {
