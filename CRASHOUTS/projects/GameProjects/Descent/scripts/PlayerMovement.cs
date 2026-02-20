@@ -143,7 +143,7 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            //Debug.Log(isPaused ? "PAUSED" : "NOT PAUSED");
+            Debug.Log(isPaused ? "PAUSED" : "NOT PAUSED");
             // --- 2. PAUSE INPUT ---
             // Moved Book logic out to keep this clean.
             // Using 'Escape' is standard, but you can keep 'P' if you prefer.

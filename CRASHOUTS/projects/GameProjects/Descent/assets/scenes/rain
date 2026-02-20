@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "Entity 1",
+            "uuid": 497895384264789798,
             "tag": {
                 "tagMask": 0
             },
@@ -1170,6 +1171,7 @@
         {
             "active": true,
             "name": "Player",
+            "uuid": 12628388841505010138,
             "tag": {
                 "tagMask": 9
             },
@@ -1260,34 +1262,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PlayerMovement",
-                        "fields": {
-                            "maxRunSpeed": 100.0,
-                            "maxAirSpeed": 120.0,
-                            "acceleration": 10.0,
-                            "deceleration": 10.0,
-                            "airAcceleration": 2.0,
-                            "jumpPower": 50000.0,
-                            "gravityScale": 2.5,
-                            "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.07500000298023224,
-                            "swapPause": 1.0,
-                            "energyConsumption": 12.5,
-                            "goalNoOfPlates": 1,
-                            "currentGoalPlates": 0,
-                            "landingDustName": "LandingDust",
-                            "dustBurstDuration": 0.15000000596046449,
-                            "normalMass": 4.0,
-                            "lightMass": 3.0,
-                            "groundCheckDistance": 26.0,
-                            "groundCheckWidth": 10.0,
-                            "dialogueCooldown": 1.0,
-                            "isDialogueActive": false,
-                            "CurrentEnergy": 100.0,
-                            "MaxEnergy": 100.0,
-                            "alive": true,
-                            "isPaused": false
-                        }
+                        "className": "PlayerMovement"
                     }
                 ]
             },
@@ -1342,7 +1317,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",
@@ -1352,6 +1329,7 @@
         {
             "active": true,
             "name": "Slime new",
+            "uuid": 3044819853745854390,
             "tag": {
                 "tagMask": 16
             },
@@ -1442,25 +1420,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
+                        "className": "SlimeMovement"
                     }
                 ]
             },
@@ -1504,7 +1464,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",
@@ -1514,6 +1476,7 @@
         {
             "active": true,
             "name": "Slime new_Clone1928",
+            "uuid": 3319607293133797850,
             "tag": {
                 "tagMask": 16
             },
@@ -1604,25 +1567,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
+                        "className": "SlimeMovement"
                     }
                 ]
             },
@@ -1666,7 +1611,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",
@@ -1676,6 +1623,7 @@
         {
             "active": true,
             "name": "Slime new_Clone154",
+            "uuid": 134764358981248780,
             "tag": {
                 "tagMask": 16
             },
@@ -1766,25 +1714,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 87.19999694824219,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": -7.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
+                        "className": "SlimeMovement"
                     }
                 ]
             },
@@ -1828,7 +1758,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",
@@ -1838,6 +1770,7 @@
         {
             "active": true,
             "name": "Entity 154",
+            "uuid": 10153835042611681077,
             "tag": {
                 "tagMask": 0
             },
@@ -1935,6 +1868,7 @@
         {
             "active": true,
             "name": "Entity 155",
+            "uuid": 8126816499121791423,
             "tag": {
                 "tagMask": 0
             },
@@ -2001,6 +1935,7 @@
         {
             "active": true,
             "name": "Slime V3",
+            "uuid": 4001983480694532630,
             "tag": {
                 "tagMask": 16
             },
@@ -2091,25 +2026,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 87.19999694824219,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": -7.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
+                        "className": "SlimeMovement"
                     }
                 ]
             },
@@ -2153,7 +2070,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",

@@ -88,7 +88,7 @@ namespace CrashoutsEngine::Bindings {
 
 void MonoManager::Init(const std::string& domainName)
 {
-	mono_set_dirs("third_party/Mono/lib", "third_party/Mono/etc");
+	mono_set_dirs("../../third_party/Mono/lib", "../../third_party/Mono/etc");
 	mono_config_parse(nullptr);
 
 	s_Domain = mono_jit_init(domainName.c_str());
@@ -123,7 +123,7 @@ void MonoManager::LoadAssembly()
 	fs::path latestDll;
 	auto latestTime = fs::file_time_type::min();
 
-	fs::path scriptDir = fs::path(GetGameRoot()) / "scripts";
+	fs::path scriptDir = fs::current_path() / "scripts";
 	for (const auto& file : fs::directory_iterator(scriptDir))
 	{
 		if (file.path().extension() == ".dll")
@@ -201,7 +201,7 @@ void MonoManager::ReloadAssembly()
 		// find newest DLL in scripts folder
 		fs::path latestDll;
 		auto latestTime = fs::file_time_type::min();
-		fs::path scriptDir = fs::path(GetGameRoot()) / "scripts";
+		fs::path scriptDir = fs::current_path() / "scripts";
 		for (const auto& file : fs::directory_iterator(scriptDir))
 		{
 			if (file.path().extension() == ".dll")

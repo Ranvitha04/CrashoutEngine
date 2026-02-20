@@ -1,120 +1,46 @@
-﻿#projects/GameProjects/Descent/CMakeLists.txt
-
-project(Descent)
-
+﻿project(Descent)
 set(project_dir ${CMAKE_CURRENT_LIST_DIR})
 
-message(STATUS "Configuring project: ${PROJECT_NAME}")
+file(GLOB_RECURSE src_files "${project_dir}/src/*.cpp")
+file(GLOB_RECURSE inc_files "${project_dir}/include/*.h")
 
-# ------------------------------------------------------------
-# ICON (Windows only)
-# ------------------------------------------------------------
-if (WIN32)
-    set(DESCENT_ICON "${project_dir}/DescentResources.rc")
-endif()
-
-# ------------------------------------------------------------
-# SOURCE / HEADER GLOBS
-# ------------------------------------------------------------
-file(GLOB_RECURSE all_src_files     "${project_dir}/src/*.cpp")
-file(GLOB_RECURSE all_include_files "${project_dir}/include/*.h" "${project_dir}/include/*.hpp")
-
-set(other_src_files     ${all_src_files})
-set(other_include_files ${all_include_files})
-
-# ------------------------------------------------------------
-# DESCENT GAME BUILD (Descent.exe)
-# ------------------------------------------------------------
-add_executable(${PROJECT_NAME} WIN32
-    ${DESCENT_ICON}
-    ${other_src_files}
-    ${other_include_files}
-    "${project_dir}/include/pch.h"
+# ======================================================
+# TARGET 1: The Standalone Game
+# ======================================================
+add_executable(Descent WIN32 ${src_files} ${inc_files})
+# Link to the standard engine
+target_link_libraries(Descent PRIVATE CrashoutEngine)
+target_include_directories(Descent PRIVATE 
+    "${project_dir}/include" 
+    "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include"
 )
+set_target_properties(Descent PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:Descent>")
 
-# PCH
-target_precompile_headers(${PROJECT_NAME} PRIVATE "include/pch.h")
-
-# Organize in Visual Studio filters
-source_group("src"     FILES ${other_src_files})
-source_group("include" FILES ${other_include_files})
-
-# Link runtime engine
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE CrashoutEngine
+# ======================================================
+# TARGET 2: The Engine Editor
+# ======================================================
+add_executable(CrashoutEditor WIN32 ${src_files} ${inc_files})
+# Link specifically to the Editor engine
+target_link_libraries(CrashoutEditor PRIVATE CrashoutEngine_Editor)
+target_include_directories(CrashoutEditor PRIVATE 
+    "${project_dir}/include" 
+    "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include"
 )
+set_target_properties(CrashoutEditor PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:CrashoutEditor>")
 
-link_mono_to(${PROJECT_NAME})
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${project_dir}/include
+# --- C# Build Trigger (Shared) ---
+set(CSPROJ_PATH "${project_dir}/scripts/Descent.csproj")
+add_custom_target(Descent_Scripts ALL
+    COMMAND dotnet build "${CSPROJ_PATH}" -c $<CONFIG>
+    WORKING_DIRECTORY "${project_dir}/scripts"
 )
+add_dependencies(Descent Descent_Scripts)
+add_dependencies(CrashoutEditor Descent_Scripts)
 
-set_property(TARGET ${PROJECT_NAME}
-    PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+# --- Asset Sync (Shared) ---
+add_custom_command(TARGET Descent POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:Descent>/assets"
 )
-
-# Copy assets
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
-    "${project_dir}/assets"
-    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
-)
-
-# ------------------------------------------------------------
-# EDITOR BUILD (CrashoutEditor.exe)
-# ------------------------------------------------------------
-add_executable(CrashoutEditor WIN32
-    ${DESCENT_ICON}
-    ${other_src_files}
-    ${other_include_files}
-    "${project_dir}/include/pch.h"
-)
-
-set_target_properties(CrashoutEditor
-    PROPERTIES OUTPUT_NAME "CrashoutEditor"
-)
-
-target_precompile_headers(CrashoutEditor PRIVATE "include/pch.h")
-
-target_link_libraries(CrashoutEditor
-    PRIVATE CrashoutEngine.Editor
-)
-
-link_mono_to(CrashoutEditor)
-link_fmod_to(CrashoutEditor)
-
-target_include_directories(CrashoutEditor PRIVATE
-    ${project_dir}/include
-    ${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include
-)
-
-set_property(TARGET CrashoutEditor
-    PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:CrashoutEditor>"
-)
-
-# assets for editor
 add_custom_command(TARGET CrashoutEditor POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
-        "${project_dir}/assets"
-        "$<TARGET_FILE_DIR:CrashoutEditor>/assets"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:CrashoutEditor>/assets"
 )
-
-# Build Descent.csproj automatically when we build the Descent game
-add_custom_target(DescentScripts ALL
-    COMMAND ${CMAKE_COMMAND} -E echo "Building Descent Scripts..."
-    COMMAND dotnet build "${CMAKE_CURRENT_SOURCE_DIR}/scripts/Descent.csproj" -c $<CONFIG>
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scripts"
-    COMMENT "Building C# scripts for Descent"
-)
-
-# Ensure the output directory exists in the build folder
-add_custom_command(
-    TARGET DescentScripts POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/scripts"
-    COMMENT "Ensuring runtime scripts folder exists"
-)
-
-# Make BOTH your Game and Editor wait for the C# scripts to compile before they launch
-add_dependencies(Descent DescentScripts)
-add_dependencies(CrashoutEditor DescentScripts)

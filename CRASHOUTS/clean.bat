@@ -1,35 +1,33 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 pushd "%~dp0"
 
-REM echo Saving modified assets for all game projects...
-REM set "BUILD_DIR=build"
-
-REM Loop through every folder inside GameProjects
-REM for /d %%D in (projects\GameProjects\*) do (
-REM     set "GAME_NAME=%%~nxD"
-REM     echo Syncing assets for !GAME_NAME!...
-REM     set "SOURCE_ASSETS=%%D\assets"
-REM     set "DEBUG_ASSETS=%BUILD_DIR%\x64-Debug\assets"
-REM     set "RELEASE_ASSETS=%BUILD_DIR%\x64-Release\assets"
-REM
-REM     if exist "!DEBUG_ASSETS!" (
-REM         robocopy "!DEBUG_ASSETS!" "!SOURCE_ASSETS!" /E /XO
-REM     )
-REM )
-
 echo.
-echo Cleaning build artifacts...
+echo ======================================================
+echo              CrashoutsEngine: Deep Clean
+echo ======================================================
 
-REM Delete the 'build' directory completely
-if exist build (
-  rmdir /s /q build
-  echo Removed build directory.
-) else (
-  echo No build directory found.
+:: 1. Sync assets BACK to source projects so changes aren't lost
+set "BUILD_DIR=build"
+for /d %%D in (projects\GameProjects\*) do (
+    set "GAME_NAME=%%~nxD"
+    set "DEBUG_ASSETS=%BUILD_DIR%\bin\Debug\assets"
+    set "SOURCE_ASSETS=%%D\assets"
+
+    if exist "!DEBUG_ASSETS!" (
+        echo Syncing modifications from build back to !GAME_NAME!...
+        :: /XO excludes older files (preserves newer source edits)
+        robocopy "!DEBUG_ASSETS!" "!SOURCE_ASSETS!" /E /XO /NJH /NJS /NDL /NC /NS
+    )
 )
 
-REM Optionally remove cache/config files if any left
+:: 2. Wipe build artifacts
+echo Cleaning build artifacts...
+if exist %BUILD_DIR% (
+    rmdir /s /q %BUILD_DIR%
+    echo Removed %BUILD_DIR% directory.
+)
+
 if exist CMakeCache.txt del /f /q CMakeCache.txt
 if exist CMakeFiles rmdir /s /q CMakeFiles
 

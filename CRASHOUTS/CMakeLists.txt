@@ -1,18 +1,26 @@
-﻿# MAIN TOP-LEVEL CMAKE FILE
-
-# ======================= Project Configuration =========================
+﻿# ============================================================================
+# CRASHOUTS ENGINE - MAIN TOP-LEVEL CMAKE
+# ============================================================================
 cmake_minimum_required(VERSION 3.25)
 project(CrashoutEngine CXX)
 
-# Allow older dependencies (e.g. GLEW) to configure under modern CMake
-set(CMAKE_POLICY_VERSION_MINIMUM 3.5) 
+# --- 1. Identify Build Target ---
+set(TARGET_TO_ADD "Descent") # Default fallback
+if(GAME_TARGET AND NOT GAME_TARGET STREQUAL "CrashoutEditor")
+    set(TARGET_TO_ADD ${GAME_TARGET})
+endif()
 
-# Force a consistent root binary directory (so subdirs don't nest)
+# --- 2. Diagnostic Header ---
+message(STATUS "------------------------------------------------------------")
+message(STATUS "  PROJECT       : ${PROJECT_NAME}")
+message(STATUS "  GAME PROJECT  : ${TARGET_TO_ADD}")
+message(STATUS "  BUILD MODE    : DUAL-TARGET (Standalone & Editor enabled)")
+message(STATUS "------------------------------------------------------------")
+
+# ======================= Project Configuration =========================
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5) 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>")
 
 foreach(OUTPUTCONFIG Debug Release RelWithDebInfo MinSizeRel)
     string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG_UPPER)
@@ -27,57 +35,37 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 
-# ======================= Module and Dependency Setup ====================
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-
-# Disable GLFW extras to avoid unnecessary builds
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 
-# Include project-wide dependency importer
 include(ImportDependencies)
 importDependencies()
 
-# ======================= Compile Definitions ============================
 add_definitions(-DGLEW_STATIC)
-add_definitions(-DUSE_CSD3151_AUTOMATION=0) # For instructor automation
+add_definitions(-DUSE_CSD3151_AUTOMATION=0)
+add_compile_definitions($<$<CONFIG:Debug>:DEBUG=1>)
 
-add_compile_definitions(
-    $<$<CONFIG:Debug>:DEBUG=1>
-)
-
-# Include path for GLM (optional if not using FetchContent)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/lib/glm)
 include_directories(${_FMOD_INC})
 include_directories(${_FREETYPE_INC})
 include_directories(${_MONO_INC})
 
-# ======================= Global Warning Level ===========================
 if (MSVC)
-    add_compile_options(
-        /W4          # Level 4 warnings
-        /permissive- # Strict standard conformance
-        # /WX         # Uncomment to treat warnings as errors
-    )
+    add_compile_options(/W4 /permissive-)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
 # ========================= Build Sub-Projects ===========================
-# Build the engine first, then the game.
-# 1. Build the engine core first
+
+# 1. Build the engine libraries (Builds both standalone and editor versions)
 add_subdirectory(projects/CrashoutEngine)
 
-# 2. Automatically scan and build ALL game projects!
-file(GLOB game_dirs "projects/GameProjects/*")
-foreach(dir ${game_dirs})
-    if(IS_DIRECTORY "${dir}" AND EXISTS "${dir}/CMakeLists.txt")
-        # Extract just the folder name to print it nicely
-        get_filename_component(game_name "${dir}" NAME)
-        message(STATUS "🎮 Found Game Project: ${game_name}")
-        
-        # Add it to the build!
-        add_subdirectory("${dir}")
-    endif()
-endforeach()
+# 2. Add the Game Project (Builds both standalone and editor executables)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/projects/GameProjects/${TARGET_TO_ADD}/CMakeLists.txt")
+    add_subdirectory(projects/GameProjects/${TARGET_TO_ADD})
+else()
+    message(FATAL_ERROR "[Crashouts] ERROR: Project folder not found: ${TARGET_TO_ADD}")
+endif()

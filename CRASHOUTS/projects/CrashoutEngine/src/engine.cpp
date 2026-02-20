@@ -269,15 +269,13 @@ void Init() {
 
     CrashoutsEngine::Audio::AudioSystem::instance().init(GetGameRoot() + "/assets/audio/");
 
-#if USE_IMGUI_EDITOR
     // 1. Define the manifest location for the CURRENT project
     std::string manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+#if USE_IMGUI_EDITOR
 
     // 2. Generate it at that specific project location
     CrashoutsEngine::Assets::GenerateAssetManifest(manifestPath);
-#else
-    // RELEASE MODE: Use the LocalAppData path
-    std::string manifestPath = GetLocalAppData() + "json/assetmanifest.json";
+
 #endif
 
     // 3. Load the manifest we just created

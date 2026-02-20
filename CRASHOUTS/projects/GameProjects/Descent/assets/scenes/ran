@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "Tex_Monsters(5)",
+            "uuid": 761712192541360979,
             "tag": {
                 "tagMask": 0
             },
@@ -60,6 +61,7 @@
         {
             "active": true,
             "name": "Tex_bg colour",
+            "uuid": 3009890465655727654,
             "tag": {
                 "tagMask": 0
             },
@@ -117,6 +119,7 @@
         {
             "active": true,
             "name": "Tex_bg 1 pillar 2",
+            "uuid": 2535721949730513867,
             "tag": {
                 "tagMask": 0
             },
@@ -174,6 +177,7 @@
         {
             "active": true,
             "name": "Tex_bg2 base",
+            "uuid": 4357313173676838390,
             "tag": {
                 "tagMask": 0
             },
@@ -231,6 +235,7 @@
         {
             "active": true,
             "name": "Tex_Chibi-2",
+            "uuid": 14373703683802825089,
             "tag": {
                 "tagMask": 0
             },
@@ -288,6 +293,7 @@
         {
             "active": true,
             "name": "Tex_Monsters(8)",
+            "uuid": 14532882918421361681,
             "tag": {
                 "tagMask": 0
             },
@@ -345,6 +351,7 @@
         {
             "active": true,
             "name": "Entity 7",
+            "uuid": 17984768587446070860,
             "tag": {
                 "tagMask": 0
             },

@@ -168,7 +168,8 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons"
+                        "className": "MenuButtons",
+                        "fields": {}
                     }
                 ]
             },
@@ -330,7 +331,8 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons"
+                        "className": "MenuButtons",
+                        "fields": {}
                     }
                 ]
             },
@@ -492,7 +494,8 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons"
+                        "className": "MenuButtons",
+                        "fields": {}
                     }
                 ]
             },
@@ -706,7 +709,12 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SceneMusic"
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Music",
+                            "fadeTime": 2.0,
+                            "stopLayer": false
+                        }
                     }
                 ]
             },
@@ -794,7 +802,12 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SceneMusic"
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Music",
+                            "fadeTime": 2.0,
+                            "stopLayer": false
+                        }
                     }
                 ]
             },
@@ -903,7 +916,8 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons"
+                        "className": "MenuButtons",
+                        "fields": {}
                     }
                 ]
             },
@@ -1042,7 +1056,8 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons"
+                        "className": "MenuButtons",
+                        "fields": {}
                     }
                 ]
             },

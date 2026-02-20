@@ -68,6 +68,7 @@ int WINAPI WinMain(
 
     SetupConsole();
 #endif
+
     InstallCrashLogger("CrashoutsEngine");
 
     SetGameRoot("../../projects/GameProjects/Descent");
