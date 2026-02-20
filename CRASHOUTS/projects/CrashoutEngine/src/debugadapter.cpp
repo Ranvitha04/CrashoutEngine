@@ -31,6 +31,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "scriptvalidation.h"
 #include "undomanager.h"
 #include "hierarchy.h"
+#include "engine.h"
 
 /*                                                         component includes
 ----------------------------------------------------------------------------- */
@@ -1060,7 +1061,7 @@ namespace {
 					if (!s_scanned) {
 						s_scanned = true;
 						s_assets.clear();
-						const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images";
+						const std::string assetRoot = std::string(GetGameRoot()) + "/assets/images";
 						try {
 							if (fs::exists(assetRoot)) {
 								for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
@@ -1216,7 +1217,7 @@ namespace {
 				UIHelpers::DrawUndoableString("Dialogue ID", fc->dialogueID);
 
 				if (ImGui::Button("Load Text from File")) {
-					std::string fullPath = CrashoutsEngine::Assets::rootPath + fc->dialogueFilePath;
+					std::string fullPath = std::string(GetGameRoot()) + "/assets/" + fc->dialogueFilePath;
 					if (fc->dialogueFilePath.rfind("assets/", 0) == 0) fullPath = fc->dialogueFilePath;
 
 					std::ifstream file(fullPath);
@@ -1537,7 +1538,7 @@ namespace {
 					ImGui::InputTextWithHint("##script_filter", "filter...", filter, sizeof(filter));
 					ImGui::Separator();
 
-					fs::path base = "../../projects/ManagedScripts";
+					fs::path base = fs::path(GetGameRoot()) / "scripts";
 
 					if (ImGui::BeginChild("script_list", ImVec2(320, 240), true)) {
 						try {
@@ -1616,7 +1617,7 @@ namespace {
 
 				if (ImGui::SmallButton("Open")) {
 					namespace fs = std::filesystem;
-					fs::path base = "../../projects/ManagedScripts";
+					fs::path base = fs::path(GetGameRoot()) / "scripts";
 					fs::path file = base / (inst.ClassName + ".cs");
 
 					if (fs::exists(file)) {
@@ -1740,7 +1741,7 @@ namespace {
 				std::replace(className.begin(), className.end(), ' ', '_');
 
 				namespace fs = std::filesystem;
-				fs::path base = "../../projects/ManagedScripts";
+				fs::path base = fs::path(GetGameRoot()) / "scripts";
 
 				// Ensure directory exists
 				if (!fs::exists(base)) fs::create_directories(base);
@@ -1823,8 +1824,15 @@ namespace CrashoutsEngine
 #endif
 						fs::path cwd = fs::current_path();
 
-						// Path to .csproj (Used for the build command)
-						fs::path projectPath = fs::absolute(cwd / "../../projects/ManagedScripts/ManagedScripts.csproj");
+						// 1. Get the game root (e.g., "../../projects/GameProjects/Descent")
+						fs::path gameRoot = fs::path(GetGameRoot());
+
+						// 2. Extract the name of the game from the folder name (e.g., "Descent")
+						std::string projectName = gameRoot.filename().string();
+
+						// 3. Construct the exact path to the .csproj dynamically!
+						fs::path relativeProjectPath = gameRoot / "scripts" / (projectName + ".csproj");
+						fs::path projectPath = fs::absolute(cwd / relativeProjectPath);
 
 						// --- 2. CORRECTED OUTPUT PATH ---
 						// Your .csproj outputs to "..\..\build\x64-Debug\scripts\"
@@ -1836,7 +1844,7 @@ namespace CrashoutsEngine
 							buildOutput = projectPath.parent_path() / "bin" / config / "net6.0";
 						}
 
-						fs::path targetDll = MonoManager::GetAssemblyPath(); // e.g. "scripts/ManagedScripts.dll"
+						fs::path targetDll = MonoManager::GetAssemblyPath(); 
 						fs::path targetPdb = targetDll;
 						targetPdb.replace_extension(".pdb");
 
@@ -1868,7 +1876,7 @@ namespace CrashoutsEngine
 
 									// Look for timestamped files (e.g. ManagedScripts_Debug_2026...)
 									// We exclude the clean "ManagedScripts.dll" so we don't copy the file onto itself
-									if (name.find("ManagedScripts_") == 0 && entry.path().extension() == ".dll") {
+									if (name.find(projectName) == 0 && entry.path().extension() == ".dll") {
 
 										if (entry.last_write_time() > bestTime) {
 											bestTime = entry.last_write_time();
@@ -1895,10 +1903,11 @@ namespace CrashoutsEngine
 							try {
 								std::cout << "[HotReload] Found fresh build: " << bestDll.filename().string() << std::endl;
 
-								// Copy the timestamped DLL -> ManagedScripts.dll
-								fs::copy_file(bestDll, targetDll, fs::copy_options::overwrite_existing);
-
-								if (!bestPdb.empty()) {
+								// If MSBuild generated the file in a different directory, copy it over!
+								if (fs::absolute(bestDll) != fs::absolute(targetDll)) {
+									fs::copy_file(bestDll, targetDll, fs::copy_options::overwrite_existing);
+								}
+								if (!bestPdb.empty() && fs::absolute(bestPdb) != fs::absolute(targetPdb)) {
 									fs::copy_file(bestPdb, targetPdb, fs::copy_options::overwrite_existing);
 								}
 
@@ -2568,7 +2577,7 @@ namespace CrashoutsEngine
 							s_scanned = true;
 							s_assets.clear();
 
-							const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images";
+							const fs::path assetRoot = fs::path(GetGameRoot()) / "assets/images";
 							if (fs::exists(assetRoot)) {
 								for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
 									if (!p.is_regular_file()) continue;
@@ -2619,7 +2628,7 @@ namespace CrashoutsEngine
 
 			if (ImGui::BeginPopup("AddRuleAssetPopup")) {
 				namespace fs = std::filesystem;
-				std::string dirPath = CrashoutsEngine::Assets::rootPath + "tilemaps/";
+				std::string dirPath = std::string(GetGameRoot()) + "/assets/tilemaps/";
 
 				// --- SECTION 1: CREATE NEW ASSET ---
 				static char newAssetName[64] = "";
@@ -3094,7 +3103,7 @@ namespace CrashoutsEngine
 						if (!s_scanned) {
 							s_scanned = true;
 							s_assets.clear();
-							const fs::path assetRoot = fs::path(CrashoutsEngine::Assets::rootPath) / "images";
+							const fs::path assetRoot = fs::path(GetGameRoot()) / "assets/images";
 							if (fs::exists(assetRoot)) {
 								for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
 									if (!p.is_regular_file()) continue;
@@ -3219,7 +3228,7 @@ namespace CrashoutsEngine
 					s_scanned = true;
 					s_videos.clear();
 					// Assumes videos are in assets/videos/ or just assets/
-					const std::string assetRoot = CrashoutsEngine::Assets::rootPath;
+					const std::string assetRoot = std::string(GetGameRoot()) + "/assets/";
 
 					try {
 						if (fs::exists(assetRoot)) {
@@ -3251,7 +3260,7 @@ namespace CrashoutsEngine
 						
 						// Auto-load
 						if (vc->loader) vc->loader.reset();
-						vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(CrashoutsEngine::Assets::rootPath + v);
+						vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(std::string(GetGameRoot()) + "/assets/" + v);
 						if (!vc->loader->Load()) {
 							vc->loader.reset();
 						}

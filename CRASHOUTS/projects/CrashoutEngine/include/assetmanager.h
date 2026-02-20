@@ -35,8 +35,11 @@ namespace CrashoutsEngine {
 		
 	namespace Assets {
 
-		extern const std::string rootPath;
-		extern const std::string assetManifestPath;
+		extern std::string coreAssetPath;
+		extern std::string gameAssetPath;
+		extern std::string assetManifestPath;
+
+		std::string ResolvePath(const std::string& relativePath);
 
 		enum class AssetType {
 			Texture,
@@ -61,8 +64,7 @@ namespace CrashoutsEngine {
 		@param rootAssetPath The path to the main 'assets' folder.
 		@param outputManifestPath The full path where the 'assets.json' file will be saved.
 		*/
-		void GenerateAssetManifest(const std::string& rootAssetPath = rootPath,
-			const std::string& outputManifestPath = assetManifestPath);
+		void GenerateAssetManifest(const std::string& outputManifestPath = assetManifestPath);
 
 		enum class AssetState {
 			Unloaded,
@@ -95,6 +97,9 @@ namespace CrashoutsEngine {
 			*/
 			std::string GetName() const { return name; }
 
+			std::string GetPath() const { return path; }
+			bool IsCore() const { return isCore; }
+
 			/*!
 			@brief Gets the current state of the asset.
 			@return The asset's state.
@@ -115,6 +120,8 @@ namespace CrashoutsEngine {
 
 		protected:
 			AssetState state = AssetState::Unloaded;
+			std::string path = "";   // The actual file path
+			bool isCore = false;     // True if loaded from core-assets
 
 		private:
 			std::string name;
@@ -142,8 +149,7 @@ namespace CrashoutsEngine {
                 return instance;
             }
 
-			void LoadManifestAssets(const std::string& rootAssetPath = rootPath,
-				const std::string& manifestPath = assetManifestPath);
+			void LoadManifestAssets(const std::string& manifestPath = assetManifestPath);
 
 			void LoadSingleAsset(const std::string& fullPath);
 
@@ -171,31 +177,31 @@ namespace CrashoutsEngine {
 			@param name The name to associate with the asset.
 			@param asset The unique_ptr to the asset object to be stored.
 			*/
-			void Load(const std::string& name, std::unique_ptr<IAsset> asset) {
+			void Load(const std::string& name, std::unique_ptr<IAsset> asset, const std::string& filePath = "") {
 				if (Exists(name)) {
-					std::cout << "[AssetManager] ERROR: Duplicate asset name detected: " << name
-						<< ". Asset was rejected." << std::endl;
+					std::cout << "[AssetManager] Warning: Duplicate asset name: " << name << ". Skipping.\n";
 					return;
 				}
 
-				// Use a static counter to generate a unique ID
-				// static unsigned int nextId = 0;
 				unsigned int id = nextAssetID;
-				 
-				// Set the name of the asset
 				asset->name = name;
 
-				// Store the name-to-ID mapping
-				assetNames[name] = id;
+				// --- SET THE PATH AND CORE FLAG ---
+				if (!filePath.empty()) {
+					asset->path = filePath;
+					// If the path contains "core-assets", it's a permanent engine asset
+					if (filePath.find("core-assets") != std::string::npos ||
+						filePath.find("CrashoutEngine") != std::string::npos) { // Added extra check
+						asset->isCore = true;
+					}
+				}
+				// ----------------------------------
 
-				// Store the unique_ptr in the main map
-				// Use unique_ptr for automatic memory management
+				assetNames[name] = id;
 				if (asset->GetState() == AssetState::Unloaded) {
 					asset->SetState(AssetState::Loaded);
 				}
 				assets[id] = std::move(asset);
-
-				// Increment nextId
 				nextAssetID++;
 			}
 

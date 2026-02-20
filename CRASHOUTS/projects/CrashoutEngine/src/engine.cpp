@@ -112,6 +112,16 @@ std::string g_PendingSceneName = "";
 bool g_IsSceneLoadPending = false;
 bool g_ShowFPS = false;
 
+std::string g_GameRootPath = "";
+
+void SetGameRoot(const std::string& path) {
+    g_GameRootPath = path;
+}
+
+std::string GetGameRoot() {
+    return g_GameRootPath;
+}
+
 #if USE_IMGUI_EDITOR
 static EngineState previousState = EngineState::STOP;
 #else
@@ -212,8 +222,10 @@ void Init() {
     namespace fs = std::filesystem;
 
 #if USE_IMGUI_EDITOR
-    const fs::path prefabDir = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+    // Look for prefabs inside the current game project's assets
+    const fs::path prefabDir = fs::path(GetGameRoot()) / "assets" / "prefabs";
 #else
+    // RELEASE MODE: Look in the dynamic LocalAppData folder we just fixed
     const fs::path prefabDir = fs::path(GetLocalAppData()) / "prefabs";
 #endif
 
@@ -255,12 +267,21 @@ void Init() {
         }
     );
 
-    CrashoutsEngine::Audio::AudioSystem::instance().init(CrashoutsEngine::Assets::rootPath + "audio/");
+    CrashoutsEngine::Audio::AudioSystem::instance().init(GetGameRoot() + "/assets/audio/");
 
 #if USE_IMGUI_EDITOR
-    CrashoutsEngine::Assets::GenerateAssetManifest();
+    // 1. Define the manifest location for the CURRENT project
+    std::string manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+
+    // 2. Generate it at that specific project location
+    CrashoutsEngine::Assets::GenerateAssetManifest(manifestPath);
+#else
+    // RELEASE MODE: Use the LocalAppData path
+    std::string manifestPath = GetLocalAppData() + "json/assetmanifest.json";
 #endif
-    CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+
+    // 3. Load the manifest we just created
+    CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets(manifestPath);
 
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
@@ -268,15 +289,13 @@ void Init() {
     Component::TextureRenderer::Initialize(); // Initializes the texture/sprite shader
 
 	MonoManager::Init("CrashoutDomain");
-    MonoManager::LoadAssembly("scripts/ManagedScripts.dll");
+    MonoManager::LoadAssembly();
     RegisterBuiltinComponentAdapters();
     CrashoutsEngine::InitPrefabs();
 
     /// register game states and start with main menu
     RegisterAllStates();
     InitGameStateManager(SCENE);
-
-    //CrashoutsEngine::Audio::AudioSystem::instance().init();
 
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
@@ -802,9 +821,6 @@ void CleanUp() {
     GLApp::cleanup();
 }
 
-// Game path offset
-const std::string gamePathOffset = "/Digipen/Descent/";
-
 /*
 /*! GetUserDocFolder
 
@@ -851,6 +867,12 @@ std::string GetLocalAppData() {
     }
 
     // Free mem allocated 
+    // Free mem allocated 
     if (ppszPath) CoTaskMemFree(ppszPath);
-    return path + gamePathOffset;
+
+    // --- Generate the path offset dynamically based on the current game! ---
+    std::string gameName = std::filesystem::path(GetGameRoot()).filename().string();
+    std::string dynamicPathOffset = "/Digipen/" + gameName + "/";
+
+    return path + dynamicPathOffset;
 }

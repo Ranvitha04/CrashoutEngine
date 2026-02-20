@@ -248,11 +248,15 @@ namespace CrashoutsEngine {
 	void InitPrefabs() {
 		namespace fs = std::filesystem;
 
+		fs::path dir;
 #if USE_IMGUI_EDITOR
-		const fs::path dir = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+		// Use the dynamic game root for the editor
+		dir = fs::path(GetGameRoot()) / "assets" / "prefabs";
 #else
-		const fs::path dir = fs::path(GetLocalAppData()) / "prefabs";
+		// Use LocalAppData for the release build
+		dir = fs::path(GetLocalAppData()) / "prefabs";
 #endif
+
 		if (fs::exists(dir) && fs::is_directory(dir)) {
 			for (auto& entry : fs::directory_iterator(dir)) {
 				if (entry.is_regular_file() && entry.path().extension() == ".json") {
@@ -269,6 +273,9 @@ namespace CrashoutsEngine {
 		// 2. Load from the SPECIFIC path provided
 		namespace fs = std::filesystem;
 		fs::path dirPath(path);
+		if (!dirPath.is_absolute() && path == "prefabs") {
+			dirPath = fs::path(GetGameRoot()) / "assets" / "prefabs";
+		}
 
 		// Check if it exists
 		if (fs::exists(dirPath)) {

@@ -70,6 +70,8 @@ int WINAPI WinMain(
 #endif
     InstallCrashLogger("CrashoutsEngine");
 
+    SetGameRoot("../../projects/GameProjects/Descent");
+
     Init();
     double fixedDT = FRC.FixedDT();
 

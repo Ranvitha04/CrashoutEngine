@@ -157,7 +157,7 @@ namespace UI {
     // --- Panel Render Functions (Implemented in other .cpp files) ---
 
     void RenderGameViewport(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity& selected);
-    void RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset);
+    void RenderAssetBrowserPanel(UIState& ui, std::string& outSelectedAsset);
     void RenderEcsPanel(CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
     void RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui);
     void RenderAnimationPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui);
@@ -168,6 +168,5 @@ namespace UI {
     void RenderGameStatePanel(UIState& ui);
     void RenderGameScenePanel(UIState& ui);
     void RenderEngineStateBar(UIState& ui);
-	// To be implemented in this file later
-    //void RenderSpriteSheetPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected);
+    void RenderProjectManager(UIState& ui);
 }

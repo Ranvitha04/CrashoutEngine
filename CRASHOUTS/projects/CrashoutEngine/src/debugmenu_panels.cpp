@@ -13,6 +13,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "physicsmanager.h"
 #include "deleteentitycommand.h"
 #include <unordered_set>
+#include "engine.h"
+#include "collidereventmanager.h"
 
 using namespace CrashoutsEngine;
 using namespace Serialization;
@@ -233,7 +235,9 @@ namespace UI {
             }
 
 #if USE_IMGUI_EDITOR
-            fs::path jsonPath = fs::path(CrashoutsEngine::Assets::rootPath)
+            // Save prefab into the current game's project folder
+            fs::path jsonPath = fs::path(GetGameRoot())
+                / "assets"
                 / "prefabs"
                 / (newName + ".json");
 #else
@@ -253,10 +257,8 @@ namespace UI {
             );
 
             if (ok) {
-                //const std::string dirPath =
-                //    (fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs").generic_string();
 #if USE_IMGUI_EDITOR
-                const fs::path dirPath = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+                const fs::path dirPath = fs::path(GetGameRoot()) / "assets" / "prefabs";
 #else
                 const fs::path dirPath = fs::path(GetLocalAppData()) / "prefabs";
 #endif
@@ -822,7 +824,7 @@ namespace UI {
         }
         // --- End New UI ---
 
-        ImGui::Separator();
+        ImGui::SeparatorText("Loaded Scenes");
 
         // Draw all scene buttons
         // Check manifest json file
@@ -1296,5 +1298,108 @@ namespace UI {
         }
 
         ImGui::End();
+    }
+
+    /*!
+     @brief Renders a panel to create new game projects and manage the current project root.
+    */
+    void RenderProjectManager(UIState& ui) {
+        ScopedWindow w("Project Manager", LockFlags(ui.lockLayout));
+        namespace fs = std::filesystem;
+
+        ImGui::Text("Current Project Root:");
+        ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "%s", GetGameRoot().c_str());
+
+        ImGui::Separator();
+        ImGui::SeparatorText("Create New Project");
+
+        static char newProjectName[64] = "";
+        ImGui::InputTextWithHint("##ProjName", "Project Name", newProjectName, IM_ARRAYSIZE(newProjectName));
+
+        if (ImGui::Button("Create & Initialize Project")) {
+            if (newProjectName[0] != '\0') {
+                fs::path baseDir = fs::path("..") / ".." / "projects" / "GameProjects";
+                fs::path projectPath = baseDir / newProjectName;
+
+                try {
+                    fs::create_directories(projectPath / "assets" / "images");
+                    fs::create_directories(projectPath / "assets" / "audio");
+                    fs::create_directories(projectPath / "assets" / "scenes");
+                    fs::create_directories(projectPath / "assets" / "prefabs");
+                    fs::create_directories(projectPath / "assets" / "json");
+                    fs::create_directories(projectPath / "assets" / "shaders");
+
+                    // 1. Create Manifest (Conform to original naming)
+                    std::string manifestPath = (projectPath / "assets" / "json" / "assetmanifest.json").generic_string();
+                    std::ofstream manifest(manifestPath);
+                    manifest << "{\n  \"images\": [],\n  \"scenes\": [\n    {\"name\": \"StartScene\", \"path\": \"StartScene.json\"}\n  ],\n  \"audio\": [],\n  \"fonts\": [],\n  \"shaders\": []\n}";
+                    manifest.close();
+
+                    // 2. Create Default Start Scene (Add .json extension)
+                    std::string startScenePath = (projectPath / "assets" / "scenes" / "StartScene.json").generic_string();
+                    std::ofstream sceneFile(startScenePath);
+                    sceneFile << "{\n  \"entities\": [],\n  \"layers\": {\"Default\": 0},\n  \"layer_visibility\": {\"Default\": true}\n}";
+                    sceneFile.close();
+
+                    LOGS(Core, "Successfully created project: " + std::string(newProjectName));
+                    newProjectName[0] = '\0';
+                }
+                catch (const std::exception& e) {
+                    LOGE(Core, std::string("Failed to create project: ") + e.what());
+                }
+            }
+        }
+
+        ImGui::SeparatorText("Project Quick Switch");
+
+        fs::path gamesDir = fs::path("..") / ".." / "projects" / "GameProjects";
+        if (fs::exists(gamesDir)) {
+            for (auto const& entry : fs::directory_iterator(gamesDir)) {
+                if (entry.is_directory()) {
+                    std::string name = entry.path().filename().string();
+                    std::string currentRoot = GetGameRoot();
+                    bool isActive = (currentRoot.find(name) != std::string::npos);
+
+                    if (ImGui::Selectable(name.c_str(), isActive)) {
+                        if (isActive) {
+                            LOGI(Core, "Project '" + name + "' is already active.");
+                        }
+                        else {
+                            // --- START HOT-SWAP SEQUENCE ---
+                            Audio::AudioSystem& audio = Audio::AudioSystem::instance();
+                            audio.stopAll(true);
+                            audio.unloadAllBanks();
+                            audio.unloadAllRawSounds();
+
+                            CrashoutsEngine::ScriptSystem::DestroyAll();
+                            CrashoutsEngine::ECS::getInstance()->Reset();
+                            CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
+
+                            // 1. Update Root Pointer
+                            SetGameRoot(entry.path().generic_string());
+
+                            // 2. Refresh Asset Manager
+                            auto& am = CrashoutsEngine::Assets::AssetManager::GetInstance();
+                            am.Shutdown(); // Soft Reset (Clears maps + preserves Core assets)
+
+                            // 3. Rebuild Manifest for the NEW project
+                            std::string newMPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+                            CrashoutsEngine::Assets::GenerateAssetManifest(newMPath);
+                            am.LoadManifestAssets(newMPath);
+
+                            // 4. Reload Prefabs
+                            std::string newPrefabPath = GetGameRoot() + "/assets/prefabs";
+                            CrashoutsEngine::ReloadPrefabsFromDisk(newPrefabPath);
+
+                            // 5. Load Default Scene
+                            g_PendingSceneName = "StartScene"; // Point to the name, not the .json
+                            g_IsSceneLoadPending = true;
+
+                            LOGS(Core, "Context Switched to: " + name);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

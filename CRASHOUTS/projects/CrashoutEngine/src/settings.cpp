@@ -23,6 +23,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "assetmanager.h"
 #include "frameratecontroller.h"
 #include "audioSystem.h"
+#include "engine.h"
 
 /// Default screen width before loading from file
 unsigned int Settings::screenWidth = 1280;
@@ -34,7 +35,8 @@ const float Settings::TARGET_ASPECT_RATIO = 16.0f / 9.0f;
 
 struct SettingsLoader {
     SettingsLoader() {
-        Settings::LoadFromFile("assets/settings.json");
+        std::string path = GetGameRoot() + "/assets/settings.json";
+        Settings::LoadFromFile(path.c_str());
         Settings::SetScreenSize(Settings::GetScreenWidth(), Settings::GetScreenHeight());
     }
 };
@@ -153,7 +155,7 @@ void Settings::SaveEditorSettings(const UI::UIState& uiState) {
     }
     else {
         // Attempt to read previously saved values so we don't overwrite them with 0.
-        std::string existingPath = CrashoutsEngine::Assets::rootPath + "settings.json";
+        std::string existingPath = GetGameRoot() + "/assets/settings.json";
         std::ifstream ifs(existingPath);
         if (ifs.is_open()) {
             rapidjson::IStreamWrapper isw(ifs);
@@ -189,7 +191,7 @@ void Settings::SaveEditorSettings(const UI::UIState& uiState) {
     json.AddMember("colors", colorArray, allocator);
 
     // 4. Write to File
-    std::string fullPath = CrashoutsEngine::Assets::rootPath + "settings.json";
+    std::string fullPath = GetGameRoot() + "/assets/settings.json";
     std::ofstream ofs(fullPath);
     if (!ofs.is_open()) {
         std::cerr << "Failed to save editor settings to: " << fullPath << std::endl;
@@ -204,7 +206,7 @@ void Settings::SaveEditorSettings(const UI::UIState& uiState) {
 }
 
 void Settings::LoadEditorSettings(UI::UIState& uiState) {
-    std::string fullPath = CrashoutsEngine::Assets::rootPath + "settings.json";
+    std::string fullPath = GetGameRoot() + "/assets/settings.json";
     std::ifstream ifs(fullPath);
 
     // If no settings file exists, defaults (set in struct) are used

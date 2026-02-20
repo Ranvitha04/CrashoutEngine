@@ -9950,34 +9950,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PlayerMovement",
-                        "fields": {
-                            "maxRunSpeed": 100.0,
-                            "maxAirSpeed": 120.0,
-                            "acceleration": 10.0,
-                            "deceleration": 10.0,
-                            "airAcceleration": 2.0,
-                            "jumpPower": 40000.0,
-                            "gravityScale": 2.5,
-                            "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.07500000298023224,
-                            "swapPause": 1.0,
-                            "energyConsumption": 12.5,
-                            "goalNoOfPlates": 2,
-                            "currentGoalPlates": 0,
-                            "landingDustName": "LandingDust",
-                            "dustBurstDuration": 0.15000000596046449,
-                            "normalMass": 3.0,
-                            "lightMass": 2.0,
-                            "groundCheckDistance": 26.0,
-                            "groundCheckWidth": 10.0,
-                            "dialogueCooldown": 1.0,
-                            "isDialogueActive": true,
-                            "CurrentEnergy": 100.0,
-                            "MaxEnergy": 100.0,
-                            "alive": true,
-                            "isPaused": false
-                        }
+                        "className": "PlayerMovement"
                     }
                 ]
             },
@@ -11910,11 +11883,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 30.0
-                        }
+                        "className": "EnergyBall"
                     }
                 ]
             },
@@ -12168,11 +12137,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 30.0
-                        }
+                        "className": "EnergyBall"
                     }
                 ]
             },
@@ -12443,12 +12408,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "goalTextName": "GoalText",
-                            "wallName": "wall2"
-                        }
+                        "className": "PressurePlate"
                     }
                 ]
             },
@@ -12591,8 +12551,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "tutorial1door",
-                        "fields": {}
+                        "className": "tutorial1door"
                     }
                 ]
             },
@@ -12726,15 +12685,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": true,
-                            "MoveDist": 200.0,
-                            "MoveSpeed": 75.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
+                        "className": "MovingWall"
                     }
                 ]
             },
@@ -13001,15 +12952,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 2,
-                            "MoveRight": false,
-                            "MoveDist": 250.0,
-                            "MoveSpeed": 75.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
+                        "className": "MovingWall"
                     }
                 ]
             },
@@ -13294,15 +13237,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": -250.0,
-                            "MoveSpeed": 50.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
-                        }
+                        "className": "WeightedPlatform"
                     }
                 ]
             },
@@ -13405,15 +13340,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 200.0,
-                            "MoveSpeed": 50.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
-                        }
+                        "className": "WeightedPlatform"
                     }
                 ]
             },
@@ -13516,15 +13443,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 350.0,
-                            "MoveSpeed": 50.0,
-                            "VerticalSpeed": 170.0,
-                            "maxDrop": 150.0
-                        }
+                        "className": "WeightedPlatform"
                     }
                 ]
             },
@@ -13627,15 +13546,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 200.0,
-                            "MoveSpeed": 50.0,
-                            "VerticalSpeed": 90.0,
-                            "maxDrop": 75.0
-                        }
+                        "className": "WeightedPlatform"
                     }
                 ]
             },
@@ -14163,15 +14074,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 250.0,
-                            "MoveSpeed": 50.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
-                        }
+                        "className": "WeightedPlatform"
                     }
                 ]
             },
@@ -14202,14 +14105,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "EnergyUI",
-                        "fields": {
-                            "totalBalls": 10,
-                            "maxPlayerEnergy": 100.0,
-                            "ballBaseName": "EnergyBall_",
-                            "activeAlpha": 1.0,
-                            "inactiveAlpha": 0.20000000298023225
-                        }
+                        "className": "EnergyUI"
                     }
                 ]
             },
@@ -16478,14 +16374,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "ParallaxLayer",
-                        "fields": {
-                            "bgFactor": 0.8999999761581421,
-                            "midFactor": 0.5,
-                            "fgFactor": -0.30000001192092898,
-                            "lockY": true,
-                            "targetName": "Player"
-                        }
+                        "className": "ParallaxLayer"
                     }
                 ]
             },
@@ -16964,14 +16853,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "ParallaxLayer",
-                        "fields": {
-                            "bgFactor": 0.8999999761581421,
-                            "midFactor": 0.5,
-                            "fgFactor": -0.30000001192092898,
-                            "lockY": true,
-                            "targetName": "Player"
-                        }
+                        "className": "ParallaxLayer"
                     }
                 ]
             },
@@ -17626,14 +17508,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "ParallaxLayer",
-                        "fields": {
-                            "bgFactor": 0.8999999761581421,
-                            "midFactor": 0.5,
-                            "fgFactor": -0.30000001192092898,
-                            "lockY": true,
-                            "targetName": "Player"
-                        }
+                        "className": "ParallaxLayer"
                     }
                 ]
             },
@@ -18400,8 +18275,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "Checkpoint",
-                        "fields": {}
+                        "className": "Checkpoint"
                     }
                 ]
             },
@@ -18552,12 +18426,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "goalTextName": "GoalText",
-                            "wallName": "wall2"
-                        }
+                        "className": "PressurePlate"
                     }
                 ]
             },
@@ -18717,11 +18586,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "wallName": "wall"
-                        }
+                        "className": "PressurePlate"
                     }
                 ]
             },
@@ -20534,10 +20399,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PauseButtons",
-                        "fields": {
-                            "currentScene": "tutorial"
-                        }
+                        "className": "PauseButtons"
                     }
                 ]
             },
@@ -20611,8 +20473,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons",
-                        "fields": {}
+                        "className": "MenuButtons"
                     }
                 ]
             },
@@ -20791,10 +20652,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "VolumeSlider",
-                        "fields": {
-                            "smoothingSpeed": 15.0
-                        }
+                        "className": "VolumeSlider"
                     }
                 ]
             },
@@ -20845,10 +20703,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "VolumeSlider",
-                        "fields": {
-                            "smoothingSpeed": 15.0
-                        }
+                        "className": "VolumeSlider"
                     }
                 ]
             },
@@ -21163,10 +21018,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "VolumeSlider",
-                        "fields": {
-                            "smoothingSpeed": 15.0
-                        }
+                        "className": "VolumeSlider"
                     }
                 ]
             },
@@ -21251,10 +21103,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "VolumeSlider",
-                        "fields": {
-                            "smoothingSpeed": 15.0
-                        }
+                        "className": "VolumeSlider"
                     }
                 ]
             },
@@ -21474,11 +21323,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "GameOverUI",
-                        "fields": {
-                            "currentSceneName": "tutorial",
-                            "mainMenuScene": "descentmenu"
-                        }
+                        "className": "GameOverUI"
                     }
                 ]
             },
@@ -22059,12 +21904,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SceneMusic",
-                        "fields": {
-                            "layerName": "Ambiance",
-                            "fadeTime": 2.0,
-                            "stopLayer": false
-                        }
+                        "className": "SceneMusic"
                     }
                 ]
             },
@@ -22177,12 +22017,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SceneMusic",
-                        "fields": {
-                            "layerName": "Music",
-                            "fadeTime": 2.0,
-                            "stopLayer": false
-                        }
+                        "className": "SceneMusic"
                     }
                 ]
             },
@@ -22295,8 +22130,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "Checkpoint",
-                        "fields": {}
+                        "className": "Checkpoint"
                     }
                 ]
             },
@@ -22404,8 +22238,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "Checkpoint",
-                        "fields": {}
+                        "className": "Checkpoint"
                     }
                 ]
             },
@@ -22513,8 +22346,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "Checkpoint",
-                        "fields": {}
+                        "className": "Checkpoint"
                     }
                 ]
             },
@@ -22622,8 +22454,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "Checkpoint",
-                        "fields": {}
+                        "className": "Checkpoint"
                     }
                 ]
             },

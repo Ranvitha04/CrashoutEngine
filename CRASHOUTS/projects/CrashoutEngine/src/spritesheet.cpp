@@ -21,6 +21,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "CEVec2.h"
 #include "CEVec3.h"
 #include <filesystem>
+#include "engine.h"
 
 #include <imgui.h>
 #include "stb_image.h"          
@@ -51,7 +52,7 @@ namespace UI
     };
 
  
-    static char  gSpritePath[256] = "images/spritesheet/ducky_2_spritesheet.png";
+    static char  gSpritePath[256] = "";
     static int   gTileW = 32;   
     static int   gTileH = 32;  
 
@@ -102,12 +103,7 @@ namespace UI
 
         std::string sheetPath;
         {
-            namespace fs = std::filesystem;
-            using namespace CrashoutsEngine::Assets;
-
-            fs::path base = fs::path(rootPath);
-            fs::path rel = fs::path(gSpritePath);
-            sheetPath = (base / rel).generic_string();
+            sheetPath = CrashoutsEngine::Assets::ResolvePath(gSpritePath);
         }
 
         unsigned char* pixels = stbi_load( sheetPath.c_str(), &width, &height, &channels, desiredChannels);
@@ -180,9 +176,9 @@ namespace UI
         namespace Assets = CrashoutsEngine::Assets; 
 
     
-        fs::path outDir = fs::path(Assets::rootPath) / "images" / "spritesheet" / stem;
-        std::error_code ec; 
-        fs::create_directories(outDir, ec); 
+        fs::path outDir = fs::path(GetGameRoot()) / "assets" / "images" / "spritesheet" / stem;
+        std::error_code ec;
+        fs::create_directories(outDir, ec);
 
         std::string prefix = (outDir / stem).generic_string() + "_";
 
@@ -273,7 +269,7 @@ namespace UI
                 s_scanned = true;
                 s_assets.clear();
 
-                const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images"; // base folder
+                const std::string assetRoot = GetGameRoot() + "/assets/images";
                 for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
                     if (!p.is_regular_file()) continue;
 
@@ -323,12 +319,7 @@ namespace UI
       
         std::string sheetPath;
         {
-            namespace fs = std::filesystem;
-            using namespace CrashoutsEngine::Assets;
-
-            fs::path base = fs::path(rootPath);    
-            fs::path rel = fs::path(gSpritePath); 
-            sheetPath = (base / rel).generic_string();
+            sheetPath = CrashoutsEngine::Assets::ResolvePath(gSpritePath);
         }
 
         if (stbi_info(sheetPath.c_str(), &sheetW, &sheetH, &channels)) {

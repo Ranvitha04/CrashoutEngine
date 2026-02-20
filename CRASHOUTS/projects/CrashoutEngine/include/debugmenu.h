@@ -58,6 +58,7 @@ namespace UI {
         bool drawCollOverlay = true;
         bool showEngineControl = true;
         bool drawQuadTree = false;
+        bool showProjectManager = true;
 
         bool freezeOnCollision = false;
         bool showAnimation = true; 

@@ -148,6 +148,16 @@ add_library(CrashoutEngine.Editor STATIC
     "${project_dir}/include/particleSystem.h"
 )
 
+# Tells the C++ compiler exactly where the core-assets folder is located on this computer
+target_compile_definitions(CrashoutEngine PUBLIC 
+    ENGINE_CORE_ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/core-assets/"
+)
+
+# ADD THIS so the Editor build also knows where the assets are!
+target_compile_definitions(CrashoutEngine.Editor PUBLIC 
+    ENGINE_CORE_ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/core-assets/"
+)
+
 target_precompile_headers(CrashoutEngine.Editor
     PRIVATE "include/engine_pch.h"
 )
@@ -182,21 +192,6 @@ target_compile_definitions(CrashoutEngine.Editor
 
 set_property(TARGET CrashoutEngine.Editor
     PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:CrashoutEngine.Editor>"
-)
-
-# Build ManagedScripts.csproj automatically 
-add_custom_target(ManagedScripts ALL
-    COMMAND ${CMAKE_COMMAND} -E echo "Building ManagedScripts..."
-    COMMAND dotnet build ${CMAKE_SOURCE_DIR}/projects/ManagedScripts/ManagedScripts.csproj
-            -c $<CONFIG> #--no-incremental
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/projects/ManagedScripts
-    COMMENT "Building C# scripts"
-)
-
-add_custom_command(
-    TARGET ManagedScripts POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/scripts"
-    COMMENT "ManagedScripts.dll already built directly into runtime scripts folder"
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")

@@ -77,25 +77,26 @@ namespace CrashoutsEngine {
                 normalizedRelativePath = "tilemaps/" + filePath; // Input was just "level1.json"
             }
 
-            // Construct full OS path
-            std::string fullpath = CrashoutsEngine::Assets::rootPath + normalizedRelativePath;
+            // Use ResolvePath to allow falling back to core-assets if the game doesn't have this tilemap
+            std::string fullpath = ResolvePath(normalizedRelativePath);
 
-            // Load the JSON file from filePath
-            std::string jsonContent = ReadFileToString(fullpath);
+            // Load the JSON file
+            std::string jsonContent = "";
+            if (!fullpath.empty()) {
+                jsonContent = ReadFileToString(fullpath);
+            }
+
             if (jsonContent.empty()) {
-                std::cout << "TileMapAsset::Create - File not found or empty: " << fullpath << std::endl;
-                std::cout << "Creating a new empty tile map file..." << std::endl;
+                // If ResolvePath failed, we assume this is a NEW file the user wants to create.
+                // New files should ALWAYS be created in the Game Project, never the Core.
+                fullpath = gameAssetPath + normalizedRelativePath;
 
-                // Define empty tile map content.
+                std::cout << "TileMapAsset::Create - Creating a new empty tile map file in game assets: " << fullpath << std::endl;
+
                 const std::string emptyTileMapContent = "{\n  \"tilemap\": []\n}";
-
                 if (!WriteTextToFile(fullpath, emptyTileMapContent)) {
-                    // If we can't even write the new file, then we must fail
-                    std::cout << "ERROR: Failed to write new tile map file: " << fullpath << std::endl;
                     return nullptr;
                 }
-
-                // Set the jsonContent to our new default string so the rest of the function can parse it.
                 jsonContent = emptyTileMapContent;
             }
 
@@ -158,7 +159,7 @@ namespace CrashoutsEngine {
         }
     
         void TileMapAsset::SaveTileMaps() {
-            std::string fullpath = CrashoutsEngine::Assets::rootPath + tileMapName;
+            std::string fullpath = gameAssetPath + tileMapName;
 
             if (tileMapName.empty()) {
                 std::cout << "ERROR: Cannot save TileMapAsset. No name found." << std::endl;

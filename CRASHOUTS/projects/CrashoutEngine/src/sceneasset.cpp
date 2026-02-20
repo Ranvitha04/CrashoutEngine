@@ -33,6 +33,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <filesystem>
 #include "keyframe.h"
 #include "rendering.h"
+#include "engine.h"
 
 // Components
 #include "namecomponent.h"
@@ -1153,7 +1154,7 @@ namespace CrashoutsEngine {
 			if (entityValue.HasMember(Keys::VIDEO_COMPONENT)) {
 				const auto& v = entityValue[Keys::VIDEO_COMPONENT];
 				auto& vc = gECS.AddComponent<VideoComponent>(newEntity);
-				
+
 				vc.videoPath = GetString(v, "videoPath");
 				vc.isPlaying = GetBool(v, "isPlaying");
 				vc.loop = GetBool(v, "loop");
@@ -1162,19 +1163,20 @@ namespace CrashoutsEngine {
 				vc.volume = GetFloat(v, "volume", 1.0f);
 				vc.frameRate = GetFloat(v, "frameRate", 12.0f);
 
-				// Auto-load if path exists
-				if (!vc.videoPath.empty()) {
+
 #ifdef USE_FFMPEG
-					// Need to create loader if path is present
-					// We might need to verify if the file actually exists relative to asset root
+				// Only attempt load if the path isn't empty
+				if (!vc.videoPath.empty()) {
+					// We pass vc.videoPath (e.g., "videos/intro.mp4"). 
+					// The VideoLoader::Load() function we fixed earlier will use ResolvePath 
+					// to check both the Game and Core folders automatically.
 					vc.loader = std::make_shared<VideoLoader>(vc.videoPath);
 					if (!vc.loader->Load()) {
-						// Fallback or just log error
-						std::cerr << "Failed to load video on deserialize: " << vc.videoPath << std::endl;
+						std::cerr << "[Serialization] Video failed to load: " << vc.videoPath << std::endl;
 						vc.loader.reset();
 					}
-#endif
 				}
+#endif
 			}
 
 			// Parent Component (Hierarchy)
@@ -1287,7 +1289,14 @@ namespace CrashoutsEngine {
 			}
 
 			// Cycle through sceneAsset sceneData (JSON document) for testing
-			const std::filesystem::path fullPath = std::filesystem::absolute(std::filesystem::path(Assets::rootPath) / "scenes" / sceneName);
+			const std::string fullPathStr = Assets::ResolvePath("scenes/" + sceneName);
+
+			if (fullPathStr.empty()) {
+				std::cout << "ERROR: Scene file not found in Game or Core: " << sceneName << std::endl;
+				return;
+			}
+
+			const std::filesystem::path fullPath = std::filesystem::path(fullPathStr);
 
 			char logBuffer[256];
 			// Format the string into the buffer
@@ -1474,7 +1483,7 @@ namespace CrashoutsEngine {
 			// 1. Get or create the SceneAsset to store the data
 			Assets::SceneAsset* sceneAsset = assetManager.Get<Assets::SceneAsset>(sceneName);
 			if (!sceneAsset) {
-				std::filesystem::path fullPath = std::filesystem::path(Assets::rootPath) / "scenes" / sceneName;
+				std::filesystem::path fullPath = std::filesystem::path(GetGameRoot()) / "assets" / "scenes" / sceneName;
 
 				// Handle case where the scene asset doesn't exist (e.g., create a new one)
 				Assets::SceneAsset::Create(fullPath.string());
@@ -1494,7 +1503,7 @@ namespace CrashoutsEngine {
 				}
 
 				rapidjson::Document manifestDoc;
-				std::filesystem::path manifestPath = std::filesystem::path(Assets::rootPath) / "json" / "assetmanifest.json";
+				std::filesystem::path manifestPath = std::filesystem::path(GetGameRoot()) / "assets" / "json" / "assetmanifest.json";
 
 				// Load the existing manifest
 				std::ifstream ifs(manifestPath);
@@ -1632,18 +1641,18 @@ namespace CrashoutsEngine {
 
 			// Get the resulting JSON string
 			std::string content = buffer.GetString();
-			const std::filesystem::path fullPath = std::filesystem::absolute(std::filesystem::path(Assets::rootPath) / "scenes" / sceneName);
+			const std::filesystem::path finalSavePath = std::filesystem::path(GetGameRoot()) / "assets" / "scenes" / sceneName;
 
 			// =========================================================
 			// 6. Write the string to the file directly
 			// (REPLACING sceneAsset->SaveSceneData(fullPath);)
 			// =========================================================
-			if (WriteTextToFile(fullPath.string(), content)) {
+			if (WriteTextToFile(finalSavePath.string(), content)) {
 				std::cout << "Successfully saved " << entityCount
-					<< " entities to scene: " << fullPath.string() << std::endl;
+					<< " entities to scene: " << finalSavePath.string() << std::endl;
 			}
 			else {
-				std::cout << "ERROR: Failed to write scene data to file: " << fullPath.string() << std::endl;
+				std::cout << "ERROR: Failed to write scene data to file: " << finalSavePath.string() << std::endl;
 			}
 		}
 	}

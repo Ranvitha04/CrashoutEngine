@@ -1,4 +1,4 @@
-﻿#projects/Descent/CMakeLists.txt
+﻿#projects/GameProjects/Descent/CMakeLists.txt
 
 project(Descent)
 
@@ -61,11 +61,6 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
 )
 
-# Ensure scripts build before the game
-if (TARGET ManagedScripts)
-    add_dependencies(Descent ManagedScripts)
-endif()
-
 # ------------------------------------------------------------
 # EDITOR BUILD (CrashoutEditor.exe)
 # ------------------------------------------------------------
@@ -105,6 +100,21 @@ add_custom_command(TARGET CrashoutEditor POST_BUILD
         "$<TARGET_FILE_DIR:CrashoutEditor>/assets"
 )
 
-if (TARGET ManagedScripts)
-    add_dependencies(CrashoutEditor ManagedScripts)
-endif()
+# Build Descent.csproj automatically when we build the Descent game
+add_custom_target(DescentScripts ALL
+    COMMAND ${CMAKE_COMMAND} -E echo "Building Descent Scripts..."
+    COMMAND dotnet build "${CMAKE_CURRENT_SOURCE_DIR}/scripts/Descent.csproj" -c $<CONFIG>
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scripts"
+    COMMENT "Building C# scripts for Descent"
+)
+
+# Ensure the output directory exists in the build folder
+add_custom_command(
+    TARGET DescentScripts POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/scripts"
+    COMMENT "Ensuring runtime scripts folder exists"
+)
+
+# Make BOTH your Game and Editor wait for the C# scripts to compile before they launch
+add_dependencies(Descent DescentScripts)
+add_dependencies(CrashoutEditor DescentScripts)

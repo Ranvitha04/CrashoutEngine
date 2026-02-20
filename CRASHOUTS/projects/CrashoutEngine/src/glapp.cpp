@@ -31,6 +31,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <sstream>
 #include <iomanip>
 #include <array>
+#include "assetmanager.h"
 
 // ImGui headers for callbacks
 #include <imgui.h>
@@ -171,7 +172,8 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwSetDropCallback(ptr_window, [](GLFWwindow*, int count, const char** paths) {
         namespace fs = std::filesystem;
 
-        const fs::path assetsRoot = CrashoutsEngine::Assets::rootPath;
+        // Use the current Game's asset folder as the destination for drops
+        const fs::path assetsRoot = fs::path(GetGameRoot()) / "assets";
 
         auto route = [&](const fs::path& p)->fs::path {
             std::string ext = p.extension().string();
@@ -206,15 +208,10 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
                 copy_entry(dropped);
             }
         }
-        CrashoutsEngine::Assets::GenerateAssetManifest(
-            CrashoutsEngine::Assets::rootPath,
-            CrashoutsEngine::Assets::assetManifestPath
-        );
-        CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets(
-            CrashoutsEngine::Assets::rootPath,
-            CrashoutsEngine::Assets::assetManifestPath
-        );
-        });
+        using namespace CrashoutsEngine::Assets;
+        GenerateAssetManifest(assetManifestPath);
+        AssetManager::GetInstance().LoadManifestAssets(assetManifestPath);
+    });
 
     // set callback for events associated with window size changes; keyboard;
     // mouse buttons, cursor position, and scroller

@@ -8,6 +8,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 //__________________________________________________________________________*/
 #include "debugmenu_internals.h"
+#include "engine.h"
 
 namespace UI {
 
@@ -19,7 +20,7 @@ namespace UI {
      @param root Root path for assets.
      @param outSelectedAsset Output parameter for the selected asset path.
     */
-    void RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset)
+    void RenderAssetBrowserPanel(UIState& ui, std::string& outSelectedAsset)
     {
         ScopedWindow win("Assets", LockFlags(ui.lockLayout));
 
@@ -35,9 +36,9 @@ namespace UI {
 
         fs::path rootPath;
         if (s_location == 0)
-            rootPath = fs::path(CrashoutsEngine::Assets::rootPath);
+            rootPath = fs::path(GetGameRoot()) / "assets";
         else
-            rootPath = fs::path("../../projects/ManagedScripts");
+            rootPath = fs::path(GetGameRoot()) / "scripts";
 
         static fs::path current;
         static fs::path lastRoot;
@@ -152,7 +153,7 @@ namespace UI {
         }
         catch (...) {}
 
-        fs::path scriptsRoot = fs::path("../../projects/ManagedScripts");
+        fs::path scriptsRoot = fs::path(GetGameRoot()) / "scripts";
         bool isScripts = (current == scriptsRoot);
         if (ImGui::Selectable("scripts", isScripts)) {
             current = scriptsRoot;
@@ -232,7 +233,7 @@ namespace UI {
                         if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga")
                         {
 
-                            std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
+                            std::string rel = fs::relative(e.path(), rootPath).generic_string();
 
                             SpriteSheet_SetTexturePath(rel.c_str());
                             ui.showSpriteSheet = true;
@@ -247,7 +248,7 @@ namespace UI {
 
                     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
                         AssetDragPayload p{};
-                        std::string rel = fs::relative(e.path(), fs::path(root)).generic_string();
+                        std::string rel = fs::relative(e.path(), rootPath).generic_string();
                         std::string stem = e.path().stem().generic_string();
                         std::string ext = e.path().extension().generic_string();
                         std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);

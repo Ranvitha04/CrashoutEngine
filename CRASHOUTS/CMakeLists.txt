@@ -66,5 +66,18 @@ endif()
 
 # ========================= Build Sub-Projects ===========================
 # Build the engine first, then the game.
+# 1. Build the engine core first
 add_subdirectory(projects/CrashoutEngine)
-add_subdirectory(projects/Descent)
+
+# 2. Automatically scan and build ALL game projects!
+file(GLOB game_dirs "projects/GameProjects/*")
+foreach(dir ${game_dirs})
+    if(IS_DIRECTORY "${dir}" AND EXISTS "${dir}/CMakeLists.txt")
+        # Extract just the folder name to print it nicely
+        get_filename_component(game_name "${dir}" NAME)
+        message(STATUS "🎮 Found Game Project: ${game_name}")
+        
+        # Add it to the build!
+        add_subdirectory("${dir}")
+    endif()
+endforeach()

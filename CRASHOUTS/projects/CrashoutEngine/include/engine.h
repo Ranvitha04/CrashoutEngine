@@ -47,6 +47,10 @@ extern std::string g_PendingSceneName;
 extern bool g_IsSceneLoadPending;
 extern bool g_ShowFPS;
 
+extern std::string g_GameRootPath;
+void SetGameRoot(const std::string& path);
+std::string GetGameRoot();
+
 std::string GetLocalAppData();
 
 #endif

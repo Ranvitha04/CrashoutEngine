@@ -25,7 +25,7 @@ public:
 	static bool s_IsManualReloading;
 	static void Init(const std::string& domainName = "CrashoutDomain");
 	static void Shutdown();
-	static void LoadAssembly(const std::string& assemblyPath);
+	static void LoadAssembly();
 
 	// Check for changes to DLL and reload if necessary
 	static void CheckHotReload();

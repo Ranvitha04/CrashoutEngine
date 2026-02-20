@@ -81,7 +81,16 @@ namespace Scene {
 		void LoadDialogue(TextComponent& tc) {
 			if (tc.dialogueFilePath.empty() || tc.dialogueID.empty()) return;
 
-			std::string fullPath = CrashoutsEngine::Assets::rootPath + tc.dialogueFilePath;
+			// Use the ResolvePath helper so dialogue files can live in 
+			// the Game folder OR fallback to the Core Engine folder.
+			std::string fullPath = CrashoutsEngine::Assets::ResolvePath(tc.dialogueFilePath);
+
+			// If ResolvePath couldn't find it, we stop here
+			if (fullPath.empty()) {
+				std::cerr << "[SceneUtils] Failed to resolve dialogue file: " << tc.dialogueFilePath << "\n";
+				return;
+			}
+
 			std::ifstream file(fullPath);
 			if (!file.is_open()) return;
 

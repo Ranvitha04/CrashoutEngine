@@ -115,16 +115,16 @@ void MonoManager::Init(const std::string& domainName)
 	}
 }
 
-void MonoManager::LoadAssembly(const std::string& assemblyPath)
+void MonoManager::LoadAssembly()
 {
-	(void)assemblyPath;
 	namespace fs = std::filesystem;
 
 	// Find the newest DLL in scripts/
 	fs::path latestDll;
 	auto latestTime = fs::file_time_type::min();
 
-	for (const auto& file : fs::directory_iterator("scripts"))
+	fs::path scriptDir = fs::path(GetGameRoot()) / "scripts";
+	for (const auto& file : fs::directory_iterator(scriptDir))
 	{
 		if (file.path().extension() == ".dll")
 		{
@@ -139,7 +139,7 @@ void MonoManager::LoadAssembly(const std::string& assemblyPath)
 
 	if (latestDll.empty())
 	{
-		std::cerr << "[Mono] No ManagedScripts DLL found in scripts/!\n";
+		std::cerr << "[Mono] No Game DLL found in scripts/!\n";
 		return;
 	}
 
@@ -201,7 +201,8 @@ void MonoManager::ReloadAssembly()
 		// find newest DLL in scripts folder
 		fs::path latestDll;
 		auto latestTime = fs::file_time_type::min();
-		for (const auto& file : fs::directory_iterator("scripts"))
+		fs::path scriptDir = fs::path(GetGameRoot()) / "scripts";
+		for (const auto& file : fs::directory_iterator(scriptDir))
 		{
 			if (file.path().extension() == ".dll")
 			{
@@ -216,21 +217,21 @@ void MonoManager::ReloadAssembly()
 
 		if (latestDll.empty())
 		{
-			std::cerr << "[Mono] No ManagedScripts DLL found in scripts/!\n";
+			std::cerr << "[Mono] No Game DLL found in scripts/!\n";
 			return;
 		}
 
 		std::cout << "[Mono][Debug] Latest DLL detected: " << latestDll << "\n";
 
-		// prepare cache folder
-		fs::path dstDir = "scripts/_cache";
+		// prepare cache folder dynamically inside the game's script folder
+		fs::path dstDir = scriptDir / "_cache";
 		fs::create_directories(dstDir);
 
-		// generate a unique temp filename
+		// generate a unique temp filename based on the game's actual name!
+		std::string gameName = fs::path(GetGameRoot()).filename().string();
 		auto now = std::chrono::system_clock::now();
-		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-			now.time_since_epoch()).count();
-		fs::path dst = dstDir / ("ManagedScripts_reload_" + std::to_string(ms) + ".dll");
+		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+		fs::path dst = dstDir / (gameName + "_reload_" + std::to_string(ms) + ".dll");
 
 		// copy newest DLL into cache
 		fs::copy_file(latestDll, dst, fs::copy_options::overwrite_existing);
@@ -344,7 +345,7 @@ std::string MonoManager::CopyAssemblyToTemp(const std::string& originalPath)
 
 #else
 
-	fs::path dst = "scripts/_cache";
+	fs::path dst = fs::path(GetGameRoot()) / "scripts/_cache";
 	fs::create_directories(dst);
 
 	fs::path tempFile = dst / src.filename();

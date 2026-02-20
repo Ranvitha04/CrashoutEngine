@@ -5,7 +5,7 @@
     <ProjectGuid>{A1234567-ABCD-4321-9999-123456789ABC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>CrashoutsEngine</RootNamespace>
-    <AssemblyName>ManagedScripts_$(Configuration)_$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</AssemblyName>
+    <AssemblyName>Descent_$(Configuration)_$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <LangVersion>latest</LangVersion>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -15,12 +15,12 @@
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <OutputPath>..\..\build\x64-Debug\scripts\</OutputPath>
+    <OutputPath>..\..\..\..\build\x64-Debug\scripts\</OutputPath>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <OutputPath>..\..\build\x64-Release\scripts\</OutputPath>
+    <OutputPath>..\..\..\..\build\x64-Release\scripts\</OutputPath>
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
@@ -39,10 +39,10 @@
     <PropertyGroup>
       <TimestampedDll>$(OutputPath)$(AssemblyName).dll</TimestampedDll>
       <!-- Stable DLL inside CrashoutEngine/scripts -->
-      <StableDll>..\CrashoutEngine\scripts\ManagedScripts.dll</StableDll>
+      <StableDll>..\..\..\CrashoutEngine\scripts\Descent.dll</StableDll>
     </PropertyGroup>
     <!-- Create the destination folder if it doesn't exist -->
-    <MakeDir Directories="..\CrashoutEngine\scripts" />
+    <MakeDir Directories="..\..\..\CrashoutEngine\scripts" />
     <!-- Copy timestamped DLL → stable DLL in CrashoutEngine/scripts -->
     <Copy SourceFiles="$(TimestampedDll)" DestinationFiles="$(StableDll)" OverwriteReadOnlyFiles="true" />
   </Target>
