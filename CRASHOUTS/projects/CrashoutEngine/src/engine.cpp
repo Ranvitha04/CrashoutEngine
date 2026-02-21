@@ -117,14 +117,26 @@ std::string g_GameRootPath = "";
 void SetGameRoot(const std::string& path) {
     g_GameRootPath = path;
 
-    // 1. Extract the name (e.g., "Descent" or "test") from the path
+    // 1. Extract the name (e.g., "Descent", "test", or ".") from the path
     std::string gameName = std::filesystem::path(path).filename().string();
-    if (gameName.empty()) gameName = "Crashouts";
 
-    // 2. Format the title string
-    std::string title = "Crashouts Engine - " + gameName;
+    // 2. Determine the display name
+    std::string title;
 
-    // 3. Safety check: Update the GLFW window if it exists
+#if USE_IMGUI_EDITOR
+    // If the path is empty or just a dot, it's the base engine
+    if (gameName.empty() || gameName == ".") {
+        title = "CrashoutEditor";
+    }
+    else {
+        title = "CrashoutEditor - " + gameName;
+    }
+#else
+    // For standalone games, just show the game name
+    title = (gameName.empty() || gameName == ".") ? "Crashouts Engine" : gameName;
+#endif
+
+    // 3. Update the GLFW window title immediately if it's already initialized
     if (GLApp::ptr_window) {
         glfwSetWindowTitle(GLApp::ptr_window, title.c_str());
     }
