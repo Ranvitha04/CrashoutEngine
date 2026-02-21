@@ -155,13 +155,15 @@ static bool PerformPendingSceneLoad() {
         
         Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
 
+        CrashoutsEngine::ScriptSystem::InitializeAll(
+            MonoManager::GetDomain(),
+            MonoManager::GetAssembly()
+        );
+
         // Reset flags
         g_IsSceneLoadPending = false;
         g_PendingSceneName = "";
 
-        // Reset Mono to ensure scripts re-bind correctly
-        // (Optional depending on your architecture, but safe)
-        // MonoManager::ReloadScripts(); 
 #if !USE_IMGUI_EDITOR
         if (Physics::PhysicsHandler::GetInstance().GetPaused())
             Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(false);

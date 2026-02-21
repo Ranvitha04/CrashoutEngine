@@ -31,6 +31,8 @@ std::filesystem::file_time_type MonoManager::s_LastWriteTime{};
 std::string MonoManager::s_AssemblyPath = "";
 bool MonoManager::s_IsManualReloading = false;
 
+static MonoDomain* s_RootDomain = nullptr;
+
 MonoClass* MonoManager::GetSerializeFieldClass() {
 	if (s_Assembly) {
 		MonoImage* image = mono_assembly_get_image(s_Assembly);
@@ -91,14 +93,12 @@ void MonoManager::Init(const std::string& domainName)
 	mono_set_dirs("../../third_party/Mono/lib", "../../third_party/Mono/etc");
 	mono_config_parse(nullptr);
 
-	s_Domain = mono_jit_init(domainName.c_str());
+	s_RootDomain = mono_jit_init(domainName.c_str());
 
-	if (!s_Domain)
-	{
+	if (!s_RootDomain) {
 		std::cerr << "[Mono] Failed to initialize JIT.\n";
 	}
-	else
-	{
+	else {
 		std::cout << "[Mono] JIT initialized successfully.\n";
 	}
 
@@ -123,7 +123,8 @@ void MonoManager::LoadAssembly()
 	fs::path latestDll;
 	auto latestTime = fs::file_time_type::min();
 
-	fs::path scriptDir = fs::current_path() / "scripts";
+	std::string gameName = fs::path(GetGameRoot()).filename().string();
+	fs::path scriptDir = fs::current_path() / "scripts" / gameName;
 	for (const auto& file : fs::directory_iterator(scriptDir))
 	{
 		if (file.path().extension() == ".dll")
@@ -164,6 +165,10 @@ void MonoManager::LoadAssembly()
 		return;
 	}
 
+	char appDomainName[] = "CrashoutsAppDomain";
+	s_Domain = mono_domain_create_appdomain(appDomainName, nullptr);
+	mono_domain_set(s_Domain, true); // Set it as active
+
 	s_Assembly = mono_domain_assembly_open(s_Domain, assemblyToLoadPath.c_str());
 	if (!s_Assembly)
 	{
@@ -194,6 +199,15 @@ void MonoManager::ReloadAssembly()
 
 	s_Assembly = nullptr;
 
+	if (s_Domain && s_Domain != s_RootDomain) {
+		mono_domain_set(s_RootDomain, false); // Step back to root
+		mono_domain_unload(s_Domain);         // Trash the old game memory
+	}
+
+	char appDomainName[] = "CrashoutsAppDomain";
+	s_Domain = mono_domain_create_appdomain(appDomainName, nullptr);
+	mono_domain_set(s_Domain, true); // Step into fresh memory
+
 	namespace fs = std::filesystem;
 
 	try
@@ -201,7 +215,8 @@ void MonoManager::ReloadAssembly()
 		// find newest DLL in scripts folder
 		fs::path latestDll;
 		auto latestTime = fs::file_time_type::min();
-		fs::path scriptDir = fs::current_path() / "scripts";
+		std::string gameName = fs::path(GetGameRoot()).filename().string();
+		fs::path scriptDir = fs::current_path() / "scripts" / gameName;
 		for (const auto& file : fs::directory_iterator(scriptDir))
 		{
 			if (file.path().extension() == ".dll")
@@ -228,7 +243,6 @@ void MonoManager::ReloadAssembly()
 		fs::create_directories(dstDir);
 
 		// generate a unique temp filename based on the game's actual name!
-		std::string gameName = fs::path(GetGameRoot()).filename().string();
 		auto now = std::chrono::system_clock::now();
 		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 		fs::path dst = dstDir / (gameName + "_reload_" + std::to_string(ms) + ".dll");
@@ -238,6 +252,10 @@ void MonoManager::ReloadAssembly()
 
 		// load that DLL
 		std::cout << "[Mono][Debug] Attempting to load assembly from: " << dst << "\n";
+
+		s_Domain = mono_domain_create_appdomain(appDomainName, nullptr);
+		mono_domain_set(s_Domain, true); // Set it as active
+
 		s_Assembly = mono_domain_assembly_open(s_Domain, dst.string().c_str());
 		if (!s_Assembly)
 		{

@@ -499,6 +499,17 @@ namespace CrashoutsEngine
 			mono_runtime_invoke(s_ScriptManagerClear, nullptr, nullptr, nullptr);
 		}
 
+		s_ScriptManagerUpdate = nullptr;
+		s_ScriptManagerFixedUpdate = nullptr;
+		s_ScriptManagerOnDrawGizmos = nullptr;
+		s_ScriptManagerClear = nullptr;
+
+		s_ScriptManagerUpdateThunk = nullptr;
+		s_ScriptManagerFixedUpdateThunk = nullptr;
+		s_ScriptManagerOnDrawGizmosThunk = nullptr;
+
+		Component::ScriptComponent::ResetThunks();
+
 		std::cout << "[Mono] All script instances destroyed.\n";
 	}
 

@@ -23,8 +23,22 @@ using namespace KeyframeUnity;
 // Raw string for copying template game project items
 namespace {
 	// --- main.cpp Template ---
+	// --- main.cpp Template ---
 	const std::string MAIN_CPP_TEMPLATE = R"(
+// Extension loader library's header must be included before GLFW's header!!!
+#pragma warning(push)
+#pragma warning(disable: 4005)
+
 #include "engine.h"
+
+#pragma warning(pop)
+
+#include <windows.h> // <-- Fixes the WINAPI and HINSTANCE syntax errors!
+#include <cstdio>
+#include <crtdbg.h>
+
+#include "transformcomponent.h"
+#include "performanceViewer.h"
 #include "glapp.h"
 #include "frameratecontroller.h"
 #include "crashlogger.h"
@@ -32,36 +46,41 @@ namespace {
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
 auto& FRC = FrameRateController::GetInstance();
 
-int WINAPI WinMain(_In_ HINSTANCE h, _In_opt_ HINSTANCE p, _In_ LPSTR l, _In_ int n) {
+int WINAPI WinMain(
+    [[maybe_unused]] _In_     HINSTANCE hInstance,
+    [[maybe_unused]] _In_opt_ HINSTANCE hPrevInstance,
+    [[maybe_unused]] _In_     LPSTR     lpCmdLine,
+    [[maybe_unused]] _In_     int       nCmdShow
+) {
 #if DEBUG
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(lpCmdLine);
+
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     SetupConsole();
 #endif
+
     InstallCrashLogger("CrashoutsEngine");
 
-    // Root is set to current directory for the compiled standalone game
-    SetGameRoot("."); 
+    // Root is set dynamically to the generated game project
+    SetGameRoot("../../projects/GameProjects/{{GAME_NAME}}");
 
     Init();
+    double fixedDT = FRC.FixedDT();
+
     while (!glfwWindowShouldClose(GLApp::ptr_window)) {
         FRC.FrameStart();
         glfwPollEvents();
+        fixedDT = FRC.FixedDT();
 
-        #if USE_IMGUI_EDITOR
-            // --- ENGINE EDITOR MODE ---
-            // UpdateEditor(); 
-            // DrawEditor();
-            Update(FRC.FixedDT());
-            Draw(globalSelectedEntity);
-        #else
-            // --- STANDALONE GAME MODE ---
-            Update(FRC.FixedDT());
-            Draw(globalSelectedEntity);
-        #endif
-
+        Update(fixedDT);
+        Draw(globalSelectedEntity);
         FRC.FrameEnd();
     }
 
+    LogExitCode();
     CleanUp();
+
     return EXIT_SUCCESS;
 }
 )";
@@ -129,8 +148,7 @@ add_custom_command(TARGET CrashoutEditor POST_BUILD
 )";
 
 	// --- .csproj Template ---
-	const std::string CSPROJ_TEMPLATE = R"(
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	const std::string CSPROJ_TEMPLATE = R"(<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -139,18 +157,25 @@ add_custom_command(TARGET CrashoutEditor POST_BUILD
     <RootNamespace>CrashoutsEngine</RootNamespace>
     <AssemblyName>{{GAME_NAME}}</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>false</Deterministic>
+    
+    <OutputPath>..\..\..\..\build\x64-$(Configuration)\scripts\{{GAME_NAME}}\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" /><Reference Include="System.Core" /><Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="mscorlib" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="obj\**;bin\**" />
+    
     <Compile Include="..\..\..\CrashoutEngine\scripts\**\*.cs" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="Build">
-    <MakeDir Directories="..\..\..\CrashoutEngine\scripts" />
-    <Copy SourceFiles="bin\$(Configuration)\{{GAME_NAME}}.dll" DestinationFolder="..\..\..\CrashoutEngine\scripts" OverwriteReadOnlyFiles="true" />
-  </Target>
+
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
 )";
@@ -1000,6 +1025,11 @@ namespace UI {
 			const rapidjson::Value& sceneArray = doc["scenes"];
 			std::unordered_set<std::string> seenSceneNames;
 			seenSceneNames.reserve(sceneArray.Size());
+
+			ImGuiStyle& style = ImGui::GetStyle();
+			float window_visible_x2 = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
+			bool first_button = true;
+
 			for (rapidjson::SizeType i = 0; i < sceneArray.Size(); ++i) {
 				const rapidjson::Value& asset = sceneArray[i];
 				if (asset.HasMember("name") && asset.HasMember("path")) {
@@ -1009,6 +1039,21 @@ namespace UI {
 						continue;
 
 					std::string btn = name + "##scene_" + relativePath + "_" + std::to_string((int)i);
+
+					ImVec2 text_size = ImGui::CalcTextSize(name.c_str());
+					float expected_button_width = text_size.x + style.FramePadding.x * 2.0f;
+
+					if (!first_button) {
+						float last_button_x2 = ImGui::GetItemRectMax().x;
+						float next_button_x2 = last_button_x2 + style.ItemSpacing.x + expected_button_width;
+
+						// If it fits within the panel, stay on the same line! Otherwise, let it wrap.
+						if (next_button_x2 < window_visible_x2) {
+							ImGui::SameLine();
+						}
+					}
+					first_button = false;
+
 					if (ImGui::Button(btn.c_str())) {
 						if (!currSceneName.empty()) {
 							if (engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
@@ -1019,8 +1064,6 @@ namespace UI {
 						if (engineState != EngineState::PLAY)
 							::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
 					}
-
-					ImGui::SameLine();
 				}
 				else {
 					std::cerr << "Warning: Scene asset entry missing 'name' or 'path' in manifest." << std::endl;
@@ -1435,6 +1478,36 @@ namespace UI {
 				CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
 
 			}
+			ImGui::SameLine();
+			// --- ADD THE RECOMPILE BUTTON ---
+			// We highlight it in a slightly different color so it stands out
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.5f, 0.8f, 1.0f));
+			if (ImGui::Button("Recompile C#", ImVec2(100, 25))) {
+
+				// 1. Figure out which game is currently active
+				std::string gameName = std::filesystem::path(GetGameRoot()).filename().string();
+				std::filesystem::path csprojPath = std::filesystem::path(GetGameRoot()) / "scripts" / (gameName + ".csproj");
+
+				// 2. Command Windows to compile it
+				std::string buildCmd = "dotnet build \"" + csprojPath.generic_string() + "\"";
+				std::cout << "[Editor] Recompiling scripts for " << gameName << "...\n";
+
+				int result = std::system(buildCmd.c_str());
+
+				if (result == 0) {
+					std::cout << "[Editor] Compile Success! Hot Reloading...\n";
+
+					// Backs up all script variables, drops the AppDomain, 
+					// loads the new C# code, and restores your variables automatically.
+					CrashoutsEngine::ScriptSystem::ReloadAll();
+				}
+				else {
+					std::cerr << "[Editor] Compile Failed! Check your C# syntax.\n";
+				}
+			}
+			ImGui::PopStyleColor();
+			// --------------------------------
+
 			ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
 			ImGui::SameLine();
 
@@ -1481,6 +1554,13 @@ namespace UI {
 					fs::create_directories(projectPath / "include");
 					fs::create_directories(projectPath / "scripts");
 
+					std::ofstream dummyScene(projectPath / "assets/scenes/StartScene");
+					if (dummyScene.is_open()) {
+						// Write a completely empty, but valid, JSON structure
+						dummyScene << "{\n  \"Entities\": []\n}";
+						dummyScene.close();
+					}
+
 					// 2. Generate Scaffolding from Raw Strings
 					ScaffoldProjectFile(projectPath / "CMakeLists.txt", CMAKELISTS_TEMPLATE, gameName);
 					ScaffoldProjectFile(projectPath / "src/main.cpp", MAIN_CPP_TEMPLATE, gameName);
@@ -1496,6 +1576,9 @@ namespace UI {
 					std::string mPath = (projectPath / "assets/json/assetmanifest.json").generic_string();
 					// Ensure manifest reflects core assets too by calling your logic
 					Assets::GenerateAssetManifest(mPath);
+
+					std::string buildCmd = "dotnet build \"" + (projectPath / "scripts" / (gameName + ".csproj")).generic_string() + "\"";
+					std::system(buildCmd.c_str());
 
 					LOGS(Core, "Project " + gameName + " is ready to build!");
 					newProjectName[0] = '\0';
@@ -1534,7 +1617,32 @@ namespace UI {
 							// 1. Update Root Pointer
 							SetGameRoot(entry.path().generic_string());
 
-							// 2. Refresh Asset Manager
+							// 2. Refresh Mono Scripts for the new project
+							fs::path csprojPath = entry.path() / "scripts" / (name + ".csproj");
+							std::string buildCommand = "dotnet build \"" + csprojPath.generic_string() + "\"";
+
+							std::cout << "[Editor] Compiling scripts for " << name << "...\n";
+
+							// Run the compiler via the system command line
+							int buildResult = std::system(buildCommand.c_str());
+
+							if (buildResult == 0) {
+								std::cout << "[Editor] Script compilation successful!\n";
+							}
+							else {
+								std::cerr << "[Editor] Script compilation failed. Check your C# code!\n";
+							}
+
+							// 3. Refresh Mono Scripts (it will now grab the fresh DLL we just built)
+							MonoManager::ReloadAssembly();
+
+							// This forces C++ to drop the old pointers and link to the newly compiled C# methods
+							CrashoutsEngine::ScriptSystem::InitializeAll(
+								MonoManager::GetDomain(),
+								MonoManager::GetAssembly()
+							);
+
+							// 4. Refresh Asset Manager
 							auto& am = CrashoutsEngine::Assets::AssetManager::GetInstance();
 							am.Shutdown(); // Soft Reset (Clears maps + preserves Core assets)
 

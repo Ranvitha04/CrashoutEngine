@@ -10,7 +10,7 @@
     <LangVersion>latest</LangVersion>
     <Deterministic>false</Deterministic>
     
-    <OutputPath>..\..\..\..\build\x64-$(Configuration)\scripts\</OutputPath>
+    <OutputPath>..\..\..\..\build\x64-$(Configuration)\scripts\Descent\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 

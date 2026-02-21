@@ -26,6 +26,19 @@ namespace CrashoutsEngine
 
         public ShapeComponent() { }
 
+        public CEColor Color
+        {
+            get
+            {
+                InternalGetColor(EntityID, out CEColor c);
+                return c;
+            }
+            set
+            {
+                InternalSetColor(EntityID, ref value);
+            }
+        }
+
         // Properties
         public ShapeType Type
         {
@@ -33,11 +46,20 @@ namespace CrashoutsEngine
             set => InternalSetType(EntityID, (int)value);
         }
 
-        // Using a helper struct/vector for color would be nice, 
-        // but passing r,g,b,a explicitly is simplest.
+        // Wraps the new struct so old scripts don't break
+        public void GetColor(out float r, out float g, out float b, out float a)
+        {
+            CEColor c = this.Color; 
+            r = c.r;
+            g = c.g;
+            b = c.b;
+            a = c.a;
+        }
+
+        // Wraps the new struct so old scripts don't break
         public void SetColor(float r, float g, float b, float a)
         {
-            InternalSetColor(EntityID, r, g, b, a);
+            this.Color = new CEColor(r, g, b, a);
         }
 
         // Public Property for easy access
@@ -48,16 +70,16 @@ namespace CrashoutsEngine
 
         // --- Internal Calls ---
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static void InternalGetColor(uint entityID, out float r, out float g, out float b, out float a);
+        private extern static void InternalGetColor(uint entityID, out CEColor color);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static void InternalSetColor(uint entityID, float r, float g, float b, float a);
+        private extern static void InternalSetColor(uint entityID, ref CEColor color);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalSetAlpha(uint entityID, float alpha);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static int InternalGetType(uint entityID);
+        private extern static int InternalGetType(uint entityID);   
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void InternalSetType(uint entityID, int type);
