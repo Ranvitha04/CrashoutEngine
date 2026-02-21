@@ -1,8 +1,8 @@
 /*!
-@file       debugmenu_assets.cpp
-@author     mohamadamirakmal.b@digipen.edu
-@date       25/12/2025
-@brief      File containing the implementation of the Asset Browser panel in the debug menu.
+@file        debugmenu_assets.cpp
+@author      mohamadamirakmal.b@digipen.edu
+@date        25/12/2025
+@brief       File containing the implementation of the Asset Browser panel in the debug menu.
 
 All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
@@ -29,6 +29,11 @@ namespace UI {
         static char filter[128] = { 0 };
         static bool s_showUnsupportedPopup = false;
         static std::string s_lastErrorFile = "";
+
+        // State for deletion popup
+        static std::string fileToDeletePath = "";
+        static std::string fileToDeleteName = "";
+        static bool openDeletePopup = false;
 
         // panel mode – 0 = normal assets, 1 = C# scripts
         static int s_location = 0;
@@ -218,8 +223,22 @@ namespace UI {
                 }
                 else {
                     bool sel = (outSelectedAsset == e.path().generic_string());
+
+                    // --- THE FILE ITEM ---
                     if (ImGui::Selectable(name.c_str(), sel))
                         outSelectedAsset = e.path().generic_string();
+
+                    // --- Context Menu for Deletion ---
+                    std::string contextId = "FileContext_" + name + "_" + std::to_string(row);
+                    if (ImGui::BeginPopupContextItem(contextId.c_str())) {
+                        if (ImGui::MenuItem("Delete File")) {
+                            fileToDeletePath = e.path().generic_string();
+                            fileToDeleteName = name;
+                            openDeletePopup = true; // Signal the modal to open outside the loop
+                        }
+                        ImGui::EndPopup();
+                    }
+                    // --------------------------------------
 
                     if (ImGui::IsItemHovered() &&
                         ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
@@ -246,6 +265,7 @@ namespace UI {
                         }
                     }
 
+                    // Drag Drop Source Logic...
                     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
                         AssetDragPayload p{};
                         std::string rel = fs::relative(e.path(), rootPath).generic_string();
@@ -284,14 +304,50 @@ namespace UI {
                         ImGui::TextUnformatted(p.name);
                         ImGui::EndDragDropSource();
                     }
-
-                    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
-                        outSelectedAsset = e.path().generic_string();
                 }
             }
         }
-
         ImGui::EndChild(); // asset_right_list
+
+        // --- Safely draw the Delete Confirmation Modal outside the Clipper ---
+        if (openDeletePopup) {
+            ImGui::OpenPopup("Delete Confirmation");
+            openDeletePopup = false; // Reset the signal
+        }
+
+        if (ImGui::BeginPopupModal("Delete Confirmation", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::Text("Are you sure you want to delete this file?");
+            ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "%s", fileToDeleteName.c_str());
+            ImGui::Separator();
+            ImGui::TextDisabled("This action cannot be undone.");
+
+            if (ImGui::Button("Yes, Delete", ImVec2(120, 0))) {
+                try {
+                    fs::remove(fileToDeletePath);
+                    std::cout << "[AssetBrowser] Deleted: " << fileToDeletePath << std::endl;
+
+                    // If we deleted the file we were currently previewing, clear the preview
+                    if (outSelectedAsset == fileToDeletePath) {
+                        outSelectedAsset = "";
+                    }
+
+                    needScan = true; // Force a refresh of the file list
+                }
+                catch (const fs::filesystem_error& err) {
+                    std::cerr << "[AssetBrowser] Delete failed: " << err.what() << std::endl;
+                }
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::SetItemDefaultFocus();
+            ImGui::SameLine();
+
+            if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+        // ------------------------------------------------------------------------
 
         // PREVIEW 
         ImGui::SameLine();

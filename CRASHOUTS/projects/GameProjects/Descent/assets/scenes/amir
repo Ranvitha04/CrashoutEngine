@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "Player",
+            "uuid": 7093442491690259591,
             "tag": {
                 "tagMask": 8
             },
@@ -189,7 +190,7 @@
                     {
                         "className": "PlayerMovement",
                         "fields": {
-                            "maxRunSpeed": 100.0,
+                            "maxRunSpeed": 150.0,
                             "maxAirSpeed": 120.0,
                             "acceleration": 10.0,
                             "deceleration": 10.0,
@@ -197,17 +198,20 @@
                             "jumpPower": 20000.0,
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.25,
+                            "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "goalNoOfPlates": 1.0,
+                            "goalNoOfPlates": 1,
                             "currentGoalPlates": 0,
-                            "normalMass": 1.0,
+                            "landingDustName": "LandingDust",
+                            "dustBurstDuration": 0.15000000596046449,
+                            "normalMass": 7.0,
                             "lightMass": 4.5,
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
                             "dialogueCooldown": 1.0,
-                            "CurrentEnergy": 100.0,
+                            "isDialogueActive": false,
+                            "CurrentEnergy": 0.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
@@ -263,7 +267,12 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",
@@ -273,6 +282,7 @@
         {
             "active": true,
             "name": "Entity 5",
+            "uuid": 11891884545922539486,
             "tag": {
                 "tagMask": 0
             },
@@ -778,6 +788,7 @@
         {
             "active": true,
             "name": "Slime",
+            "uuid": 10503030238186023498,
             "tag": {
                 "tagMask": 16
             },
@@ -930,7 +941,7 @@
                         "fields": {
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.6000000238418579,
+                            "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
@@ -940,9 +951,10 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "MaxDist": 200.0,
                             "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
                         }
                     }
                 ]
@@ -984,7 +996,12 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",
@@ -994,6 +1011,7 @@
         {
             "active": true,
             "name": "Audio_level bgm 1",
+            "uuid": 3981134387363357139,
             "tag": {
                 "tagMask": 0
             },
@@ -1030,6 +1048,7 @@
         {
             "active": true,
             "name": "BGMManager",
+            "uuid": 8136497694944449521,
             "tag": {
                 "tagMask": 0
             },
@@ -1064,8 +1083,8 @@
                         "className": "SceneMusic",
                         "fields": {
                             "layerName": "Music",
-                            "fadeTime": 5.0,
-                            "stopLayer": true
+                            "fadeTime": 2.0,
+                            "stopLayer": false
                         }
                     }
                 ]
@@ -1078,6 +1097,7 @@
         {
             "active": true,
             "name": "AmbienceManager",
+            "uuid": 9874408496754843476,
             "tag": {
                 "tagMask": 0
             },
@@ -1111,9 +1131,9 @@
                     {
                         "className": "SceneMusic",
                         "fields": {
-                            "layerName": "Ambiance",
-                            "fadeTime": 5.0,
-                            "stopLayer": true
+                            "layerName": "Music",
+                            "fadeTime": 2.0,
+                            "stopLayer": false
                         }
                     }
                 ]
@@ -1126,6 +1146,7 @@
         {
             "active": true,
             "name": "PlayerParticle",
+            "uuid": 7664181452366842135,
             "tag": {
                 "tagMask": 0
             },
@@ -1139,26 +1160,6 @@
                 "size": {
                     "x": 1.0,
                     "y": 1.0
-                }
-            },
-            "parent": {
-                "parentName": "Player",
-                "localPos": {
-                    "x": 0.0,
-                    "y": -0.4000000059604645,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.016129031777381898,
-                    "y": 0.013791962526738644
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             },
             "layer": {
@@ -1230,6 +1231,7 @@
         {
             "active": true,
             "name": "SlimeParticle",
+            "uuid": 9063427763511687168,
             "tag": {
                 "tagMask": 0
             },
@@ -1243,26 +1245,6 @@
                 "size": {
                     "x": 1.0,
                     "y": 1.0
-                }
-            },
-            "parent": {
-                "parentName": "Slime",
-                "localPos": {
-                    "x": 0.02669779397547245,
-                    "y": -0.22473953664302827,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": -0.013888888992369175,
-                    "y": 0.014925372786819935
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             },
             "layer": {

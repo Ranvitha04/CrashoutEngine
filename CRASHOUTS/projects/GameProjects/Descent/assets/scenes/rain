@@ -1262,7 +1262,34 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PlayerMovement"
+                        "className": "PlayerMovement",
+                        "fields": {
+                            "maxRunSpeed": 150.0,
+                            "maxAirSpeed": 120.0,
+                            "acceleration": 10.0,
+                            "deceleration": 10.0,
+                            "airAcceleration": 2.0,
+                            "jumpPower": 20000.0,
+                            "gravityScale": 2.5,
+                            "gravityForceMultiplier": 10.0,
+                            "footstepInterval": 0.07500000298023224,
+                            "swapPause": 1.0,
+                            "energyConsumption": 12.5,
+                            "goalNoOfPlates": 1,
+                            "currentGoalPlates": 0,
+                            "landingDustName": "LandingDust",
+                            "dustBurstDuration": 0.15000000596046449,
+                            "normalMass": 7.0,
+                            "lightMass": 4.5,
+                            "groundCheckDistance": 26.0,
+                            "groundCheckWidth": 10.0,
+                            "dialogueCooldown": 1.0,
+                            "isDialogueActive": false,
+                            "CurrentEnergy": 0.0,
+                            "MaxEnergy": 100.0,
+                            "alive": true,
+                            "isPaused": false
+                        }
                     }
                 ]
             },
@@ -1420,7 +1447,25 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement"
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "detectionRange": 250.0,
+                            "gravityScale": 2.0,
+                            "grabRange": 100.0,
+                            "minThrowSpeed": 50.0,
+                            "maxThrowSpeed": 200.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 1.0,
+                            "stunDuration": 1.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
+                        }
                     }
                 ]
             },
@@ -1567,7 +1612,25 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement"
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "detectionRange": 250.0,
+                            "gravityScale": 2.0,
+                            "grabRange": 100.0,
+                            "minThrowSpeed": 50.0,
+                            "maxThrowSpeed": 200.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 1.0,
+                            "stunDuration": 1.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
+                        }
                     }
                 ]
             },
@@ -1714,7 +1777,25 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement"
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "detectionRange": 250.0,
+                            "gravityScale": 2.0,
+                            "grabRange": 100.0,
+                            "minThrowSpeed": 50.0,
+                            "maxThrowSpeed": 200.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 1.0,
+                            "stunDuration": 1.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
+                        }
                     }
                 ]
             },
@@ -2026,7 +2107,25 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement"
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "detectionRange": 250.0,
+                            "gravityScale": 2.0,
+                            "grabRange": 100.0,
+                            "minThrowSpeed": 50.0,
+                            "maxThrowSpeed": 200.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 1.0,
+                            "stunDuration": 1.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
+                        }
                     }
                 ]
             },

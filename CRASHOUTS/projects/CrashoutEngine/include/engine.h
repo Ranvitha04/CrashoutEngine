@@ -50,7 +50,7 @@ extern bool g_ShowFPS;
 extern std::string g_GameRootPath;
 void SetGameRoot(const std::string& path);
 std::string GetGameRoot();
-
+std::string GetStartingSceneName();
 std::string GetLocalAppData();
 
 #endif

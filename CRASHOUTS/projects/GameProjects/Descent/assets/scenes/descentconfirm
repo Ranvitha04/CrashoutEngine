@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "Closedbg",
+            "uuid": 5361601198799559127,
             "tag": {
                 "tagMask": 0
             },
@@ -100,7 +101,12 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "",
@@ -110,6 +116,7 @@
         {
             "active": true,
             "name": "PauseResumeBtn",
+            "uuid": 11526819778775809384,
             "tag": {
                 "tagMask": 0
             },
@@ -200,7 +207,12 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 6
@@ -220,6 +232,7 @@
         {
             "active": true,
             "name": "SettingsBtn",
+            "uuid": 13649315751024056537,
             "tag": {
                 "tagMask": 0
             },
@@ -310,7 +323,12 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 6
@@ -330,6 +348,7 @@
         {
             "active": true,
             "name": "QuitBtn",
+            "uuid": 6121736275439712071,
             "tag": {
                 "tagMask": 0
             },
@@ -454,7 +473,12 @@
                     "y": 0.0,
                     "z": 0.0,
                     "w": 0.5
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 6

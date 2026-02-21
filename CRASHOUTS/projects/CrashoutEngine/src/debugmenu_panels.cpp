@@ -15,6 +15,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <unordered_set>
 #include "engine.h"
 #include "collidereventmanager.h"
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/ostreamwrapper.h>
 
 using namespace CrashoutsEngine;
 using namespace Serialization;
@@ -193,6 +195,44 @@ add_custom_command(TARGET CrashoutEditor POST_BUILD
 			ofs << content;
 			ofs.close();
 		}
+	}
+
+	// Safely writes the "start_scene" key to the current project's manifest
+	void SetStartSceneInManifest(const std::string& sceneName) {
+		std::string manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+		std::ifstream ifs(manifestPath);
+		if (!ifs.is_open()) {
+			std::cerr << "[Editor] Could not open manifest to set start scene.\n";
+			return;
+		}
+
+		rapidjson::IStreamWrapper isw(ifs);
+		rapidjson::Document doc;
+		doc.ParseStream(isw);
+		ifs.close();
+
+		if (doc.HasParseError() || !doc.IsObject()) {
+			std::cerr << "[Editor] Manifest parse error.\n";
+			return;
+		}
+
+		// Update or Add the "start_scene" key
+		if (doc.HasMember("start_scene")) {
+			doc["start_scene"].SetString(sceneName.c_str(), doc.GetAllocator());
+		}
+		else {
+			rapidjson::Value key("start_scene", doc.GetAllocator());
+			rapidjson::Value val(sceneName.c_str(), doc.GetAllocator());
+			doc.AddMember(key, val, doc.GetAllocator());
+		}
+
+		// Write it back to the file with pretty formatting
+		std::ofstream ofs(manifestPath);
+		rapidjson::OStreamWrapper osw(ofs);
+		rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
+		doc.Accept(writer);
+
+		std::cout << "[Editor] Set Start Scene to: " << sceneName << std::endl;
 	}
 }
 
@@ -1000,29 +1040,31 @@ namespace UI {
 		}
 		// --- End New UI ---
 
-		ImGui::SeparatorText("Loaded Scenes");
+		ImGui::SeparatorText("Loaded Scenes (Right-Click to set Start Scene)");
 
 		// Draw all scene buttons
-		// Check manifest json file
 		std::ifstream ifs(Assets::assetManifestPath);
-		if (!ifs.is_open()) {
-			std::cerr << "Error: Could not open manifest file: " << Assets::assetManifestPath << std::endl;
-			return;
-		}
+		if (!ifs.is_open()) return;
 
-		// Convert file to rapidJSON stream interface
 		rapidjson::IStreamWrapper isw(ifs);
 		rapidjson::Document doc;
 		doc.ParseStream(isw);
 
-		if (doc.HasParseError()) {
-			std::cerr << "Error parsing manifest JSON." << std::endl;
-			return;
+		if (doc.HasParseError()) return;
+
+		// --- NEW: Identify the current start scene ---
+		std::string currentStartScene = "";
+		if (doc.HasMember("start_scene") && doc["start_scene"].IsString()) {
+			currentStartScene = doc["start_scene"].GetString();
+		}
+		else if (doc.HasMember("scenes") && doc["scenes"].IsArray() && doc["scenes"].Size() > 0) {
+			// Fallback to first scene if key doesn't exist yet
+			if (doc["scenes"][0].HasMember("name")) {
+				currentStartScene = doc["scenes"][0]["name"].GetString();
+			}
 		}
 
 		if (doc.HasMember("scenes") && doc["scenes"].IsArray()) {
-			//std::cout << "Loading Scenes..." << std::endl;
-
 			const rapidjson::Value& sceneArray = doc["scenes"];
 			std::unordered_set<std::string> seenSceneNames;
 			seenSceneNames.reserve(sceneArray.Size());
@@ -1036,38 +1078,53 @@ namespace UI {
 				if (asset.HasMember("name") && asset.HasMember("path")) {
 					std::string name = asset["name"].GetString();
 					std::string relativePath = asset["path"].GetString();
-					if (!seenSceneNames.insert(name).second)
-						continue;
+					if (!seenSceneNames.insert(name).second) continue;
 
-					std::string btn = name + "##scene_" + relativePath + "_" + std::to_string((int)i);
+					// Highlight the starting scene with a star and special ID
+					bool isStartScene = (name == currentStartScene);
+					std::string btnText = isStartScene ? ("[*] " + name) : name;
+					std::string btnId = btnText + "##scene_" + relativePath + "_" + std::to_string((int)i);
 
-					ImVec2 text_size = ImGui::CalcTextSize(name.c_str());
+					ImVec2 text_size = ImGui::CalcTextSize(btnText.c_str());
 					float expected_button_width = text_size.x + style.FramePadding.x * 2.0f;
 
 					if (!first_button) {
 						float last_button_x2 = ImGui::GetItemRectMax().x;
 						float next_button_x2 = last_button_x2 + style.ItemSpacing.x + expected_button_width;
-
-						// If it fits within the panel, stay on the same line! Otherwise, let it wrap.
-						if (next_button_x2 < window_visible_x2) {
-							ImGui::SameLine();
-						}
+						if (next_button_x2 < window_visible_x2) ImGui::SameLine();
 					}
 					first_button = false;
 
-					if (ImGui::Button(btn.c_str())) {
-						if (!currSceneName.empty()) {
-							if (engineState == EngineState::STOP) Serialization::SaveScenes(currSceneName);
+					// Change color for the Start Scene so it stands out
+					if (isStartScene) {
+						ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.6f, 0.2f, 1.0f));
+						ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.7f, 0.3f, 1.0f));
+					}
+
+					// Draw the button
+					if (ImGui::Button(btnId.c_str())) {
+						if (!currSceneName.empty() && engineState == EngineState::STOP) {
+							Serialization::SaveScenes(currSceneName);
 						}
 						g_PendingSceneName = name;
 						g_IsSceneLoadPending = true;
 
-						if (engineState != EngineState::PLAY)
+						if (engineState != EngineState::PLAY) {
 							::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
+						}
 					}
-				}
-				else {
-					std::cerr << "Warning: Scene asset entry missing 'name' or 'path' in manifest." << std::endl;
+
+					// --- NEW: Right-Click Context Menu ---
+					if (ImGui::BeginPopupContextItem(("Ctx_" + name).c_str())) {
+						if (ImGui::MenuItem("Set as Start Scene")) {
+							SetStartSceneInManifest(name);
+						}
+						ImGui::EndPopup();
+					}
+
+					if (isStartScene) {
+						ImGui::PopStyleColor(2);
+					}
 				}
 			}
 		}

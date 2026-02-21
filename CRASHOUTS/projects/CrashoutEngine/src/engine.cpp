@@ -146,6 +146,31 @@ std::string GetGameRoot() {
     return g_GameRootPath;
 }
 
+std::string GetStartingSceneName()
+{
+    std::string manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+    std::ifstream ifs(manifestPath);
+
+    if (ifs.is_open()) {
+        rapidjson::IStreamWrapper isw(ifs);
+        rapidjson::Document doc;
+        doc.ParseStream(isw);
+
+        if (!doc.HasParseError()) {
+            if (doc.HasMember("start_scene") && doc["start_scene"].IsString()) {
+                return doc["start_scene"].GetString();
+            }
+            if (doc.HasMember("scenes") && doc["scenes"].IsArray() && doc["scenes"].Size() > 0) {
+                const auto& firstScene = doc["scenes"][0];
+                if (firstScene.HasMember("name")) {
+                    return firstScene["name"].GetString();
+                }
+            }
+        }
+    }
+    return "StartScene"; // Ultimate fallback
+}
+
 #if USE_IMGUI_EDITOR
 static EngineState previousState = EngineState::STOP;
 #else

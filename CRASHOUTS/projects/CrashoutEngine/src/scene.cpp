@@ -1,5 +1,5 @@
 /*!
-@file        renfred.cpp
+@file        scene.cpp
 @author      lee.r@digipen.edu
 @date        12/11/2025
 @brief       
@@ -26,35 +26,40 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "gamestatemanager.h"
 #include "scenetransition.h"
 #include "frameratecontroller.h"
+#include "engine.h"
 /*                                                   Global Variables
 ----------------------------------------------------------------------------- */
 
 static CrashoutsEngine::ECS* globalECS;
-//static const char* sceneName = "";
 
 void LoadScene()
 {
-	using namespace CrashoutsEngine::Assets;
-	//sceneName = "";
-	// Load resources specific to Scene state
-	globalECS = CrashoutsEngine::ECS::getInstance();
-	globalECS->Reset();
-
+    using namespace CrashoutsEngine::Assets;
+    // Load resources specific to Scene state
+    globalECS = CrashoutsEngine::ECS::getInstance();
+    globalECS->Reset();
 }
 
 void InitScene()
 {
-	// Initialize Scene state
-	CrashoutsEngine::Serialization::LoadScenes("descentmenu");
+    // 1. Figure out what game we are playing and what its first scene is
+    // (This now calls the global function from engine.h!)
+    std::string startScene = GetStartingSceneName();
 
-	LOGI(Core, "Scene Initialized");
+    // 2. Update the Engine's current scene tracker
+    CrashoutsEngine::Serialization::currSceneName = startScene;
+
+    // 3. Load it dynamically!
+    CrashoutsEngine::Serialization::LoadScenes(startScene);
+
+    LOGI(Core, "Scene Initialized: " + startScene);
 }
 
 void UpdateScene()
 {
-	// Update logic for Scene state
-	float dt = (float)FrameRateController::GetInstance().DT();
-	CrashoutsEngine::SceneTransition::Update(dt);
+    // Update logic for Scene state
+    float dt = (float)FrameRateController::GetInstance().DT();
+    CrashoutsEngine::SceneTransition::Update(dt);
 }
 
 void RenderScene()

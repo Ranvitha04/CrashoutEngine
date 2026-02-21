@@ -264,8 +264,30 @@ namespace CrashoutsEngine {
 		@param rootAssetPath The path to the main 'assets' folder.
 		@param outputManifestPath The full path where the 'assets.json' file will be saved.
 		*/
+		/*!
+		@brief Scans asset directories and generates a JSON manifest file.
+
+		@param rootAssetPath The path to the main 'assets' folder.
+		@param outputManifestPath The full path where the 'assets.json' file will be saved.
+		*/
 		void GenerateAssetManifest(const std::string& outputManifestPath) {
 			gameAssetPath = GetGameRoot() + "/assets/";
+			namespace fs = std::filesystem;
+
+			// ========================================================
+			// 1. RESCUE THE START SCENE FROM THE EXISTING MANIFEST
+			// ========================================================
+			std::string savedStartScene = "";
+			std::ifstream ifs(outputManifestPath);
+			if (ifs.is_open()) {
+				rapidjson::IStreamWrapper isw(ifs);
+				rapidjson::Document oldDoc;
+				oldDoc.ParseStream(isw);
+				if (!oldDoc.HasParseError() && oldDoc.HasMember("start_scene") && oldDoc["start_scene"].IsString()) {
+					savedStartScene = oldDoc["start_scene"].GetString();
+				}
+				ifs.close();
+			}
 
 			rapidjson::Document doc;
 			doc.SetObject();
@@ -304,7 +326,7 @@ namespace CrashoutsEngine {
 						}
 					}
 				}
-			};
+				};
 
 			// --- Scan Core first, then Game ---
 			ScanDirectory(coreAssetPath); // Default engine items
@@ -321,28 +343,38 @@ namespace CrashoutsEngine {
 				}
 				doc.AddMember(rapidjson::Value(type.c_str(), allocator).Move(), assetArray, allocator);
 			}
-		
+
+			// ========================================================
+			// 2. RE-INJECT THE START SCENE BEFORE SAVING
+			// ========================================================
+			if (!savedStartScene.empty()) {
+				rapidjson::Value key("start_scene", allocator);
+				rapidjson::Value val(savedStartScene.c_str(), allocator);
+				doc.AddMember(key, val, allocator);
+			}
+
 			// Write the JSON document to the output file
 			rapidjson::StringBuffer buffer;
 			rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
 			doc.Accept(writer);
-		
-			// NEW: ensure output directory exists (e.g., assets/json)
+
+			// Ensure output directory exists (e.g., assets/json)
 			fs::path outPath(outputManifestPath);
 			fs::path outDir = outPath.parent_path();
 			if (!fs::exists(outDir)) {
-			    try {
-			        fs::create_directories(outDir);
-			    } catch (const std::exception& e) {
-			        std::cerr << "Error: Could not create manifest directory: " << outDir.string() << " - " << e.what() << std::endl;
-			        return;
-			    }
+				try {
+					fs::create_directories(outDir);
+				}
+				catch (const std::exception& e) {
+					std::cerr << "Error: Could not create manifest directory: " << outDir.string() << " - " << e.what() << std::endl;
+					return;
+				}
 			}
-		
+
 			std::ofstream ofs(outPath.string());
 			if (!ofs.is_open()) {
-			    std::cerr << "Error: Could not open output file for writing: " << outPath.string() << std::endl;
-			    return;
+				std::cerr << "Error: Could not open output file for writing: " << outPath.string() << std::endl;
+				return;
 			}
 			ofs << buffer.GetString();
 			ofs.close();
