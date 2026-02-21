@@ -33,6 +33,7 @@ namespace {
 
 #pragma warning(pop)
 
+#define NOMINMAX     // <--- Prevents windows.h from breaking std::min/max
 #include <windows.h> // <-- Fixes the WINAPI and HINSTANCE syntax errors!
 #include <cstdio>
 #include <crtdbg.h>

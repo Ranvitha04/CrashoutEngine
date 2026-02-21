@@ -124,7 +124,21 @@ void MonoManager::LoadAssembly()
 	auto latestTime = fs::file_time_type::min();
 
 	std::string gameName = fs::path(GetGameRoot()).filename().string();
-	fs::path scriptDir = fs::current_path() / "scripts" / gameName;
+	// Attempt to find the scripts folder relative to the root
+	fs::path scriptDir = fs::path("scripts") / gameName;
+
+	// If we can't find it (likely because we are running from Root via BAT), 
+	// we look into the build folder specifically
+	if (!fs::exists(scriptDir)) {
+		scriptDir = fs::path("build/x64-Debug/scripts") / gameName;
+	}
+
+	if (!fs::exists(scriptDir))
+	{
+		std::cerr << "[Mono] ERROR: Could not find script folder at: " << fs::absolute(scriptDir) << "\n";
+		return;
+	}
+
 	for (const auto& file : fs::directory_iterator(scriptDir))
 	{
 		if (file.path().extension() == ".dll")
@@ -159,9 +173,8 @@ void MonoManager::LoadAssembly()
 		return;
 	}
 
-	if (!s_Domain)
-	{
-		std::cerr << "[Mono] Domain not initialized!\n";
+	if (!s_RootDomain) {
+		std::cerr << "[Mono] Root Domain not initialized! Did you call Init()?\n";
 		return;
 	}
 
@@ -200,8 +213,9 @@ void MonoManager::ReloadAssembly()
 	s_Assembly = nullptr;
 
 	if (s_Domain && s_Domain != s_RootDomain) {
-		mono_domain_set(s_RootDomain, false); // Step back to root
-		mono_domain_unload(s_Domain);         // Trash the old game memory
+		mono_domain_set(s_RootDomain, false);
+		mono_domain_unload(s_Domain);
+		s_Domain = nullptr; // Explicitly nullify
 	}
 
 	char appDomainName[] = "CrashoutsAppDomain";
@@ -216,7 +230,21 @@ void MonoManager::ReloadAssembly()
 		fs::path latestDll;
 		auto latestTime = fs::file_time_type::min();
 		std::string gameName = fs::path(GetGameRoot()).filename().string();
-		fs::path scriptDir = fs::current_path() / "scripts" / gameName;
+		// Attempt to find the scripts folder relative to the root
+		fs::path scriptDir = fs::path("scripts") / gameName;
+
+		// If we can't find it (likely because we are running from Root via BAT), 
+		// we look into the build folder specifically
+		if (!fs::exists(scriptDir)) {
+			scriptDir = fs::path("build/x64-Debug/scripts") / gameName;
+		}
+
+		if (!fs::exists(scriptDir))
+		{
+			std::cerr << "[Mono] ERROR: Could not find script folder at: " << fs::absolute(scriptDir) << "\n";
+			return;
+		}
+
 		for (const auto& file : fs::directory_iterator(scriptDir))
 		{
 			if (file.path().extension() == ".dll")
