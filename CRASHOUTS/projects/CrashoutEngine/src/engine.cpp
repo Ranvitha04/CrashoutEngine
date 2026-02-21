@@ -270,9 +270,20 @@ void Init() {
 
     // start with a 16:9 aspect ratio
     std::string gameName = fs::path(GetGameRoot()).filename().string();
-    if (gameName.empty()) gameName = "CRASHOUTS";
+    std::string initialTitle;
 
-    if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), gameName.c_str())) {
+#if USE_IMGUI_EDITOR
+    if (gameName.empty() || gameName == ".") {
+        initialTitle = "CrashoutEditor";
+    } else {
+        initialTitle = "CrashoutEditor - " + gameName;
+    }
+#else
+    initialTitle = (gameName.empty() || gameName == ".") ? "Crashouts Engine" : gameName;
+#endif
+
+    // Initialize with the formatted title immediately
+    if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), initialTitle.c_str())) {
         std::exit(EXIT_FAILURE);
     }
     glfwSetWindowFocusCallback(GLApp::ptr_window,
