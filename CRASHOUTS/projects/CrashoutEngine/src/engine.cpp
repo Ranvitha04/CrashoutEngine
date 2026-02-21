@@ -116,6 +116,18 @@ std::string g_GameRootPath = "";
 
 void SetGameRoot(const std::string& path) {
     g_GameRootPath = path;
+
+    // 1. Extract the name (e.g., "Descent" or "test") from the path
+    std::string gameName = std::filesystem::path(path).filename().string();
+    if (gameName.empty()) gameName = "Crashouts";
+
+    // 2. Format the title string
+    std::string title = "Crashouts Engine - " + gameName;
+
+    // 3. Safety check: Update the GLFW window if it exists
+    if (GLApp::ptr_window) {
+        glfwSetWindowTitle(GLApp::ptr_window, title.c_str());
+    }
 }
 
 std::string GetGameRoot() {
@@ -245,7 +257,10 @@ void Init() {
     collisionSystem.registerObserver(EventType::TriggerExit, collisionEvent);
 
     // start with a 16:9 aspect ratio
-    if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
+    std::string gameName = fs::path(GetGameRoot()).filename().string();
+    if (gameName.empty()) gameName = "CRASHOUTS";
+
+    if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), gameName.c_str())) {
         std::exit(EXIT_FAILURE);
     }
     glfwSetWindowFocusCallback(GLApp::ptr_window,
