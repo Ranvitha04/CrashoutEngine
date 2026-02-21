@@ -47,6 +47,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <fstream>
 #include <sstream>
 
+#include <filesystem>
+
 #define FONT_SCALE 0.05f
 
 namespace Scene {
@@ -779,20 +781,60 @@ namespace Scene {
 		ShapeType currentShapeType = ShapeType::Rectangle;
 
 		// Cleans the render batch data
+		// Cleans the render batch data
 		void Flush() {
 			if (batch.positions.empty()) return;
 
+			GLuint currentHandle = 0;
+			bool useTextureForThisBatch = batch.enableTexture;
+
+			// We use a separate string for the instancer to prevent caching a broken path
+			std::string finalTexNameForInstancer = "";
+
 			// Bind Texture if needed
-			if (batch.enableTexture && !batch.textureName.empty()) {
-				auto* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(batch.textureName);
-				if (tex) tex->SetTextureMode(batch.wrapU, batch.wrapV);
+			if (useTextureForThisBatch && !batch.textureName.empty()) {
+
+				// 1. EXTRACT THE SHORT NAME ("images/player.png" -> "player")
+				std::string lookupName = batch.textureName;
+				std::filesystem::path p(lookupName);
+				if (p.has_stem()) {
+					lookupName = p.stem().string();
+				}
+
+				// 2. NOW ASK THE ASSET MANAGER USING THE SHORT NAME
+				auto* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(lookupName);
+
+				if (tex) {
+					tex->SetTextureMode(batch.wrapU, batch.wrapV);
+					currentHandle = tex->GetGLHandle();
+
+					if (currentHandle == 0 || !tex->IsUploaded()) {
+						// The texture is in RAM but hasn't reached the GPU yet!
+						// Turn off texturing for this specific frame so it doesn't draw invisible.
+						useTextureForThisBatch = false;
+					}
+					else {
+						// Success! Safe to pass the name to the Instancer cache
+						finalTexNameForInstancer = lookupName;
+					}
+				}
+				else {
+					// Asset not found at all
+					useTextureForThisBatch = false;
+				}
+			}
+			else {
+				useTextureForThisBatch = false;
 			}
 
 			InstancingSystem::InstancedParams params;
-			params.textured = batch.enableTexture;
-			params.textureName = batch.textureName;
-			params.textureHandle = batch.textureHandle; // Pass handle
-			params.tint = { 1,1,1 };
+			params.textured = useTextureForThisBatch;
+
+			// 3. PASS THE CORRECTED DATA TO THE SHADER
+			params.textureName = finalTexNameForInstancer;
+			params.textureHandle = currentHandle;
+
+			params.tint = { 1, 1, 1 };
 			params.uvSize = batch.uvSize;
 
 			int count = (int)batch.positions.size();
@@ -821,47 +863,38 @@ namespace Scene {
 
 		// Send new batching data
 		void Submit(TransformComponent* tc, ShapeComponent* sc) {
-			// Special Case: Lines cannot be instanced in the same batch
 			if (sc->type == ShapeType::Line) {
-				Flush(); // Break current batch
+				Flush();
 				Component::Shapes::CreateLine(sc->p1 + tc->position, sc->p2 + tc->position, sc->thickness, sc->color, sc->isWorldSpace);
 				return;
 			}
 
-			// Check for State Changes
 			bool typeChanged = (sc->type != currentShapeType);
 			bool textureChanged = false;
 
-			// Only check texture state if we aren't starting fresh
 			if (!batch.positions.empty()) {
 				if (sc->enableTexture != batch.enableTexture) textureChanged = true;
 				else if (sc->enableTexture) {
-					// Check Name OR Handle
+					// ONLY compare the name! The handle is evaluated at Flush() time.
 					if (sc->textureName != batch.textureName) textureChanged = true;
-					else if (sc->textureHandle != batch.textureHandle) textureChanged = true; // Handle Check
-					else if (sc->uvSize != batch.uvSize) textureChanged = true; // UV Size is uniform
-					// Note: Wrap modes usually don't change often, but if they do, we must flush
+					else if (sc->uvSize != batch.uvSize) textureChanged = true;
 					else if (GetWrapMode(sc->wrapModeU) != batch.wrapU) textureChanged = true;
 				}
 			}
 
-			// Flush if state doesn't match
 			if (textureChanged || typeChanged) {
 				Flush();
 			}
 
-			// Init Batch properties if empty
 			if (batch.positions.empty()) {
 				currentShapeType = sc->type;
 				batch.textureName = sc->textureName;
-				batch.textureHandle = sc->textureHandle; // Capture handle
 				batch.enableTexture = sc->enableTexture;
 				batch.uvSize = sc->uvSize;
 				batch.wrapU = GetWrapMode(sc->wrapModeU);
 				batch.wrapV = GetWrapMode(sc->wrapModeV);
 			}
 
-			// Add Data
 			CEColor colorNorm(sc->color.x(), sc->color.y(), sc->color.z(), sc->color.w());
 			float dim1 = tc->size.x;
 			float dim2 = tc->size.y;

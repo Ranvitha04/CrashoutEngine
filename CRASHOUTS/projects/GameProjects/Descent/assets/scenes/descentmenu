@@ -617,9 +617,9 @@
             }
         },
         {
-            "active": true,
-            "name": "DONT REMOVE [CAUSES PROBLEM]",
-            "uuid": 5854174914781866955,
+            "active": false,
+            "name": "QuitCheck",
+            "uuid": 17994454554155245929,
             "tag": {
                 "tagMask": 0
             },
@@ -632,41 +632,7 @@
                 },
                 "size": {
                     "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "y": 0.9999999403953552
                 }
             },
             "layer": {
@@ -1137,30 +1103,6 @@
             },
             "layer": {
                 "layerName": "YesNo",
-                "z": 0
-            }
-        },
-        {
-            "active": false,
-            "name": "QuitCheck",
-            "uuid": 17994454554155245929,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 0.9999999403953552
-                }
-            },
-            "layer": {
-                "layerName": "",
                 "z": 0
             }
         }

@@ -401,6 +401,14 @@ void Init() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
     Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
+
+    // Give the async loader a moment to upload initial textures to the GPU 
+    // before the first frame tries to render them.
+    std::cout << "[Engine] Waiting for initial asset GPU uploads...\n";
+    for (int i = 0; i < 5; ++i) { // Pump it a few times
+        CrashoutsEngine::Assets::AssetManager::GetInstance().Update();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
 
 /*  _________________________________________________________________________ */

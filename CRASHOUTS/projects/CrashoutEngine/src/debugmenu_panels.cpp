@@ -1592,6 +1592,62 @@ namespace UI {
 		ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "%s", GetGameRoot().c_str());
 
 		ImGui::Separator();
+
+		// =========================================================================
+		// HELPER LAMBDA: Hot-Swaps the engine to a new project & loads Start Scene
+		// =========================================================================
+		auto SwitchProjectContext = [](const std::string& projName, const std::string& projPath) {
+			Audio::AudioSystem& audio = Audio::AudioSystem::instance();
+			audio.stopAll(true);
+			audio.unloadAllBanks();
+			audio.unloadAllRawSounds();
+
+			CrashoutsEngine::ScriptSystem::DestroyAll();
+			CrashoutsEngine::ECS::getInstance()->Reset();
+			CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
+
+			// 1. Update Root Pointer
+			SetGameRoot(projPath);
+
+			// 2. Refresh Mono Scripts for the new project
+			fs::path csprojPath = fs::path(projPath) / "scripts" / (projName + ".csproj");
+			std::string buildCommand = "dotnet build \"" + csprojPath.generic_string() + "\"";
+
+			std::cout << "[Editor] Compiling scripts for " << projName << "...\n";
+			int buildResult = std::system(buildCommand.c_str());
+
+			if (buildResult == 0) {
+				std::cout << "[Editor] Script compilation successful!\n";
+			}
+			else {
+				std::cerr << "[Editor] Script compilation failed. Check your C# code!\n";
+			}
+
+			// 3. Refresh Mono Scripts
+			MonoManager::ReloadAssembly();
+			CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
+
+			// 4. Refresh Asset Manager & Manifest
+			auto& am = CrashoutsEngine::Assets::AssetManager::GetInstance();
+			am.Shutdown(); // Soft Reset
+
+			std::string newMPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+			CrashoutsEngine::Assets::GenerateAssetManifest(newMPath);
+			am.LoadManifestAssets(newMPath);
+
+			// Reload Prefabs
+			std::string newPrefabPath = GetGameRoot() + "/assets/prefabs";
+			CrashoutsEngine::ReloadPrefabsFromDisk(newPrefabPath);
+
+			// 5. LOAD THE STARTING SCENE DYNAMICALLY
+			// This safely falls back to "StartScene" if no scene is found
+			g_PendingSceneName = GetStartingSceneName();
+			g_IsSceneLoadPending = true;
+
+			LOGS(Core, "Context Switched to: " + projName + " | Booting into: " + g_PendingSceneName);
+			};
+		// =========================================================================
+
 		ImGui::SeparatorText("Create New Project");
 
 		static char newProjectName[64] = "";
@@ -1612,9 +1668,8 @@ namespace UI {
 					fs::create_directories(projectPath / "include");
 					fs::create_directories(projectPath / "scripts");
 
-					std::ofstream dummyScene(projectPath / "assets/scenes/StartScene");
+					std::ofstream dummyScene(projectPath / "assets/scenes/StartScene.json"); // Added .json for safety
 					if (dummyScene.is_open()) {
-						// Write a completely empty, but valid, JSON structure
 						dummyScene << "{\n  \"Entities\": []\n}";
 						dummyScene.close();
 					}
@@ -1624,21 +1679,18 @@ namespace UI {
 					ScaffoldProjectFile(projectPath / "src/main.cpp", MAIN_CPP_TEMPLATE, gameName);
 					ScaffoldProjectFile(projectPath / ("scripts/" + gameName + ".csproj"), CSPROJ_TEMPLATE, gameName);
 
-					// 3. Copy Starter Scripts from the physical Template folder
+					// 3. Copy Starter Scripts
 					if (fs::exists(templatePath / "scripts")) {
 						fs::copy(templatePath / "scripts", projectPath / "scripts",
 							fs::copy_options::recursive | fs::copy_options::overwrite_existing);
 					}
 
-					// 4. Generate Initial Manifest
-					std::string mPath = (projectPath / "assets/json/assetmanifest.json").generic_string();
-					// Ensure manifest reflects core assets too by calling your logic
-					Assets::GenerateAssetManifest(mPath);
+					LOGS(Core, "Project " + gameName + " is ready!");
 
-					std::string buildCmd = "dotnet build \"" + (projectPath / "scripts" / (gameName + ".csproj")).generic_string() + "\"";
-					std::system(buildCmd.c_str());
+					// --- AUTO-LOAD THE NEW PROJECT ---
+					// This will instantly switch the editor into the new project and load the StartScene!
+					SwitchProjectContext(gameName, projectPath.generic_string());
 
-					LOGS(Core, "Project " + gameName + " is ready to build!");
 					newProjectName[0] = '\0';
 				}
 				catch (const std::exception& e) {
@@ -1662,62 +1714,8 @@ namespace UI {
 							LOGI(Core, "Project '" + name + "' is already active.");
 						}
 						else {
-							// --- START HOT-SWAP SEQUENCE ---
-							Audio::AudioSystem& audio = Audio::AudioSystem::instance();
-							audio.stopAll(true);
-							audio.unloadAllBanks();
-							audio.unloadAllRawSounds();
-
-							CrashoutsEngine::ScriptSystem::DestroyAll();
-							CrashoutsEngine::ECS::getInstance()->Reset();
-							CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
-
-							// 1. Update Root Pointer
-							SetGameRoot(entry.path().generic_string());
-
-							// 2. Refresh Mono Scripts for the new project
-							fs::path csprojPath = entry.path() / "scripts" / (name + ".csproj");
-							std::string buildCommand = "dotnet build \"" + csprojPath.generic_string() + "\"";
-
-							std::cout << "[Editor] Compiling scripts for " << name << "...\n";
-
-							// Run the compiler via the system command line
-							int buildResult = std::system(buildCommand.c_str());
-
-							if (buildResult == 0) {
-								std::cout << "[Editor] Script compilation successful!\n";
-							}
-							else {
-								std::cerr << "[Editor] Script compilation failed. Check your C# code!\n";
-							}
-
-							// 3. Refresh Mono Scripts (it will now grab the fresh DLL we just built)
-							MonoManager::ReloadAssembly();
-
-							// This forces C++ to drop the old pointers and link to the newly compiled C# methods
-							CrashoutsEngine::ScriptSystem::InitializeAll(
-								MonoManager::GetDomain(),
-								MonoManager::GetAssembly()
-							);
-
-							// 4. Refresh Asset Manager
-							auto& am = CrashoutsEngine::Assets::AssetManager::GetInstance();
-							am.Shutdown(); // Soft Reset (Clears maps + preserves Core assets)
-
-							// 3. Rebuild Manifest for the NEW project
-							std::string newMPath = GetGameRoot() + "/assets/json/assetmanifest.json";
-							CrashoutsEngine::Assets::GenerateAssetManifest(newMPath);
-							am.LoadManifestAssets(newMPath);
-
-							// 4. Reload Prefabs
-							std::string newPrefabPath = GetGameRoot() + "/assets/prefabs";
-							CrashoutsEngine::ReloadPrefabsFromDisk(newPrefabPath);
-
-							// 5. Load Default Scene
-							g_PendingSceneName = "StartScene"; // Point to the name, not the .json
-							g_IsSceneLoadPending = true;
-
-							LOGS(Core, "Context Switched to: " + name);
+							// --- USE THE HELPER TO QUICK SWITCH ---
+							SwitchProjectContext(name, entry.path().generic_string());
 						}
 					}
 				}

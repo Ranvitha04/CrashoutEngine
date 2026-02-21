@@ -20,7 +20,7 @@
                 }
             },
             "shape": {
-                "useTexture": false,
+                "useTexture": true,
                 "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,

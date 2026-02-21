@@ -623,7 +623,6 @@ namespace InstancingSystem {
 		const CEVec2* uvOffsets, // Added UV Offsets
 		int count, int segments) {
 
-		if (count <= 0) return;
 		if (segments < 3) segments = 3;
 
 		Component::Rendering& renderer = Component::Rendering::Get();
@@ -731,6 +730,7 @@ namespace InstancingSystem {
 			s_circInstanceBuffersInitialized = true;
 			glBindVertexArray(0);
 		}
+		if (count <= 0) return;
 
 		// --- Update Instance Data using Struct ---
 		std::vector<CircleInstanceData> instanceData(count);
@@ -781,7 +781,6 @@ namespace InstancingSystem {
 		const CEColor& tint,
 		const CEVec2& uvSize) {
 
-		if (count <= 0) return;
 		if (segments < 3) segments = 3;
 
 		glDisable(GL_CULL_FACE);
@@ -792,6 +791,8 @@ namespace InstancingSystem {
 			// Triggers init with dummy data
 			CreateInstancedCircles(&p, &c, &f, &f, &f, &u, 0, segments);
 		}
+
+		if (count <= 0) return;
 
 		// --- Update Instance Data using Struct ---
 		std::vector<CircleInstanceData> instanceData(count);
@@ -1197,8 +1198,6 @@ namespace InstancingSystem {
 		const CEVec2* uvOffsets, // Added UV Offsets
 		int count) {
 
-		if (count <= 0) return;
-
 		Component::Rendering& renderer = Component::Rendering::Get();
 
 		glEnable(GL_BLEND);
@@ -1282,6 +1281,8 @@ namespace InstancingSystem {
 			glBindVertexArray(0);
 		}
 
+		if (count <= 0) return;
+
 		// --- Update Instance Data using Struct ---
 		std::vector<RectInstanceData> instanceData(count);
 		for (int i = 0; i < count; ++i) {
@@ -1329,15 +1330,15 @@ namespace InstancingSystem {
 		const CEColor& tint,
 		const CEVec2& uvSize)
 	{
-		if (count <= 0) return;
-		glDisable(GL_CULL_FACE);
-
 		// Init buffers if needed using base function logic
 		if (!s_rectInstanceBuffersInitialized) {
 			CEVec3 p; CEColor c; float f = 0; CEVec2 u;
-			//CreateInstancedRectangles(&p, &c, &f, &f, &f, &f, &u, 0);
-			CreateInstancedRectanglesTextured("", 0, &p, &c, &f, &f, &f, &f, &u, 0);
+			CreateInstancedRectangles(&p, &c, &f, &f, &f, &f, &u, 0);
+			//CreateInstancedRectanglesTextured("", 0, &p, &c, &f, &f, &f, &f, &u, 0);
 		}
+
+		if (count <= 0) return;
+		glDisable(GL_CULL_FACE);
 
 		std::vector<RectInstanceData> instanceData(count);
 		for (int i = 0; i < count; ++i) {
@@ -1710,7 +1711,6 @@ namespace InstancingSystem {
 		const CEVec2* uvOffsets, // Added UV Offsets
 		int count
 	) {
-		if (count <= 0) return;
 		Component::Rendering& renderer = Component::Rendering::Get();
 
 		glEnable(GL_BLEND);
@@ -1787,6 +1787,8 @@ namespace InstancingSystem {
 			glBindVertexArray(0);
 		}
 
+		if (count <= 0) return;
+
 		std::vector<TriInstanceData> instanceData(count);
 		for (int i = 0; i < count; ++i) {
 			instanceData[i].position = positions[i];
@@ -1830,13 +1832,14 @@ namespace InstancingSystem {
 		const CEColor& tint,
 		const CEVec2& uvSize
 	) {
-		if (count <= 0) return;
 		glDisable(GL_CULL_FACE);
 
 		if (!s_triInstanceBuffersInitialized) {
 			CEVec3 p; CEColor c; float f = 0; CEVec2 u;
 			CreateInstancedTriangles(&p, &c, &f, &f, &f, &f, &u, 0);
 		}
+
+		if (count <= 0) return;
 
 		std::vector<TriInstanceData> instanceData(count);
 		for (int i = 0; i < count; ++i) {
