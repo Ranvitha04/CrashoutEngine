@@ -14500,34 +14500,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PlayerMovement",
-                        "fields": {
-                            "maxRunSpeed": 150.0,
-                            "maxAirSpeed": 120.0,
-                            "acceleration": 10.0,
-                            "deceleration": 10.0,
-                            "airAcceleration": 2.0,
-                            "jumpPower": 20000.0,
-                            "gravityScale": 2.5,
-                            "gravityForceMultiplier": 10.0,
-                            "footstepInterval": 0.07500000298023224,
-                            "swapPause": 1.0,
-                            "energyConsumption": 12.5,
-                            "goalNoOfPlates": 1,
-                            "currentGoalPlates": 0,
-                            "landingDustName": "LandingDust",
-                            "dustBurstDuration": 0.15000000596046449,
-                            "normalMass": 7.0,
-                            "lightMass": 4.5,
-                            "groundCheckDistance": 26.0,
-                            "groundCheckWidth": 10.0,
-                            "dialogueCooldown": 1.0,
-                            "isDialogueActive": false,
-                            "CurrentEnergy": 0.0,
-                            "MaxEnergy": 100.0,
-                            "alive": true,
-                            "isPaused": false
-                        }
+                        "className": "PlayerMovement"
                     }
                 ]
             },
@@ -14551,37 +14524,6 @@
                 "t": 0.01666666753590107,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "playerJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "playerSwitch",
                         "wrap": 0,
@@ -14649,6 +14591,37 @@
                         ]
                     },
                     {
+                        "name": "playerJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerIdleLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
@@ -14671,6 +14644,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14732,37 +14736,6 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerJumpLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
@@ -14785,37 +14758,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14868,6 +14810,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -17350,11 +17323,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "wallName": "MovingWall"
-                        }
+                        "className": "PressurePlate"
                     }
                 ]
             },
@@ -17419,15 +17388,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
+                        "className": "MovingWall"
                     }
                 ]
             },
@@ -17972,15 +17933,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
+                        "className": "MovingWall"
                     }
                 ]
             },
@@ -18122,11 +18075,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "wallName": "MovingWall"
-                        }
+                        "className": "PressurePlate"
                     }
                 ]
             },
@@ -18225,11 +18174,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "wallName": "MovingWall"
-                        }
+                        "className": "PressurePlate"
                     }
                 ]
             },
@@ -18294,15 +18239,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
+                        "className": "MovingWall"
                     }
                 ]
             },
@@ -18445,11 +18382,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "wallName": "MovingWall"
-                        }
+                        "className": "PressurePlate"
                     }
                 ]
             },
@@ -18548,11 +18481,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "wallName": "MovingWall"
-                        }
+                        "className": "PressurePlate"
                     }
                 ]
             },
@@ -18651,11 +18580,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "wallName": "MovingWall"
-                        }
+                        "className": "PressurePlate"
                     }
                 ]
             },
@@ -18754,11 +18679,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "wallName": "MovingWall"
-                        }
+                        "className": "PressurePlate"
                     }
                 ]
             },
@@ -18857,8 +18778,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "WinGame",
-                        "fields": {}
+                        "className": "WinGame"
                     }
                 ]
             },
@@ -18923,15 +18843,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
+                        "className": "MovingWall"
                     }
                 ]
             },
@@ -19398,15 +19310,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
+                        "className": "WeightedPlatform"
                     }
                 ]
             },
@@ -19471,15 +19375,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
+                        "className": "MovingWall"
                     }
                 ]
             },
@@ -19583,15 +19479,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
+                        "className": "MovingWall"
                     }
                 ]
             },
@@ -20242,15 +20130,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
+                        "className": "WeightedPlatform"
                     }
                 ]
             },
@@ -20431,8 +20311,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PauseButtons",
-                        "fields": {}
+                        "className": "PauseButtons"
                     }
                 ]
             },
@@ -20551,8 +20430,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PauseButtons",
-                        "fields": {}
+                        "className": "PauseButtons"
                     }
                 ]
             },
@@ -20671,8 +20549,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PauseButtons",
-                        "fields": {}
+                        "className": "PauseButtons"
                     }
                 ]
             },
@@ -20825,18 +20702,10 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
+                        "className": "EnergyBall"
                     },
                     {
-                        "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
+                        "className": "EnergyBall"
                     }
                 ]
             },
@@ -21063,25 +20932,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
+                        "className": "SlimeMovement"
                     }
                 ]
             },
@@ -21188,37 +21039,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21248,6 +21068,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21462,25 +21313,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
+                        "className": "SlimeMovement"
                     }
                 ]
             },
@@ -21587,6 +21420,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21616,37 +21480,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21861,25 +21694,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
+                        "className": "SlimeMovement"
                     }
                 ]
             },
@@ -21986,37 +21801,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22046,6 +21830,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22400,25 +22215,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
+                        "className": "SlimeMovement"
                     }
                 ]
             },
@@ -22525,6 +22322,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22554,37 +22382,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22799,25 +22596,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
+                        "className": "SlimeMovement"
                     }
                 ]
             },
@@ -22924,6 +22703,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22953,37 +22763,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23198,25 +22977,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
+                        "className": "SlimeMovement"
                     }
                 ]
             },
@@ -23323,37 +23084,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -23383,6 +23113,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23584,18 +23345,10 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
+                        "className": "EnergyBall"
                     },
                     {
-                        "className": "EnergyBall",
-                        "fields": {
-                            "energyAmount": 25.0,
-                            "respawnTime": 5.0
-                        }
+                        "className": "EnergyBall"
                     }
                 ]
             },
@@ -23971,11 +23724,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "GameOverUI",
-                        "fields": {
-                            "currentSceneName": "descentgame",
-                            "mainMenuScene": "descentmenu"
-                        }
+                        "className": "GameOverUI"
                     }
                 ]
             },
@@ -24124,11 +23873,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "GameOverUI",
-                        "fields": {
-                            "currentSceneName": "descentgame",
-                            "mainMenuScene": "descentmenu"
-                        }
+                        "className": "GameOverUI"
                     }
                 ]
             },
@@ -24247,8 +23992,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "WinGame",
-                        "fields": {}
+                        "className": "WinGame"
                     }
                 ]
             },
@@ -24397,11 +24141,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "GameOverUI",
-                        "fields": {
-                            "currentSceneName": "descentgame",
-                            "mainMenuScene": "descentmenu"
-                        }
+                        "className": "GameOverUI"
                     }
                 ]
             },
@@ -24608,11 +24348,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "GameOverUI",
-                        "fields": {
-                            "currentSceneName": "descentgame",
-                            "mainMenuScene": "descentmenu"
-                        }
+                        "className": "GameOverUI"
                     }
                 ]
             },

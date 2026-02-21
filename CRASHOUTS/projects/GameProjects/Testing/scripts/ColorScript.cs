@@ -30,6 +30,12 @@ namespace CrashoutsEngine
 
         public override void Update() 
         { 
+            if (sc == null)
+            {
+                sc = Entity.GetComponent<ShapeComponent>();
+            }
+
+            Debug.Log("Hi");
             // Safety check to prevent engine crashes if the component is missing
             if (sc == null) return;
 
