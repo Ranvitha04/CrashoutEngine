@@ -31,6 +31,7 @@ namespace Component {
 		CEVec2 size{1.f, 1.f};
 		// X Y Z position
 		CEVec3 position{ 0.f,0.f,0.f };
+		CEVec3 previousPosition{ 0.f, 0.f, 0.f };
 	};
 }
 

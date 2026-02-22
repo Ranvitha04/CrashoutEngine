@@ -7,6 +7,7 @@
 All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 using System;
+using System.Diagnostics;
 
 namespace CrashoutsEngine
 {
@@ -72,43 +73,32 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            // 1. INPUT HANDLING (Toggle)
+            // Ensure we have the player reference (handles scene transitions/respawns)
+            if (playerScript == null && PlayerMovement.Instance != null)
+                playerScript = PlayerMovement.Instance;
+
+            // 1. INPUT HANDLING
             if (Input.IsKeyTriggered(Key.Escape) || Input.IsKeyTriggered(Key.P))
             {
+                // Don't pause during dialogue
                 if (playerScript != null && playerScript.isDialogueActive) return;
 
                 TogglePause();
-                inputCooldown = 0.2f; // Safety delay
                 return;
             }
 
-            // 2. COOLDOWN CHECK
-            if (inputCooldown > 0.0f)
-            {
-                inputCooldown -= (float)Time.DT;
-                return;
-            }
-
-            // 3. BUTTON LOGIC
+            // 2. BUTTON LOGIC (Remove inputCooldown return to ensure clicks registered)
             if (isPaused)
             {
-                if (isRestartMenuOpen)
-                {
-                    HandleRestartConfirmButtons();
-                }
+                if (isRestartMenuOpen) HandleRestartConfirmButtons();
                 else if (isSettingsMenuOpen)
                 {
-                    // FIX: Check the Close Book Button here
-                    if (CheckButtonClick(btnCloseBook))
-                    {
-                        CloseSettings();
-                    }
+                    if (CheckButtonClick(btnCloseBook)) CloseSettings();
                 }
-                else
-                {
-                    HandleMainPauseButtons();
-                }
+                else HandleMainPauseButtons();
             }
+
+            if (inputCooldown > 0.0f) inputCooldown -= (float)Time.DT;
         }
 
         // --- MAIN MENU HANDLER ---
@@ -156,11 +146,13 @@ namespace CrashoutsEngine
             isSettingsMenuOpen = false;
             SetEntityActive(restartCheckScreen, false);
             SetEntityActive(openedBookScreen, false);
+
+            Debug.Log("unpause?");
         }
 
         private void ResumeGame()
         {
-            if (isPaused) TogglePause();
+            TogglePause();
         }
 
         // --- SUB MENU TRANSITIONS ---
@@ -168,6 +160,7 @@ namespace CrashoutsEngine
         private void OpenRestartMenu()
         {
             isRestartMenuOpen = true;
+            SetEntityActive(btnRestart, false);
             SetEntityActive(restartCheckScreen, true);
             inputCooldown = 0.2f; // Prevent accidental double clicks
         }
@@ -176,6 +169,7 @@ namespace CrashoutsEngine
         {
             isRestartMenuOpen = false;
             SetEntityActive(restartCheckScreen, false);
+            SetEntityActive(btnRestart, true);
             inputCooldown = 0.2f;
         }
 

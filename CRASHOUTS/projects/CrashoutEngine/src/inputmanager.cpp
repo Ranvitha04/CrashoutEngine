@@ -28,6 +28,8 @@ std::unordered_map<int, bool> InputManager::Keys;
 /// Map of mouse button states indexed by GLFW button codes
 std::unordered_map<int, bool> InputManager::MouseButtons;
 
+std::unordered_map<int, bool> InputManager::s_lastMouseButtons;
+
 /// Accumulated scroll wheel delta since last Update
 float InputManager::ScrollYAccum = 0.0f;
 
@@ -102,7 +104,7 @@ void InputManager::Update() {
     // Clear typed chars and store last frame's key state
     s_typedChars.clear();
     s_lastKeys = Keys;
-
+    s_lastMouseButtons = MouseButtons;
 
     // Snapshot scroll delta for this frame and reset accumulator
     ScrollYFrame = ScrollYAccum;
@@ -135,6 +137,7 @@ void InputManager::Shutdown() {
     // 2. Clear internal state (frees memory used by the maps)
     Keys.clear();
     MouseButtons.clear();
+    s_lastMouseButtons.clear();
     ScrollYAccum = 0.0f;
     ScrollYFrame = 0.0f;
 }
@@ -184,6 +187,28 @@ std::vector<Key> InputManager::GetPressedKeys() {
 */
 bool InputManager::IsMouseButtonPressed(int button) {
     return MouseButtons[button];
+}
+
+/*!
+@brief Check if a mouse button was clicked *this frame*
+*/
+bool InputManager::IsMouseButtonTriggered(int button) {
+    bool pressedNow = MouseButtons.count(button) ? MouseButtons[button] : false;
+    bool pressedLast = s_lastMouseButtons.count(button) ? s_lastMouseButtons[button] : false;
+
+    // True if it is pressed NOW, but was NOT pressed last frame
+    return pressedNow && !pressedLast;
+}
+
+/*!
+@brief Check if a mouse button was released *this frame*
+*/
+bool InputManager::IsMouseButtonReleased(int button) {
+    bool pressedNow = MouseButtons.count(button) ? MouseButtons[button] : false;
+    bool pressedLast = s_lastMouseButtons.count(button) ? s_lastMouseButtons[button] : false;
+
+    // True if it is NOT pressed now, but WAS pressed last frame
+    return !pressedNow && pressedLast;
 }
 
 /*!
@@ -290,6 +315,7 @@ void InputManager::ClearInputs()
 {
     Keys.clear();
     MouseButtons.clear();
+    s_lastMouseButtons.clear();
     ScrollYAccum = 0.0f;
     ScrollYFrame = 0.0f;
     s_typedChars.clear();

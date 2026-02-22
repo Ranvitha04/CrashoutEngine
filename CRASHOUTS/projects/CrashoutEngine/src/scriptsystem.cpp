@@ -402,7 +402,7 @@ namespace CrashoutsEngine
 		for (auto* scriptComp : scripts.dense)
 		{
 			// Reset GCHandle to 0 so Initialize actually does work after a hot reload
-			for (auto& inst : scriptComp->Scripts) inst.GCHandle = 0;
+			//for (auto& inst : scriptComp->Scripts) inst.GCHandle = 0;
 			scriptComp->Initialize(domain, assembly);
 		}
 
@@ -541,6 +541,12 @@ namespace CrashoutsEngine
 		// This destroys all GCHandles and MonoObjects
 		// MonoManager::ReloadAssembly() typically calls mono_domain_unload / mono_domain_create
 		MonoManager::ReloadAssembly();
+
+		// Wipe old handles so the hot-reload creates fresh objects
+		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
+		for (auto* scriptComp : scripts.dense) {
+			for (auto& inst : scriptComp->Scripts) inst.GCHandle = 0;
+		}
 
 		// 3. RE-INITIALIZE
 		// Recreate the ScriptInstances (get new Class pointers, create new Objects)

@@ -1629,16 +1629,20 @@
             "path": "afiq"
         },
         {
-            "name": "Cutscene",
-            "path": "Cutscene"
-        },
-        {
             "name": "descentgame",
             "path": "descentgame"
         },
         {
             "name": "descentconfirm",
             "path": "descentconfirm"
+        },
+        {
+            "name": "check",
+            "path": "check"
+        },
+        {
+            "name": "Cutscene",
+            "path": "Cutscene"
         },
         {
             "name": "descentmenu",
@@ -1651,6 +1655,10 @@
         {
             "name": "GameOver",
             "path": "GameOver"
+        },
+        {
+            "name": "Level1",
+            "path": "Level1"
         },
         {
             "name": "menu",
@@ -1695,148 +1703,16 @@
     ],
     "prefabs": [
         {
-            "name": "movingplatform",
-            "path": "movingplatform.json"
+            "name": "Player_Prefab",
+            "path": "Player_Prefab.json"
         },
         {
-            "name": "ClosedBook",
-            "path": "ClosedBook.json"
+            "name": "AudioManager_Prefab",
+            "path": "AudioManager_Prefab.json"
         },
         {
-            "name": "AmbianceManager",
-            "path": "AmbianceManager.json"
-        },
-        {
-            "name": "BGMManager",
-            "path": "BGMManager.json"
-        },
-        {
-            "name": "PressurePlate",
-            "path": "PressurePlate.json"
-        },
-        {
-            "name": "ClosedBookprefab",
-            "path": "ClosedBookprefab.json"
-        },
-        {
-            "name": "BlueBox",
-            "path": "BlueBox.json"
-        },
-        {
-            "name": "AudioManagerPrefab",
-            "path": "AudioManagerPrefab.json"
-        },
-        {
-            "name": "Ball",
-            "path": "Ball.json"
-        },
-        {
-            "name": "BigBox",
-            "path": "BigBox.json"
-        },
-        {
-            "name": "BarGraphic",
-            "path": "BarGraphic.json"
-        },
-        {
-            "name": "EnergyBall",
-            "path": "EnergyBall.json"
-        },
-        {
-            "name": "Entity",
-            "path": "Entity.json"
-        },
-        {
-            "name": "ExitBtnGame",
-            "path": "ExitBtnGame.json"
-        },
-        {
-            "name": "Instruction",
-            "path": "Instruction.json"
-        },
-        {
-            "name": "prefab",
-            "path": "prefab.json"
-        },
-        {
-            "name": "MovingWall",
-            "path": "MovingWall.json"
-        },
-        {
-            "name": "ResumeBtnGame",
-            "path": "ResumeBtnGame.json"
-        },
-        {
-            "name": "MyBox",
-            "path": "MyBox.json"
-        },
-        {
-            "name": "Number1",
-            "path": "Number1.json"
-        },
-        {
-            "name": "RedBox",
-            "path": "RedBox.json"
-        },
-        {
-            "name": "PauseParent",
-            "path": "PauseParent.json"
-        },
-        {
-            "name": "Platform_Prefab",
-            "path": "Platform_Prefab.json"
-        },
-        {
-            "name": "Player V2",
-            "path": "Player V2.json"
-        },
-        {
-            "name": "Player",
-            "path": "Player.json"
-        },
-        {
-            "name": "Player_Renfred",
-            "path": "Player_Renfred.json"
-        },
-        {
-            "name": "SettingBtnGame",
-            "path": "SettingBtnGame.json"
-        },
-        {
-            "name": "SettingsBook",
-            "path": "SettingsBook.json"
-        },
-        {
-            "name": "shitasswork",
-            "path": "shitasswork.json"
-        },
-        {
-            "name": "Slime new",
-            "path": "Slime new.json"
-        },
-        {
-            "name": "WinDoor",
-            "path": "WinDoor.json"
-        },
-        {
-            "name": "Test",
-            "path": "Test.json"
-        },
-        {
-            "name": "Slime V2",
-            "path": "Slime V2.json"
-        },
-        {
-            "name": "Slime V3",
-            "path": "Slime V3.json"
-        },
-        {
-            "name": "Slime",
-            "path": "Slime.json"
-        },
-        {
-            "name": "SlimeMov",
-            "path": "SlimeMov.json"
+            "name": "PlayerUI_Prefab",
+            "path": "PlayerUI_Prefab.json"
         }
     ],
     "tilemaps": [

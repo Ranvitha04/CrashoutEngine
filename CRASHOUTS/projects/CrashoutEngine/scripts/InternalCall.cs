@@ -16,6 +16,9 @@ namespace CrashoutsEngine
     {
         // Transform bindings
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void TransformGetWorldPosition(ulong entityID, out CEVec3 position);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void TransformGetPosition(ulong entityID, out CEVec3 position);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -302,5 +305,14 @@ namespace CrashoutsEngine
         internal static extern bool Trigger_GetTriggered(uint entityID);
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Trigger_SetTriggered(uint entityID, bool triggered);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void GetGameMousePos(out CEVec2 pos);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void GetGameWindowSize(out CEVec2 size);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void TransformSetLocalScale(uint entityID, ref CEVec2 scale);
     }
 }

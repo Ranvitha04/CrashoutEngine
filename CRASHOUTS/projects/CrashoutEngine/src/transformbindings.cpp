@@ -10,6 +10,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "transformbindings.h"
 #include "entitymanager.h"
 #include "transformcomponent.h"
+#include "hierarchycomponent.h"
 #include <mono/metadata/object.h>
 
 using namespace CrashoutsEngine;
@@ -21,6 +22,15 @@ static void TransformGetPosition(uint32_t entityID, CEVec3* outPos)
     ECS* ecs = ECS::getInstance();
     if (!ecs->HasComponent<TransformComponent>(entityID))
         return;
+
+    auto* transform = ecs->GetComponent<TransformComponent>(entityID);
+    *outPos = transform->position;
+}
+
+static void TransformGetWorldPosition(uint32_t entityID, CEVec3* outPos)
+{
+    ECS* ecs = ECS::getInstance();
+    if (!ecs->HasComponent<TransformComponent>(entityID)) return;
 
     auto* transform = ecs->GetComponent<TransformComponent>(entityID);
     *outPos = transform->position;
@@ -78,6 +88,17 @@ static void TransformSetSize(uint32_t entityID, CEVec2* inSize)
     transform->size = *inSize;
 }
 
+static void TransformSetLocalScale(uint32_t entityID, CEVec2* inScale)
+{
+    ECS* ecs = ECS::getInstance();
+    // In your engine, local scale is stored in the ParentComponent
+    if (!ecs->HasComponent<ParentComponent>(entityID))
+        return;
+
+    auto* pc = ecs->GetComponent<ParentComponent>(entityID);
+    pc->localScale = *inScale;
+}
+
 // Check if entity has transform
 static bool EntityHasTransform(uint32_t entityID)
 {
@@ -90,6 +111,7 @@ void CrashoutsEngine::Bindings::RegisterTransformBindings()
 {
     // Position
     mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformGetPosition", (const void*)TransformGetPosition);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformGetWorldPosition", (const void*)TransformGetWorldPosition);
     mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformSetPosition", (const void*)TransformSetPosition);
 
     // Rotation
@@ -99,6 +121,7 @@ void CrashoutsEngine::Bindings::RegisterTransformBindings()
     // Size / Scale
     mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformGetSize", (const void*)TransformGetSize);
     mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformSetSize", (const void*)TransformSetSize);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformSetLocalScale", (const void*)TransformSetLocalScale);
 
     // Component check
     mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasTransform", (const void*)EntityHasTransform);

@@ -982,6 +982,10 @@ namespace UI {
 	 @brief Renders the scene panel
 	 @param ui UI state toggles.
 	*/
+	/*!
+	 @brief Renders the scene panel
+	 @param ui UI state toggles.
+	*/
 	void RenderGameScenePanel(UIState& ui) {
 
 		if (!ui.showGameScene) return;
@@ -1001,7 +1005,6 @@ namespace UI {
 			ImGui::SameLine();
 			ImGui::TextDisabled("Enter new scene name...");
 		}
-
 
 		// 3. Draw the "Create Scene" button
 		ImGui::SameLine();
@@ -1041,6 +1044,44 @@ namespace UI {
 		// --- End New UI ---
 
 		ImGui::SeparatorText("Loaded Scenes (Right-Click to set Start Scene)");
+
+		// --- NEW: SYNC MANIFEST BUTTON ---
+		if (ImGui::Button("Refresh / Sync Missing Scenes")) {
+			std::string manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+			std::string scenesDir = GetGameRoot() + "/assets/scenes";
+
+			std::ifstream ifs(manifestPath);
+			if (ifs.is_open()) {
+				rapidjson::IStreamWrapper isw(ifs);
+				rapidjson::Document doc;
+				doc.ParseStream(isw);
+				ifs.close();
+
+				if (!doc.HasParseError() && doc.HasMember("scenes") && doc["scenes"].IsArray()) {
+					rapidjson::Value& scenesArray = doc["scenes"];
+
+					// Iterate backwards so we can safely erase elements
+					for (int i = scenesArray.Size() - 1; i >= 0; --i) {
+						if (scenesArray[i].HasMember("name")) {
+							std::string sceneName = scenesArray[i]["name"].GetString();
+							std::filesystem::path fullPath = std::filesystem::path(scenesDir) / sceneName;
+
+							// If the file no longer exists on disk, remove it from the manifest
+							if (!std::filesystem::exists(fullPath)) {
+								std::cout << "[Editor] Removing deleted scene from manifest: " << sceneName << std::endl;
+								scenesArray.Erase(scenesArray.Begin() + i);
+							}
+						}
+					}
+
+					// Save the cleaned manifest back to disk
+					std::ofstream ofs(manifestPath);
+					rapidjson::OStreamWrapper osw(ofs);
+					rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
+					doc.Accept(writer);
+				}
+			}
+		}
 
 		// Draw all scene buttons
 		std::ifstream ifs(Assets::assetManifestPath);
@@ -1531,9 +1572,10 @@ namespace UI {
 
 				::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
 
-				CrashoutsEngine::Audio::AudioSystem::instance().stopAll(true); // Stop FMOD Studio
-				CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
-				CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // <-- Seems to work better than the above
+				auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+				audio.stopAll(false);          // Stop FMOD Studio Events (Immediate, no fade)
+				audio.stopAllChannels();       // Stop FMOD Core Sounds (Music & SFX)
+				audio.setPaused(false);        // Unpause the system for the editor
 
 			}
 			ImGui::SameLine();

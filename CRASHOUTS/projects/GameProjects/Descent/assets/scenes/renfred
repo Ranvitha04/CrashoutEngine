@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "Text_Input_Label",
+            "uuid": 15111231989778320087,
             "tag": {
                 "tagMask": 0
             },

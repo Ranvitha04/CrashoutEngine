@@ -63,6 +63,8 @@ public:
     @return True if pressed false otherwise
     */
     static bool IsMouseButtonPressed(int button);
+    static bool IsMouseButtonTriggered(int button);
+    static bool IsMouseButtonReleased(int button);
 
     /// Get all currently pressed keys and mouse buttons
     static std::vector<Key> GetPressedKeys();
@@ -125,12 +127,13 @@ private:
     static CEVec2 s_gameMousePos;
     static CEVec2 s_gameWindowSize;
 
-
     /// Map of key states indexed by GLFW key code
     static std::unordered_map<int, bool> Keys;
 
     /// Map of mouse button states indexed by GLFW button code
     static std::unordered_map<int, bool> MouseButtons;
+
+    static std::unordered_map<int, bool> s_lastMouseButtons;
 
     /// Accumulated scroll value between updates
     static float ScrollYAccum;

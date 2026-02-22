@@ -214,6 +214,11 @@ namespace CrashoutsEngine
                 if (!isTypingDone) AdvanceDialogue();
                 else AdvanceDialogue();
             }
+            // Skip whole cutscene
+            if (Input.IsKeyTriggered(Key.Escape))
+            {
+                SceneManager.LoadScene("tutorial", 2.0f);
+            }
 
             // =========================================================
             // 6. SAFETY UPDATE LOOP

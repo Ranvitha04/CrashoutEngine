@@ -3,139 +3,111 @@
 @author     mohamadamirakmal.b@digipen.edu
 @date       26/11/2025
 @brief      Handles volume slider UI logic for music and SFX volume control.
-
-All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 using System;
+using System.Diagnostics;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
     public class VolumeSlider : ScriptBase
     {
-        // --- SETTINGS ---
         private bool _isMusic = true;
+        [SerializeField] private float smoothingSpeed = 15.0f;
 
-        [SerializeField]
-        private float smoothingSpeed = 15.0f;
+        // IMPORTANT: In a 100-height UI system, 200.0f is VERY wide (wider than the screen).
+        // Try setting this to something like 30.0f or 40.0f in the Inspector.
+        [SerializeField] private float clickWidth = 30.0f;
+        [SerializeField] private float clickHeight = 10.0f;
+        [SerializeField] private bool drawHitbox = true;
 
-        // --- STATE ---
         private bool _isDragging = false;
         private float _currentT = 1.0f;
         private float _targetT = 1.0f;
-
-        // --- CACHED DATA ---
         private TransformComponent _tf;
-        private float _fullWidth;
-        private float _leftEdgeX;   // This acts as our "Origin" (0.0 volume)
-        private float _height;
 
         public override void Start()
         {
             _tf = Entity.GetComponent<TransformComponent>();
             if (_tf == null) return;
 
-            // 1. DETERMINE TYPE
-            var nameComp = Entity.GetComponent<NameComponent>();
-            string name = nameComp != null ? nameComp.ToString() : "";
-            _isMusic = !name.Contains("SFX");
+            string entityName = InternalCalls.GetName(Entity.ID);
+            _isMusic = !entityName.Contains("SFX");
 
-            // 2. GET CURRENT VOLUME
-            if (_isMusic) _currentT = AudioManager.playerMusVol;
-            else _currentT = AudioManager.playerSFXVol;
-
+            _currentT = _isMusic ? InternalCalls.Audio_GetMusicVolume() : InternalCalls.Audio_GetSFXVolume();
             _targetT = _currentT;
-
-            // 3. RECOVER DIMENSIONS
-            // Recover 100% width based on current scale
-            float tCalc = _currentT < 0.01f ? 0.01f : _currentT;
-            _fullWidth = _tf.Size.x / tCalc;
-            _height = _tf.Size.y;
-
-            // 4. CALCULATE ANCHOR (Visual Left Edge)
-            _leftEdgeX = _tf.Position.x - (_tf.Size.x / 2.0f);
-
-            // 5. UPDATE VISUALS
-            UpdateVisuals(_currentT);
+            _tf.Size = new CEVec2(_currentT, 1.0f);
         }
 
         public override void Update()
         {
             if (_tf == null) return;
 
-            // 1. INPUT
-            CEVec2 mousePos = Input.GetMouseWorldPosition();
+            // 1. Mouse & UI Space Calculation (Matches SceneUtils.cpp)
+            InternalCalls.GetGameMousePos(out CEVec2 rawMouse);
+            InternalCalls.GetGameWindowSize(out CEVec2 gameSize);
 
-            float hitMinX = _leftEdgeX;
-            float hitMaxX = _leftEdgeX + _fullWidth;
-            float hitMinY = _tf.Position.y - (_height / 2.0f);
-            float hitMaxY = _tf.Position.y + (_height / 2.0f);
+            float aspect = gameSize.x / gameSize.y;
+            float uiHeight = 100.0f;
+            float uiWidth = uiHeight * aspect;
 
-            bool isHovering = (mousePos.x >= hitMinX && mousePos.x <= hitMaxX &&
-                               mousePos.y >= hitMinY && mousePos.y <= hitMaxY);
+            float ndcX = (rawMouse.x / gameSize.x) * 2.0f - 1.0f;
+            float ndcY = 1.0f - (rawMouse.y / gameSize.y) * 2.0f;
+            CEVec2 mouseUI = new CEVec2(ndcX * (uiWidth * 0.5f), ndcY * (uiHeight * 0.5f));
 
+            // 2. Position & Hitbox
+            CEVec3 worldPos = _tf.WorldPosition;
+            float hitMinX = worldPos.x;
+            float hitMaxX = worldPos.x + clickWidth;
+            float hitMinY = worldPos.y - (clickHeight * 0.5f);
+            float hitMaxY = worldPos.y + (clickHeight * 0.5f);
+
+            bool isHovering = (mouseUI.x >= hitMinX && mouseUI.x <= hitMaxX &&
+                               mouseUI.y >= hitMinY && mouseUI.y <= hitMaxY);
+
+            // 3. Robust Dragging Logic
+            // Start dragging if clicked inside; stop if mouse released anywhere
             if (Input.IsMouseButtonDown(0) && isHovering) _isDragging = true;
-            if (Input.IsMouseButtonReleased(0)) _isDragging = false;
+            if (!Input.IsMouseButtonDown(0)) _isDragging = false;
 
-            // 2. CALCULATE TARGET
             if (_isDragging)
             {
-                if (mousePos.x <= _leftEdgeX)
-                {
-                    _targetT = 0.0f;
-                }
-                else
-                {
-                    float relativeX = mousePos.x - _leftEdgeX;
-                    _targetT = relativeX / _fullWidth;
-                    if (_targetT > 1.0f) _targetT = 1.0f;
-                }
+                float offset = mouseUI.x - hitMinX;
+                _targetT = Math.Max(0.0f, Math.Min(offset / clickWidth, 1.0f));
             }
 
-            // 3. SMOOTHING LOGIC
+            // 4. Volume Smoothing
+            float dt = (float)InternalCalls.TimeGetDT();
             if (Math.Abs(_currentT - _targetT) > 0.001f)
             {
-                float dt = (float)Time.DT;
-                float t = dt * smoothingSpeed;
-                if (t > 1.0f) t = 1.0f;
-
-                _currentT = _currentT + (_targetT - _currentT) * t;
-
-                // Only apply AUDIO volume when it actually changes
-                ApplyVolume(_currentT);
+                _currentT = _currentT + (_targetT - _currentT) * Math.Min(dt * smoothingSpeed, 1.0f);
+                if (_isMusic) InternalCalls.Audio_SetMusicVolume(_currentT);
+                else InternalCalls.Audio_SetSFXVolume(_currentT);
             }
 
-            // 4. FORCE VISUALS (EVERY FRAME)
-            // We moved this OUTSIDE the if-check. 
-            // This prevents the Layout system from snapping the bar back to the center 
-            // when you stop dragging.
-            UpdateVisuals(_currentT);
-        }
+            // 5. Apply local scale instead of absolute size
+            // This allows the hierarchy to calculate the visual width correctly
+            CEVec2 newLocalScale = new CEVec2(_currentT, 1.0f);
+            InternalCalls.TransformSetLocalScale(Entity.ID, ref newLocalScale);
 
-        private void UpdateVisuals(float t)
+            // Debugging
+            if (drawHitbox)
+            {
+                CEVec3 color = isHovering ? new CEVec3(0, 1, 0) : new CEVec3(1, 0, 0);
+                DrawDebugRect(hitMinX, hitMaxX, hitMinY, hitMaxY, worldPos.z, color);
+            }
+        }
+        private void DrawDebugRect(float minX, float maxX, float minY, float maxY, float z, CEVec3 color)
         {
-            // Ensure we never scale below a tiny sliver (prevents physics/selection bugs)
-            float effectiveT = Math.Max(t, 0.001f);
-
-            float newWidth = _fullWidth * effectiveT;
-
-            // Size
-            CEVec2 siz = _tf.Size;
-            siz.x = newWidth;
-            _tf.Size = siz;
-
-            // Position (Left Pivot)
-            CEVec3 pos = _tf.Position;
-            pos.x = _leftEdgeX + (newWidth / 2.0f);
-            _tf.Position = pos;
+            CEVec3 tl = new CEVec3(minX, maxY, z);
+            CEVec3 tr = new CEVec3(maxX, maxY, z);
+            CEVec3 bl = new CEVec3(minX, minY, z);
+            CEVec3 br = new CEVec3(maxX, minY, z);
+            float thick = 2.0f;
+            Debug.DrawLine(ref tl, ref tr, thick, ref color);
+            Debug.DrawLine(ref tr, ref br, thick, ref color);
+            Debug.DrawLine(ref br, ref bl, thick, ref color);
+            Debug.DrawLine(ref bl, ref tl, thick, ref color);
         }
-
-        private void ApplyVolume(float t)
-        {
-            if (_isMusic) AudioManager.GetInstance().MusicVolume(t);
-            else AudioManager.GetInstance().SFXVolume(t);
-        }
-
-        public override void OnDestroy() { }
     }
 }

@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "Transition",
+            "uuid": 5651651369113362893,
             "tag": {
                 "tagMask": 0
             },
@@ -47,6 +48,7 @@
         {
             "active": false,
             "name": "Dialogue_2_4",
+            "uuid": 10103544098009704144,
             "tag": {
                 "tagMask": 0
             },
@@ -110,6 +112,7 @@
         {
             "active": true,
             "name": "Camera",
+            "uuid": 2797341151429907335,
             "tag": {
                 "tagMask": 0
             },
@@ -144,6 +147,7 @@
         {
             "active": false,
             "name": "Dialogue_2_5",
+            "uuid": 16760269400429132261,
             "tag": {
                 "tagMask": 0
             },
@@ -207,6 +211,7 @@
         {
             "active": false,
             "name": "Dialogue_1_1",
+            "uuid": 16265008431143076075,
             "tag": {
                 "tagMask": 0
             },
@@ -270,6 +275,7 @@
         {
             "active": false,
             "name": "DialogueBG",
+            "uuid": 144033413207313670,
             "tag": {
                 "tagMask": 0
             },
@@ -337,6 +343,7 @@
         {
             "active": false,
             "name": "Dialogue_1_2",
+            "uuid": 17951410262263774997,
             "tag": {
                 "tagMask": 0
             },
@@ -400,6 +407,7 @@
         {
             "active": false,
             "name": "Dialogue_1_3",
+            "uuid": 11089555476578025209,
             "tag": {
                 "tagMask": 0
             },
@@ -463,6 +471,7 @@
         {
             "active": true,
             "name": "Cutscene_1",
+            "uuid": 5386571395695862147,
             "tag": {
                 "tagMask": 0
             },
@@ -520,6 +529,7 @@
         {
             "active": false,
             "name": "Cutscene_2",
+            "uuid": 5005430953186514991,
             "tag": {
                 "tagMask": 0
             },
@@ -577,6 +587,7 @@
         {
             "active": false,
             "name": "Cutscene_3",
+            "uuid": 6420206089979697105,
             "tag": {
                 "tagMask": 0
             },
@@ -634,6 +645,7 @@
         {
             "active": false,
             "name": "Dialogue_1_4",
+            "uuid": 11819810949974043906,
             "tag": {
                 "tagMask": 0
             },
@@ -697,6 +709,7 @@
         {
             "active": false,
             "name": "Dialogue_1_5",
+            "uuid": 8168010190415143624,
             "tag": {
                 "tagMask": 0
             },
@@ -760,6 +773,7 @@
         {
             "active": false,
             "name": "Dialogue_2_1",
+            "uuid": 2806749697931356146,
             "tag": {
                 "tagMask": 0
             },
@@ -823,6 +837,7 @@
         {
             "active": false,
             "name": "Dialogue_2_2",
+            "uuid": 7615403320015838923,
             "tag": {
                 "tagMask": 0
             },
@@ -886,6 +901,7 @@
         {
             "active": false,
             "name": "Dialogue_2_3",
+            "uuid": 14809532377438357323,
             "tag": {
                 "tagMask": 0
             },
@@ -949,6 +965,7 @@
         {
             "active": false,
             "name": "Dialogue_2_4",
+            "uuid": 18116589837920369607,
             "tag": {
                 "tagMask": 0
             },
@@ -1012,6 +1029,7 @@
         {
             "active": false,
             "name": "Dialogue_2_5",
+            "uuid": 9526727114662994402,
             "tag": {
                 "tagMask": 0
             },
@@ -1075,6 +1093,7 @@
         {
             "active": false,
             "name": "Dialogue_3_1",
+            "uuid": 11857607979343965623,
             "tag": {
                 "tagMask": 0
             },
@@ -1138,6 +1157,7 @@
         {
             "active": false,
             "name": "Dialogue_3_3",
+            "uuid": 15714616972189600928,
             "tag": {
                 "tagMask": 0
             },
@@ -1201,6 +1221,7 @@
         {
             "active": false,
             "name": "Dialogue_3_4",
+            "uuid": 382042246388588605,
             "tag": {
                 "tagMask": 0
             },
@@ -1264,6 +1285,7 @@
         {
             "active": false,
             "name": "Dialogue_3_2",
+            "uuid": 1943189562951520023,
             "tag": {
                 "tagMask": 0
             },
@@ -1327,6 +1349,7 @@
         {
             "active": false,
             "name": "Dialogue_4_1",
+            "uuid": 17289724092176550767,
             "tag": {
                 "tagMask": 0
             },
@@ -1390,6 +1413,7 @@
         {
             "active": false,
             "name": "Cutscene_4",
+            "uuid": 8613573088124537843,
             "tag": {
                 "tagMask": 0
             },
@@ -1460,6 +1484,7 @@
         {
             "active": true,
             "name": "AmbianceManager",
+            "uuid": 3718833620311587750,
             "tag": {
                 "tagMask": 0
             },
@@ -1518,9 +1543,9 @@
                     {
                         "className": "SceneMusic",
                         "fields": {
-                            "layerName": "Ambiance",
+                            "layerName": "Music",
                             "fadeTime": 2.0,
-                            "stopLayer": true
+                            "stopLayer": false
                         }
                     }
                 ]
@@ -1565,7 +1590,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",
@@ -1575,6 +1602,7 @@
         {
             "active": true,
             "name": "MusicManager",
+            "uuid": 17162636998804363266,
             "tag": {
                 "tagMask": 0
             },
@@ -1680,7 +1708,9 @@
                 },
                 "textureNormal": "",
                 "textureHovered": "",
-                "texturePressed": ""
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "layer": {
                 "layerName": "Default",

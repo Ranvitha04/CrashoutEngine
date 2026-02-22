@@ -981,7 +981,12 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate"
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "goalTextName": "",
+                            "wallName": "MovingWall"
+                        }
                     }
                 ]
             },
@@ -1128,7 +1133,12 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "PressurePlate"
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "goalTextName": "",
+                            "wallName": "MovingWall"
+                        }
                     }
                 ]
             },

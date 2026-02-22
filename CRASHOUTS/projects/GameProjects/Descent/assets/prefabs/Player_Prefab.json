@@ -1,20 +1,20 @@
 {
     "prefabs": [
         {
-            "name": "Player",
+            "name": "Player_Prefab",
             "entities": [
                 {
                     "active": true,
                     "name": "Player",
-                    "uuid": 6856684253039188668,
+                    "uuid": 17142618762681968282,
                     "tag": {
                         "tagMask": 1
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -180.6522674560547,
-                            "y": -28.500001907348634,
+                            "x": 736.1807861328125,
+                            "y": -320.5,
                             "z": 50.0
                         },
                         "size": {
@@ -23,7 +23,7 @@
                         }
                     },
                     "rigidbody": {
-                        "mass": 3.0,
+                        "mass": 2.9000000953674318,
                         "restitutionCoeff": 0.0,
                         "maximumVelocity": {
                             "x": 0.0,
@@ -40,8 +40,8 @@
                         "isTrigger": false,
                         "enabled": true,
                         "position": {
-                            "x": -180.6522674560547,
-                            "y": -33.5,
+                            "x": 736.1807861328125,
+                            "y": -325.5,
                             "z": 50.0
                         },
                         "offset": {
@@ -50,13 +50,13 @@
                             "z": 0.0
                         },
                         "min": {
-                            "x": -199.4523162841797,
-                            "y": -64.0,
+                            "x": 717.3807373046875,
+                            "y": -356.0,
                             "z": 50.0
                         },
                         "max": {
-                            "x": -161.8522186279297,
-                            "y": -3.0,
+                            "x": 754.9808349609375,
+                            "y": -295.0,
                             "z": 50.0
                         }
                     },
@@ -202,25 +202,27 @@
                             {
                                 "className": "PlayerMovement",
                                 "fields": {
-                                    "maxRunSpeed": 100.0,
+                                    "maxRunSpeed": 150.0,
                                     "maxAirSpeed": 120.0,
                                     "acceleration": 10.0,
                                     "deceleration": 10.0,
                                     "airAcceleration": 2.0,
-                                    "jumpPower": 40000.0,
+                                    "jumpPower": 50000.0,
                                     "gravityScale": 2.5,
                                     "gravityForceMultiplier": 10.0,
+                                    "fallGravityMultiplier": 1.5,
                                     "footstepInterval": 0.07500000298023224,
                                     "swapPause": 1.0,
                                     "energyConsumption": 12.5,
-                                    "goalNoOfPlates": 2,
+                                    "goalNoOfPlates": 1,
                                     "currentGoalPlates": 0,
                                     "landingDustName": "LandingDust",
                                     "dustBurstDuration": 0.15000000596046449,
-                                    "normalMass": 3.0,
+                                    "normalMass": 2.9000000953674318,
                                     "lightMass": 2.0,
-                                    "groundCheckDistance": 26.0,
+                                    "groundCheckDistance": 5.0,
                                     "groundCheckWidth": 10.0,
+                                    "playDialogueOnStart": true,
                                     "dialogueCooldown": 1.0,
                                     "isDialogueActive": true,
                                     "CurrentEnergy": 100.0,
@@ -234,12 +236,12 @@
                     "camera": {
                         "zoom": 0.30000001192092898,
                         "xBounds": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": -148.60000610351563,
+                            "y": 2000.0
                         },
                         "yBounds": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": -2000.0,
+                            "y": 2000.0
                         }
                     },
                     "button": {
@@ -292,7 +294,7 @@
                     },
                     "keyframe_animator": {
                         "current": "playerIdle",
-                        "t": 14.233287811279297,
+                        "t": 0.699999988079071,
                         "playing": true,
                         "clips": [
                             {
@@ -735,17 +737,17 @@
                     }
                 },
                 {
-                    "active": false,
+                    "active": true,
                     "name": "PlayerDialogue_1",
-                    "uuid": 373007850480288526,
+                    "uuid": 4672454392646077867,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -180.6522674560547,
-                            "y": 29.869909286499025,
+                            "x": 736.1807861328125,
+                            "y": -262.1300964355469,
                             "z": 50.0
                         },
                         "size": {
@@ -828,7 +830,7 @@
                         "uiLayout": 4
                     },
                     "parent": {
-                        "parentUUID": 6856684253039188668,
+                        "parentUUID": 17142618762681968282,
                         "localPos": {
                             "x": 0.0,
                             "y": 0.583699107170105,
@@ -855,15 +857,15 @@
                 {
                     "active": false,
                     "name": "PlayerDialogue_2",
-                    "uuid": 15601961332814746215,
+                    "uuid": 7400278973642246601,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -180.6522674560547,
-                            "y": 29.869909286499025,
+                            "x": 736.1807861328125,
+                            "y": -262.1300964355469,
                             "z": 50.0
                         },
                         "size": {
@@ -946,7 +948,7 @@
                         "uiLayout": 4
                     },
                     "parent": {
-                        "parentUUID": 6856684253039188668,
+                        "parentUUID": 17142618762681968282,
                         "localPos": {
                             "x": 0.0,
                             "y": 0.583699107170105,
@@ -971,17 +973,17 @@
                     }
                 },
                 {
-                    "active": true,
+                    "active": false,
                     "name": "PlayerDialogue_3",
-                    "uuid": 16447629414133235068,
+                    "uuid": 2995568646537024137,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -180.6522674560547,
-                            "y": 29.869909286499025,
+                            "x": 736.1807861328125,
+                            "y": -262.1300964355469,
                             "z": 50.0
                         },
                         "size": {
@@ -1064,7 +1066,7 @@
                         "uiLayout": 4
                     },
                     "parent": {
-                        "parentUUID": 6856684253039188668,
+                        "parentUUID": 17142618762681968282,
                         "localPos": {
                             "x": 0.0,
                             "y": 0.583699107170105,
@@ -1091,15 +1093,15 @@
                 {
                     "active": false,
                     "name": "PlayerDialogue_4",
-                    "uuid": 8807104523803461935,
+                    "uuid": 6601111284823726429,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -180.6522674560547,
-                            "y": 29.869909286499025,
+                            "x": 736.1807861328125,
+                            "y": -262.1300964355469,
                             "z": 50.0
                         },
                         "size": {
@@ -1182,7 +1184,7 @@
                         "uiLayout": 4
                     },
                     "parent": {
-                        "parentUUID": 6856684253039188668,
+                        "parentUUID": 17142618762681968282,
                         "localPos": {
                             "x": 0.0,
                             "y": 0.583699107170105,
@@ -1209,15 +1211,15 @@
                 {
                     "active": false,
                     "name": "PlayerDialogue_5",
-                    "uuid": 6334749303916437229,
+                    "uuid": 8879151482939062898,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -466.446533203125,
-                            "y": -227.8575439453125,
+                            "x": 450.38653564453127,
+                            "y": -519.8575439453125,
                             "z": 50.0
                         },
                         "size": {
@@ -1300,7 +1302,7 @@
                         "uiLayout": 4
                     },
                     "parent": {
-                        "parentUUID": 6856684253039188668,
+                        "parentUUID": 17142618762681968282,
                         "localPos": {
                             "x": -2.0413875579833986,
                             "y": -1.9935754537582398,
@@ -1327,15 +1329,15 @@
                 {
                     "active": true,
                     "name": "LandingDust",
-                    "uuid": 16632960128180585052,
+                    "uuid": 5978115013613082295,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -178.39144897460938,
-                            "y": -76.61890411376953,
+                            "x": 738.4415893554688,
+                            "y": -368.618896484375,
                             "z": 0.0
                         },
                         "size": {
@@ -1344,7 +1346,7 @@
                         }
                     },
                     "parent": {
-                        "parentUUID": 6856684253039188668,
+                        "parentUUID": 17142618762681968282,
                         "localPos": {
                             "x": 0.016148703172802926,
                             "y": -0.4811890423297882,
