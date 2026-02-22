@@ -1707,12 +1707,28 @@
             "path": "Player_Prefab.json"
         },
         {
+            "name": "Moving_Platform",
+            "path": "Moving_Platform.json"
+        },
+        {
             "name": "AudioManager_Prefab",
             "path": "AudioManager_Prefab.json"
         },
         {
+            "name": "Moving_Gate",
+            "path": "Moving_Gate.json"
+        },
+        {
             "name": "PlayerUI_Prefab",
             "path": "PlayerUI_Prefab.json"
+        },
+        {
+            "name": "Moving_Platform(Sinking)",
+            "path": "Moving_Platform(Sinking).json"
+        },
+        {
+            "name": "PressurePlate",
+            "path": "PressurePlate.json"
         }
     ],
     "tilemaps": [
