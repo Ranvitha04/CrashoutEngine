@@ -20746,7 +20746,7 @@
                     {
                         "name": "Level_1",
                         "path": "level bgm 1 re-mixed.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -21519,7 +21519,7 @@
                     {
                         "name": "footstep1",
                         "path": "footsteps 1.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 1.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -21528,7 +21528,7 @@
                     {
                         "name": "footstep2",
                         "path": "footsteps 2.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 1.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -21537,7 +21537,7 @@
                     {
                         "name": "footstep3",
                         "path": "footsteps 3.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 1.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -21546,7 +21546,7 @@
                     {
                         "name": "footstep4",
                         "path": "footsteps 4.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 1.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -21555,7 +21555,7 @@
                     {
                         "name": "footstep5",
                         "path": "footsteps 5.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 1.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -21564,7 +21564,7 @@
                     {
                         "name": "footstep6",
                         "path": "footsteps 6.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 1.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -21573,7 +21573,7 @@
                     {
                         "name": "footstep7",
                         "path": "footsteps 7.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 1.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -21582,7 +21582,7 @@
                     {
                         "name": "footstep8",
                         "path": "footsteps 8.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 1.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -21591,7 +21591,7 @@
                     {
                         "name": "jumpLand",
                         "path": "jump landing.wav",
-                        "volume": 0.4000000059604645,
+                        "volume": 1.0,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -21631,7 +21631,7 @@
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
                             "fallGravityMultiplier": 1.5,
-                            "footstepInterval": 0.07500000298023224,
+                            "footstepInterval": 0.800000011920929,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "goalNoOfPlates": 2,
