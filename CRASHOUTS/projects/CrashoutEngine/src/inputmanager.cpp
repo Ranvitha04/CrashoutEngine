@@ -16,11 +16,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <log.h>
 #include "settings.h"
 #include <glm/glm.hpp>
-#include <algorithm>
 
 #include "CEVec2.h"
-#include "glapp.h"
-#include "engine.h"
 
 /// Static storage for the GLFW window pointer
 GLFWwindow* InputManager::Window = nullptr;
@@ -64,42 +61,19 @@ CEVec2 InputManager::GetGameMousePos() {
     // If Editor is driving this, return the overridden pos
     if (s_usingGameView) return s_gameMousePos;
     
-    // Fallback: Return mouse pos relative to the game viewport (Release mode / Standalone)
-    double rawX, rawY;
-    GetMousePosition(rawX, rawY);
-
-    int winW = 0, winH = 0;
-    int fbW = 0, fbH = 0;
-    if (Window) {
-        glfwGetWindowSize(Window, &winW, &winH);
-        glfwGetFramebufferSize(Window, &fbW, &fbH);
-    }
-
-    float scaleX = (winW > 0) ? (float)fbW / (float)winW : 1.0f;
-    float scaleY = (winH > 0) ? (float)fbH / (float)winH : 1.0f;
-
-    GLApp::GLViewport vp = GLApp::GetGameViewport();
-    float vpX = (scaleX > 0.0f) ? (float)vp.x / scaleX : (float)vp.x;
-    float vpY = (scaleY > 0.0f) ? (float)vp.y / scaleY : (float)vp.y;
-    float vpW = (scaleX > 0.0f) ? (float)vp.width / scaleX : (float)vp.width;
-    float vpH = (scaleY > 0.0f) ? (float)vp.height / scaleY : (float)vp.height;
-
-    float u = (vpW > 0.0f) ? ((float)rawX - vpX) / vpW : 0.0f;
-    float v = (vpH > 0.0f) ? ((float)rawY - vpY) / vpH : 0.0f;
-
-    u = std::clamp(u, 0.0f, 1.0f);
-    v = std::clamp(v, 0.0f, 1.0f);
-
-    return CEVec2{ u * (float)gameTextureWidth, v * (float)gameTextureHeight };
+    // Fallback: Return raw window mouse pos (Release mode / Standalone)
+    return GetMousePosition();
 }
 
 CEVec2 InputManager::GetGameWindowSize() {
     if (s_usingGameView && s_gameWindowSize.x > 0 && s_gameWindowSize.y > 0) 
         return s_gameWindowSize;
 
-    // Fallback: Return game viewport size (Release mode / Standalone)
-    if (gameTextureWidth > 0 && gameTextureHeight > 0) {
-        return CEVec2{ (float)gameTextureWidth, (float)gameTextureHeight };
+    // Fallback: Return actual window size from GLFW
+    int w, h;
+    if (Window) {
+        glfwGetWindowSize(Window, &w, &h);
+        return CEVec2{ (float)w, (float)h };
     }
 
     return CEVec2{ (float)Settings::GetScreenWidth(), (float)Settings::GetScreenHeight() };

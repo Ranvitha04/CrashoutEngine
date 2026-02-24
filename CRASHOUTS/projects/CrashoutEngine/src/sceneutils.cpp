@@ -48,7 +48,6 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <sstream>
 
 #include <filesystem>
-#include <algorithm>
 
 #define FONT_SCALE 0.05f
 
@@ -62,27 +61,10 @@ namespace Scene {
 
 	CEVec3 GetMouseInWorld() {
 
-		double cursorX, cursorY;
-		glfwGetCursorPos(GLApp::ptr_window, &cursorX, &cursorY);
-
-		int winW = 0, winH = 0;
-		int fbW = 0, fbH = 0;
-		glfwGetWindowSize(GLApp::ptr_window, &winW, &winH);
-		glfwGetFramebufferSize(GLApp::ptr_window, &fbW, &fbH);
-
-		float scaleX = (winW > 0) ? (float)fbW / (float)winW : 1.0f;
-		float scaleY = (winH > 0) ? (float)fbH / (float)winH : 1.0f;
-
-		float fbX = (float)cursorX * scaleX;
-		float fbY = (float)cursorY * scaleY;
-
-		GLApp::GLViewport vp = GLApp::GetGameViewport();
-		if (vp.width <= 0 || vp.height <= 0) return CEVec3{ 0.f, 0.f, 0.f };
-
-		float u = (fbX - (float)vp.x) / (float)vp.width;
-		float v = (fbY - (float)vp.y) / (float)vp.height;
-		u = std::clamp(u, 0.0f, 1.0f);
-		v = std::clamp(v, 0.0f, 1.0f);
+		double u, v;
+		glfwGetCursorPos(GLApp::ptr_window, &u, &v);
+		u /= GLApp::width;
+		v /= GLApp::height;
 
 		const float ndcX = (float)u * 2.f - 1.f;
 		const float ndcY = 1.f - ((float)v * 2.f);
@@ -1161,12 +1143,7 @@ namespace Scene {
 
 		// 5. DRAW SCREEN SPACE (Culling DISABLED)
 		// Screen space UI shouldn't be culled by the World Camera bounds
-#if USE_IMGUI_EDITOR
-		float aspect = (gameTextureHeight > 0) ? (float)gameTextureWidth / (float)gameTextureHeight : 1.0f;
-#else
-		GLApp::GLViewport vp = GLApp::GetGameViewport();
-		float aspect = (vp.height > 0) ? (float)vp.width / (float)vp.height : 1.0f;
-#endif
+		float aspect = (float)GLApp::width / (float)GLApp::height;
 		float h = 100.0f;
 		float w = h * aspect;
 		glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);

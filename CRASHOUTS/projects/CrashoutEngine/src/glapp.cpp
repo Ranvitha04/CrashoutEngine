@@ -75,8 +75,6 @@ std::array<CEVec3, 4> InitVtx = clr_vtx;
 std::vector<CEVec3> current_positions;
 std::vector<CEVec3> current_colors;
 std::vector<GLApp::GLViewport> GLApp::vps;
-GLApp::GLViewport GLApp::game_viewport{ 0, 0, 0, 0 };
-float GLApp::target_aspect = 16.0f / 9.0f;
 
 // --- Initialize Static Variables ---
 bool GLApp::is_fullscreen = false;
@@ -658,9 +656,21 @@ void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbH
     // GAME MODE: Handle Aspect Ratio Resize immediately to prevent visual glitches
     // This ensures that if a render happens mid-resize, the camera matrix is correct.
 
-    UpdateGameViewport(fbWidth, fbHeight);
-    const int vpW = gameTextureWidth;
-    const int vpH = gameTextureHeight;
+    const float targetAspectRatio = 16.0f / 9.0f;
+    float currentAspectRatio = (float)fbWidth / (float)fbHeight;
+
+    int vpW, vpH;
+
+    if (currentAspectRatio > targetAspectRatio) {
+        // Wide window: Clamp height
+        vpH = fbHeight;
+        vpW = static_cast<int>(fbHeight * targetAspectRatio);
+    }
+    else {
+        // Tall window: Clamp width
+        vpW = fbWidth;
+        vpH = static_cast<int>(fbWidth / targetAspectRatio);
+    }
 
     // Update Camera with the CORRECTED aspect ratio dimensions
     using namespace CrashoutsEngine::RenderCamera;
@@ -676,42 +686,6 @@ void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbH
     using namespace CrashoutsEngine::RenderCamera;
     engineCamera.UpdateMatrices(fbWidth, fbHeight);
 #endif
-}
-
-static GLApp::GLViewport ComputeLetterboxViewport(int fbWidth, int fbHeight) {
-    const float targetAspectRatio = (GLApp::target_aspect > 0.0f) ? GLApp::target_aspect : (16.0f / 9.0f);
-    float currentAspectRatio = (fbHeight > 0) ? (float)fbWidth / (float)fbHeight : targetAspectRatio;
-
-    int vpW, vpH, vpX, vpY;
-
-    if (currentAspectRatio > targetAspectRatio) {
-        // Wide window: Clamp height
-        vpH = fbHeight;
-        vpW = static_cast<int>(fbHeight * targetAspectRatio);
-        vpX = (fbWidth - vpW) / 2;
-        vpY = 0;
-    }
-    else {
-        // Tall window: Clamp width
-        vpW = fbWidth;
-        vpH = static_cast<int>(fbWidth / targetAspectRatio);
-        vpX = 0;
-        vpY = (fbHeight - vpH) / 2;
-    }
-
-    return { vpX, vpY, vpW, vpH };
-}
-
-void GLApp::UpdateGameViewport(int fbWidth, int fbHeight) {
-    game_viewport = ComputeLetterboxViewport(fbWidth, fbHeight);
-}
-
-GLApp::GLViewport GLApp::GetGameViewport() {
-    return game_viewport;
-}
-
-void GLApp::SetTargetAspect(float aspect) {
-    if (aspect > 0.0f) target_aspect = aspect;
 }
 
 
