@@ -640,7 +640,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 125.48709106445313,
+                    "x": 91.28669738769531,
                     "y": -6.914796829223633,
                     "z": 0.0
                 },
@@ -726,7 +726,7 @@
             "parent": {
                 "parentUUID": 16805797322157221579,
                 "localPos": {
-                    "x": 105.68839263916016,
+                    "x": 71.48799896240235,
                     "y": -26.421979904174806,
                     "z": 0.0
                 },
@@ -1297,7 +1297,7 @@
                     {
                         "name": "Ambiance",
                         "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.0,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -1310,9 +1310,9 @@
                     {
                         "className": "SceneMusic",
                         "fields": {
-                            "layerName": "Music",
+                            "layerName": "Ambiance",
                             "fadeTime": 2.0,
-                            "stopLayer": false
+                            "stopLayer": true
                         }
                     }
                 ]
@@ -1360,6 +1360,26 @@
                 "texturePressed": "",
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
+            },
+            "parent": {
+                "parentUUID": 18041827776891348399,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -1479,6 +1499,26 @@
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
             },
+            "parent": {
+                "parentUUID": 18041827776891348399,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -1560,6 +1600,30 @@
             "layer": {
                 "layerName": "UI",
                 "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "AudioManager",
+            "uuid": 18041827776891348399,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

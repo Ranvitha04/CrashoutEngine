@@ -20608,7 +20608,7 @@
                     {
                         "name": "Lava_Ambience",
                         "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.15000000596046449,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -20621,7 +20621,7 @@
                     {
                         "className": "SceneMusic",
                         "fields": {
-                            "layerName": "Music",
+                            "layerName": "Ambiance",
                             "fadeTime": 2.0,
                             "stopLayer": false
                         }

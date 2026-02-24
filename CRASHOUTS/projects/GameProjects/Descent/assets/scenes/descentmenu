@@ -728,6 +728,26 @@
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
             },
+            "parent": {
+                "parentUUID": 13423885425867063721,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -757,7 +777,7 @@
                     {
                         "name": "Ambiance",
                         "path": "nightshift_bgm_loop_70bpm.wav",
-                        "volume": 1.0,
+                        "volume": 0.0,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -770,9 +790,9 @@
                     {
                         "className": "SceneMusic",
                         "fields": {
-                            "layerName": "Music",
+                            "layerName": "Ambiance",
                             "fadeTime": 2.0,
-                            "stopLayer": false
+                            "stopLayer": true
                         }
                     }
                 ]
@@ -820,6 +840,26 @@
                 "texturePressed": "",
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
+            },
+            "parent": {
+                "parentUUID": 13423885425867063721,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -1103,6 +1143,30 @@
             },
             "layer": {
                 "layerName": "YesNo",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "AudioManager",
+            "uuid": 13423885425867063721,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
                 "z": 0
             }
         }
