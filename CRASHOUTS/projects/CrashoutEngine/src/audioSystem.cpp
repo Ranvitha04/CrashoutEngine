@@ -1285,7 +1285,7 @@ namespace CrashoutsEngine::Audio
 
         if (ch)
         {
-            ch->setMode(FMOD_2D);
+            ch->setMode(loop ? (FMOD_LOOP_NORMAL | FMOD_2D) : (FMOD_LOOP_OFF | FMOD_2D));
             mTaggedChannels[key] = ch;
 
             if (createdLocal) {
