@@ -72,6 +72,13 @@ struct GLApp
 	};
 
 	static std::vector<GLViewport> vps;
+	static GLViewport game_viewport;
+	static float target_aspect;
+
+	// Updates the game viewport (letterboxed) for a target aspect ratio.
+	static void UpdateGameViewport(int fbWidth, int fbHeight);
+	static GLViewport GetGameViewport();
+	static void SetTargetAspect(float aspect);
 
 };
 

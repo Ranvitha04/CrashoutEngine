@@ -311,6 +311,10 @@ void Init() {
     if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), initialTitle.c_str())) {
         std::exit(EXIT_FAILURE);
     }
+    // Fixed internal render resolution (matches initial settings)
+    gameTextureWidth = Settings::GetScreenWidth();
+    gameTextureHeight = Settings::GetScreenHeight();
+    GLApp::SetTargetAspect((float)gameTextureWidth / (float)gameTextureHeight);
     glfwSetWindowFocusCallback(GLApp::ptr_window,
         [](GLFWwindow*, int focused)
         {
@@ -558,20 +562,7 @@ void Update(double const& dt) {
         RenderCamera::gameCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 #else
         // RELEASE MODE: Use Letterboxed Dimensions for consistent Camera Aspect Ratio
-        int windowW = GLApp::width;
-        int windowH = GLApp::height;
-        const float targetAspectRatio = 16.0f / 9.0f;
-        float currentAspectRatio = (float)windowW / (float)windowH;
-        int vpW, vpH;
-
-        if (currentAspectRatio > targetAspectRatio) {
-            vpH = windowH;
-            vpW = static_cast<int>(windowH * targetAspectRatio);
-        } else {
-            vpW = windowW;
-            vpH = static_cast<int>(windowW / targetAspectRatio);
-        }
-        RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
+        RenderCamera::gameCamera.UpdateMatrices(gameTextureWidth, gameTextureHeight);
 #endif
     }
 
@@ -626,21 +617,13 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     int windowW, windowH;
     glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
 
-    //const float targetAspectRatio = 16.0f / 9.0f;
-    //float currentAspectRatio = (float)windowW / (float)windowH;
+    GLApp::UpdateGameViewport(windowW, windowH);
+    GLApp::GLViewport vp = GLApp::GetGameViewport();
+    (void)vp;
 
-    int vpX{ 0 }, vpY{ 0 }, vpW, vpH;
-
-    vpH = windowH;
-    vpW = windowW;
-
-    // 4. Clear the FULL window to black (The "Bars")
-
+    // 4. Render the game into the letterboxed viewport size
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // 5. Set Viewport to the Game Area & Enable Scissor Test
-    glViewport(vpX, vpY, vpW, vpH);
     //glEnable(GL_SCISSOR_TEST);
     //glScissor(vpX, vpY, vpW, vpH);
     //
@@ -650,34 +633,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     //glDisable(GL_SCISSOR_TEST);
 
     // 7. Update Camera Matrices to match the VIEWPORT size, not window size
-    CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
+    CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(gameTextureWidth, gameTextureHeight);
 
-    // If the window size differs from our internal texture size
-    if (vpW != gameTextureWidth || vpH != gameTextureHeight) {
-        gameTextureWidth = vpW;
-        gameTextureHeight = vpH;
-
-        // --- RESIZE THE TEXTURE MEMORY ---
-
-        // 1. Resize the Color Texture
-        glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
-        // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-        // 2. Resize the Depth/Stencil Buffer (Use RBO or Texture depending on your setup)
-        // Based on your variables, you likely use 'gameRboDepthStencil'
-        if (gameRboDepthStencil != 0) {
-            glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
-        }
-
-        // Unbind to be safe
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-        // Note: We don't need to re-attach them to the gameFboID usually, 
-        // as the FBO holds references to the IDs, which haven't changed.
-    }
 #else
 
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
@@ -789,20 +746,11 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     CEVec3 mouseWorld{ Scene::GetMouseInWorld() };
     InputManager::g_mouseWorldPos = CEVec2{ mouseWorld.x, mouseWorld.y };
 
-    // Render directly to screen
-    int displayWidth, displayHeight;
-    glfwGetFramebufferSize(GLApp::ptr_window, &displayWidth, &displayHeight);
-    glViewport(0, 0, displayWidth, displayHeight); // Use main window size
-
-    glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-
-    //CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
-
 #endif
     // APPLY POST_PROCESSING TO FBO 
 
     // Bind FBO to get post-processed image
+#if USE_IMGUI_EDITOR
     glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -810,6 +758,24 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
     CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#else
+    int displayWidth, displayHeight;
+    glfwGetFramebufferSize(GLApp::ptr_window, &displayWidth, &displayHeight);
+
+    GLApp::UpdateGameViewport(displayWidth, displayHeight);
+    GLApp::GLViewport vpPresent = GLApp::GetGameViewport();
+
+    // Clear full window to black (letterbox bars)
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, displayWidth, displayHeight);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+
+    // Render the game into the letterboxed viewport
+    glViewport(vpPresent.x, vpPresent.y, vpPresent.width, vpPresent.height);
+    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+#endif
 
     // --- FPS Counter ---
 #if !USE_IMGUI_EDITOR && !defined(DEBUG)
