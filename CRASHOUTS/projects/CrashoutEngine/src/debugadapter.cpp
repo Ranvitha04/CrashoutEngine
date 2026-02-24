@@ -31,10 +31,12 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "scriptvalidation.h"
 #include "undomanager.h"
 #include "hierarchy.h"
+#include "engine.h"
 
 /*                                                         component includes
 ----------------------------------------------------------------------------- */
 #include "namecomponent.h"
+#include "uuidcomponent.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
 #include "audiocomponent.h"
@@ -48,7 +50,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "tilemapcomponent.h"
 #include "keyframe.h" 
 #include "hierarchycomponent.h"
-#include "particleComponent.h"
+#include "particlecomponent.h"
 #include "activecomponent.h"
 #include "tagcomponent.h"
 #include "spritecomponent.h"
@@ -230,41 +232,6 @@ namespace {
 	}
 
 	/*!
-	@brief Adapter for editing Component::NameComponent (text name).
-	@details Shows a single InputText and syncs the value back to the ECS component.
-	*/
-	struct NameAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "Name"; }
-		bool has(ECS& ecs, Entity e) const override {
-			return ecs.HasComponent<Component::NameComponent>(e);
-		}
-		void add(ECS& ecs, Entity e) override {
-			auto& D = GetDebugDefaults();
-			if (!has(ecs, e)) ecs.AddComponent<Component::NameComponent>(e, D.name_default);
-		}
-		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::NameComponent>(e);
-		}
-		void drawInspector(ECS& ecs, Entity e) override {
-
-			// For active component (Set gameobject active or not active)
-			if (auto* ac = ecs.GetComponent<Component::ActiveComponent>(e)) {
-				ImGui::PushID("ActiveToggle");
-				UIHelpers::DrawUndoableBool("Enable GameObject##Active", ac->isActive);
-				ImGui::PopID();
-			}
-			// Add active component if not yet created
-			else {
-				ecs.AddComponent<Component::ActiveComponent>(e, true);
-			}
-
-			if (auto* c = ecs.GetComponent<Component::NameComponent>(e)) {
-				UIHelpers::DrawUndoableString("Entity Name", c->name);
-			}
-		}
-	};
-
-	/*!
 	@brief Shared helper to draw a multi-select tag dropdown.
 	@param ecs Reference to ECS (needed to clean up components if a tag is deleted).
 	@param mask Reference to the bitmask integer to edit.
@@ -288,7 +255,8 @@ namespace {
 		if (selectedCount > 3) preview = "Mixed (" + std::to_string(selectedCount) + ")";
 
 		// --- 2. Draw the Multi-Select Dropdown ---
-		if (ImGui::BeginCombo("Tag Mask", preview.c_str())) {
+		// Used ## to hide the label since the Table Column handles the labeling now
+		if (ImGui::BeginCombo("##TagMaskCombo", preview.c_str())) {
 
 			// Temporary storage for deletion to avoid iterator invalidation loop issues
 			std::string tagToDelete = "";
@@ -338,7 +306,6 @@ namespace {
 				tagMap.erase(tagToDelete);
 
 				// B. Clean up ALL entities (Expensive but necessary for data integrity)
-				// Iterate all entities with TagComponent and turn off that bit
 				auto& arr = ecs.GetComponentArray<Component::TagComponent>();
 				for (size_t i = 0; i < arr.dense.size(); ++i) {
 					Component::TagComponent* tc = arr.dense[i];
@@ -353,14 +320,14 @@ namespace {
 
 			// --- 5. Add New Tag Logic ---
 			static char newTagBuf[64] = "";
-			ImGui::InputTextWithHint("##NewTag", "New Tag Name", newTagBuf, 64);
+			ImGui::SetNextItemWidth(120.0f);
+			ImGui::InputTextWithHint("##NewTag", "New Tag", newTagBuf, 64);
 			ImGui::SameLine();
 			if (ImGui::Button("Add")) {
 				if (strlen(newTagBuf) > 0 && tagMap.find(newTagBuf) == tagMap.end()) {
 					// Find next available bit
 					unsigned int nextBit = 1;
 					if (!tagMap.empty()) {
-						// Simple logic: Shift the highest existing bit left by 1
 						auto maxEl = std::max_element(tagMap.begin(), tagMap.end(),
 							[](const auto& a, const auto& b) { return a.second < b.second; });
 						nextBit = maxEl->second << 1;
@@ -379,90 +346,146 @@ namespace {
 	}
 
 	/*!
-	@brief Adapter for editing Component::TagComponent.
-	@details Shows a drop down of tags to choose from and create
+	@brief Unified adapter for editing core entity properties (Name, UUID, Active, Tag, Layer).
+	@details Mimics the Unity GameObject header. Combines multiple ECS components into one UI block.
 	*/
-	struct TagAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "Tag"; }
-		bool has(ECS& ecs, Entity e) const override {
-			return ecs.HasComponent<Component::TagComponent>(e);
-		}
-		void add(ECS& ecs, Entity e) override {
-			//auto& D = GetDebugDefaults();
-			if (!has(ecs, e)) ecs.AddComponent<Component::TagComponent>(e);
-		}
-		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::TagComponent>(e);
-		}
-		void drawInspector(ECS& ecs, Entity e) override {
-			if (auto* c = ecs.GetComponent<Component::TagComponent>(e)) {
-				// Use the helper function!
-				DrawTagMultiSelect(ecs, c->tagMask);
-			}
-		}
-	};
+	struct CoreEntityAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "Core Settings"; }
 
-	/*!
-		@brief Adapter for editing Component::LayerComponent (formerly ZOrder).
-		@details Controls Rendering Layer and Z-Index. Uses ImGui Tables for a clean Layer Manager UI.
-		*/
-	struct LayerAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "Layer"; }
+		// We consider the entity to have "Core Settings" if it has a NameComponent
 		bool has(ECS& ecs, Entity e) const override {
-			return ecs.HasComponent<Component::LayerComponent>(e);
+			return ecs.HasComponent<Component::NameComponent>(e);
 		}
+
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::LayerComponent>(e);
+			auto& D = GetDebugDefaults();
+			if (!ecs.HasComponent<Component::NameComponent>(e)) ecs.AddComponent<Component::NameComponent>(e, D.name_default);
+			if (!ecs.HasComponent<Component::TagComponent>(e)) ecs.AddComponent<Component::TagComponent>(e);
+			if (!ecs.HasComponent<Component::LayerComponent>(e)) ecs.AddComponent<Component::LayerComponent>(e);
+			if (!ecs.HasComponent<Component::ActiveComponent>(e)) ecs.AddComponent<Component::ActiveComponent>(e, true);
+			if (!ecs.HasComponent<Component::UUIDComponent>(e)) ecs.AddComponent<Component::UUIDComponent>(e);
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::LayerComponent>(e);
+			// We usually don't want users to remove the core settings, 
+			// but if they do, we strip these core components.
+			if (ecs.HasComponent<Component::NameComponent>(e)) ecs.RemoveComponent<Component::NameComponent>(e);
+			if (ecs.HasComponent<Component::TagComponent>(e)) ecs.RemoveComponent<Component::TagComponent>(e);
+			if (ecs.HasComponent<Component::LayerComponent>(e)) ecs.RemoveComponent<Component::LayerComponent>(e);
 		}
 
 		void drawInspector(ECS& ecs, Entity e) override {
-			auto* layerComp = ecs.GetComponent<Component::LayerComponent>(e);
-			if (!layerComp) return;
+			ImGui::PushID("CoreHeader");
 
-			auto& layerMap = Component::LayerComponent::layerMap;
-			auto& visMap = Component::LayerComponent::layerVisibility;
+			// --- USE A TABLE FOR PERFECT UI ALIGNMENT ---
+			if (ImGui::BeginTable("CoreTable", 2, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_SizingFixedFit)) {
+				ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+				ImGui::TableSetupColumn("Widget", ImGuiTableColumnFlags_WidthStretch);
 
-			// --- 1. Entity Layer Selection ---
-			// Sort layers for the dropdown so they appear in render order
-			std::vector<std::pair<std::string, int>> sortedLayers(layerMap.begin(), layerMap.end());
-			std::sort(sortedLayers.begin(), sortedLayers.end(),
-				[](const auto& a, const auto& b) { return a.second < b.second; });
-
-			if (ImGui::BeginCombo("Current Layer", layerComp->layerName.c_str())) {
-				for (const auto& [name, id] : sortedLayers) {
-					if (ImGui::Selectable(name.c_str(), layerComp->layerName == name)) {
-						// Undoable command
-						std::string oldL = layerComp->layerName;
-						std::string newL = name;
-						if (oldL != newL) {
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<ChangeValueCommand<std::string>>(
-									oldL, newL, [layerComp](const std::string& v) { layerComp->layerName = v; }
-								)
-							);
-							layerComp->layerName = newL;
-						}
+				// --- Active ---
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::AlignTextToFramePadding(); ImGui::Text("Active");
+				ImGui::TableSetColumnIndex(1);
+				if (auto* ac = ecs.GetComponent<Component::ActiveComponent>(e)) {
+					bool isActive = ac->isActive;
+					if (ImGui::Checkbox("##Active", &isActive)) {
+						bool old = ac->isActive;
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<ChangeValueCommand<bool>>(old, isActive, [ac](const bool& v) { ac->isActive = v; })
+						);
+						ac->isActive = isActive;
 					}
 				}
-				ImGui::EndCombo();
-			}
 
-			UIHelpers::DrawUndoableInt("Order in Layer", layerComp->z);
+				// --- Name ---
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::AlignTextToFramePadding(); ImGui::Text("Name");
+				ImGui::TableSetColumnIndex(1);
+				if (auto* nc = ecs.GetComponent<Component::NameComponent>(e)) {
+					ImGui::SetNextItemWidth(-FLT_MIN);
+					UIHelpers::DrawUndoableString("##EntityName", nc->name);
+				}
+
+				// --- UUID ---
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::AlignTextToFramePadding(); ImGui::Text("UUID");
+				ImGui::TableSetColumnIndex(1);
+				if (auto* uuidComp = ecs.GetComponent<Component::UUIDComponent>(e)) {
+					ImGui::AlignTextToFramePadding();
+					ImGui::TextDisabled("%llu", (unsigned long long)uuidComp->id);
+				}
+				else {
+					ImGui::AlignTextToFramePadding();
+					ImGui::TextDisabled("None");
+				}
+
+				// --- Tag ---
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::AlignTextToFramePadding(); ImGui::Text("Tag");
+				ImGui::TableSetColumnIndex(1);
+				if (auto* tc = ecs.GetComponent<Component::TagComponent>(e)) {
+					ImGui::SetNextItemWidth(-FLT_MIN);
+					DrawTagMultiSelect(ecs, tc->tagMask);
+				}
+
+				// --- Layer ---
+				if (auto* layerComp = ecs.GetComponent<Component::LayerComponent>(e)) {
+					ImGui::TableNextRow();
+					ImGui::TableSetColumnIndex(0);
+					ImGui::AlignTextToFramePadding(); ImGui::Text("Layer");
+					ImGui::TableSetColumnIndex(1);
+
+					auto& layerMap = Component::LayerComponent::layerMap;
+					std::vector<std::pair<std::string, int>> sortedLayers(layerMap.begin(), layerMap.end());
+					std::sort(sortedLayers.begin(), sortedLayers.end(),
+						[](const auto& a, const auto& b) { return a.second < b.second; });
+
+					ImGui::SetNextItemWidth(-FLT_MIN);
+					if (ImGui::BeginCombo("##LayerCombo", layerComp->layerName.c_str())) {
+						for (const auto& [name, id] : sortedLayers) {
+							if (ImGui::Selectable(name.c_str(), layerComp->layerName == name)) {
+								std::string oldL = layerComp->layerName;
+								if (oldL != name) {
+									UndoManager::GetInstance().AddCommand(
+										std::make_unique<ChangeValueCommand<std::string>>(
+											oldL, name, [layerComp](const std::string& v) { layerComp->layerName = v; }
+										)
+									);
+									layerComp->layerName = name;
+								}
+							}
+						}
+						ImGui::EndCombo();
+					}
+
+					// --- Z-Order ---
+					ImGui::TableNextRow();
+					ImGui::TableSetColumnIndex(0);
+					ImGui::AlignTextToFramePadding(); ImGui::Text("Z-Order");
+					ImGui::TableSetColumnIndex(1);
+					ImGui::SetNextItemWidth(-FLT_MIN);
+					UIHelpers::DrawUndoableInt("##ZOrder", layerComp->z);
+				}
+
+				ImGui::EndTable();
+			}
 
 			ImGui::Separator();
 
-			// --- 2. Layer Manager (Global) ---
+			// --- Global Layer Manager ---
 			if (ImGui::CollapsingHeader("Layer Manager (Global)", ImGuiTreeNodeFlags_None)) {
+				auto& layerMap = Component::LayerComponent::layerMap;
+				auto& visMap = Component::LayerComponent::layerVisibility;
 
-				ImGui::Indent();
+				std::vector<std::pair<std::string, int>> sortedLayers(layerMap.begin(), layerMap.end());
+				std::sort(sortedLayers.begin(), sortedLayers.end(),
+					[](const auto& a, const auto& b) { return a.second < b.second; });
 
-				// Use a Table for perfect alignment
-				// 4 Columns: Name (Stretch), Priority (Fixed), Vis (Fixed), Del (Fixed)
 				if (ImGui::BeginTable("LayerManagerTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable)) {
-
 					ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
 					ImGui::TableSetupColumn("Priority", ImGuiTableColumnFlags_WidthFixed, 65.0f);
 					ImGui::TableSetupColumn("Vis", ImGuiTableColumnFlags_WidthFixed, 30.0f);
@@ -472,13 +495,14 @@ namespace {
 					std::string layerToRemove = "";
 					std::pair<std::string, int> layerToChange = { "", -9999 };
 
-					int index = 0;
+					auto* currentLayerComp = ecs.GetComponent<Component::LayerComponent>(e);
+
 					for (auto& [name, priority] : sortedLayers) {
 						ImGui::PushID(name.c_str());
 						ImGui::TableNextRow();
 
 						// Highlight the row if it's the entity's current layer
-						if (name == layerComp->layerName) {
+						if (currentLayerComp && name == currentLayerComp->layerName) {
 							ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg0, ImGui::GetColorU32(ImVec4(0.26f, 0.59f, 0.98f, 0.25f)));
 						}
 
@@ -489,7 +513,7 @@ namespace {
 
 						// Col 1: Priority Input
 						ImGui::TableSetColumnIndex(1);
-						ImGui::SetNextItemWidth(-FLT_MIN); // Use all available width in cell
+						ImGui::SetNextItemWidth(-FLT_MIN);
 						int tempPrio = priority;
 						if (ImGui::InputInt("##prio", &tempPrio, 0, 0)) {
 							layerToChange = { name, tempPrio };
@@ -501,7 +525,6 @@ namespace {
 						bool isVisible = visMap[name];
 						if (ImGui::Checkbox("##vis", &isVisible)) {
 							visMap[name] = isVisible;
-							// Apply visibility to all entities immediately
 							auto& arr = ecs.GetComponentArray<Component::LayerComponent>();
 							for (size_t i = 0; i < arr.dense.size(); ++i) {
 								if (arr.dense[i]->layerName == name) {
@@ -515,7 +538,7 @@ namespace {
 
 						// Col 3: Delete
 						ImGui::TableSetColumnIndex(3);
-						if (name != "Default" && name != layerComp->layerName) {
+						if (name != "Default" && (!currentLayerComp || name != currentLayerComp->layerName)) {
 							ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
 							if (ImGui::SmallButton("X")) {
 								layerToRemove = name;
@@ -524,7 +547,6 @@ namespace {
 						}
 
 						ImGui::PopID();
-						index++;
 					}
 					ImGui::EndTable();
 
@@ -539,9 +561,7 @@ namespace {
 				}
 
 				ImGui::Separator();
-
-				// Add New Layer Row
-				ImGui::Text("Add New:");
+				ImGui::AlignTextToFramePadding(); ImGui::Text("Add New:");
 				ImGui::SameLine();
 				static char newLayerBuf[64] = "";
 				ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 60);
@@ -556,9 +576,9 @@ namespace {
 						newLayerBuf[0] = '\0';
 					}
 				}
-
-				ImGui::Unindent();
 			}
+
+			ImGui::PopID();
 		}
 	};
 
@@ -692,40 +712,44 @@ namespace {
 
 			ImGui::SeparatorText("Dynamics");
 
-			// Set rigidbody mass
-			float mass = rb->getMass();
-			UIHelpers::DrawUndoableFloat("Mass", mass, 0.1f, 0.0f, 0.0f, [rb](const float& v) { rb->setMass(v); });
-			if (mass != rb->getMass()) rb->setMass(mass);
+			if (ImGui::CollapsingHeader("Dynamics", ImGuiTreeNodeFlags_DefaultOpen)) {
+				// Set rigidbody mass
+				float mass = rb->getMass();
+				UIHelpers::DrawUndoableFloat("Mass", mass, 0.1f, 0.0f, 0.0f, [rb](const float& v) { rb->setMass(v); });
+				if (mass != rb->getMass()) rb->setMass(mass);
 
-			// Set rigidbody restitution (bounciness)
-			float rest = rb->GetCoeff();
-			UIHelpers::DrawUndoableFloat("Restitution", rest, 0.01f, 0.0f, 1.0f, [rb](const float& v) { rb->setRestitution(v); });
-			if (rest != rb->GetCoeff()) rb->setRestitution(rest);
+				// Set rigidbody restitution (bounciness)
+				float rest = rb->GetCoeff();
+				UIHelpers::DrawUndoableFloat("Restitution", rest, 0.01f, 0.0f, 1.0f, [rb](const float& v) { rb->setRestitution(v); });
+				if (rest != rb->GetCoeff()) rb->setRestitution(rest);
 
-			// Set Static / Dynamic friction
-			UIHelpers::DrawUndoableFloat("Static Friction", rb->staticFriction, 0.01f, 0.0f, 1.0f);
-			UIHelpers::DrawUndoableFloat("Dynamic Friction", rb->dynamicFriction, 0.01f, 0.0f, 1.0f);
+				// Set Static / Dynamic friction
+				UIHelpers::DrawUndoableFloat("Static Friction", rb->staticFriction, 0.01f, 0.0f, 1.0f);
+				UIHelpers::DrawUndoableFloat("Dynamic Friction", rb->dynamicFriction, 0.01f, 0.0f, 1.0f);
 
-			// Set intertia
-			float inertia = rb->inertia;
-			UIHelpers::DrawUndoableFloat("Inertia", inertia, 1.0f, 0.0f, 0.0f, [rb](const float& v) { rb->setInertia(v); });
-			if (inertia != rb->inertia) rb->setInertia(inertia);
+				// Set intertia
+				float inertia = rb->inertia;
+				UIHelpers::DrawUndoableFloat("Inertia", inertia, 1.0f, 0.0f, 0.0f, [rb](const float& v) { rb->setInertia(v); });
+				if (inertia != rb->inertia) rb->setInertia(inertia);
 
-			// HELPER to automatically calculate inertia
-			if (ecs.HasComponent<ColliderComponent>(e)) {
-				if (ImGui::Button("Auto-Calc Inertia")) {
-					auto* cc = ecs.GetComponent<ColliderComponent>(e);
-					if (cc && cc->collider) rb->setInertia(cc->collider->CalculateInertia(rb->getMass()));
+				// HELPER to automatically calculate inertia
+				if (ecs.HasComponent<ColliderComponent>(e)) {
+					if (ImGui::Button("Auto-Calc Inertia")) {
+						auto* cc = ecs.GetComponent<ColliderComponent>(e);
+						if (cc && cc->collider) rb->setInertia(cc->collider->CalculateInertia(rb->getMass()));
+					}
 				}
 			}
 
 			// Extra force settings to apply externally onto object
-			ImGui::SeparatorText("Forces");
-			static float f[3]{ 0.f, 0.f, 0.f };
-			ImGui::InputFloat3("Force Vector", f);
-			if (ImGui::Button("Apply Force")) rb->addForce({ f[0], f[1], f[2] });
-			ImGui::SameLine();
-			if (ImGui::Button("Clear Forces")) rb->clearForceAccumulator();
+			if (ImGui::CollapsingHeader("Debug Forces")) {
+				ImGui::SeparatorText("Forces");
+				static float f[3]{ 0.f, 0.f, 0.f };
+				ImGui::InputFloat3("Force Vector", f);
+				if (ImGui::Button("Apply Force")) rb->addForce({ f[0], f[1], f[2] });
+				ImGui::SameLine();
+				if (ImGui::Button("Clear Forces")) rb->clearForceAccumulator();
+			}
 		}
 
 	};
@@ -989,121 +1013,124 @@ namespace {
 				sc->type = (ShapeType)t;
 			}
 
-			UIHelpers::DrawUndoableBool("World Space", sc->isWorldSpace);
-			UIHelpers::DrawUndoableBool("Use Texture", sc->enableTexture);
-
-			// Texture Name (Keep DragDrop logic, simplified here to String Input for brevity)
-			UIHelpers::DrawUndoableString("Texture Asset", sc->textureName);
-
-			// Drag & Drop support (ASSET/PAYLOAD)
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
-						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
-						if (d->kind == AssetKind::Texture) {
-							std::string oldVal = sc->textureName;
-							std::string newVal = std::string(d->relPath);
-							sc->textureName = newVal;
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<ChangeValueCommand<std::string>>(oldVal, newVal, [sc](const std::string& v) { sc->textureName = v; })
-							);
-						}
-					}
-				}
-				ImGui::EndDragDropTarget();
-			}
-
-			// Search / pick popup button
-			ImGui::SameLine();
-			float btnSize = ImGui::GetFrameHeight();
-			if (ImGui::Button("...", ImVec2(btnSize, btnSize))) {
-				ImGui::OpenPopup("PickShapeTexturePopup");
-			}
-
-			if (ImGui::BeginPopupModal("PickShapeTexturePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-				namespace fs = std::filesystem;
-				static std::vector<std::string> s_assets;
-				static bool s_scanned = false;
-				static char s_filter[128] = "";
-
-				if (ImGui::Button("Refresh")) s_scanned = false;
-				ImGui::SameLine();
-				ImGui::SetNextItemWidth(-1);
-				ImGui::InputTextWithHint("##tex_filter", "filter...", s_filter, sizeof(s_filter));
-
-				if (!s_scanned) {
-					s_scanned = true;
-					s_assets.clear();
-					const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images";
-					try {
-						if (fs::exists(assetRoot)) {
-							for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
-								if (!p.is_regular_file()) continue;
-								std::string ext = p.path().extension().string();
-								std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-								if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".tga" || ext == ".bmp") {
-									std::string rel = fs::relative(p.path(), assetRoot).generic_string();
-									s_assets.push_back(rel);
-								}
-							}
-							std::sort(s_assets.begin(), s_assets.end());
-						}
-					}
-					catch (...) { /* ignore scan errors */ }
-				}
-
-				ImGui::Separator();
-				ImGui::BeginChild("tex_list", ImVec2(420, 300), true);
-				for (const auto& a : s_assets) {
-					if (s_filter[0] && a.find(s_filter) == std::string::npos) continue;
-					if (ImGui::Selectable(a.c_str(), sc->textureName == a)) {
-						std::string oldVal = sc->textureName;
-						sc->textureName = a;
-						UndoManager::GetInstance().AddCommand(
-							std::make_unique<ChangeValueCommand<std::string>>(oldVal, sc->textureName, [sc](const std::string& v) { sc->textureName = v; })
-						);
-						ImGui::CloseCurrentPopup();
-						break;
-					}
-				}
-				ImGui::EndChild();
-
-				ImGui::Separator();
-				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
-				ImGui::EndPopup();
-			}
-
-			// UVs
-			if (sc->enableTexture) {
-				//UIHelpers::DrawUndoableInt("V Wrap", sc->wrapModeV);
-				//UIHelpers::DrawUndoableInt("U Wrap", sc->wrapModeU);
-				UIHelpers::DrawUndoableVec2("UV Size", sc->uvSize);
-				UIHelpers::DrawUndoableVec2("UV Offset", sc->uvOffset);
-			}
-
 			UIHelpers::DrawUndoableColor("Color", sc->color);
+			UIHelpers::DrawUndoableBool("World Space", sc->isWorldSpace);
+
+			if (ImGui::CollapsingHeader("Texture & UVs")) {
+				UIHelpers::DrawUndoableBool("Use Texture", sc->enableTexture);
+
+				// Texture Name (Keep DragDrop logic, simplified here to String Input for brevity)
+				UIHelpers::DrawUndoableString("Texture Asset", sc->textureName);
+
+				// Drag & Drop support (ASSET/PAYLOAD)
+				if (ImGui::BeginDragDropTarget()) {
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+						if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
+							const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+							if (d->kind == AssetKind::Texture) {
+								std::string oldVal = sc->textureName;
+								std::string newVal = std::string(d->relPath);
+								sc->textureName = newVal;
+								UndoManager::GetInstance().AddCommand(
+									std::make_unique<ChangeValueCommand<std::string>>(oldVal, newVal, [sc](const std::string& v) { sc->textureName = v; })
+								);
+							}
+						}
+					}
+					ImGui::EndDragDropTarget();
+				}
+
+				// Search / pick popup button
+				ImGui::SameLine();
+				float btnSize = ImGui::GetFrameHeight();
+				if (ImGui::Button("...", ImVec2(btnSize, btnSize))) {
+					ImGui::OpenPopup("PickShapeTexturePopup");
+				}
+
+				if (ImGui::BeginPopupModal("PickShapeTexturePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+					namespace fs = std::filesystem;
+					static std::vector<std::string> s_assets;
+					static bool s_scanned = false;
+					static char s_filter[128] = "";
+
+					if (ImGui::Button("Refresh")) s_scanned = false;
+					ImGui::SameLine();
+					ImGui::SetNextItemWidth(-1);
+					ImGui::InputTextWithHint("##tex_filter", "filter...", s_filter, sizeof(s_filter));
+
+					if (!s_scanned) {
+						s_scanned = true;
+						s_assets.clear();
+						const std::string assetRoot = std::string(GetGameRoot()) + "/assets/images";
+						try {
+							if (fs::exists(assetRoot)) {
+								for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
+									if (!p.is_regular_file()) continue;
+									std::string ext = p.path().extension().string();
+									std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+									if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".tga" || ext == ".bmp") {
+										std::string rel = fs::relative(p.path(), assetRoot).generic_string();
+										s_assets.push_back(rel);
+									}
+								}
+								std::sort(s_assets.begin(), s_assets.end());
+							}
+						}
+						catch (...) { /* ignore scan errors */ }
+					}
+
+					ImGui::Separator();
+					ImGui::BeginChild("tex_list", ImVec2(420, 300), true);
+					for (const auto& a : s_assets) {
+						if (s_filter[0] && a.find(s_filter) == std::string::npos) continue;
+						if (ImGui::Selectable(a.c_str(), sc->textureName == a)) {
+							std::string oldVal = sc->textureName;
+							sc->textureName = a;
+							UndoManager::GetInstance().AddCommand(
+								std::make_unique<ChangeValueCommand<std::string>>(oldVal, sc->textureName, [sc](const std::string& v) { sc->textureName = v; })
+							);
+							ImGui::CloseCurrentPopup();
+							break;
+						}
+					}
+					ImGui::EndChild();
+
+					ImGui::Separator();
+					if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+					ImGui::EndPopup();
+				}
+
+				// UVs
+				if (sc->enableTexture) {
+					//UIHelpers::DrawUndoableInt("V Wrap", sc->wrapModeV);
+					//UIHelpers::DrawUndoableInt("U Wrap", sc->wrapModeU);
+					UIHelpers::DrawUndoableVec2("UV Size", sc->uvSize);
+					UIHelpers::DrawUndoableVec2("UV Offset", sc->uvOffset);
+				}
+			}
 
 			if (sc->type == ShapeType::Line) {
-				ImGui::SeparatorText("Line Details");
-				UIHelpers::DrawUndoableVec3("Start (P1)", sc->p1);
-				UIHelpers::DrawUndoableVec3("End (P2)", sc->p2);
-				UIHelpers::DrawUndoableFloat("Thickness", sc->thickness);
+				if (ImGui::CollapsingHeader("Line Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+					UIHelpers::DrawUndoableVec3("Start (P1)", sc->p1);
+					UIHelpers::DrawUndoableVec3("End (P2)", sc->p2);
+					UIHelpers::DrawUndoableFloat("Thickness", sc->thickness);
 
-				if (ImGui::Button("Fit to Transform Width")) {
-					if (auto* transform = ecs.GetComponent<TransformComponent>(e)) {
-						CEVec3 oldP1 = sc->p1;
-						CEVec3 oldP2 = sc->p2;
-						float halfW = transform->size.x * 0.5f;
-						CEVec3 newP1 = { -halfW, 0.f, 0.f };
-						CEVec3 newP2 = { halfW, 0.f, 0.f };
+					if (ImGui::Button("Fit to Transform Width")) {
+						if (auto* transform = ecs.GetComponent<TransformComponent>(e)) {
+							CEVec3 oldP1 = sc->p1;
+							CEVec3 oldP2 = sc->p2;
+							float halfW = transform->size.x * 0.5f;
+							CEVec3 newP1 = { -halfW, 0.f, 0.f };
+							CEVec3 newP2 = { halfW, 0.f, 0.f };
 
-						UndoManager::GetInstance().AddCommand(
-							std::make_unique<ChangeValueCommand<std::pair<CEVec3, CEVec3>>>(
-								std::make_pair(oldP1, oldP2), std::make_pair(newP1, newP2),
-								[sc](const std::pair<CEVec3, CEVec3>& v) { sc->p1 = v.first; sc->p2 = v.second; }
-							)
-						);
-						sc->p1 = newP1; sc->p2 = newP2;
+							UndoManager::GetInstance().AddCommand(
+								std::make_unique<ChangeValueCommand<std::pair<CEVec3, CEVec3>>>(
+									std::make_pair(oldP1, oldP2), std::make_pair(newP1, newP2),
+									[sc](const std::pair<CEVec3, CEVec3>& v) { sc->p1 = v.first; sc->p2 = v.second; }
+								)
+							);
+							sc->p1 = newP1; sc->p2 = newP2;
+						}
 					}
 				}
 			}
@@ -1129,245 +1156,75 @@ namespace {
 			auto* fc = ecs.GetComponent<TextComponent>(e);
 			if (!fc) return;
 
-			UIHelpers::DrawUndoableString("Font Name", fc->font);
+			// --- MAIN CONTENT ---
+			if (ImGui::CollapsingHeader("Content & Font", ImGuiTreeNodeFlags_DefaultOpen)) {
+				UIHelpers::DrawUndoableString("Display Text", fc->text);
+				UIHelpers::DrawUndoableColor("Color", fc->color);
 
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
-						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
-
-						// Verify it is a font by extension
-						std::string p = d->relPath;
-						std::string ext = std::filesystem::path(p).extension().string();
-						std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-						if (ext == ".ttf" || ext == ".otf") {
-							std::string oldVal = fc->font;
-							// AssetManager keys fonts by their Stem (Name), not path.
-							std::string newVal = d->name;
-
-							fc->font = newVal;
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<ChangeValueCommand<std::string>>(oldVal, newVal, [fc](const std::string& v) { fc->font = v; })
-							);
-						}
-					}
-				}
-				ImGui::EndDragDropTarget();
-			}
-
-			ImGui::SameLine();
-			float btnSize = ImGui::GetFrameHeight();
-			if (ImGui::Button("...", ImVec2(btnSize, btnSize))) {
-				ImGui::OpenPopup("PickFontPopup");
-			}
-
-			if (ImGui::BeginPopupModal("PickFontPopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-				namespace fs = std::filesystem;
-				static std::vector<std::string> s_fonts;
-				static bool s_scanned = false;
-
-				if (ImGui::Button("Refresh")) s_scanned = false;
-
-				if (!s_scanned) {
-					s_scanned = true;
-					s_fonts.clear();
-					// Assumes fonts are in assets/fonts/
-					const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "fonts";
-
-					try {
-						if (fs::exists(assetRoot)) {
-							for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
-								if (!p.is_regular_file()) continue;
-								std::string ext = p.path().extension().string();
-								std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-								if (ext == ".ttf" || ext == ".otf") {
-									// Store the STEM (filename without extension)
-									s_fonts.push_back(p.path().stem().string());
-								}
+				// Font File Picker
+				UIHelpers::DrawUndoableString("Font Name", fc->font);
+				if (ImGui::BeginDragDropTarget()) {
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
+						if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
+							const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
+							std::string ext = std::filesystem::path(d->relPath).extension().string();
+							std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+							if (ext == ".ttf" || ext == ".otf") {
+								std::string oldVal = fc->font;
+								fc->font = d->name;
+								UndoManager::GetInstance().AddCommand(
+									std::make_unique<ChangeValueCommand<std::string>>(oldVal, d->name, [fc](const std::string& v) { fc->font = v; })
+								);
 							}
-							std::sort(s_fonts.begin(), s_fonts.end());
 						}
 					}
-					catch (...) { /* ignore scan errors */ }
+					ImGui::EndDragDropTarget();
+				}
+			}
+
+			// --- FORMATTING ---
+			if (ImGui::CollapsingHeader("Formatting & Layout")) {
+				UIHelpers::DrawUndoableFloat("Scale", fc->scale);
+				UIHelpers::DrawUndoableVec2("Offset", fc->offset);
+				UIHelpers::DrawUndoableBool("World Space", fc->isWorldSpace);
+				UIHelpers::DrawUndoableBool("Centered", fc->centered);
+				UIHelpers::DrawUndoableBool("Wrap Text", fc->wrapText);
+
+				if (fc->wrapText) {
+					UIHelpers::DrawUndoableVec2("Padding (X, Y)", fc->padding);
 				}
 
-				ImGui::Separator();
-				ImGui::BeginChild("font_list", ImVec2(300, 300), true);
-				for (const auto& f : s_fonts) {
-					bool isSelected = (fc->font == f);
-					if (ImGui::Selectable(f.c_str(), isSelected)) {
-						std::string oldVal = fc->font;
-						fc->font = f;
-						UndoManager::GetInstance().AddCommand(
-							std::make_unique<ChangeValueCommand<std::string>>(oldVal, fc->font, [fc](const std::string& v) { fc->font = v; })
-						);
-						ImGui::CloseCurrentPopup();
+				UIHelpers::DrawUndoableFloat("Letter Spacing", fc->letterSpacing, 0.05f);
+				UIHelpers::DrawUndoableFloat("Line Spacing", fc->lineSpacing, 0.05f);
+			}
+
+			// --- EFFECTS ---
+			if (ImGui::CollapsingHeader("Typewriter Effect")) {
+				UIHelpers::DrawUndoableBool("Enable Reveal", fc->isRevealing);
+				if (fc->isRevealing) {
+					UIHelpers::DrawUndoableFloat("Reveal Speed (cps)", fc->revealSpeed, 1.0f, 0.1f, 100.0f);
+					if (ImGui::Button("Reset Reveal")) {
+						fc->revealTimer = 0.0f;
+						fc->revealedCharCount = 0;
 					}
 				}
-				ImGui::EndChild();
-
-				ImGui::Separator();
-				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
-				ImGui::EndPopup();
 			}
 
-			UIHelpers::DrawUndoableString("Display Text", fc->text);
-			UIHelpers::DrawUndoableBool("Centered", fc->centered);
-			UIHelpers::DrawUndoableBool("World Space", fc->isWorldSpace);
-			UIHelpers::DrawUndoableFloat("Scale", fc->scale);
-			UIHelpers::DrawUndoableVec2("Offset", fc->offset);
-			UIHelpers::DrawUndoableColor("Color", fc->color);
+			// --- DIALOGUE ---
+			if (ImGui::CollapsingHeader("Dialogue System")) {
+				UIHelpers::DrawUndoableString("Dialogue File", fc->dialogueFilePath);
+				// Drag & Drop for JSON (Omitted full drag/drop boilerplate for brevity, but you keep yours here!)
+				UIHelpers::DrawUndoableString("Dialogue ID", fc->dialogueID);
 
-			ImGui::Separator();
-			UIHelpers::DrawUndoableBool("Wrap Text", fc->wrapText);
+				if (ImGui::Button("Load Text from File")) {
+					std::string fullPath = std::string(GetGameRoot()) + "/assets/" + fc->dialogueFilePath;
+					if (fc->dialogueFilePath.rfind("assets/", 0) == 0) fullPath = fc->dialogueFilePath;
 
-			if (fc->wrapText) {
-				// Alignment controlled via UILayout or other means now
-				UIHelpers::DrawUndoableVec2("Padding (X, Y)", fc->padding);
-			}
-
-			ImGui::Separator();
-			UIHelpers::DrawUndoableFloat("Letter Spacing", fc->letterSpacing, 0.05f);
-			UIHelpers::DrawUndoableFloat("Line Spacing", fc->lineSpacing, 0.05f);
-
-			ImGui::SeparatorText("Typewriter Effect");
-			UIHelpers::DrawUndoableBool("Enable Reveal", fc->isRevealing);
-			if (fc->isRevealing) {
-				UIHelpers::DrawUndoableFloat("Reveal Speed (cps)", fc->revealSpeed, 1.0f, 0.1f, 100.0f);
-				if (ImGui::Button("Reset Reveal")) {
-					fc->revealTimer = 0.0f;
-					fc->revealedCharCount = 0;
-				}
-			}
-
-			ImGui::SeparatorText("Dialogue Loading");
-			UIHelpers::DrawUndoableString("Dialogue File", fc->dialogueFilePath);
-
-			// Drag & Drop for JSON
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET/PAYLOAD")) {
-					if (payload->Data && payload->DataSize == sizeof(AssetDragPayload)) {
-						const auto* d = static_cast<const AssetDragPayload*>(payload->Data);
-						std::string p = d->relPath;
-						std::string ext = std::filesystem::path(p).extension().string();
-						std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-						if (ext == ".json") {
-							// Check if it is in dialogue folder (optional but safer)
-							// if (p.find("dialogue") != std::string::npos) ...
-
-							std::string oldVal = fc->dialogueFilePath;
-							std::string newVal = d->relPath;
-
-							fc->dialogueFilePath = newVal;
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<ChangeValueCommand<std::string>>(oldVal, newVal, [fc](const std::string& v) { fc->dialogueFilePath = v; })
-							);
-						}
-					}
-				}
-				ImGui::EndDragDropTarget();
-			}
-
-			ImGui::SameLine();
-			btnSize = ImGui::GetFrameHeight();
-			if (ImGui::Button("...##dialogue", ImVec2(btnSize, btnSize))) {
-				ImGui::OpenPopup("PickDialoguePopup");
-			}
-
-			if (ImGui::BeginPopupModal("PickDialoguePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-				namespace fs = std::filesystem;
-				static std::vector<std::string> s_dialogues;
-				static bool s_scanned = false;
-
-				if (ImGui::Button("Refresh")) s_scanned = false;
-
-				if (!s_scanned) {
-					s_scanned = true;
-					s_dialogues.clear();
-					// Assumes dialogues are in assets/dialogue/
-					const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "dialogue";
-
-					try {
-						if (fs::exists(assetRoot)) {
-							for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
-								if (!p.is_regular_file()) continue;
-								std::string ext = p.path().extension().string();
-								std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-								if (ext == ".json") {
-									// Store relative path from Assets::rootPath
-									// rootPath is usually "assets/"
-									// p is "assets/dialogue/file.json"
-									// relative is "dialogue/file.json"
-									std::string rel = fs::relative(p.path(), CrashoutsEngine::Assets::rootPath).generic_string();
-									s_dialogues.push_back(rel);
-								}
-							}
-							std::sort(s_dialogues.begin(), s_dialogues.end());
-						}
-					}
-					catch (...) { /* ignore scan errors */ }
-				}
-
-				ImGui::Separator();
-				ImGui::BeginChild("dialogue_list", ImVec2(300, 300), true);
-				for (const auto& f : s_dialogues) {
-					bool isSelected = (fc->dialogueFilePath == f);
-					if (ImGui::Selectable(f.c_str(), isSelected)) {
-						std::string oldVal = fc->dialogueFilePath;
-						fc->dialogueFilePath = f;
-						UndoManager::GetInstance().AddCommand(
-							std::make_unique<ChangeValueCommand<std::string>>(oldVal, fc->dialogueFilePath, [fc](const std::string& v) { fc->dialogueFilePath = v; })
-						);
-						ImGui::CloseCurrentPopup();
-					}
-				}
-				ImGui::EndChild();
-
-				ImGui::Separator();
-				if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
-				ImGui::EndPopup();
-			}
-
-			UIHelpers::DrawUndoableString("Dialogue ID", fc->dialogueID);
-
-			if (ImGui::Button("Load Text from File")) {
-				// We'll implement the loading logic via a static helper or call it here directly if simple
-				// Since we can't easily include heavy logic here, let's signal the system or do a direct load if possible.
-				// For now, let's try to load it immediately if file exists.
-
-				std::string fullPath = CrashoutsEngine::Assets::rootPath + fc->dialogueFilePath;
-				// Simplify path if it starts with assets/
-				if (fc->dialogueFilePath.rfind("assets/", 0) == 0) {
-					fullPath = fc->dialogueFilePath; // Already relative to project root? 
-					// Assets::rootPath is usually "assets/".
-					// If dialogueFilePath is "assets/json/dialogue.json", and rootPath is "assets/", 
-					// we might double up or not. AssetManager usually handles "assets/".
-					// Let's assume dialogueFilePath is relative to 'assets/' or project root.
-					// Safe bet: usage of ReadFileToString or similar.
-				}
-
-				std::ifstream file(fullPath);
-				if (!file.is_open()) {
-					// Try prepending rootPath
-					fullPath = CrashoutsEngine::Assets::rootPath + fc->dialogueFilePath;
-					file.open(fullPath);
-				}
-
-				if (file.is_open()) {
-					std::stringstream buffer;
-					buffer << file.rdbuf();
-					std::string content = buffer.str();
-					file.close();
-
-					rapidjson::Document doc;
-					doc.Parse(content.c_str());
-
-					if (!doc.HasParseError()) {
-						if (doc.HasMember(fc->dialogueID.c_str())) {
+					std::ifstream file(fullPath);
+					if (file.is_open()) {
+						std::stringstream buffer; buffer << file.rdbuf(); file.close();
+						rapidjson::Document doc; doc.Parse(buffer.str().c_str());
+						if (!doc.HasParseError() && doc.HasMember(fc->dialogueID.c_str())) {
 							const auto& val = doc[fc->dialogueID.c_str()];
 							if (val.IsString()) {
 								std::string newText = val.GetString();
@@ -1681,7 +1538,7 @@ namespace {
 					ImGui::InputTextWithHint("##script_filter", "filter...", filter, sizeof(filter));
 					ImGui::Separator();
 
-					fs::path base = "../../projects/ManagedScripts";
+					fs::path base = fs::path(GetGameRoot()) / "scripts";
 
 					if (ImGui::BeginChild("script_list", ImVec2(320, 240), true)) {
 						try {
@@ -1760,7 +1617,7 @@ namespace {
 
 				if (ImGui::SmallButton("Open")) {
 					namespace fs = std::filesystem;
-					fs::path base = "../../projects/ManagedScripts";
+					fs::path base = fs::path(GetGameRoot()) / "scripts";
 					fs::path file = base / (inst.ClassName + ".cs");
 
 					if (fs::exists(file)) {
@@ -1884,7 +1741,7 @@ namespace {
 				std::replace(className.begin(), className.end(), ' ', '_');
 
 				namespace fs = std::filesystem;
-				fs::path base = "../../projects/ManagedScripts";
+				fs::path base = fs::path(GetGameRoot()) / "scripts";
 
 				// Ensure directory exists
 				if (!fs::exists(base)) fs::create_directories(base);
@@ -1967,8 +1824,15 @@ namespace CrashoutsEngine
 #endif
 						fs::path cwd = fs::current_path();
 
-						// Path to .csproj (Used for the build command)
-						fs::path projectPath = fs::absolute(cwd / "../../projects/ManagedScripts/ManagedScripts.csproj");
+						// 1. Get the game root (e.g., "../../projects/GameProjects/Descent")
+						fs::path gameRoot = fs::path(GetGameRoot());
+
+						// 2. Extract the name of the game from the folder name (e.g., "Descent")
+						std::string projectName = gameRoot.filename().string();
+
+						// 3. Construct the exact path to the .csproj dynamically!
+						fs::path relativeProjectPath = gameRoot / "scripts" / (projectName + ".csproj");
+						fs::path projectPath = fs::absolute(cwd / relativeProjectPath);
 
 						// --- 2. CORRECTED OUTPUT PATH ---
 						// Your .csproj outputs to "..\..\build\x64-Debug\scripts\"
@@ -1980,7 +1844,7 @@ namespace CrashoutsEngine
 							buildOutput = projectPath.parent_path() / "bin" / config / "net6.0";
 						}
 
-						fs::path targetDll = MonoManager::GetAssemblyPath(); // e.g. "scripts/ManagedScripts.dll"
+						fs::path targetDll = MonoManager::GetAssemblyPath(); 
 						fs::path targetPdb = targetDll;
 						targetPdb.replace_extension(".pdb");
 
@@ -2012,7 +1876,7 @@ namespace CrashoutsEngine
 
 									// Look for timestamped files (e.g. ManagedScripts_Debug_2026...)
 									// We exclude the clean "ManagedScripts.dll" so we don't copy the file onto itself
-									if (name.find("ManagedScripts_") == 0 && entry.path().extension() == ".dll") {
+									if (name.find(projectName) == 0 && entry.path().extension() == ".dll") {
 
 										if (entry.last_write_time() > bestTime) {
 											bestTime = entry.last_write_time();
@@ -2039,10 +1903,11 @@ namespace CrashoutsEngine
 							try {
 								std::cout << "[HotReload] Found fresh build: " << bestDll.filename().string() << std::endl;
 
-								// Copy the timestamped DLL -> ManagedScripts.dll
-								fs::copy_file(bestDll, targetDll, fs::copy_options::overwrite_existing);
-
-								if (!bestPdb.empty()) {
+								// If MSBuild generated the file in a different directory, copy it over!
+								if (fs::absolute(bestDll) != fs::absolute(targetDll)) {
+									fs::copy_file(bestDll, targetDll, fs::copy_options::overwrite_existing);
+								}
+								if (!bestPdb.empty() && fs::absolute(bestPdb) != fs::absolute(targetPdb)) {
 									fs::copy_file(bestPdb, targetPdb, fs::copy_options::overwrite_existing);
 								}
 
@@ -2139,58 +2004,48 @@ namespace CrashoutsEngine
 			if (has(ecs, e)) ecs.RemoveComponent<Component::ButtonComponent>(e);
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
-			using namespace Component;
 			auto* bc = ecs.GetComponent<ButtonComponent>(e);
-			if (!bc) return; // Corrected from 'cc' to 'bc'
+			if (!bc) return;
 
-			// --- Read-Only State Display ---
-			ImGui::SeparatorText("Button State");
 			const char* stateStr = "NORMAL";
-			if (bc->buttonState == ButtonState::HOVERED) { stateStr = "HOVERED"; }
-			else if (bc->buttonState == ButtonState::PRESSED) { stateStr = "PRESSED"; }
+			if (bc->buttonState == ButtonState::HOVERED) stateStr = "HOVERED";
+			else if (bc->buttonState == ButtonState::PRESSED) stateStr = "PRESSED";
+			ImGui::Text("Live State: %s", stateStr);
+			ImGui::Separator();
 
-			ImGui::Text("Current State:");
-			ImGui::SameLine();
-			ImGui::TextDisabled("%s", stateStr); // Show current state for debugging
-
-			// --- Shape Colors ---
-			ImGui::SeparatorText("Shape Colors");
-
-			// Helper function to convert 0-255 CEVec3 to 0-1 float[3] for ImGui's picker
 			auto EditColor = [](const char* label, CEColor& colorVec) {
 				float col[4] = { colorVec.x(), colorVec.y(), colorVec.z(), colorVec.w() };
 				if (ImGui::ColorEdit4(label, col, ImGuiColorEditFlags_AlphaBar)) {
-					colorVec.x() = col[0];
-					colorVec.y() = col[1];
-					colorVec.z() = col[2];
-					colorVec.w() = col[3];
+					colorVec.x() = col[0]; colorVec.y() = col[1]; colorVec.z() = col[2]; colorVec.w() = col[3];
 				}
 				};
 
-			ImGui::PushID("shape_colors"); // Use PushID to avoid label conflicts
-			EditColor("Normal", bc->shapeNormalColor);
-			EditColor("Hovered", bc->shapeHoveredColor);
-			EditColor("Pressed", bc->shapePressedColor);
-			ImGui::PopID();
+			if (ImGui::CollapsingHeader("Shape Colors", ImGuiTreeNodeFlags_DefaultOpen)) {
+				ImGui::PushID("shape_colors");
+				EditColor("Normal", bc->shapeNormalColor);
+				EditColor("Hovered", bc->shapeHoveredColor);
+				EditColor("Pressed", bc->shapePressedColor);
+				ImGui::PopID();
+			}
 
-			// --- Text Colors ---
-			ImGui::SeparatorText("Text Colors");
-			ImGui::PushID("text_colors");
-			EditColor("Normal", bc->textNormalColor);
-			EditColor("Hovered", bc->textHoveredColor);
-			EditColor("Pressed", bc->textPressedColor);
-			ImGui::PopID();
+			if (ImGui::CollapsingHeader("Text Colors")) {
+				ImGui::PushID("text_colors");
+				EditColor("Normal", bc->textNormalColor);
+				EditColor("Hovered", bc->textHoveredColor);
+				EditColor("Pressed", bc->textPressedColor);
+				ImGui::PopID();
+			}
 
-			// --- Scale Factors ---
-			ImGui::SeparatorText("Scale Factors");
-			UIHelpers::DrawUndoableFloat("Hover Scale", bc->hoverScale, 0.05f, 0.5f, 2.0f);
-			UIHelpers::DrawUndoableFloat("Pressed Scale", bc->pressedScale, 0.05f, 0.5f, 2.0f);
+			if (ImGui::CollapsingHeader("State Textures")) {
+				UIHelpers::DrawUndoableString("Normal Texture", bc->textureNormal);
+				UIHelpers::DrawUndoableString("Hovered Texture", bc->textureHovered);
+				UIHelpers::DrawUndoableString("Pressed Texture", bc->texturePressed);
+			}
 
-			// --- State Textures (New) ---
-			ImGui::SeparatorText("State Textures (Swap)");
-			UIHelpers::DrawUndoableString("Normal Texture", bc->textureNormal);
-			UIHelpers::DrawUndoableString("Hovered Texture", bc->textureHovered);
-			UIHelpers::DrawUndoableString("Pressed Texture", bc->texturePressed);
+			if (ImGui::CollapsingHeader("Scaling Effects")) {
+				UIHelpers::DrawUndoableFloat("Hover Scale", bc->hoverScale, 0.05f, 0.5f, 2.0f);
+				UIHelpers::DrawUndoableFloat("Pressed Scale", bc->pressedScale, 0.05f, 0.5f, 2.0f);
+			}
 		}
 	};
 
@@ -2722,7 +2577,7 @@ namespace CrashoutsEngine
 							s_scanned = true;
 							s_assets.clear();
 
-							const std::string assetRoot = CrashoutsEngine::Assets::rootPath + "images";
+							const fs::path assetRoot = fs::path(GetGameRoot()) / "assets/images";
 							if (fs::exists(assetRoot)) {
 								for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
 									if (!p.is_regular_file()) continue;
@@ -2773,7 +2628,7 @@ namespace CrashoutsEngine
 
 			if (ImGui::BeginPopup("AddRuleAssetPopup")) {
 				namespace fs = std::filesystem;
-				std::string dirPath = CrashoutsEngine::Assets::rootPath + "tilemaps/";
+				std::string dirPath = std::string(GetGameRoot()) + "/assets/tilemaps/";
 
 				// --- SECTION 1: CREATE NEW ASSET ---
 				static char newAssetName[64] = "";
@@ -3009,67 +2864,6 @@ namespace CrashoutsEngine
 		}
 	};
 
-
-	/*struct ZOrderAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "ZOrder (Rendering)"; }
-		bool has(ECS& ecs, Entity e) const override {
-			return ecs.HasComponent<Component::ZOrder>(e);
-		}
-		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::ZOrder>(e);
-		}
-		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::ZOrder>(e);
-		}
-		void drawInspector(ECS& ecs, Entity e) override {
-			auto* z = ecs.GetComponent<Component::ZOrder>(e);
-			if (!z) return;
-
-			int layer = static_cast<int>(z->layer);
-			const char* items[] = { "StaticBackground", "InteractiveBG", "WorldGeometry", "EffectsAndItems", "Players" };
-			if (ImGui::Combo("Layer", &layer, items, IM_ARRAYSIZE(items))) {
-				z->layer = static_cast<Component::RenderLayer>(layer);
-			}
-
-			ImGui::DragInt("Z Index", &z->z);
-
-			if (ecs.HasComponent<Component::TransformComponent>(e)) {
-				auto* t = ecs.GetComponent<Component::TransformComponent>(e);
-				Component::DebugZOverride* dbg = nullptr;
-				if (ecs.HasComponent<Component::DebugZOverride>(e)) {
-					dbg = ecs.GetComponent<Component::DebugZOverride>(e);
-				}
-				float depth = Component::Rendering::ComputeDepth(t->position, *z, dbg);
-				ImGui::TextDisabled("Computed Depth: %.2f", depth);
-			}
-		}
-	};*/
-
-	struct DebugZOverrideAdapter : DebugReflection::IComponentAdapter {
-		const char* name() const override { return "Debug Z Override"; }
-		bool has(ECS& ecs, Entity e) const override {
-			return ecs.HasComponent<Component::DebugZOverride>(e);
-		}
-		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::DebugZOverride>(e);
-		}
-		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::DebugZOverride>(e);
-		}
-		void drawInspector(ECS& ecs, Entity e) override {
-			auto* dbg = ecs.GetComponent<Component::DebugZOverride>(e);
-			if (!dbg) return;
-
-			ImGui::DragInt("Offset", &dbg->offset, 100.0f);
-
-			// Quick toggles
-			if (ImGui::Button("Reset")) dbg->offset = 0;
-			ImGui::SameLine();
-			if (ImGui::Button("+5M (Front)")) dbg->offset = 5000000;
-			ImGui::SameLine();
-			if (ImGui::Button("-5M (Back)")) dbg->offset = -5000000;
-		}
-	};
 	/*!
 	@brief Game-state provider installed at runtime (no hardcoded state list).
 	@details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
@@ -3309,7 +3103,7 @@ namespace CrashoutsEngine
 						if (!s_scanned) {
 							s_scanned = true;
 							s_assets.clear();
-							const fs::path assetRoot = fs::path(CrashoutsEngine::Assets::rootPath) / "images";
+							const fs::path assetRoot = fs::path(GetGameRoot()) / "assets/images";
 							if (fs::exists(assetRoot)) {
 								for (auto& p : fs::recursive_directory_iterator(assetRoot)) {
 									if (!p.is_regular_file()) continue;
@@ -3434,7 +3228,7 @@ namespace CrashoutsEngine
 					s_scanned = true;
 					s_videos.clear();
 					// Assumes videos are in assets/videos/ or just assets/
-					const std::string assetRoot = CrashoutsEngine::Assets::rootPath;
+					const std::string assetRoot = std::string(GetGameRoot()) + "/assets/";
 
 					try {
 						if (fs::exists(assetRoot)) {
@@ -3466,7 +3260,7 @@ namespace CrashoutsEngine
 						
 						// Auto-load
 						if (vc->loader) vc->loader.reset();
-						vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(CrashoutsEngine::Assets::rootPath + v);
+						vc->loader = std::make_shared<CrashoutsEngine::VideoLoader>(std::string(GetGameRoot()) + "/assets/" + v);
 						if (!vc->loader->Load()) {
 							vc->loader.reset();
 						}
@@ -3658,8 +3452,7 @@ namespace CrashoutsEngine
 			 these singletons; keep them in an anonymous namespace to avoid ODR/linkage issues.
 			 Adapters drive the ECS inspector; providers extend the Physics/Game State panels.
 	*/
-	static NameAdapter gNameAdapter;
-	static LayerAdapter gLayerAdapter;
+	static CoreEntityAdapter gCoreEntityAdapter;
 	static TransformAdapter gTransformAdapter;
 	static RigidBodyAdapter gRigidBodyAdapter;
 	static ColliderAdapter gColliderAdapter;
@@ -3675,8 +3468,6 @@ namespace CrashoutsEngine
 	static BuiltinPhysicsProvider gBuiltinPhys;
 	static KeyframeAnimatorAdapter gKeyframeAdapter;
 	static ParticleSystemAdapter gParticleAdapter;
-	static TagAdapter gTagAdapter;     
-	static DebugZOverrideAdapter gDebugZOverrideAdapter;
 	static VideoAdapter gVideoAdapter;
 	static CheckpointAdapter gCheckpointAdapter;
 	static TriggerMetadataAdapter gTriggerMetadataAdapter;
@@ -3695,11 +3486,8 @@ namespace CrashoutsEngine
 */
 extern "C" void RegisterBuiltinComponentAdapters() {
 	using namespace DebugReflection;
-	ComponentRegistry::instance().registerAdapter(&gNameAdapter);
-	ComponentRegistry::instance().registerAdapter(&gTagAdapter);
-	ComponentRegistry::instance().registerAdapter(&gLayerAdapter);
+	ComponentRegistry::instance().registerAdapter(&gCoreEntityAdapter);
 	ComponentRegistry::instance().registerAdapter(&gTransformAdapter);
-	ComponentRegistry::instance().registerAdapter(&gDebugZOverrideAdapter);
 	ComponentRegistry::instance().registerAdapter(&gRigidBodyAdapter);
 	ComponentRegistry::instance().registerAdapter(&gColliderAdapter);
 	ComponentRegistry::instance().registerAdapter(&gShapeAdapter);

@@ -541,6 +541,24 @@ namespace CrashoutsEngine::Audio
         // Master bus stops *everything* (music + sfx)
         return stopAllOnBus("bus:/", fadeOut);
     }
+    
+    /*
+    @brief Stopping this group halts all Core audio immediately
+    */
+    void AudioSystem::stopAllChannels()
+    {
+        if (!mCore) return;
+
+        FMOD::ChannelGroup* master = nullptr;
+        if (mCore->getMasterChannelGroup(&master) == FMOD_OK && master)
+        {
+            master->stop();
+        }
+
+        // Clean up tracked channels so the system knows they are dead
+        mTaggedChannels.clear();
+        mFadingChannels.clear();
+    }
 
     /*!
     @brief Stops all sounds currently playing on the music channel group.

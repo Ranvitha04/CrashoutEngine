@@ -10,6 +10,9 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "debugmenu_internals.h"
 #include "deleteentitycommand.h"
 
+#include "particlecomponent.h"
+#include "textcomponent.h"
+
 using namespace CrashoutsEngine;
 
 namespace UI {
@@ -25,7 +28,10 @@ namespace UI {
     static inline CEVec3 ViewUV_toWorld(float u, float v) {
         const float ndcX = u * 2.f - 1.f;
         const float ndcY = v * 2.f - 1.f;
-        const glm::mat4 VP = Component::Rendering::Get().projectionMatrix * Component::Rendering::Get().viewMatrix;
+
+        auto& cam = (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
+        const glm::mat4 VP = cam.GetProjectionMatrix() * cam.GetViewMatrix();
+
         const glm::mat4 invVP = glm::inverse(VP);
         glm::vec4 w = invVP * glm::vec4(ndcX, ndcY, 0.f, 1.f);
         if (w.w != 0.f) w /= w.w;
@@ -228,8 +234,8 @@ namespace UI {
 
                 auto WorldToScreen = [&](CEVec3 worldPos) -> ImVec2 {
                     glm::vec3 v(worldPos.x, worldPos.y, worldPos.z);
-                    glm::vec4 clipSpace = Component::Rendering::Get().projectionMatrix *
-                        Component::Rendering::Get().viewMatrix * glm::vec4(v, 1.f);
+                    auto& cam = (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
+                    glm::vec4 clipSpace = cam.GetProjectionMatrix() * cam.GetViewMatrix() * glm::vec4(v, 1.f);
 
                     if (clipSpace.w == 0.f) return ImVec2(-1, -1);
                     glm::vec3 ndc = glm::vec3(clipSpace) / clipSpace.w;
@@ -367,8 +373,43 @@ namespace UI {
                     float m[16];
                     ImGuizmo::RecomposeMatrixFromComponents(tr, rt, sc, m);
 
-                    const float* view = glm::value_ptr(Component::Rendering::Get().viewMatrix);
-                    const float* proj = glm::value_ptr(Component::Rendering::Get().projectionMatrix);
+                    // ==========================================
+                    // DETERMINE COORDINATE SPACE
+                    // ==========================================
+                    bool isWorldSpace = true;
+
+                    // Check if it's a shape or text and if it's set to Screen Space
+                    if (ecs.HasComponent<Component::ShapeComponent>(root)) {
+                        isWorldSpace = ecs.GetComponent<Component::ShapeComponent>(root)->isWorldSpace;
+                    }
+                    else if (ecs.HasComponent<Component::TextComponent>(root)) {
+                        isWorldSpace = ecs.GetComponent<Component::TextComponent>(root)->isWorldSpace;
+                    }
+                    else if (ecs.HasComponent<Component::ParticleComponent>(root)) {
+                        isWorldSpace = ecs.GetComponent<Component::ParticleComponent>(root)->useWorldSpace;
+                    }
+
+                    glm::mat4 gizmoView;
+                    glm::mat4 gizmoProj;
+
+                    if (isWorldSpace) {
+                        // Use World Camera
+                        auto& cam = (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
+                        gizmoView = cam.GetViewMatrix();
+                        gizmoProj = cam.GetProjectionMatrix();
+                    }
+                    else {
+                        // Use Screen Space UI Camera (Matches RenderScene logic)
+                        float aspect = (float)GLApp::width / (float)GLApp::height;
+                        float h = 100.0f;
+                        float w = h * aspect;
+                        gizmoProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
+                        gizmoView = glm::mat4(1.0f);
+                    }
+
+                    const float* view = glm::value_ptr(gizmoView);
+                    const float* proj = glm::value_ptr(gizmoProj);
+                    // ==========================================
 
                     const float* snapPtr = nullptr;
                     float snap[3]{};

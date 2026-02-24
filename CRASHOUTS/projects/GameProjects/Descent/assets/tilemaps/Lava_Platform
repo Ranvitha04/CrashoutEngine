@@ -1,0 +1,20 @@
+{
+    "layerMask": 4,
+    "tilemap": [
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_00.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 2
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_01.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 10
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_02.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 8
+        }
+    ]
+}

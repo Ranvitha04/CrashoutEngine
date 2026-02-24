@@ -31,6 +31,7 @@ __________________________________________________________________________*/
 #include <filesystem>
 #include <cmath> // For std::floor
 #include "inputmanager.h"
+#include "engine.h"
 
 /*
 ----------------------------------------------------------------------------- */
@@ -569,7 +570,7 @@ namespace CrashoutsEngine::Editor {
 
 			if (ImGui::BeginPopup("SelectRuleAsset")) {
 				namespace fs = std::filesystem;
-				std::string path = CrashoutsEngine::Assets::rootPath + "tilemaps/";
+				std::string path = GetGameRoot() + "/assets/tilemaps/";
 
 				if (fs::exists(path)) {
 					for (const auto& entry : fs::directory_iterator(path)) {

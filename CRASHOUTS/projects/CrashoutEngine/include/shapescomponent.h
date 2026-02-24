@@ -55,7 +55,7 @@ namespace Component {
 
         CEVec2 uvSize{ 1.f, 1.f }; ///< UV tiling/repeat size when texturing is enabled.
         CEVec2 uvOffset{ 0.f, 0.f };
-        std::string textureName{}; ///< Name/identifier of the texture resource to sample.
+        std::string textureName{ "missing.png" }; ///< Name/identifier of the texture resource to sample.
         GLuint textureHandle{ 0 }; ///< Optional raw handle override (e.g. for VideoComponent)
 
         // -------------------- Shape Selection --------------------

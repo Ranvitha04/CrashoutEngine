@@ -126,11 +126,17 @@ namespace CrashoutsEngine {
 			return newId;
 		}
 
+		// Get current EntityID
+		Entity GetEntityID() { return nextEntityId; }
+
 		// Clone a new entity and return ID
 		Entity CloneEntity(Entity srcEntityId);
 
 		// Find Entity by name
 		Entity FindEntityByName(std::string name);
+
+		// Find Entity by UUID
+		Entity FindEntityByUUID(uint64_t uuid);
 
 		// Add component to entity
 		template<typename T, typename... Args>

@@ -112,6 +112,65 @@ std::string g_PendingSceneName = "";
 bool g_IsSceneLoadPending = false;
 bool g_ShowFPS = false;
 
+std::string g_GameRootPath = "";
+
+void SetGameRoot(const std::string& path) {
+    g_GameRootPath = path;
+
+    // 1. Extract the name (e.g., "Descent", "test", or ".") from the path
+    std::string gameName = std::filesystem::path(path).filename().string();
+
+    // 2. Determine the display name
+    std::string title;
+
+#if USE_IMGUI_EDITOR
+    // If the path is empty or just a dot, it's the base engine
+    if (gameName.empty() || gameName == ".") {
+        title = "CrashoutEditor";
+    }
+    else {
+        title = "CrashoutEditor - " + gameName;
+    }
+#else
+    // For standalone games, just show the game name
+    title = (gameName.empty() || gameName == ".") ? "Crashouts Engine" : gameName;
+#endif
+
+    // 3. Update the GLFW window title immediately if it's already initialized
+    if (GLApp::ptr_window) {
+        glfwSetWindowTitle(GLApp::ptr_window, title.c_str());
+    }
+}
+
+std::string GetGameRoot() {
+    return g_GameRootPath;
+}
+
+std::string GetStartingSceneName()
+{
+    std::string manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+    std::ifstream ifs(manifestPath);
+
+    if (ifs.is_open()) {
+        rapidjson::IStreamWrapper isw(ifs);
+        rapidjson::Document doc;
+        doc.ParseStream(isw);
+
+        if (!doc.HasParseError()) {
+            if (doc.HasMember("start_scene") && doc["start_scene"].IsString()) {
+                return doc["start_scene"].GetString();
+            }
+            if (doc.HasMember("scenes") && doc["scenes"].IsArray() && doc["scenes"].Size() > 0) {
+                const auto& firstScene = doc["scenes"][0];
+                if (firstScene.HasMember("name")) {
+                    return firstScene["name"].GetString();
+                }
+            }
+        }
+    }
+    return "StartScene"; // Ultimate fallback
+}
+
 #if USE_IMGUI_EDITOR
 static EngineState previousState = EngineState::STOP;
 #else
@@ -145,13 +204,15 @@ static bool PerformPendingSceneLoad() {
         
         Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
 
+        CrashoutsEngine::ScriptSystem::InitializeAll(
+            MonoManager::GetDomain(),
+            MonoManager::GetAssembly()
+        );
+
         // Reset flags
         g_IsSceneLoadPending = false;
         g_PendingSceneName = "";
 
-        // Reset Mono to ensure scripts re-bind correctly
-        // (Optional depending on your architecture, but safe)
-        // MonoManager::ReloadScripts(); 
 #if !USE_IMGUI_EDITOR
         if (Physics::PhysicsHandler::GetInstance().GetPaused())
             Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(false);
@@ -212,8 +273,10 @@ void Init() {
     namespace fs = std::filesystem;
 
 #if USE_IMGUI_EDITOR
-    const fs::path prefabDir = fs::path(CrashoutsEngine::Assets::rootPath) / "prefabs";
+    // Look for prefabs inside the current game project's assets
+    const fs::path prefabDir = fs::path(GetGameRoot()) / "assets" / "prefabs";
 #else
+    // RELEASE MODE: Look in the dynamic LocalAppData folder we just fixed
     const fs::path prefabDir = fs::path(GetLocalAppData()) / "prefabs";
 #endif
 
@@ -231,7 +294,21 @@ void Init() {
     collisionSystem.registerObserver(EventType::TriggerExit, collisionEvent);
 
     // start with a 16:9 aspect ratio
-    if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), "CRASHOUTS")) {
+    std::string gameName = fs::path(GetGameRoot()).filename().string();
+    std::string initialTitle;
+
+#if USE_IMGUI_EDITOR
+    if (gameName.empty() || gameName == ".") {
+        initialTitle = "CrashoutEditor";
+    } else {
+        initialTitle = "CrashoutEditor - " + gameName;
+    }
+#else
+    initialTitle = (gameName.empty() || gameName == ".") ? "Crashouts Engine" : gameName;
+#endif
+
+    // Initialize with the formatted title immediately
+    if (!GLApp::init(Settings::GetScreenWidth(), Settings::GetScreenHeight(), initialTitle.c_str())) {
         std::exit(EXIT_FAILURE);
     }
     glfwSetWindowFocusCallback(GLApp::ptr_window,
@@ -255,12 +332,19 @@ void Init() {
         }
     );
 
-    CrashoutsEngine::Audio::AudioSystem::instance().init(CrashoutsEngine::Assets::rootPath + "audio/");
+    CrashoutsEngine::Audio::AudioSystem::instance().init(GetGameRoot() + "/assets/audio/");
 
+    // 1. Define the manifest location for the CURRENT project
+    std::string manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
 #if USE_IMGUI_EDITOR
-    CrashoutsEngine::Assets::GenerateAssetManifest();
+
+    // 2. Generate it at that specific project location
+    CrashoutsEngine::Assets::GenerateAssetManifest(manifestPath);
+
 #endif
-    CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets();
+
+    // 3. Load the manifest we just created
+    CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets(manifestPath);
 
 
     //Component::Rendering::Get().Setup_VAO(); // Setup default quad VAO
@@ -268,15 +352,13 @@ void Init() {
     Component::TextureRenderer::Initialize(); // Initializes the texture/sprite shader
 
 	MonoManager::Init("CrashoutDomain");
-    MonoManager::LoadAssembly("scripts/ManagedScripts.dll");
+    MonoManager::LoadAssembly();
     RegisterBuiltinComponentAdapters();
     CrashoutsEngine::InitPrefabs();
 
     /// register game states and start with main menu
     RegisterAllStates();
     InitGameStateManager(SCENE);
-
-    //CrashoutsEngine::Audio::AudioSystem::instance().init();
 
     CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
 
@@ -319,6 +401,14 @@ void Init() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
     Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
+
+    // Give the async loader a moment to upload initial textures to the GPU 
+    // before the first frame tries to render them.
+    std::cout << "[Engine] Waiting for initial asset GPU uploads...\n";
+    for (int i = 0; i < 5; ++i) { // Pump it a few times
+        CrashoutsEngine::Assets::AssetManager::GetInstance().Update();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
 
 /*  _________________________________________________________________________ */
@@ -802,9 +892,6 @@ void CleanUp() {
     GLApp::cleanup();
 }
 
-// Game path offset
-const std::string gamePathOffset = "/Digipen/Descent/";
-
 /*
 /*! GetUserDocFolder
 
@@ -851,6 +938,12 @@ std::string GetLocalAppData() {
     }
 
     // Free mem allocated 
+    // Free mem allocated 
     if (ppszPath) CoTaskMemFree(ppszPath);
-    return path + gamePathOffset;
+
+    // --- Generate the path offset dynamically based on the current game! ---
+    std::string gameName = std::filesystem::path(GetGameRoot()).filename().string();
+    std::string dynamicPathOffset = "/Digipen/" + gameName + "/";
+
+    return path + dynamicPathOffset;
 }

@@ -1,102 +1,104 @@
 ==================================================
-PROJECT SETUP AND BUILD GUIDE
+PROJECT SETUP AND BUILD GUIDE (v2.0)
 ==================================================
 
-Welcome! This guide provides instructions on how to install the necessary tools, generate the project files, and build the application using Windows and Visual Studio 2022.
+Welcome! This guide provides instructions for managing multiple game 
+projects, building the engine, and utilizing the automated scaffolding 
+system.
 
 ***
 ==================================================
 PREREQUISITES
 ==================================================
 
-Before you begin, make sure you have Visual Studio 2022 installed with the "Desktop development with C++" workload.
-* You can download it here: https://visualstudio.microsoft.com/downloads/
+Before you begin, ensure you have the following installed:
+
+* Visual Studio 2022: With the "Desktop development with C++" workload.
+* .NET SDK: Version 4.7.2 or higher (to compile C# game scripts).
+* CMake: Version 3.25 or higher.
+    - IMPORTANT: During installation, select "Add CMake to the system 
+      PATH". Verify by typing "cmake --version" in Command Prompt.
 
 ***
 ==================================================
-STEP 1: INSTALL CMAKE
+STEP 1: CREATE A NEW GAME PROJECT
 ==================================================
 
-This project uses CMake to generate the Visual Studio project files.
+You no longer need to copy files manually to start a new game project.
 
-1.  Download CMake:
-    * Go to the official download page: https://cmake.org/download/
-    * Under the "Binary distributions" section, download the latest "Windows x64 Installer" (.msi file).
-
-2.  Run the Installer:
-    * During installation, you will reach an "Install Options" screen.
-    * IMPORTANT: You must choose either "Add CMake to the system PATH for all users" or "Add CMake to the system PATH for the current user". This allows the scripts to find and run CMake from the command line.
-
-3.  Verify Installation:
-    * After installation, open a new Command Prompt and type "cmake --version". If it prints a version number, you are all set!
+1. Launch the Editor: Run 'run.bat' to open the CrashoutEditor.
+2. Project Manager: Open the "Project Manager" panel in the debug menu.
+3. Scaffold: Enter your project name (e.g., Ascent) and click 
+   "Create & Initialize Project".
+    * This generates the folder structure, CMakeLists.txt, main.cpp, 
+      and .csproj file automatically.
+    * It copies starter scripts from the 'projects/Template' folder.
 
 ***
 ==================================================
-STEP 2: BUILD & RUN THE PROJECT
+STEP 2: BUILD & RUN DYNAMICALLY
 ==================================================
 
-The entire build and run process is automated with a single script.
+The 'run.bat' script dynamically detects which project you want to build 
+based on the target name passed to it.
 
-* To run in 'CrashoutEditor' mode (default):
-    * In the project's root folder, type 'CrashoutEdtior' after 'run.bat' 
-      to build the editor.
+* To run a specific Game (e.g., Ascent):
+    - Open a Command Prompt in the root folder.
+    - Type: .\run.bat Ascent
+    - Result: This configures CMake for that game, builds C# scripts, 
+      compiles the C++ EXE, and launches it.
 
-* To run in 'Descent' mode:
-    * In the project's root folder, type 'Descent' after 'run.bat' 
-      to build the game.
+* To run the Engine Editor:
+    - Simply double-click 'run.bat' or type: .\run.bat CrashoutEditor
 
-* To run in 'Debug' mode (default):
-    * In the project's root folder, simply double-click the "run.bat" file.
-    * Solution is found in the x64-Debug folder.
-
-* To run in 'Release' mode:
-    * Open a Command Prompt in the root folder.
-    * Type "run.bat Release" and press Enter.
-    * Solution is found in the x64-Release folder.
-
-* What this script does:
-    1.  Creates a "build" folder (if it doesn't exist).
-    2.  Runs CMake to configure the project and generate Visual Studio files.
-    3.  Builds the project's C++ code (defaulting to 'Debug').
-    4.  Automatically launches the "Descent.exe" executable with the correct working directory so it can find its assets.
+* To build in Release mode:
+    - Type: .\run.bat {ProjectName} Release
 
 ***
 ==================================================
-STEP 3: CLEANING UP (AND SAVING ASSETS)
+STEP 3: CLEANING UP (AND ASSET SAFETY)
 ==================================================
 
-If you need to delete all generated files and start over, use the "clean.bat" script.
+Use 'clean.bat' to wipe build artifacts while protecting your progress.
 
-* How to run: Simply double-click the "clean.bat" file.
-
-* What it does:
-    1.  Cleans Project: After syncing your assets, it completely deletes the "build" directory.
+* Asset Sync: Before deletion, the script automatically copies any 
+  modified assets (like edited scenes) back to your source project folder 
+  from the build directory.
+* Deep Clean: It then removes the 'build' directory and all CMake caches 
+  to ensure a fresh state.
 
 ***
-
 ==================================================
-STEP 4: DISABLING IMGUI
+STEP 4: C# SCRIPTING & HOT RELOAD
 ==================================================
 
-If you need need to test the game without the IMGUI.
-
-* How to run: Simply double-click the "TOP-LEVEL CMAKELISTS.TXT" Then look for "USE_IMGUI_EDITOR"
-	      flag and disable it by setting it to 0.
-
-* What it does:
-    1.  Tells the program to not use imgui.
+1. Editing: Open the .csproj inside 'GameProjects/{Name}/scripts'.
+2. Shared Code: These projects reference 'CrashoutEngine/core-assets/scripts'. 
+   Do not edit files in the core folder unless you want the changes 
+   to affect every project.
+3. Building: Compiling via 'run.bat' or VS automatically copies the 
+   DLL to the engine's internal script folder.
+4. Hot Reload: If the engine is running, the MonoManager detects the 
+   new DLL and reloads your scripts live.
 
 ***
 ==================================================
 HOW TO DEBUG IN VISUAL STUDIO
 ==================================================
 
-If you want to use the Visual Studio debugger (e.g., to set breakpoints):
+1. Run '.\run.bat {YourProjectName}' once to generate the build folder.
+2. Open 'build/CrashoutEngine.sln'.
+3. Set Startup Project: In Solution Explorer, right-click your specific 
+   game project (e.g., Ascent) and select "Set as StartUp Project".
+4. Debug: Ensure the config is "Debug" and platform is "x64", then 
+   press F5 to start.
 
-1.  First, run "run.bat" at least once to generate the "build" folder.
-2.  Open the "build" folder and double-click the "CRASHOUTS.sln" (or equivalent) solution file.
-3.  Once the solution is open in Visual Studio:
-    * In the "Solution Explorer" panel, right-click on the "Descent" project.
-    * Select "Set as StartUp Project". (Do not set the "CrashoutEngine" library as the startup project).
-    * Use the dropdowns at the top to ensure the configuration is set to "Debug" and the platform is "x64".
-    * Press F5 or the green "Local Windows Debugger" button to compile and run with the debugger attached.
+***
+==================================================
+DISABLING IMGUI
+==================================================
+
+To test the game without the Editor UI:
+1. Open the TOP-LEVEL CMakeLists.txt.
+2. Find the "USE_IMGUI_EDITOR" flag and set it to 0.
+

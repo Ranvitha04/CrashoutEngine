@@ -1,0 +1,460 @@
+{
+    "entities": [
+        {
+            "active": true,
+            "name": "Tex_Monsters(5)",
+            "uuid": 761712192541360979,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 20.096940994262697,
+                    "y": 11.741125106811524,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 50.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Monsters(5)",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Players",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg colour",
+            "uuid": 3009890465655727654,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -36.150856018066409,
+                    "y": -2.0481176376342775,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 50.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg colour",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.18784528970718385
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg 1 pillar 2",
+            "uuid": 2535721949730513867,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -25.131349563598634,
+                    "y": 1.0884195566177369,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 50.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg 1 pillar 2",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 4
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg2 base",
+            "uuid": 4357313173676838390,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -36.40776443481445,
+                    "y": -1.5186622142791749,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 50.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg2 base",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 6
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_Chibi-2",
+            "uuid": 14373703683802825089,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 39.871456146240237,
+                    "y": 6.152674198150635,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 50.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Chibi-2",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Players",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_Monsters(8)",
+            "uuid": 14532882918421361681,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 27.621170043945314,
+                    "y": 15.445619583129883,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 50.0,
+                    "y": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Monsters(8)",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Players",
+                "z": 5
+            }
+        },
+        {
+            "active": true,
+            "name": "Entity 7",
+            "uuid": 17984768587446070860,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1.8651344776153565,
+                    "y": -33.428985595703128,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
+            },
+            "particle": {
+                "isEmitting": true,
+                "useWorldSpace": false,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": false,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 1.0,
+                "startLifeMax": 1.0,
+                "startSpeedMin": 1.0,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.0,
+                "startSizeXMax": 1.0,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        }
+    ],
+    "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    },
+    "layer_visibility": {
+        "Default": true
+    },
+    "tag_mapping": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    },
+    "quadtree": {
+        "min": {
+            "x": -2000.0,
+            "y": -2000.0
+        },
+        "max": {
+            "x": 2000.0,
+            "y": 2000.0
+        }
+    }
+}

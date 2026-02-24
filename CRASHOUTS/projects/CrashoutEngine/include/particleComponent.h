@@ -1,5 +1,5 @@
 /*!
-@file       particleComponent.h
+@file       particlecomponent.h
 @author     Renfred (lee.r@digipen.edu)
 @date       01/12/2026
 @brief      Particle Component data.

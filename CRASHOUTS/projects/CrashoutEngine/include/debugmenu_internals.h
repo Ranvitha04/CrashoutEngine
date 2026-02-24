@@ -40,6 +40,7 @@ All content © 2025 DigiPen Institute of Technology Singapore. All rights reserve
 #include "entitymanager.h"
 #include "namecomponent.h"
 #include "transformcomponent.h"
+#include "uuidcomponent.h"
 #include "shapescomponent.h"
 #include "audiocomponent.h"
 #include "tilemapcomponent.h"
@@ -47,6 +48,8 @@ All content © 2025 DigiPen Institute of Technology Singapore. All rights reserve
 #include "hierarchycomponent.h" // Parent/Child components
 #include "keyframe.h" // Animator component
 #include "activecomponent.h"
+#include "tagcomponent.h"
+#include "hierarchy.h"
 
 // --- 5. Systems & Managers ---
 #include "physicsmanager.h"
@@ -154,7 +157,7 @@ namespace UI {
     // --- Panel Render Functions (Implemented in other .cpp files) ---
 
     void RenderGameViewport(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity& selected);
-    void RenderAssetBrowserPanel(UIState& ui, const char* root, std::string& outSelectedAsset);
+    void RenderAssetBrowserPanel(UIState& ui, std::string& outSelectedAsset);
     void RenderEcsPanel(CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected, UIState& ui);
     void RenderInspectorPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui);
     void RenderAnimationPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected, UIState& ui);
@@ -165,6 +168,5 @@ namespace UI {
     void RenderGameStatePanel(UIState& ui);
     void RenderGameScenePanel(UIState& ui);
     void RenderEngineStateBar(UIState& ui);
-	// To be implemented in this file later
-    //void RenderSpriteSheetPanel(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity selected);
+    void RenderProjectManager(UIState& ui);
 }

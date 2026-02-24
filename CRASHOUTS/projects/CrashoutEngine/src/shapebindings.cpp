@@ -29,19 +29,28 @@ namespace {
 
     // --- Logic Functions ---
 
-    // Color: We pass 4 floats to avoid struct layout issues
-    static void InternalGetColor(uint32_t id, float* r, float* g, float* b, float* a) {
-        if (auto* s = GetShape(id)) {
-            *r = s->color.x();
-            *g = s->color.y();
-            *b = s->color.z();
-            *a = s->color.w();
+    // 1. Get Color
+    static void InternalGetColor(uint32_t entityID, CEColor* outColor) {
+        if (!outColor) return;
+
+        auto* ecs = ECS::getInstance();
+        if (ecs->HasComponent<Component::ShapeComponent>(entityID)) {
+            auto* shape = ecs->GetComponent<Component::ShapeComponent>(entityID);
+            *outColor = shape->color; // Copy the C++ color directly into C# memory
+        }
+        else {
+            *outColor = CEColor{ 1.0f, 1.0f, 1.0f, 1.0f }; // Fallback white
         }
     }
 
-    static void InternalSetColor(uint32_t id, float r, float g, float b, float a) {
-        if (auto* s = GetShape(id)) {
-            s->color = { r, g, b, a };
+    // 2. Set Color
+    static void InternalSetColor(uint32_t entityID, CEColor* inColor) {
+        if (!inColor) return;
+
+        auto* ecs = ECS::getInstance();
+        if (ecs->HasComponent<Component::ShapeComponent>(entityID)) {
+            auto* shape = ecs->GetComponent<Component::ShapeComponent>(entityID);
+            shape->color = *inColor; // Overwrite the C++ color
         }
     }
 

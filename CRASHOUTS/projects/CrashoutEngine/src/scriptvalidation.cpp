@@ -13,13 +13,14 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <filesystem>
 #include <fstream>
 #include <algorithm>
+#include "engine.h"
 
 namespace CrashoutsEngine
 {
     bool IsValidScriptBehaviourClass(const std::string& className)
     {
         namespace fs = std::filesystem;
-        fs::path base = "././projects/ManagedScripts";
+        fs::path base = fs::path(GetGameRoot()) / "scripts";
 
         try {
             for (auto it = fs::recursive_directory_iterator(

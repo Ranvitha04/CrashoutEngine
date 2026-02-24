@@ -1,0 +1,82 @@
+{
+    "entities": [
+        {
+            "active": true,
+            "name": "Text_Input_Label",
+            "uuid": 15111231989778320087,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -52.51216506958008,
+                    "y": 2.917344331741333,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Text Input Above",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 255.0,
+                    "y": 255.0,
+                    "z": 255.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "layer": {
+                "layerName": "StaticBackground",
+                "z": 0
+            }
+        }
+    ],
+    "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1,
+        "UI": 4
+    },
+    "layer_visibility": {
+        "Default": true
+    },
+    "tag_mapping": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    },
+    "quadtree": {
+        "min": {
+            "x": -2000.0,
+            "y": -2000.0
+        },
+        "max": {
+            "x": 2000.0,
+            "y": 2000.0
+        }
+    }
+}

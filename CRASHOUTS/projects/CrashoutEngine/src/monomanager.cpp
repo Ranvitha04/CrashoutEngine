@@ -31,6 +31,8 @@ std::filesystem::file_time_type MonoManager::s_LastWriteTime{};
 std::string MonoManager::s_AssemblyPath = "";
 bool MonoManager::s_IsManualReloading = false;
 
+static MonoDomain* s_RootDomain = nullptr;
+
 MonoClass* MonoManager::GetSerializeFieldClass() {
 	if (s_Assembly) {
 		MonoImage* image = mono_assembly_get_image(s_Assembly);
@@ -88,17 +90,15 @@ namespace CrashoutsEngine::Bindings {
 
 void MonoManager::Init(const std::string& domainName)
 {
-	mono_set_dirs("third_party/Mono/lib", "third_party/Mono/etc");
+	mono_set_dirs("../../third_party/Mono/lib", "../../third_party/Mono/etc");
 	mono_config_parse(nullptr);
 
-	s_Domain = mono_jit_init(domainName.c_str());
+	s_RootDomain = mono_jit_init(domainName.c_str());
 
-	if (!s_Domain)
-	{
+	if (!s_RootDomain) {
 		std::cerr << "[Mono] Failed to initialize JIT.\n";
 	}
-	else
-	{
+	else {
 		std::cout << "[Mono] JIT initialized successfully.\n";
 	}
 
@@ -115,16 +115,31 @@ void MonoManager::Init(const std::string& domainName)
 	}
 }
 
-void MonoManager::LoadAssembly(const std::string& assemblyPath)
+void MonoManager::LoadAssembly()
 {
-	(void)assemblyPath;
 	namespace fs = std::filesystem;
 
 	// Find the newest DLL in scripts/
 	fs::path latestDll;
 	auto latestTime = fs::file_time_type::min();
 
-	for (const auto& file : fs::directory_iterator("scripts"))
+	std::string gameName = fs::path(GetGameRoot()).filename().string();
+	// Attempt to find the scripts folder relative to the root
+	fs::path scriptDir = fs::path("scripts") / gameName;
+
+	// If we can't find it (likely because we are running from Root via BAT), 
+	// we look into the build folder specifically
+	if (!fs::exists(scriptDir)) {
+		scriptDir = fs::path("build/x64-Debug/scripts") / gameName;
+	}
+
+	if (!fs::exists(scriptDir))
+	{
+		std::cerr << "[Mono] ERROR: Could not find script folder at: " << fs::absolute(scriptDir) << "\n";
+		return;
+	}
+
+	for (const auto& file : fs::directory_iterator(scriptDir))
 	{
 		if (file.path().extension() == ".dll")
 		{
@@ -139,7 +154,7 @@ void MonoManager::LoadAssembly(const std::string& assemblyPath)
 
 	if (latestDll.empty())
 	{
-		std::cerr << "[Mono] No ManagedScripts DLL found in scripts/!\n";
+		std::cerr << "[Mono] No Game DLL found in scripts/!\n";
 		return;
 	}
 
@@ -158,11 +173,14 @@ void MonoManager::LoadAssembly(const std::string& assemblyPath)
 		return;
 	}
 
-	if (!s_Domain)
-	{
-		std::cerr << "[Mono] Domain not initialized!\n";
+	if (!s_RootDomain) {
+		std::cerr << "[Mono] Root Domain not initialized! Did you call Init()?\n";
 		return;
 	}
+
+	char appDomainName[] = "CrashoutsAppDomain";
+	s_Domain = mono_domain_create_appdomain(appDomainName, nullptr);
+	mono_domain_set(s_Domain, true); // Set it as active
 
 	s_Assembly = mono_domain_assembly_open(s_Domain, assemblyToLoadPath.c_str());
 	if (!s_Assembly)
@@ -194,6 +212,16 @@ void MonoManager::ReloadAssembly()
 
 	s_Assembly = nullptr;
 
+	if (s_Domain && s_Domain != s_RootDomain) {
+		mono_domain_set(s_RootDomain, false);
+		mono_domain_unload(s_Domain);
+		s_Domain = nullptr; // Explicitly nullify
+	}
+
+	char appDomainName[] = "CrashoutsAppDomain";
+	s_Domain = mono_domain_create_appdomain(appDomainName, nullptr);
+	mono_domain_set(s_Domain, true); // Step into fresh memory
+
 	namespace fs = std::filesystem;
 
 	try
@@ -201,7 +229,23 @@ void MonoManager::ReloadAssembly()
 		// find newest DLL in scripts folder
 		fs::path latestDll;
 		auto latestTime = fs::file_time_type::min();
-		for (const auto& file : fs::directory_iterator("scripts"))
+		std::string gameName = fs::path(GetGameRoot()).filename().string();
+		// Attempt to find the scripts folder relative to the root
+		fs::path scriptDir = fs::path("scripts") / gameName;
+
+		// If we can't find it (likely because we are running from Root via BAT), 
+		// we look into the build folder specifically
+		if (!fs::exists(scriptDir)) {
+			scriptDir = fs::path("build/x64-Debug/scripts") / gameName;
+		}
+
+		if (!fs::exists(scriptDir))
+		{
+			std::cerr << "[Mono] ERROR: Could not find script folder at: " << fs::absolute(scriptDir) << "\n";
+			return;
+		}
+
+		for (const auto& file : fs::directory_iterator(scriptDir))
 		{
 			if (file.path().extension() == ".dll")
 			{
@@ -216,27 +260,30 @@ void MonoManager::ReloadAssembly()
 
 		if (latestDll.empty())
 		{
-			std::cerr << "[Mono] No ManagedScripts DLL found in scripts/!\n";
+			std::cerr << "[Mono] No Game DLL found in scripts/!\n";
 			return;
 		}
 
 		std::cout << "[Mono][Debug] Latest DLL detected: " << latestDll << "\n";
 
-		// prepare cache folder
-		fs::path dstDir = "scripts/_cache";
+		// prepare cache folder dynamically inside the game's script folder
+		fs::path dstDir = scriptDir / "_cache";
 		fs::create_directories(dstDir);
 
-		// generate a unique temp filename
+		// generate a unique temp filename based on the game's actual name!
 		auto now = std::chrono::system_clock::now();
-		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-			now.time_since_epoch()).count();
-		fs::path dst = dstDir / ("ManagedScripts_reload_" + std::to_string(ms) + ".dll");
+		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+		fs::path dst = dstDir / (gameName + "_reload_" + std::to_string(ms) + ".dll");
 
 		// copy newest DLL into cache
 		fs::copy_file(latestDll, dst, fs::copy_options::overwrite_existing);
 
 		// load that DLL
 		std::cout << "[Mono][Debug] Attempting to load assembly from: " << dst << "\n";
+
+		s_Domain = mono_domain_create_appdomain(appDomainName, nullptr);
+		mono_domain_set(s_Domain, true); // Set it as active
+
 		s_Assembly = mono_domain_assembly_open(s_Domain, dst.string().c_str());
 		if (!s_Assembly)
 		{
@@ -344,7 +391,7 @@ std::string MonoManager::CopyAssemblyToTemp(const std::string& originalPath)
 
 #else
 
-	fs::path dst = "scripts/_cache";
+	fs::path dst = fs::path(GetGameRoot()) / "scripts/_cache";
 	fs::create_directories(dst);
 
 	fs::path tempFile = dst / src.filename();

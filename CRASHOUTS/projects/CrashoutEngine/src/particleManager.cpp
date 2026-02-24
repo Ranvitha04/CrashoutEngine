@@ -9,7 +9,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 */
 
-#include "particleComponent.h"
+#include "particlecomponent.h"
 #include "entitymanager.h"
 #include "transformcomponent.h"
 #include "CEMath.h"
@@ -70,9 +70,11 @@ namespace ParticleSystem {
 			data.activeCount = actualCapacity;
 		}
 
+		CrashoutsEngine::ECS* ecs = CrashoutsEngine::ECS::getInstance();
+
 		// Transform of the object with the particle system component
 		const Component::TransformComponent* t = 
-			CrashoutsEngine::ECS::getInstance()->GetComponent<Component::TransformComponent>(entityId);
+			ecs->GetComponent<Component::TransformComponent>(entityId);
 
 		f32 scaleX = t->size.x;
 		f32 scaleY = t->size.y;

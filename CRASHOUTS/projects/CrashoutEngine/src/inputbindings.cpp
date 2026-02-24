@@ -45,10 +45,22 @@ static bool InternalIsMouseButtonDown(int button)
     return InputManager::IsMouseButtonPressed(button);
 }
 
+static bool InternalIsMouseButtonTriggered(int button)
+{
+    return InputManager::IsMouseButtonTriggered(button);
+}
+
 static bool InternalIsMouseButtonReleased(int button)
 {
-    // Released = not pressed
-    return !InputManager::IsMouseButtonPressed(button);
+    return InputManager::IsMouseButtonReleased(button);
+}
+
+static void InternalGetGameMousePos(CEVec2* outPos) {
+    *outPos = InputManager::GetGameMousePos(); // Uses ImGui-relative mouse
+}
+
+static void InternalGetGameWindowSize(CEVec2* outSize) {
+    *outSize = InputManager::GetGameWindowSize(); // Uses Viewport dimensions
 }
 
 void CrashoutsEngine::Bindings::RegisterInputBindings()
@@ -59,6 +71,9 @@ void CrashoutsEngine::Bindings::RegisterInputBindings()
     mono_add_internal_call("CrashoutsEngine.Input::InternalGetMousePosition", reinterpret_cast<const void*>(InternalGetMousePosition));
     mono_add_internal_call("CrashoutsEngine.Input::InternalGetMouseWorldPosition", reinterpret_cast<const void*>(InternalGetMouseWorldPosition));
     mono_add_internal_call("CrashoutsEngine.Input::InternalIsMouseButtonDown", reinterpret_cast<const void*>(InternalIsMouseButtonDown));
+    mono_add_internal_call("CrashoutsEngine.Input::InternalIsMouseButtonTriggered", reinterpret_cast<const void*>(InternalIsMouseButtonTriggered));
     mono_add_internal_call("CrashoutsEngine.Input::InternalIsMouseButtonReleased", reinterpret_cast<const void*>(InternalIsMouseButtonReleased));
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::GetGameMousePos", reinterpret_cast<const void*>(InternalGetGameMousePos));
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::GetGameWindowSize", reinterpret_cast<const void*>(InternalGetGameWindowSize));
 }
  

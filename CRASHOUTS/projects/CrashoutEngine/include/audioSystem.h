@@ -55,6 +55,7 @@ namespace CrashoutsEngine
             bool stopAllOnBus(const std::string& busPath, bool fadeOut = true);
             void stopAllRaw(); // Stop only raw (music/sfx) channel groups
             bool stopAll(bool fadeOut = true); // Stop everything on master bus
+            void stopAllChannels();
 
             bool stopMusicGroup();
             bool stopSFXGroup();

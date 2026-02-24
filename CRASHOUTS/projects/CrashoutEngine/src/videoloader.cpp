@@ -57,8 +57,12 @@ namespace CrashoutsEngine {
 	 */
 	bool VideoLoader::Load() {
 #ifdef USE_FFMPEG
-		std::string fullPath = Assets::rootPath + filepath;
-		if (std::filesystem::path(filepath).is_absolute()) fullPath = filepath;
+		std::string fullPath = Assets::ResolvePath(filepath);
+
+		// Fallback: if ResolvePath failed (or it was already absolute), use it as is
+		if (fullPath.empty()) {
+			fullPath = filepath;
+		}
 
 		if (avformat_open_input(&formatCtx, fullPath.c_str(), nullptr, nullptr) != 0) {
 			std::cerr << "[VideoLoader] Failed to open: " << fullPath << std::endl;

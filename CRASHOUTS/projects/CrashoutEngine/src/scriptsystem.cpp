@@ -30,7 +30,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "videobindings.h"
 #include "checkpointbindings.h"
 #include "triggerbindings.h"
-#include "particleComponent.h"
+#include "particlecomponent.h"
 #include <mono/metadata/attrdefs.h>
 #include "collidereventmanager.h"
 #include "performanceSystem.h"
@@ -402,7 +402,7 @@ namespace CrashoutsEngine
 		for (auto* scriptComp : scripts.dense)
 		{
 			// Reset GCHandle to 0 so Initialize actually does work after a hot reload
-			for (auto& inst : scriptComp->Scripts) inst.GCHandle = 0;
+			//for (auto& inst : scriptComp->Scripts) inst.GCHandle = 0;
 			scriptComp->Initialize(domain, assembly);
 		}
 
@@ -499,6 +499,17 @@ namespace CrashoutsEngine
 			mono_runtime_invoke(s_ScriptManagerClear, nullptr, nullptr, nullptr);
 		}
 
+		s_ScriptManagerUpdate = nullptr;
+		s_ScriptManagerFixedUpdate = nullptr;
+		s_ScriptManagerOnDrawGizmos = nullptr;
+		s_ScriptManagerClear = nullptr;
+
+		s_ScriptManagerUpdateThunk = nullptr;
+		s_ScriptManagerFixedUpdateThunk = nullptr;
+		s_ScriptManagerOnDrawGizmosThunk = nullptr;
+
+		Component::ScriptComponent::ResetThunks();
+
 		std::cout << "[Mono] All script instances destroyed.\n";
 	}
 
@@ -530,6 +541,12 @@ namespace CrashoutsEngine
 		// This destroys all GCHandles and MonoObjects
 		// MonoManager::ReloadAssembly() typically calls mono_domain_unload / mono_domain_create
 		MonoManager::ReloadAssembly();
+
+		// Wipe old handles so the hot-reload creates fresh objects
+		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
+		for (auto* scriptComp : scripts.dense) {
+			for (auto& inst : scriptComp->Scripts) inst.GCHandle = 0;
+		}
 
 		// 3. RE-INITIALIZE
 		// Recreate the ScriptInstances (get new Class pointers, create new Objects)

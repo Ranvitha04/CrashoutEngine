@@ -1,0 +1,1342 @@
+{
+    "entities": [
+        {
+            "active": true,
+            "name": "Player",
+            "uuid": 7093442491690259591,
+            "tag": {
+                "tagMask": 8
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 5.1378326416015629,
+                    "y": 29.329187393188478,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 62.0,
+                    "y": 72.50599670410156
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 5.1378326416015629,
+                    "y": 29.329187393188478,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -7.162166595458984,
+                    "y": -0.023809432983398439,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 17.43783187866211,
+                    "y": 58.68218231201172,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Character\\Normal Mode\\Chibi-Actions-SpriteSheet.png",
+                "uvSize": {
+                    "x": 0.3333333432674408,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "footstep1",
+                        "path": "footsteps 1.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep2",
+                        "path": "footsteps 2.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep3",
+                        "path": "footsteps 3.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep4",
+                        "path": "footsteps 4.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep5",
+                        "path": "footsteps 5.wav",
+                        "volume": 1.149999976158142,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep6",
+                        "path": "footsteps 6.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep7",
+                        "path": "footsteps 7.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "footstep8",
+                        "path": "footsteps 8.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "jumpLand",
+                        "path": "jump landing.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "switchMassSound",
+                        "path": "switch state.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PlayerMovement",
+                        "fields": {
+                            "maxRunSpeed": 150.0,
+                            "maxAirSpeed": 120.0,
+                            "acceleration": 10.0,
+                            "deceleration": 10.0,
+                            "airAcceleration": 2.0,
+                            "jumpPower": 20000.0,
+                            "gravityScale": 2.5,
+                            "gravityForceMultiplier": 10.0,
+                            "footstepInterval": 0.07500000298023224,
+                            "swapPause": 1.0,
+                            "energyConsumption": 12.5,
+                            "goalNoOfPlates": 1,
+                            "currentGoalPlates": 0,
+                            "landingDustName": "LandingDust",
+                            "dustBurstDuration": 0.15000000596046449,
+                            "normalMass": 7.0,
+                            "lightMass": 4.5,
+                            "groundCheckDistance": 26.0,
+                            "groundCheckWidth": 10.0,
+                            "dialogueCooldown": 1.0,
+                            "isDialogueActive": false,
+                            "CurrentEnergy": 0.0,
+                            "MaxEnergy": 100.0,
+                            "alive": true,
+                            "isPaused": false
+                        }
+                    }
+                ]
+            },
+            "camera": {
+                "zoom": 0.39500001072883608,
+                "xBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "yBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Entity 5",
+            "uuid": 11891884545922539486,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "activeAsset": "tilemaps/Rock",
+                "tileAssetNames": [],
+                "gridData": [
+                    {
+                        "x": -6,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 0,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -4,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -4,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -3,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -3,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -2,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -2,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -1,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 2,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 3,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -2,
+                        "asset": ""
+                    },
+                    {
+                        "x": 4,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 5,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 5,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 6,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 7,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -5,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -4,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -3,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -2,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 8,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 9,
+                        "y": -4,
+                        "asset": ""
+                    },
+                    {
+                        "x": 9,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 10,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 11,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 12,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 13,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 14,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 15,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 16,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 17,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 18,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 19,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 20,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 21,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 22,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 23,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 24,
+                        "y": -1,
+                        "asset": "tilemaps/Rock"
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Slime",
+            "uuid": 10503030238186023498,
+            "tag": {
+                "tagMask": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 105.40235137939453,
+                    "y": 44.8907470703125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": -72.0,
+                    "y": 67.0
+                }
+            },
+            "rigidbody": {
+                "mass": 1.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 103.90235137939453,
+                    "y": 41.3907470703125,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": -1.5,
+                    "y": -3.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 81.50232696533203,
+                    "y": 27.3907470703125,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 126.30237579345703,
+                    "y": 55.3907470703125,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Monsters\\Slime spritesheet.png",
+                "uvSize": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.3333333432674408
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "slimeMove1",
+                        "path": "slime 1.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove2",
+                        "path": "slime 2.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove3",
+                        "path": "slime 3.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove4",
+                        "path": "slime 4.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove5",
+                        "path": "slime 5.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeImpact",
+                        "path": "slime impact.wav",
+                        "volume": 0.15000000596046449,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "detectionRange": 250.0,
+                            "gravityScale": 2.0,
+                            "grabRange": 100.0,
+                            "minThrowSpeed": 50.0,
+                            "maxThrowSpeed": 200.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 1.0,
+                            "stunDuration": 1.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Audio_level bgm 1",
+            "uuid": 3981134387363357139,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 87.8280258178711,
+                    "y": 57.20429229736328,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 30.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Main Clip",
+                        "path": "audio/level bgm 1.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "BGMManager",
+            "uuid": 8136497694944449521,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Level_1",
+                        "path": "level bgm 1.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Music",
+                            "fadeTime": 2.0,
+                            "stopLayer": false
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "AmbienceManager",
+            "uuid": 9874408496754843476,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Lava_Ambience",
+                        "path": "lava-volcano-wind-environment_loop.wav",
+                        "volume": 0.3499999940395355,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Music",
+                            "fadeTime": 2.0,
+                            "stopLayer": false
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "PlayerParticle",
+            "uuid": 7664181452366842135,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 5.1378326416015629,
+                    "y": 0.32678794860839846,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
+            },
+            "particle": {
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": false,
+                "emissionShape": 1,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 1.0,
+                "startLifeMax": 1.0,
+                "startSpeedMin": 1.0,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.0,
+                "startSizeXMax": 10.0,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 0.3118970990180969,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.14147907495498658
+                },
+                "endColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "SlimeParticle",
+            "uuid": 9063427763511687168,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 103.48011016845703,
+                    "y": 29.83319854736328,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "particle": {
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": false,
+                "emissionShape": 1,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 10.0,
+                "startLifeMax": 10.0,
+                "startSpeedMin": 1.0,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 5.0,
+                "startSizeXMax": 15.0,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 0.7799511551856995,
+                    "y": 0.566681444644928,
+                    "z": 0.8681672215461731,
+                    "w": 0.041800618171691897
+                },
+                "endColor": {
+                    "x": 0.32575392723083498,
+                    "y": 0.02357296645641327,
+                    "z": 0.3665595054626465,
+                    "w": 0.08038586378097534
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        }
+    ],
+    "layers": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    },
+    "layer_visibility": {
+        "Cutscene": true,
+        "Default": true,
+        "Dialogue": true
+    },
+    "tag_mapping": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    },
+    "quadtree": {
+        "min": {
+            "x": -2000.0,
+            "y": -2000.0
+        },
+        "max": {
+            "x": 2000.0,
+            "y": 2000.0
+        }
+    }
+}

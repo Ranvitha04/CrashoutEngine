@@ -63,7 +63,24 @@ namespace UI { // --------------------------------------------------------------
 			nullptr);
 
 		ImGui::CreateContext();
-		g_IniPath = CrashoutsEngine::Assets::rootPath + "imgui.ini";
+		namespace fs = std::filesystem;
+
+		// The paths
+		std::string gameIni = std::string(GetGameRoot()) + "/imgui.ini";
+		std::string coreIni = CrashoutsEngine::Assets::coreAssetPath + "imgui.ini";
+
+		// If the game doesn't have a layout yet, but the core engine does, copy it over!
+		if (!fs::exists(gameIni) && fs::exists(coreIni)) {
+			try {
+				fs::copy_file(coreIni, gameIni, fs::copy_options::overwrite_existing);
+				std::cout << "[UI] Copied default ImGui layout from core-assets.\n";
+			}
+			catch (...) {
+				std::cerr << "[UI] Failed to copy default ImGui layout.\n";
+			}
+		}
+
+		g_IniPath = gameIni;
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.IniFilename = g_IniPath.c_str();
@@ -181,9 +198,8 @@ namespace UI { // --------------------------------------------------------------
 				}
 
 				if (ImGui::MenuItem("Reset Window Layout")) {
-					// delete the file and reload
-					std::string path = CrashoutsEngine::Assets::rootPath + "imgui.ini";
-					std::remove(path.c_str()); // Delete the file
+					// Delete the local game file
+					std::remove(g_IniPath.c_str());
 
 					ImGui::ClearIniSettings();
 					ImGuiID dockspace_id = ImGui::GetID("MyMainDockSpace");
@@ -286,6 +302,7 @@ namespace UI { // --------------------------------------------------------------
 				ImGui::MenuItem("Animation", nullptr, &ui.showAnimation);
 				ImGui::MenuItem("Game State", nullptr, &ui.showGameState);
 				ImGui::MenuItem("Game Scene", nullptr, &ui.showGameScene);
+				ImGui::MenuItem("Project Manager", nullptr, &ui.showProjectManager);
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -376,6 +393,7 @@ namespace UI { // --------------------------------------------------------------
 			ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
 			ImGui::DockBuilderDockWindow("Engine Controls", dock_top);
 			ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
+			ImGui::DockBuilderDockWindow("Project Manager", dock_bottom);
 
 			ImGui::DockBuilderFinish(dockspace_id);
 		}
@@ -396,7 +414,7 @@ namespace UI { // --------------------------------------------------------------
 		}
 		if (ui.showAssets) {
 			static std::string gPickedAsset;
-			RenderAssetBrowserPanel(ui, Assets::rootPath.c_str(), gPickedAsset);
+			RenderAssetBrowserPanel(ui, gPickedAsset);
 		}
 		if (ui.showSpriteSheet) {
 			RenderSpriteSheetPanel(ecs, selected);
@@ -428,7 +446,9 @@ namespace UI { // --------------------------------------------------------------
 		if (ui.showAnimation) {
 			RenderAnimationPanel(ecs, selected, ui);
 		}
-
+		if (ui.showProjectManager) {
+			RenderProjectManager(ui);
+		}
 
 		//EndFrame();
 
