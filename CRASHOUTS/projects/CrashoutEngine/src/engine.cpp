@@ -786,8 +786,20 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
 
 #else
-    CEVec3 mouseWorld{ Scene::GetMouseInWorld() };
-    InputManager::g_mouseWorldPos = CEVec2{ mouseWorld.x, mouseWorld.y };
+    // --- NON-EDITOR (RELEASE) MOUSE-TO-WORLD CALCULATION ---
+    // 1. Get Mouse in NDC
+    CEVec2 mouseNDC = InputManager::GetMouseNDC();
+    
+    // 2. Get Camera matrices
+    glm::mat4 proj = RenderCamera::gameCamera.GetProjectionMatrix();
+    glm::mat4 view = RenderCamera::gameCamera.GetViewMatrix();
+
+    // 3. Unproject: NDC -> World
+    glm::mat4 invProjView = glm::inverse(proj * view);
+    glm::vec4 worldPos = invProjView * glm::vec4(mouseNDC.x, mouseNDC.y, 0.0f, 1.0f);
+    
+    // 4. Update the global variable
+    InputManager::g_mouseWorldPos = CEVec2{ worldPos.x, worldPos.y };
 
     // Render directly to screen
     int displayWidth, displayHeight;

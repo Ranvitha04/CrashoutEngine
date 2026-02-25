@@ -57,7 +57,6 @@ namespace CrashoutsEngine::Bindings {
 	}
 
 	static void InternalDrawLine(CEVec3* start, CEVec3* end, float thickness, CEVec3* color) {
-		if (!UI::IsGameDebugDrawEnabled()) return;
 		if (!start || !end || !color) return;
 		CEColor col(color->x, color->y, color->z, 1.0f);
 		// Queue the line to be drawn at the end of the frame (Post-Clear)

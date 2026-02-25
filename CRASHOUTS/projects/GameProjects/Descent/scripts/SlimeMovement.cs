@@ -27,8 +27,8 @@ namespace CrashoutsEngine
         [SerializeField] private float grabRange = 100.0f;
 
         // THROW SETTINGS
-        [SerializeField] private float minThrowSpeed = 50.0f;
-        [SerializeField] private float maxThrowSpeed = 200.0f; 
+        [SerializeField] private float minThrowSpeed = 300.0f;
+        [SerializeField] private float maxThrowSpeed = 2000.0f; 
         [SerializeField] private float maxMouseDragDist = 400.0f;
         [SerializeField] private float airDrag = 1.0f; 
         [SerializeField] private float stunDuration = 1.0f;
@@ -88,9 +88,12 @@ namespace CrashoutsEngine
         {
             float checkDir = moveRight ? 1.0f : -1.0f;
             float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
+            float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
             float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
             
-            CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y, tf.Position.z);
+            // Start ray slightly below center to avoid hitting the slime itself if ignoredEntity fails
+            // and to ensure we are checking the ground properly
+            CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y - (halfHeight * 0.5f), tf.Position.z);
             CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
 
             uint hitID;
@@ -168,9 +171,23 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-
+            if (playerScript == null) playerScript = PlayerMovement.Instance;
             if (playerScript != null && playerScript.isPaused) { return; } 
             if (rb == null || tf == null) return;
+
+            // Handle Grab State - Moved to top so we can ALWAYS grab even if STOP is true
+            if (playerScript != null)
+            {
+                HandleGrabInput();
+               
+                if (isGrabbed)
+                {
+                    STOP = false; // Reset STOP if we grab it
+                    UpdateAnimationState(); 
+                    return;
+                }
+            }
+
             if (STOP)
             {
                 if (rb != null)
@@ -195,23 +212,6 @@ namespace CrashoutsEngine
             }
 
             if (flipCooldown > 0) flipCooldown -= dt;
-
-            // Handle Grab State
-            if (playerScript != null)
-            {
-                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                if (playerTf != null)
-                {
-                     float dist = Distance(tf.Position, playerTf.Position);
-                     if (dist <= grabRange || isGrabbed) HandleGrabInput();
-                }
-               
-                if (isGrabbed)
-                {
-                    UpdateAnimationState(); 
-                    return;
-                }
-            }
 
             float horizontalSpeed = Math.Abs(rb.LinearVelocity.x);
 
@@ -251,10 +251,11 @@ namespace CrashoutsEngine
             if (tf == null) tf = Entity.GetComponent<TransformComponent>();
             if (tf == null) return;
 
-            // Debug Drawing
+            // Debug Drawing - Using Z=51 to be just above player (50) and safely within far plane (100)
+            float drawZ = 51.0f;
             CEVec3 detectionColor = new CEVec3(1.0f, 1.0f, 0.0f); // Yellow
             CEVec2 detectionSize = new CEVec2(detectionRange * 2.0f, detectionRange * 2.0f);
-            CEVec3 myPos = tf.Position;
+            CEVec3 myPos = new CEVec3(tf.Position.x, tf.Position.y, drawZ);
             Debug.DrawCircle(ref detectionSize, ref myPos, ref detectionColor);
 
             CEVec3 grabColor = new CEVec3(0.0f, 1.0f, 0.0f); // Green
@@ -264,22 +265,61 @@ namespace CrashoutsEngine
             // Draw Ledge Check Ray
             float checkDir = moveRight ? 1.0f : -1.0f;
             float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
+            float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
             float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
             
-            CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y, tf.Position.z);
-            CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
-            CEVec3 rayColor = new CEVec3(1.0f, 0.0f, 0.0f); // Red
-            Debug.DrawLine(ref rayStart, ref rayEnd, 2.0f, ref rayColor);
+            CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y - (halfHeight * 0.5f), drawZ);
+            CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, drawZ);
+            
+            // Check for ledge to change color
+            bool nearLedge = IsNearLedge();
+            CEVec3 rayColor = nearLedge ? new CEVec3(1.0f, 0.0f, 0.0f) : new CEVec3(0.0f, 1.0f, 1.0f); // Red if ledge, Cyan if ground
+            
+            // Use thicker lines for ledge rays to be more visible
+            Debug.DrawLine(ref rayStart, ref rayEnd, 6.0f, ref rayColor);
 
-            // Draw Trajectory Path (Visual Aid)
-            if (isGrabbed && activePath.Count > 1)
+            // --- GRABBED VISUALS (Trajectory & Slingshot) ---
+            if (isGrabbed)
             {
-                CEVec3 pathColor = new CEVec3(1.0f, 1.0f, 1.0f);
-                for (int i = 0; i < activePath.Count - 1; i += 2)
+                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+
+                if (playerTf != null)
                 {
-                    CEVec3 p1 = activePath[i];
-                    CEVec3 p2 = activePath[i + 1];
-                    Debug.DrawTrajectory(ref p1, ref p2, 2.0f, ref pathColor);
+                    // 1. Draw "Slingshot" Rubber Bands (from slime's held position to MOUSE)
+                    CEVec2 mousePos = Input.GetMouseWorldPosition();
+                    CEVec3 mouseWorld = new CEVec3(mousePos.x, mousePos.y, drawZ);
+                    CEVec3 slimePos = new CEVec3(tf.Position.x, tf.Position.y, drawZ);
+                    CEVec3 slingColor = new CEVec3(1.0f, 0.5f, 0.0f); // Orange
+                    
+                    // Anchor points on the slime's "sides" relative to its held position
+                    CEVec3 anchorL = new CEVec3(slimePos.x - 10.0f, slimePos.y + 10.0f, drawZ);
+                    CEVec3 anchorR = new CEVec3(slimePos.x + 10.0f, slimePos.y + 10.0f, drawZ);
+                    
+                    // Use DrawTrajectory (unguarded) for gameplay visuals
+                    Debug.DrawTrajectory(ref anchorL, ref mouseWorld, 3.0f, ref slingColor);
+                    Debug.DrawTrajectory(ref anchorR, ref mouseWorld, 3.0f, ref slingColor);
+
+                    // 2. Re-simulate trajectory every frame from the slime's FIXED position
+                    // We pass the actual slimePos (with drawZ) to simulation so it draws at the right depth
+                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
+                    SimulatePath(throwVel, slimePos);
+                }
+
+                // 3. Draw Dotted Trajectory Path
+                if (activePath.Count > 1)
+                {
+                    Console.WriteLine("Path Count: " + activePath.Count);
+                    CEVec3 pathColor = new CEVec3(1.0f, 1.0f, 1.0f); // White
+                    // Increment by 4 and draw 2-step segments to create a dotted effect
+                    for (int i = 0; i < activePath.Count - 2; i += 4)
+                    {
+                        CEVec3 p1 = activePath[i];
+                        CEVec3 p2 = activePath[i + 1];
+                        // Force Z to drawZ just in case simulation used 0
+                        p1.z = drawZ; p2.z = drawZ;
+                        // Use DrawTrajectory (unguarded) for gameplay visuals
+                        Debug.DrawTrajectory(ref p1, ref p2, 2.0f, ref pathColor);
+                    }
                 }
             }
         }
@@ -328,13 +368,15 @@ namespace CrashoutsEngine
         {
             if (STOP) return;
 
-            // 0. Grabbed Movement Sync (Fix for Jitter)
+            // 0. Grabbed Movement Sync (Fixed offset beside player)
             if (isGrabbed && playerScript != null)
             {
                 var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
                 if (playerTf != null)
                 {
+                    // Calculate side offset based on player scale/facing
                     float offsetX = playerTf.Size.x < 0 ? -60.0f : 60.0f;
+                    // Keep slime at a fixed side position (Lowered to -5.0f)
                     tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z);
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
                 }
@@ -466,6 +508,7 @@ namespace CrashoutsEngine
 
         private void HandleGrabInput()
         {
+            // Using Left Click (0)
             bool isDown = Input.IsMouseButtonDown(0);
             CEVec2 mousePos = Input.GetMouseWorldPosition();
 
@@ -473,18 +516,28 @@ namespace CrashoutsEngine
             {
                 if (!isGrabbed)
                 {
-                    float halfW = Math.Abs(tf.Size.x) * 0.5f + 40.0f;
-                    float halfH = Math.Abs(tf.Size.y) * 0.5f + 40.0f;
+                    // Check if mouse is clicking on the slime (using VERY forgiving bounds)
+                    float halfW = Math.Abs(tf.Size.x) * 0.5f + 100.0f;
+                    float halfH = Math.Abs(tf.Size.y) * 0.5f + 100.0f;
 
-                    if (mousePos.x >= tf.Position.x - halfW && mousePos.x <= tf.Position.x + halfW &&
-                        mousePos.y >= tf.Position.y - halfH && mousePos.y <= tf.Position.y + halfH)
+                    bool mouseOverSlime = mousePos.x >= tf.Position.x - halfW && mousePos.x <= tf.Position.x + halfW &&
+                                          mousePos.y >= tf.Position.y - halfH && mousePos.y <= tf.Position.y + halfH;
+
+                    if (mouseOverSlime)
                     {
-                        isGrabbed = true;
-                        isFollowingPath = false;
-                        activePath.Clear();
-                        rb.SetDynamic(false);
-                        var Tag = Entity.GetComponent<TagComponent>();
-                        if (Tag != null) Tag.RemoveTag("Enemy");
+                        // Check distance to player as well to ensure they are close enough
+                        var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                        float distToPlayer = Distance(tf.Position, playerTf.Position);
+                        
+                        if (distToPlayer <= grabRange + 50.0f) {
+                            isGrabbed = true;
+                            isFollowingPath = false;
+                            activePath.Clear();
+                            rb.SetDynamic(false);
+                            var Tag = Entity.GetComponent<TagComponent>();
+                            if (Tag != null) Tag.RemoveTag("Enemy");
+                            Console.WriteLine("[Slime] Grabbed!");
+                        }
                     }
                 }
 
@@ -494,8 +547,11 @@ namespace CrashoutsEngine
                     // Position update moved to FixedUpdate to prevent jitter
                     
                     var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, playerTf.Position);
-                    SimulatePath(throwVel, tf.Position);
+                    if (playerTf != null)
+                    {
+                        CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
+                        SimulatePath(throwVel, tf.Position);
+                    }
                 }
             }
             else if (isGrabbed)
@@ -506,24 +562,29 @@ namespace CrashoutsEngine
                 rb.SetDynamic(true);
                 var Tag = Entity.GetComponent<TagComponent>();
                 if (Tag != null) Tag.AddTag("Enemy");
+                Console.WriteLine("[Slime] Released/Thrown!");
 
                 if (playerScript != null)
                 {
-                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, playerScript.Entity.GetComponent<TransformComponent>().Position);
+                    // Calculate throw velocity using SLIME'S position as the pull center
+                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
+                    // Do NOT snap to player center (prevents immediate STOP = true collision)
                     rb.LinearVelocity = throwVel;
                 }
             }
         }
 
-        private CEVec3 CalculateThrowVelocity(CEVec2 mousePos, CEVec3 playerPos)
+        private CEVec3 CalculateThrowVelocity(CEVec2 mousePos, CEVec3 anchorPos)
         {
-            float dx = playerPos.x - mousePos.x;
-            float dy = playerPos.y - mousePos.y;
+            // Vector from mouse to anchor (pull vector)
+            float dx = anchorPos.x - mousePos.x;
+            float dy = anchorPos.y - mousePos.y;
             float dist = (float)Math.Sqrt(dx * dx + dy * dy);
             
             float dirX = 0f, dirY = 0f;
             if (dist > 0.001f) { dirX = dx / dist; dirY = dy / dist; }
 
+            // Scale speed based on drag distance
             dist = Math.Min(dist, maxMouseDragDist);
             float speed = minThrowSpeed + (maxThrowSpeed - minThrowSpeed) * (dist / maxMouseDragDist);
 
@@ -553,7 +614,8 @@ namespace CrashoutsEngine
                 
                 CEVec3 nextPos = currentPos + (simVel * dt);
 
-                if (playerScript != null && playerScript.IsGrounded && nextPos.y < playerScript.Entity.GetComponent<TransformComponent>().Position.y - 50.0f)
+                // Optimization: stop if we hit ground level below player
+                if (playerScript != null && nextPos.y < playerScript.Entity.GetComponent<TransformComponent>().Position.y - 200.0f)
                     break;
 
                 activePath.Add(nextPos);
@@ -565,6 +627,7 @@ namespace CrashoutsEngine
         {
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
+            if (Tag == null) return;
 
             if (Tag.HasTag("Player")) STOP = true;
 
