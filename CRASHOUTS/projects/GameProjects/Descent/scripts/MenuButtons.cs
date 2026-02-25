@@ -26,7 +26,25 @@ namespace CrashoutsEngine
             //Debug.Log("TEST");
             var btn = Entity.GetComponent<ButtonComponent>();
             var name = Entity.GetComponent<NameComponent>();
-            if (btn.IsClicked() && !_hasClicked)
+            var tf = Entity.GetComponent<TransformComponent>();
+            bool clicked = btn.IsClicked();
+            if (!clicked && tf != null)
+            {
+                // Fallback for scenes where button state isn't updated
+                if (Input.IsMouseButtonTriggered(0))
+                {
+                    CEVec2 mouse = Input.GetMouseWorldPosition();
+                    float halfW = tf.Size.x * 0.5f;
+                    float halfH = tf.Size.y * 0.5f;
+                    if (mouse.x >= tf.Position.x - halfW && mouse.x <= tf.Position.x + halfW &&
+                        mouse.y >= tf.Position.y - halfH && mouse.y <= tf.Position.y + halfH)
+                    {
+                        clicked = true;
+                    }
+                }
+            }
+
+            if (clicked && !_hasClicked)
             {
                 _hasClicked = true;
 
@@ -56,9 +74,18 @@ namespace CrashoutsEngine
                 }
                 else if (name.ToString() == "QuitBtn")
                 {
-                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitBtn"), false);
-                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitCheck"), true);
-                    //SceneManager.LoadScene("descentconfirm", 0.5f);
+                    uint quitCheck = InternalCalls.FindEntityByName("QuitCheck");
+                    if (quitCheck != 0)
+                    {
+                        InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitBtn"), false);
+                        InternalCalls.SetActive(quitCheck, true);
+                        //SceneManager.LoadScene("descentconfirm", 0.5f);
+                    }
+                    else
+                    {
+                        // No confirmation UI in this scene -> return to main menu
+                        SceneManager.LoadScene("descentmenu", 0.5f);
+                    }
                 }
                 else if (name.ToString() == "Yes")
                 {

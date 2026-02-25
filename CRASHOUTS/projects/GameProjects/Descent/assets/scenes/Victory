@@ -123,6 +123,13 @@
                     {
                         "className": "MenuButtons",
                         "fields": {}
+                    },
+                    {
+                        "className": "VictoryQuit",
+                        "fields": {
+                            "menuSceneName": "descentmenu",
+                            "fadeDuration": 0.5
+                        }
                     }
                 ]
             },

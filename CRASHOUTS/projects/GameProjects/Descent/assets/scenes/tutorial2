@@ -9670,6 +9670,8 @@
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
+                            ,"reloadOnDeath": true
+                            ,"reloadSceneName": "tutorial2"
                         }
                     }
                 ]
