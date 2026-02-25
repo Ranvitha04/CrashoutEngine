@@ -166,9 +166,11 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            if (playerScript == null) playerScript = PlayerMovement.Instance;
+            // BUG FIX: Always grab the current player instance to prevent stale references across scene loads
+            playerScript = PlayerMovement.Instance;
+            
             if (playerScript != null && playerScript.isPaused) { return; } 
-            if (rb == null || tf == null) return;
+            if (rb == null || tf == null || playerScript == null) return;
 
             if (playerScript != null)
             {
