@@ -113,6 +113,7 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
+            currentGoalPlates = 0;
             Instance = this;
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
