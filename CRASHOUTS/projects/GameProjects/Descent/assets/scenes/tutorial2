@@ -6928,7 +6928,7 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "goalTextName": "GoalText",
+                            "goalTextName": "",
                             "wallName": "wall2"
                         }
                     }
@@ -9655,7 +9655,7 @@
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "goalNoOfPlates": 1,
+                            "goalNoOfPlates": 2,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
                             "dustBurstDuration": 0.15000000596046449,
