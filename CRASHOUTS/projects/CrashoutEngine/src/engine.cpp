@@ -917,27 +917,6 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // --- FPS Counter ---
-#if !USE_IMGUI_EDITOR && !defined(DEBUG)
-    if (g_ShowFPS)
-    {
-        int fpsWindowW, fpsWindowH;
-        glfwGetFramebufferSize(GLApp::ptr_window, &fpsWindowW, &fpsWindowH);
-        glViewport(0, 0, fpsWindowW, fpsWindowH);
-
-        if (!gTextRenderer) gTextRenderer = std::make_unique<TextRenderer>();
-
-        double fps = FrameRateController::GetInstance().FPS();
-        std::string fpsText = "FPS: " + std::to_string(static_cast<int>(fps));
-
-        // Render Green Text at Top Left
-        float xPos = 20.0f;
-        float yPos = (float)fpsWindowH - 150.0f;
-
-        gTextRenderer->RenderText(fpsText, xPos, yPos, 1.0f, 10.0f, CEColor(0.0f, 1.0f, 0.0f, 1.0f), "AlegreyaSC-Regular", false, 0.0f);
-    }
-#endif
-
     // render scene
     // GLApp::draw();
 
