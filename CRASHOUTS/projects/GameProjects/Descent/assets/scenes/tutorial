@@ -12073,7 +12073,7 @@
                             "PlatesActive": 0,
                             "PlatesRequired": 2,
                             "MoveRight": true,
-                            "MoveDist": 130.0,
+                            "MoveDist": 200.0,
                             "MoveSpeed": 40.0,
                             "dustBurstDuration": 1.0
                         }

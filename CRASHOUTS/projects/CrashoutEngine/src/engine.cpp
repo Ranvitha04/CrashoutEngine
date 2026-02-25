@@ -450,7 +450,74 @@ void Update(double const& dt) {
     CrashoutsEngine::UpdateActiveHierarchy(ecs);
     CrashoutsEngine::UpdateHierarchy(ecs);
 
+    bool releaseCameraUpdated = false;
+
     if (engineState == EngineState::PLAY) {
+#if !USE_IMGUI_EDITOR
+        {
+            using namespace CrashoutsEngine;
+            using namespace Component;
+
+            std::vector<CameraComponent*>& c = ecs.GetComponentArray<CameraComponent>().dense;
+            if (c.size() > 0) {
+                Entity camEntity = ecs.GetComponentArray<CameraComponent>().indexToEntity.back();
+                RenderCamera::PlayerCameraInput(*c.back(), camEntity);
+            }
+
+            int windowW = GLApp::width;
+            int windowH = GLApp::height;
+            const float targetAspectRatio = 16.0f / 9.0f;
+            float currentAspectRatio = (float)windowW / (float)windowH;
+            int vpW, vpH;
+
+            if (currentAspectRatio > targetAspectRatio) {
+                vpH = windowH;
+                vpW = static_cast<int>(windowH * targetAspectRatio);
+            } else {
+                vpW = windowW;
+                vpH = static_cast<int>(windowW / targetAspectRatio);
+            }
+            RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
+            releaseCameraUpdated = true;
+        }
+
+        // Update mouse state early for gameplay scripts (Release mode)
+        {
+            int displayWidth, displayHeight;
+            glfwGetFramebufferSize(GLApp::ptr_window, &displayWidth, &displayHeight);
+
+            const float targetAspectRatio = 16.0f / 9.0f;
+            float currentAspectRatio = (float)displayWidth / (float)displayHeight;
+            int mVpX = 0, mVpY = 0, mVpW = displayWidth, mVpH = displayHeight;
+
+            if (currentAspectRatio > targetAspectRatio) {
+                mVpH = displayHeight;
+                mVpW = static_cast<int>(displayHeight * targetAspectRatio);
+                mVpX = (displayWidth - mVpW) / 2;
+            } else if (currentAspectRatio < targetAspectRatio) {
+                mVpW = displayWidth;
+                mVpH = static_cast<int>(displayWidth / targetAspectRatio);
+                mVpY = (displayHeight - mVpH) / 2;
+            }
+
+            double mx, my;
+            glfwGetCursorPos(GLApp::ptr_window, &mx, &my);
+            float localX = static_cast<float>(mx) - mVpX;
+            float localY = static_cast<float>(my) - mVpY;
+            bool insideVP = (localX >= 0.0f && localX <= mVpW && localY >= 0.0f && localY <= mVpH);
+
+            InputManager::SetGameViewMouse(localX, localY, (float)mVpW, (float)mVpH);
+
+            if (insideVP) {
+                float ndcX = (localX / (float)mVpW) * 2.0f - 1.0f;
+                float ndcY = 1.0f - (localY / (float)mVpH) * 2.0f;
+                auto& cam = CrashoutsEngine::RenderCamera::gameCamera;
+                glm::mat4 invProjView = glm::inverse(cam.GetProjectionMatrix() * cam.GetViewMatrix());
+                glm::vec4 worldPos = invProjView * glm::vec4(ndcX, ndcY, 0.0f, 1.0f);
+                InputManager::g_mouseWorldPos = CEVec2{ worldPos.x, worldPos.y };
+            }
+        }
+#endif
         KeyframeUnity::UpdateAll(ecs, (float)dt);
         CrashoutsEngine::VideoSystem::Update((float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
@@ -557,6 +624,9 @@ void Update(double const& dt) {
 #ifdef USE_IMGUI_EDITOR
         RenderCamera::gameCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 #else
+        if (releaseCameraUpdated) {
+            // Already updated above for correct input mapping.
+        } else {
         // RELEASE MODE: Use Letterboxed Dimensions for consistent Camera Aspect Ratio
         int windowW = GLApp::width;
         int windowH = GLApp::height;
@@ -572,6 +642,7 @@ void Update(double const& dt) {
             vpH = static_cast<int>(windowW / targetAspectRatio);
         }
         RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
+        }
 #endif
     }
 
@@ -787,23 +858,46 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
 
 #else
     // --- NON-EDITOR (RELEASE) MOUSE-TO-WORLD CALCULATION ---
-    // 1. Get Mouse in NDC
-    CEVec2 mouseNDC = InputManager::GetMouseNDC();
-    
-    // 2. Get Camera matrices
-    glm::mat4 proj = RenderCamera::gameCamera.GetProjectionMatrix();
-    glm::mat4 view = RenderCamera::gameCamera.GetViewMatrix();
-
-    // 3. Unproject: NDC -> World
-    glm::mat4 invProjView = glm::inverse(proj * view);
-    glm::vec4 worldPos = invProjView * glm::vec4(mouseNDC.x, mouseNDC.y, 0.0f, 1.0f);
-    
-    // 4. Update the global variable
-    InputManager::g_mouseWorldPos = CEVec2{ worldPos.x, worldPos.y };
-
-    // Render directly to screen
+    // 1. Compute letterboxed viewport (must match Update() camera sizing)
     int displayWidth, displayHeight;
     glfwGetFramebufferSize(GLApp::ptr_window, &displayWidth, &displayHeight);
+
+    const float targetAspectRatio = 16.0f / 9.0f;
+    float currentAspectRatio = (float)displayWidth / (float)displayHeight;
+    int mVpX = 0, mVpY = 0, mVpW = displayWidth, mVpH = displayHeight;
+
+    if (currentAspectRatio > targetAspectRatio) {
+        mVpH = displayHeight;
+        mVpW = static_cast<int>(displayHeight * targetAspectRatio);
+        mVpX = (displayWidth - mVpW) / 2;
+    } else if (currentAspectRatio < targetAspectRatio) {
+        mVpW = displayWidth;
+        mVpH = static_cast<int>(displayWidth / targetAspectRatio);
+        mVpY = (displayHeight - mVpH) / 2;
+    }
+
+    // 2. Get raw mouse (window space)
+    double mx, my;
+    glfwGetCursorPos(GLApp::ptr_window, &mx, &my);
+
+    // 3. Convert to viewport-local coords
+    float localX = static_cast<float>(mx) - mVpX;
+    float localY = static_cast<float>(my) - mVpY;
+    bool insideVP = (localX >= 0.0f && localX <= mVpW && localY >= 0.0f && localY <= mVpH);
+
+    // 4. Push game-view mouse + size for UI input (buttons, etc.)
+    InputManager::SetGameViewMouse(localX, localY, (float)mVpW, (float)mVpH);
+
+    // 5. Unproject to world (only if inside viewport)
+    if (insideVP) {
+        float ndcX = (localX / (float)mVpW) * 2.0f - 1.0f;
+        float ndcY = 1.0f - (localY / (float)mVpH) * 2.0f;
+        glm::mat4 invProjView = glm::inverse(proj * view);
+        glm::vec4 worldPos = invProjView * glm::vec4(ndcX, ndcY, 0.0f, 1.0f);
+        InputManager::g_mouseWorldPos = CEVec2{ worldPos.x, worldPos.y };
+    }
+
+    // Render directly to screen
     glViewport(0, 0, displayWidth, displayHeight); // Use main window size
 
     glClear(GL_COLOR_BUFFER_BIT);
