@@ -2903,6 +2903,8 @@ namespace CrashoutsEngine
 				Component::ParticleComponent pc;
 				// Initialize defaults if needed
 				pc.isEmitting = true;
+				pc.playOnStop = true;
+				pc.useWorldSpace = true;
 				pc.maxParticles = 1000;
 				auto& p = ecs.AddComponent<Component::ParticleComponent>(e, pc);
 				ParticleSystem::ParticleInit(p);
@@ -2918,6 +2920,13 @@ namespace CrashoutsEngine
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* pc = ecs.GetComponent<Component::ParticleComponent>(e);
 			if (!pc) return;
+
+			ImGui::SeparatorText("Preset");
+			const char* presetNames[] = { "Custom", "Smoke", "Fire", "Explosion" };
+			int preset = static_cast<int>(pc->preset);
+			if (ImGui::Combo("##ParticlePreset", &preset, presetNames, IM_ARRAYSIZE(presetNames))) {
+				ParticleSystem::ApplyPreset(*pc, static_cast<ParticleSystem::ParticlePreset>(preset));
+			}
 
 			// Helper to draw two float inputs side-by-side
 			auto DrawMinMaxRow = [](const char* label, float& minRef, float& maxRef, float speed, float minLimit, float maxLimit) {
@@ -2987,7 +2996,7 @@ namespace CrashoutsEngine
 
 			// Draw Shape selector with label on left
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Shape:"); ImGui::SameLine();
+			ImGui::Text("Emission Shape:"); ImGui::SameLine();
 			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 			if (ImGui::Combo("##Shape", &currentShape, shapes, IM_ARRAYSIZE(shapes))) {
 				pc->emissionShape = (ParticleSystem::ParticleShape)currentShape;
@@ -3009,6 +3018,24 @@ namespace CrashoutsEngine
 
 				// Y Axis (Height)
 				DrawMinMaxRow("Height (Min / Max)", pc->areaMin.y, pc->areaMax.y, 0.1f, 0.0f, 0.0f);
+			}
+
+			ImGui::SeparatorText("Render Shape");
+			const char* renderShapes[] = { "Square", "Circle", "Triangle" };
+			int renderShape = (int)pc->renderShape;
+			if (ImGui::Combo("##RenderShape", &renderShape, renderShapes, IM_ARRAYSIZE(renderShapes))) {
+				pc->renderShape = (ParticleSystem::ParticleRenderShape)renderShape;
+			}
+			if (pc->renderShape == ParticleSystem::ParticleRenderShape::Square) {
+				UIHelpers::DrawUndoableFloat("Size Multiplier", pc->squareSizeMultiplier, 0.01f, 0.0f, 100.0f);
+			}
+			else if (pc->renderShape == ParticleSystem::ParticleRenderShape::Circle) {
+				UIHelpers::DrawUndoableInt("Segments", pc->circleSegments, 1.0f, 3, 128);
+				UIHelpers::DrawUndoableFloat("Radius Multiplier", pc->circleRadiusMultiplier, 0.01f, 0.0f, 100.0f);
+			}
+			else if (pc->renderShape == ParticleSystem::ParticleRenderShape::Triangle) {
+				UIHelpers::DrawUndoableFloat("Width Multiplier", pc->triangleWidthMultiplier, 0.01f, 0.0f, 100.0f);
+				UIHelpers::DrawUndoableFloat("Height Multiplier", pc->triangleHeightMultiplier, 0.01f, 0.0f, 100.0f);
 			}
 
 			// --- 3. Particle Properties (Compacted) ---

@@ -643,6 +643,7 @@ namespace Scene {
 			static std::vector<float> s_scaleXBuffer;
 			static std::vector<float> s_scaleYBuffer;
 			static std::vector<float> s_uniformScaleBuffer; // Always 1.0f
+			static std::vector<float> s_radiusBuffer;
 
 			// Temp buffers for transforms
 			static std::vector<CEVec3> s_posBuffer;
@@ -659,6 +660,7 @@ namespace Scene {
 			if (s_scaleXBuffer.size() < count) s_scaleXBuffer.resize(count);
 			if (s_scaleYBuffer.size() < count) s_scaleYBuffer.resize(count);
 			if (s_uniformScaleBuffer.size() < count) s_uniformScaleBuffer.resize(count, 1.0f);
+			if (s_radiusBuffer.size() < count) s_radiusBuffer.resize(count);
 			if (s_uvOffsetBuffer.size() < count) s_uvOffsetBuffer.resize(count, { 0.f, 0.f });
 			if (s_posBuffer.size() < count) s_posBuffer.resize(count);
 
@@ -687,8 +689,23 @@ namespace Scene {
 
 			// Process every particle to prepare render buffers
 			for (size_t k = 0; k < count; ++k) {
-				s_scaleXBuffer[k] = pc->data.scales[k].x * parentScaleX;
-				s_scaleYBuffer[k] = pc->data.scales[k].y * parentScaleY;
+				float baseW = pc->data.scales[k].x * parentScaleX;
+				float baseH = pc->data.scales[k].y * parentScaleY;
+
+				if (pc->renderShape == ParticleSystem::ParticleRenderShape::Square) {
+					s_scaleXBuffer[k] = baseW * pc->squareSizeMultiplier;
+					s_scaleYBuffer[k] = baseH * pc->squareSizeMultiplier;
+				}
+				else if (pc->renderShape == ParticleSystem::ParticleRenderShape::Triangle) {
+					s_scaleXBuffer[k] = baseW * pc->triangleWidthMultiplier;
+					s_scaleYBuffer[k] = baseH * pc->triangleHeightMultiplier;
+				}
+				else {
+					s_scaleXBuffer[k] = baseW;
+					s_scaleYBuffer[k] = baseH;
+					float minDim = (baseW < baseH) ? baseW : baseH;
+					s_radiusBuffer[k] = 0.5f * minDim * pc->circleRadiusMultiplier;
+				}
 
 				// Apply positions and ENFORCE the computed depth from the layer system
 				if (isLocal) {
@@ -713,17 +730,49 @@ namespace Scene {
 			params.uvSize = pc->textureUV;
 			params.tint = { 1.0f, 1.0f, 1.0f };
 
-			InstancingSystem::RenderInstancedRectanglesBatch(
-				s_posBuffer.data(),		     // Correct World Position
-				pc->data.colors.data(),      // Colors
-				pc->data.rotations.data(),   // Rotations
-				s_uniformScaleBuffer.data(), // Uniform Scale (1.0)
-				s_scaleXBuffer.data(),       // Widths (X) 
-				s_scaleYBuffer.data(),       // Heights (Y)
-				s_uvOffsetBuffer.data(),     // UV Offsets (0,0)
-				(int)count,
-				params
-			);
+			if (pc->renderShape == ParticleSystem::ParticleRenderShape::Circle) {
+				int segments = pc->circleSegments;
+				if (segments < 3) segments = 3;
+				if (segments > 128) segments = 128;
+
+				InstancingSystem::RenderInstancedCirclesBatch(
+					s_posBuffer.data(),
+					pc->data.colors.data(),
+					pc->data.rotations.data(),
+					s_uniformScaleBuffer.data(),
+					s_radiusBuffer.data(),
+					s_uvOffsetBuffer.data(),
+					(int)count,
+					segments,
+					params
+				);
+			}
+			else if (pc->renderShape == ParticleSystem::ParticleRenderShape::Triangle) {
+				InstancingSystem::RenderInstancedTrianglesBatch(
+					s_posBuffer.data(),
+					pc->data.colors.data(),
+					pc->data.rotations.data(),
+					s_uniformScaleBuffer.data(),
+					s_scaleXBuffer.data(),
+					s_scaleYBuffer.data(),
+					s_uvOffsetBuffer.data(),
+					(int)count,
+					params
+				);
+			}
+			else {
+				InstancingSystem::RenderInstancedRectanglesBatch(
+					s_posBuffer.data(),		     // Correct World Position
+					pc->data.colors.data(),      // Colors
+					pc->data.rotations.data(),   // Rotations
+					s_uniformScaleBuffer.data(), // Uniform Scale (1.0)
+					s_scaleXBuffer.data(),       // Widths (X) 
+					s_scaleYBuffer.data(),       // Heights (Y)
+					s_uvOffsetBuffer.data(),     // UV Offsets (0,0)
+					(int)count,
+					params
+				);
+			}
 
 		}
 	}
@@ -967,6 +1016,8 @@ namespace Scene {
 			auto* tc = globalECS.GetComponent<TransformComponent>(id);
 			if (!tc) continue;
 			auto* sc = globalECS.GetComponent<ShapeComponent>(id);
+			if (!sc) continue;
+			if (sc->preview) continue;
 
 			// Compute Depth
 			float depth = 0.0f;
