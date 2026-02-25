@@ -55,6 +55,23 @@ public class AudioManager
         SFX
     }
 
+    public enum FMOD_DSP_TYPE
+    {
+        UNKNOWN,
+        CHORUS,
+        COMPRESSOR,
+        DISTORTION,
+        ECHO,
+        FLANGER,
+        HIGHPASS,
+        LOWPASS,
+        PARAMEQ,
+        REVERB,
+        SFXREVERB,
+        TREMOLO,
+        // Add other DSP types as needed
+    }
+
     // Equivalent to setting Unity inspector fields
     public void RegisterSound(string name, string path, float baseVolume, bool loop, SoundType type)
     {
@@ -132,6 +149,26 @@ public class AudioManager
     public void PlayAttached(string clipName, uint entityID)
     {
         InternalCalls.Audio_PlayClipByName(entityID, clipName);
+    }
+
+    public static void SetClipVolume(uint entityID, string clipName, float volume)
+    {
+        InternalCalls.Audio_SetClipVolume(entityID, clipName, volume);
+    }
+
+    public static void SetClipPosition(uint entityID, string clipName, CEVec3 position)
+    {
+        InternalCalls.Audio_SetClipPosition(entityID, clipName, position.x, position.y, position.z);
+    }
+
+    public static void AddClipDSP(uint entityID, string clipName, FMOD_DSP_TYPE dspType)
+    {
+        InternalCalls.Audio_AddClipDSP(entityID, clipName, (int)dspType);
+    }
+
+    public static void RemoveClipDSP(uint entityID, string clipName, FMOD_DSP_TYPE dspType)
+    {
+        InternalCalls.Audio_RemoveClipDSP(entityID, clipName, (int)dspType);
     }
 
     // === Stop sound attached to an entity ===

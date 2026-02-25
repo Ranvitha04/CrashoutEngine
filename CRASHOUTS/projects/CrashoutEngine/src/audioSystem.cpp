@@ -1001,7 +1001,7 @@ namespace CrashoutsEngine::Audio
     /*!
     @brief Plays a one-shot SFX file through the SFX channel group.
     */
-    FMOD::Channel* AudioSystem::playSFXFile(const std::string& path)
+    FMOD::Channel* AudioSystem::playSFXFile(const std::string& path, bool spatial3D, float minDistance, float maxDistance)
     {
         if (!mCore || !mSFXGroup) return nullptr;
 
@@ -1030,7 +1030,14 @@ namespace CrashoutsEngine::Audio
 
             createdLocal = true;
             // Load into RAM
-            FMOD_RESULT r = mCore->createSound(fullPath.c_str(), FMOD_DEFAULT | FMOD_2D, nullptr, &snd);
+            FMOD_MODE mode = FMOD_DEFAULT;
+            if (spatial3D) {
+                mode |= FMOD_3D;
+            } else {
+                mode |= FMOD_2D;
+            }
+
+            FMOD_RESULT r = mCore->createSound(fullPath.c_str(), mode, nullptr, &snd);
 
             if (r == FMOD_OK) {
                 mRawSoundCache[key] = snd;
@@ -1053,7 +1060,13 @@ namespace CrashoutsEngine::Audio
         }
 
         if (ch) {
-            ch->setMode(FMOD_2D);
+            if (spatial3D) {
+                ch->setMode(FMOD_3D);
+                ch->set3DMinMaxDistance(minDistance, maxDistance);
+                // Initial position will be set by the ICALL later, if needed
+            } else {
+                ch->setMode(FMOD_2D);
+            }
             if (createdLocal) mActiveSounds.emplace_back(ch, snd);
         }
 
@@ -1103,6 +1116,76 @@ namespace CrashoutsEngine::Audio
         if (it == mTaggedChannels.end() || !it->second) return false;
         FMOD::Channel* ch = it->second;
         return (ch->setVolume(vol) == FMOD_OK);
+    }
+
+    void AudioSystem::SetChannelVolume(FMOD::Channel* channel, float volume)
+    {
+        if (channel)
+        {
+            channel->setVolume(volume);
+        }
+    }
+
+    void AudioSystem::SetChannel3DAttributes(FMOD::Channel* channel, const CEVec3& position, float minDistance, float maxDistance)
+    {
+        if (channel)
+        {
+            FMOD_VECTOR pos = { position.x, position.y, position.z };
+            FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f }; // Assuming static for now, dynamic velocity can be added later
+            channel->set3DAttributes(&pos, &vel);
+            channel->set3DMinMaxDistance(minDistance, maxDistance);
+        }
+    }
+
+    void AudioSystem::AddChannelDSP(FMOD::Channel* channel, FMOD_DSP_TYPE dspType)
+    {
+        if (!mCore || !channel) return;
+
+        // Check if this DSP type is already on the channel
+        if (mChannelDSPs.count(channel) && mChannelDSPs[channel].count(dspType)) {
+            std::stringstream ss_warn;
+            ss_warn << "DSP of type " << dspType << " already added to channel.";
+            LOGW(Audio, ss_warn.str());
+            return;
+        }
+
+        FMOD::DSP* dsp = nullptr;
+        if (!ok(mCore->createDSPByType(dspType, &dsp), "createDSPByType")) return;
+
+        if (!ok(channel->addDSP(0, dsp), "Channel::addDSP")) {
+            dsp->release();
+            return;
+        }
+
+        mChannelDSPs[channel][dspType] = dsp;
+        std::stringstream ss_add;
+        ss_add << "Added DSP of type " << dspType << " to channel.";
+        LOGI(Audio, ss_add.str());
+    }
+
+    void AudioSystem::RemoveChannelDSP(FMOD::Channel* channel, FMOD_DSP_TYPE dspType)
+    {
+        if (!channel) return;
+
+        auto channelIt = mChannelDSPs.find(channel);
+        if (channelIt == mChannelDSPs.end()) return; // No DSPs for this channel
+
+        auto dspIt = channelIt->second.find(dspType);
+        if (dspIt == channelIt->second.end()) return; // DSP type not found for this channel
+
+        FMOD::DSP* dspToRemove = dspIt->second;
+        if (dspToRemove) {
+            channel->removeDSP(dspToRemove);
+            dspToRemove->release();
+        }
+
+        channelIt->second.erase(dspIt);
+        if (channelIt->second.empty()) {
+            mChannelDSPs.erase(channelIt);
+        }
+        std::stringstream ss_remove;
+        ss_remove << "Removed DSP of type " << dspType << " from channel.";
+        LOGI(Audio, ss_remove.str());
     }
 
     /*!
