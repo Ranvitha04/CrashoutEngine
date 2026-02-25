@@ -14392,7 +14392,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "ClosedBook",
             "uuid": 17470483895618597724,
             "tag": {
