@@ -25,6 +25,7 @@ namespace CrashoutsEngine
         [SerializeField] private float detectionRange = 250.0f;
         [SerializeField] private float gravityScale = 2.0f;
         [SerializeField] private float grabRange = 100.0f;
+        [SerializeField] private float lineOfSightYTolerance = 25.0f;
 
         // THROW SETTINGS
         [SerializeField] private float minThrowSpeed = 300.0f;
@@ -66,8 +67,13 @@ namespace CrashoutsEngine
 
         private bool HasLineOfSight(CEVec3 targetPos)
         {
-            CEVec3 start = tf.Position;
-            CEVec3 end = targetPos;
+            // Only allow LOS when roughly on the same Y plane
+            if (Math.Abs(targetPos.y - tf.Position.y) > lineOfSightYTolerance)
+                return false;
+
+            // Horizontal-only LOS check (same Y)
+            CEVec3 start = new CEVec3(tf.Position.x, targetPos.y, tf.Position.z);
+            CEVec3 end = new CEVec3(targetPos.x, targetPos.y, targetPos.z);
             uint hitID;
             
             if (InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID))
@@ -76,7 +82,7 @@ namespace CrashoutsEngine
                 if (hitEnt.ID == playerScript.Entity.ID) return true; 
 
                 var tag = hitEnt.GetComponent<TagComponent>();
-                if (tag != null && (tag.HasTag("Ground") || tag.HasTag("Wall") || tag.HasTag("Platform")))
+                if (tag != null && (tag.HasTag("Ground") || tag.HasTag("Wall") || tag.HasTag("Platform") || tag.HasTag("Tilemap")))
                 {
                     return false; 
                 }
@@ -263,20 +269,23 @@ namespace CrashoutsEngine
             Debug.DrawCircle(ref grabSize, ref myPos, ref grabColor);
 
             // Draw Ledge Check Ray
-            float checkDir = moveRight ? 1.0f : -1.0f;
-            float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
-            float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
-            float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
-            
-            CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y - (halfHeight * 0.5f), drawZ);
-            CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, drawZ);
-            
-            // Check for ledge to change color
-            bool nearLedge = IsNearLedge();
-            CEVec3 rayColor = nearLedge ? new CEVec3(1.0f, 0.0f, 0.0f) : new CEVec3(0.0f, 1.0f, 1.0f); // Red if ledge, Cyan if ground
-            
-            // Use thicker lines for ledge rays to be more visible
-            Debug.DrawLine(ref rayStart, ref rayEnd, 6.0f, ref rayColor);
+            if (Debug.IsGameDebugDrawEnabled())
+            {
+                float checkDir = moveRight ? 1.0f : -1.0f;
+                float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
+                float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
+                float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
+                
+                CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y - (halfHeight * 0.5f), drawZ);
+                CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, drawZ);
+                
+                // Check for ledge to change color
+                bool nearLedge = IsNearLedge();
+                CEVec3 rayColor = nearLedge ? new CEVec3(1.0f, 0.0f, 0.0f) : new CEVec3(0.0f, 1.0f, 1.0f); // Red if ledge, Cyan if ground
+                
+                // Use thicker lines for ledge rays to be more visible
+                Debug.DrawLine(ref rayStart, ref rayEnd, 6.0f, ref rayColor);
+            }
 
             // --- GRABBED VISUALS (Trajectory & Slingshot) ---
             if (isGrabbed)
@@ -285,27 +294,16 @@ namespace CrashoutsEngine
 
                 if (playerTf != null)
                 {
-                    // 1. Draw "Slingshot" Rubber Bands (from slime's held position to MOUSE)
                     CEVec2 mousePos = Input.GetMouseWorldPosition();
-                    CEVec3 mouseWorld = new CEVec3(mousePos.x, mousePos.y, drawZ);
                     CEVec3 slimePos = new CEVec3(tf.Position.x, tf.Position.y, drawZ);
-                    CEVec3 slingColor = new CEVec3(1.0f, 0.5f, 0.0f); // Orange
-                    
-                    // Anchor points on the slime's "sides" relative to its held position
-                    CEVec3 anchorL = new CEVec3(slimePos.x - 10.0f, slimePos.y + 10.0f, drawZ);
-                    CEVec3 anchorR = new CEVec3(slimePos.x + 10.0f, slimePos.y + 10.0f, drawZ);
-                    
-                    // Use DrawTrajectory (unguarded) for gameplay visuals
-                    Debug.DrawTrajectory(ref anchorL, ref mouseWorld, 3.0f, ref slingColor);
-                    Debug.DrawTrajectory(ref anchorR, ref mouseWorld, 3.0f, ref slingColor);
 
-                    // 2. Re-simulate trajectory every frame from the slime's FIXED position
+                    // 1. Re-simulate trajectory every frame from the slime's FIXED position
                     // We pass the actual slimePos (with drawZ) to simulation so it draws at the right depth
                     CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
                     SimulatePath(throwVel, slimePos);
                 }
 
-                // 3. Draw Dotted Trajectory Path
+                // 2. Draw Dotted Trajectory Path
                 if (activePath.Count > 1)
                 {
                     Console.WriteLine("Path Count: " + activePath.Count);

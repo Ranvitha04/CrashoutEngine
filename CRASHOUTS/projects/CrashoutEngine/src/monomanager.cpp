@@ -77,9 +77,14 @@ namespace CrashoutsEngine::Bindings {
 		Component::Rendering::Get().QueueCircle(*size, *position, col, true);
 	}
 
+	static bool InternalIsGameDebugDrawEnabled() {
+		return UI::IsGameDebugDrawEnabled();
+	}
+
 	// 2. Register it (Call this where you register other bindings)
 	void RegisterDebugBindings() {
 		mono_add_internal_call("CrashoutsEngine.Debug::Log", (const void*)InternalLog);
+		mono_add_internal_call("CrashoutsEngine.Debug::InternalIsGameDebugDrawEnabled", (const void*)InternalIsGameDebugDrawEnabled);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawLine", (const void*)InternalDrawLine);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawTrajectory", (const void*)InternalDrawTrajectory);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawCircle", (const void*)InternalDrawCircle);

@@ -16,6 +16,8 @@ namespace CrashoutsEngine
     {
         // The name of the UI entity to show when winning
         private string winScreenName = "WinScreen";
+        [SerializeField] private string victorySceneName = "Victory";
+        [SerializeField] private float victoryFadeDuration = 1.0f;
         private bool gameWon = false;
 
         public override void Start()
@@ -23,7 +25,8 @@ namespace CrashoutsEngine
             gameWon = false;
             // Register Trigger Event for this "Win Zone" entity
             CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
-
+            // Fallback for solid colliders
+            CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
             // Hide the Win Screen at start (just in case it was left visible in editor)
             Entity winScreen = Entity.Find(winScreenName);
             if (winScreen != null)
@@ -53,6 +56,11 @@ namespace CrashoutsEngine
             }
         }
 
+        public void OnCollideEnter(uint otherEntityID)
+        {
+            OnTriggerEnter(otherEntityID);
+        }
+
         private void Win()
         {
             Console.WriteLine("[WinGame] YOU WIN!");
@@ -70,14 +78,10 @@ namespace CrashoutsEngine
             }
 
             // 2. Show Win UI
-            Entity winScreen = Entity.Find(winScreenName);
-            if (winScreen != null)
+            // Transition to victory scene
+            if (!SceneManager.IsTransitioning())
             {
-                InternalCalls.SetActive(winScreen.ID, true);
-            }
-            else
-            {
-                Console.WriteLine("[Error] WinGame could not find entity: " + winScreenName);
+                SceneManager.LoadScene(victorySceneName, victoryFadeDuration);
             }
 
             // Optional: Play Win Sound

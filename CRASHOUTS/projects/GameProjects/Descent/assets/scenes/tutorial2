@@ -5833,7 +5833,7 @@
         },
         {
             "active": true,
-            "name": "Slime V2",
+            "name": "Slime1",
             "uuid": 13467747073361246097,
             "tag": {
                 "tagMask": 20
@@ -5841,408 +5841,9 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 140.24588012695313,
-                    "y": -247.20367431640626,
+                    "x": 153.68115234375,
+                    "y": -274.29998779296877,
                     "z": 50.0
-                },
-                "size": {
-                    "x": -53.0,
-                    "y": 49.29999923706055
-                }
-            },
-            "rigidbody": {
-                "mass": 0.10000000149011612,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.0,
-                "dynamicFriction": 0.0,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 140.9458770751953,
-                    "y": -250.70367431640626,
-                    "z": 50.0
-                },
-                "offset": {
-                    "x": 0.699999988079071,
-                    "y": -3.5,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 126.04585266113281,
-                    "y": -260.9036865234375,
-                    "z": 50.0
-                },
-                "max": {
-                    "x": 155.8459014892578,
-                    "y": -240.503662109375,
-                    "z": 50.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/Monsters\\Slime spritesheet.png",
-                "uvSize": {
-                    "x": 0.25,
-                    "y": 0.3333333432674408
-                },
-                "uvOffset": {
-                    "x": 0.25,
-                    "y": 0.6666666865348816
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "slimeMove1",
-                        "path": "slime 1.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    },
-                    {
-                        "name": "slimeMove2",
-                        "path": "slime 2.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    },
-                    {
-                        "name": "slimeMove3",
-                        "path": "slime 3.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    },
-                    {
-                        "name": "slimeMove4",
-                        "path": "slime 4.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    },
-                    {
-                        "name": "slimeMove5",
-                        "path": "slime 5.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    },
-                    {
-                        "name": "slimeImpact",
-                        "path": "slime impact.wav",
-                        "volume": 0.800000011920929,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            },
-            "keyframe_animator": {
-                "current": "slimeChase",
-                "t": 0.8166665434837341,
-                "playing": true,
-                "clips": [
-                    {
-                        "name": "slimeHold",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeIdle",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeChase",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 8.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        {
-            "active": true,
-            "name": "Slime V2 (2)",
-            "uuid": 3690432272913172450,
-            "tag": {
-                "tagMask": 20
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1148.2607421875,
-                    "y": -114.29997253417969,
-                    "z": 0.0
                 },
                 "size": {
                     "x": 53.0,
@@ -6267,9 +5868,9 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1148.960693359375,
-                    "y": -117.79997253417969,
-                    "z": 0.0
+                    "x": 154.3811492919922,
+                    "y": -277.79998779296877,
+                    "z": 50.0
                 },
                 "offset": {
                     "x": 0.699999988079071,
@@ -6277,14 +5878,14 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1134.0606689453126,
-                    "y": -128.0,
-                    "z": 0.0
+                    "x": 139.48110961914063,
+                    "y": -288.0,
+                    "z": 50.0
                 },
                 "max": {
-                    "x": 1163.8607177734376,
-                    "y": -107.59994506835938,
-                    "z": 0.0
+                    "x": 169.28118896484376,
+                    "y": -267.5999755859375,
+                    "z": 50.0
                 }
             },
             "shape": {
@@ -6301,7 +5902,7 @@
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.5,
                     "y": 0.3333333432674408
                 },
                 "color": {
@@ -6388,15 +5989,16 @@
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
+                            "detectionRange": 137.60000610351563,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
+                            "lineOfSightYTolerance": 25.0,
+                            "minThrowSpeed": 300.0,
+                            "maxThrowSpeed": 1000.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
+                            "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
                             "patrolTurnInterval": 3.0
@@ -6454,7 +6056,7 @@
             },
             "keyframe_animator": {
                 "current": "slimeWalk",
-                "t": 32.149681091308597,
+                "t": 5.866688251495361,
                 "playing": true,
                 "clips": [
                     {
@@ -6724,7 +6326,10 @@
                 "scripts": [
                     {
                         "className": "WinGame",
-                        "fields": {}
+                        "fields": {
+                            "victorySceneName": "Victory",
+                            "victoryFadeDuration": 1.0
+                        }
                     }
                 ]
             },
@@ -6787,8 +6392,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 598.1819458007813,
-                    "y": -203.22503662109376,
+                    "x": 597.1031494140625,
+                    "y": -221.7849884033203,
                     "z": 0.0
                 },
                 "size": {
@@ -6814,8 +6419,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 598.1819458007813,
-                    "y": -203.22503662109376,
+                    "x": 597.1031494140625,
+                    "y": -221.7849884033203,
                     "z": 0.0
                 },
                 "offset": {
@@ -6825,8 +6430,8 @@
                 },
                 "radius": 1.0,
                 "center": {
-                    "x": 598.1819458007813,
-                    "y": -203.22503662109376,
+                    "x": 597.1031494140625,
+                    "y": -221.7849884033203,
                     "z": 0.0
                 }
             },
@@ -6938,7 +6543,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 32.81633758544922,
+                "t": 5.900022029876709,
                 "playing": true,
                 "clips": [
                     {
@@ -9178,13 +8783,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -10.461000442504883,
-                    "y": -13.100000381469727,
+                    "x": -0.054484378546476367,
+                    "y": -0.12129630148410797,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 8.199999809265137,
-                    "y": 3.700000047683716
+                    "x": 0.04270833358168602,
+                    "y": 0.034259259700775149
                 }
             },
             "shape": {
@@ -9310,13 +8915,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -27.884002685546876,
-                    "y": -13.100000381469727,
+                    "x": -0.14522917568683625,
+                    "y": -0.12129630148410797,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 10.5,
-                    "y": 3.700000047683716
+                    "x": 0.0546875,
+                    "y": 0.034259259700775149
                 }
             },
             "shape": {
@@ -9447,8 +9052,8 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 192.0,
-                    "y": 108.0
+                    "x": 1.0,
+                    "y": 1.0
                 }
             },
             "parent": {
@@ -9486,13 +9091,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 15.433000564575196,
-                    "y": -13.600000381469727,
+                    "x": 0.08038020879030228,
+                    "y": -0.1259259283542633,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 16.899999618530275,
-                    "y": 4.900000095367432
+                    "x": 0.08802083134651184,
+                    "y": 0.04537037014961243
                 }
             },
             "shape": {
@@ -9618,13 +9223,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -19.136999130249025,
-                    "y": -13.600000381469727,
+                    "x": -0.099671870470047,
+                    "y": -0.1259259283542633,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 27.599998474121095,
-                    "y": 4.900000095367432
+                    "x": 0.14374999701976777,
+                    "y": 0.04537037014961243
                 }
             },
             "shape": {
@@ -9741,124 +9346,6 @@
             }
         },
         {
-            "active": true,
-            "name": "BGMManager",
-            "uuid": 11475334039274591349,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": -0.5,
-                    "y": -0.5,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 0.5,
-                    "y": 0.5,
-                    "z": 0.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Level_1",
-                        "path": "level bgm 1 re-mixed.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": true,
-                        "isMusic": true
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SceneMusic",
-                        "fields": {
-                            "layerName": "Music",
-                            "fadeTime": 2.0,
-                            "stopLayer": false
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
             "active": false,
             "name": "GameOverScreen",
             "uuid": 12781599637949462904,
@@ -9873,8 +9360,8 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 192.0,
-                    "y": 108.0
+                    "x": 1.0,
+                    "y": 1.0
                 }
             },
             "shape": {
@@ -9959,124 +9446,6 @@
         },
         {
             "active": true,
-            "name": "AmbianceManager",
-            "uuid": 4423047889439126144,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": -0.5,
-                    "y": -0.5,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 0.5,
-                    "y": 0.5,
-                    "z": 0.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Lava_Ambience",
-                        "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.44999998807907107,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SceneMusic",
-                        "fields": {
-                            "layerName": "Music",
-                            "fadeTime": 2.0,
-                            "stopLayer": false
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
             "name": "Player",
             "uuid": 2235953182091816380,
             "tag": {
@@ -10086,7 +9455,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 44.80465316772461,
-                    "y": 21.12102508544922,
+                    "y": 3.500000476837158,
                     "z": 50.0
                 },
                 "size": {
@@ -10113,7 +9482,7 @@
                 "enabled": true,
                 "position": {
                     "x": 44.80465316772461,
-                    "y": 16.12102508544922,
+                    "y": -1.4999995231628419,
                     "z": 50.0
                 },
                 "offset": {
@@ -10123,12 +9492,12 @@
                 },
                 "min": {
                     "x": 26.00460433959961,
-                    "y": -14.378974914550782,
+                    "y": -32.0,
                     "z": 50.0
                 },
                 "max": {
                     "x": 63.60470199584961,
-                    "y": 46.62102508544922,
+                    "y": 29.0,
                     "z": 50.0
                 }
             },
@@ -10296,8 +9665,8 @@
                             "groundCheckWidth": 10.0,
                             "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
-                            "isDialogueActive": false,
-                            "CurrentEnergy": 56.58463668823242,
+                            "isDialogueActive": true,
+                            "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
@@ -10366,7 +9735,7 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 4.8833417892456059,
+                "t": 5.900022029876709,
                 "playing": true,
                 "clips": [
                     {
@@ -10809,7 +10178,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "PlayerDialogue_1",
             "uuid": 17786815366027406028,
             "tag": {
@@ -10819,7 +10188,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 44.80465316772461,
-                    "y": 79.49092864990235,
+                    "y": 61.869903564453128,
                     "z": 50.0
                 },
                 "size": {
@@ -10937,7 +10306,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 44.80465316772461,
-                    "y": 79.49092864990235,
+                    "y": 61.869903564453128,
                     "z": 50.0
                 },
                 "size": {
@@ -11055,7 +10424,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 44.80465316772461,
-                    "y": 79.49092864990235,
+                    "y": 61.869903564453128,
                     "z": 50.0
                 },
                 "size": {
@@ -11173,7 +10542,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 44.80465316772461,
-                    "y": 79.49092864990235,
+                    "y": 61.869903564453128,
                     "z": 50.0
                 },
                 "size": {
@@ -11291,7 +10660,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -240.98959350585938,
-                    "y": -178.23651123046876,
+                    "y": -195.8575439453125,
                     "z": 50.0
                 },
                 "size": {
@@ -11409,7 +10778,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 47.06545639038086,
-                    "y": -26.99787139892578,
+                    "y": -44.618896484375,
                     "z": 0.0
                 },
                 "size": {
@@ -12483,7 +11852,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.7267709374427795
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -12639,7 +12008,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.20000000298023225
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -12795,7 +12164,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.20000000298023225
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -12951,7 +12320,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.20000000298023225
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -13107,7 +12476,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.20000000298023225
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -17282,663 +16651,6 @@
         },
         {
             "active": true,
-            "name": "Moving_Platform_3(Sinking)",
-            "uuid": 518032752776490246,
-            "tag": {
-                "tagMask": 2
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1724.568359375,
-                    "y": -82.77084350585938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 100.0,
-                    "y": 16.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 1724.568359375,
-                    "y": -82.77084350585938,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 1657.068359375,
-                    "y": -90.77084350585938,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 1792.068359375,
-                    "y": -74.77084350585938,
-                    "z": 0.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "Character/Light Mode/Left/Falling.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 320.0,
-                            "MoveSpeed": 50.0,
-                            "VerticalSpeed": 150.0,
-                            "maxDrop": 140.0
-                        }
-                    }
-                ]
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 3412752456756295467,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1664.252197265625,
-                    "y": -82.77084350585938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_33.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 518032752776490246,
-                "localPos": {
-                    "x": -0.603161633014679,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 11461506195316773121,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1704.2125244140626,
-                    "y": -82.77084350585938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 518032752776490246,
-                "localPos": {
-                    "x": -0.20355835556983949,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 13486061038933066229,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1724.2125244140626,
-                    "y": -82.77084350585938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 518032752776490246,
-                "localPos": {
-                    "x": -0.0035583495628088714,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 15411604965651909830,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1744.2125244140626,
-                    "y": -82.77084350585938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 518032752776490246,
-                "localPos": {
-                    "x": 0.196441650390625,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 8213426888495684744,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1784.2125244140626,
-                    "y": -82.77084350585938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_35.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 518032752776490246,
-                "localPos": {
-                    "x": 0.5964416265487671,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 8491818656849181701,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1684.2125244140626,
-                    "y": -82.77084350585938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 518032752776490246,
-                "localPos": {
-                    "x": -0.4035583436489105,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 17857465536943810971,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1764.2125244140626,
-                    "y": -82.77084350585938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 518032752776490246,
-                "localPos": {
-                    "x": 0.39644163846969607,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
             "name": "wall3",
             "uuid": 4945335822095213246,
             "tag": {
@@ -18541,6 +17253,1181 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Slime2",
+            "uuid": 1610264561334882712,
+            "tag": {
+                "tagMask": 20
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1171.764892578125,
+                    "y": -100.5655517578125,
+                    "z": 50.0
+                },
+                "size": {
+                    "x": 53.0,
+                    "y": 49.29999923706055
+                }
+            },
+            "rigidbody": {
+                "mass": 0.10000000149011612,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1172.46484375,
+                    "y": -104.0655517578125,
+                    "z": 50.0
+                },
+                "offset": {
+                    "x": 0.699999988079071,
+                    "y": -3.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1157.5648193359376,
+                    "y": -114.26556396484375,
+                    "z": 50.0
+                },
+                "max": {
+                    "x": 1187.3648681640626,
+                    "y": -93.86553955078125,
+                    "z": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Monsters\\Slime spritesheet.png",
+                "uvSize": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.5,
+                    "y": 0.3333333432674408
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "slimeMove1",
+                        "path": "slime 1.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove2",
+                        "path": "slime 2.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove3",
+                        "path": "slime 3.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove4",
+                        "path": "slime 4.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove5",
+                        "path": "slime 5.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeImpact",
+                        "path": "slime impact.wav",
+                        "volume": 0.800000011920929,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "detectionRange": 137.60000610351563,
+                            "gravityScale": 2.0,
+                            "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
+                            "minThrowSpeed": 300.0,
+                            "maxThrowSpeed": 1000.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 1.0,
+                            "stunDuration": 1.0,
+                            "ledgeBuffer": -7.0,
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            },
+            "keyframe_animator": {
+                "current": "slimeWalk",
+                "t": 5.866688251495361,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeHold",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeIdle",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeChase",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 8.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "active": true,
+            "name": "BGMManager",
+            "uuid": 4423047889439126144,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -0.5,
+                    "y": -0.5,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 0.5,
+                    "y": 0.5,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Lava_Ambience",
+                        "path": "lava-volcano-wind-environment_loop.wav",
+                        "volume": 0.44999998807907107,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": true,
+                        "isMusic": true
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Music",
+                            "fadeTime": 2.0,
+                            "stopLayer": false
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Moving_Platform_3(Sinking)",
+            "uuid": 13629844327985426294,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1497.04541015625,
+                    "y": -48.367576599121097,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 100.0,
+                    "y": 16.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1497.04541015625,
+                    "y": -48.367576599121097,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1429.54541015625,
+                    "y": -56.367576599121097,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1564.54541015625,
+                    "y": -40.367576599121097,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Character/Light Mode/Left/Falling.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WeightedPlatform",
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 320.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 150.0,
+                            "maxDrop": 140.0
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 11441683911344033706,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1436.729248046875,
+                    "y": -48.367576599121097,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_33.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13629844327985426294,
+                "localPos": {
+                    "x": -0.603161633014679,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 13639513347523855288,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1476.6895751953126,
+                    "y": -48.367576599121097,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13629844327985426294,
+                "localPos": {
+                    "x": -0.20355835556983949,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 8759246583546647962,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1496.6895751953126,
+                    "y": -48.367576599121097,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13629844327985426294,
+                "localPos": {
+                    "x": -0.0035583495628088714,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 15028352818561453988,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1516.6895751953126,
+                    "y": -48.367576599121097,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13629844327985426294,
+                "localPos": {
+                    "x": 0.196441650390625,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 18030995762585506018,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1556.6895751953126,
+                    "y": -48.367576599121097,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_35.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13629844327985426294,
+                "localPos": {
+                    "x": 0.5964416265487671,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 7833680702561413532,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1456.6895751953126,
+                    "y": -48.367576599121097,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13629844327985426294,
+                "localPos": {
+                    "x": -0.4035583436489105,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 10178742298405110791,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1536.6895751953126,
+                    "y": -48.367576599121097,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13629844327985426294,
+                "localPos": {
+                    "x": 0.39644163846969607,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
             }
         }
     ],
