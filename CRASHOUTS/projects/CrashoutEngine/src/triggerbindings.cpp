@@ -1,6 +1,6 @@
 /*!
 @file		triggerbindings.cpp
-@author     Interactive CLI Agent
+@author     m.biniswandi@digipen.edu
 @brief		Definition of trigger bindings functions
 */
 #include "triggerbindings.h"

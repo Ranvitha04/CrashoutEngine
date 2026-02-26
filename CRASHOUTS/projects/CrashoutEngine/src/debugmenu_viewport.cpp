@@ -4,7 +4,7 @@
 @date       25/12/2025
 @brief      File containing the implementation of the Debug Menu Viewport rendering functions.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 #include "debugmenu_internals.h"
@@ -588,6 +588,10 @@ namespace UI {
             if (over) {
                 u = (mouse.x - imgMin.x) / (imgMax.x - imgMin.x);
                 v = 1.f - (mouse.y - imgMin.y) / (imgMax.y - imgMin.y);
+
+                // Update g_mouseWorldPos as long as we are over the viewport
+                CEVec3 worldPt = ViewUV_toWorld(u, v);
+                InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
             }
 
 
@@ -671,9 +675,6 @@ namespace UI {
                     UndoManager::GetInstance().AddCommand(std::move(cmd));
                     selected = 0;
                 }
-
-                CEVec3 worldPt = ViewUV_toWorld(u, v);
-                InputManager::g_mouseWorldPos = CEVec2{ worldPt.x, worldPt.y };
             }
 
             // 7) drag and drop

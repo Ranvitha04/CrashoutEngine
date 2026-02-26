@@ -57,7 +57,6 @@ namespace CrashoutsEngine::Bindings {
 	}
 
 	static void InternalDrawLine(CEVec3* start, CEVec3* end, float thickness, CEVec3* color) {
-		if (!UI::IsGameDebugDrawEnabled()) return;
 		if (!start || !end || !color) return;
 		CEColor col(color->x, color->y, color->z, 1.0f);
 		// Queue the line to be drawn at the end of the frame (Post-Clear)
@@ -78,9 +77,14 @@ namespace CrashoutsEngine::Bindings {
 		Component::Rendering::Get().QueueCircle(*size, *position, col, true);
 	}
 
+	static bool InternalIsGameDebugDrawEnabled() {
+		return UI::IsGameDebugDrawEnabled();
+	}
+
 	// 2. Register it (Call this where you register other bindings)
 	void RegisterDebugBindings() {
 		mono_add_internal_call("CrashoutsEngine.Debug::Log", (const void*)InternalLog);
+		mono_add_internal_call("CrashoutsEngine.Debug::InternalIsGameDebugDrawEnabled", (const void*)InternalIsGameDebugDrawEnabled);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawLine", (const void*)InternalDrawLine);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawTrajectory", (const void*)InternalDrawTrajectory);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawCircle", (const void*)InternalDrawCircle);

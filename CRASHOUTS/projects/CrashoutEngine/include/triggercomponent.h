@@ -1,6 +1,6 @@
 /*!
 @file       triggercomponent.h
-@author     Interactive CLI Agent
+@author     m.biniswandi@digipen.edu
 @brief      Metadata component for triggers.
 */
 #pragma once

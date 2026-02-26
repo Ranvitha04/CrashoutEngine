@@ -1,6 +1,6 @@
 /*!
 @file       checkpointcomponent.h
-@author     Interactive CLI Agent
+@author     m.biniswandi@digipen.edu
 @brief      Checkpoint component for respawn logic.
 */
 #pragma once

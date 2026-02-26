@@ -2029,7 +2029,7 @@
                     {
                         "x": -1,
                         "y": -12,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -1,
@@ -2459,6 +2459,11 @@
                     {
                         "x": 2,
                         "y": -16,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -15,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -11993,6 +11998,19 @@
                     "y": 25.0
                 }
             },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
             "collider": {
                 "ColliderType": 1,
                 "isTrigger": false,
@@ -12008,13 +12026,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -204.97128295898438,
-                    "y": -470.1745300292969,
+                    "x": -304.4712829589844,
+                    "y": -482.1745300292969,
                     "z": -5.0
                 },
                 "max": {
-                    "x": -203.97128295898438,
-                    "y": -469.1745300292969,
+                    "x": -104.47128295898438,
+                    "y": -457.1745300292969,
                     "z": -5.0
                 }
             },
@@ -12060,7 +12078,7 @@
                             "PlatesActive": 0,
                             "PlatesRequired": 2,
                             "MoveRight": true,
-                            "MoveDist": 130.0,
+                            "MoveDist": 200.0,
                             "MoveSpeed": 40.0,
                             "dustBurstDuration": 1.0
                         }
@@ -12196,6 +12214,19 @@
                     "y": 24.999998092651368
                 }
             },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
             "collider": {
                 "ColliderType": 1,
                 "isTrigger": false,
@@ -12211,13 +12242,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1681.3983154296876,
-                    "y": -712.1759643554688,
+                    "x": 1669.3983154296876,
+                    "y": -836.6759643554688,
                     "z": -5.0
                 },
                 "max": {
-                    "x": 1682.3983154296876,
-                    "y": -711.1759643554688,
+                    "x": 1694.3983154296876,
+                    "y": -586.6759643554688,
                     "z": -5.0
                 }
             },
@@ -21470,12 +21501,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -237.62046813964845,
+                    "x": -227.82041931152345,
                     "y": -56.076072692871097,
                     "z": 50.0
                 },
                 "max": {
-                    "x": -200.02037048339845,
+                    "x": -209.82041931152345,
                     "y": 4.923927307128906,
                     "z": 50.0
                 }
@@ -21648,7 +21679,9 @@
                             "CurrentEnergy": 75.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
-                            "isPaused": false
+                            "isPaused": false,
+                            "reloadOnDeath": false,
+                            "reloadSceneName": ""
                         }
                     }
                 ]
@@ -21718,6 +21751,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -21770,7 +21834,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21784,14 +21848,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21844,37 +21908,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -24119,7 +24152,7 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": -160.0,
+                            "MovementDistance": -200.0,
                             "MoveSpeed": 40.0,
                             "VerticalSpeed": 0.0,
                             "maxDrop": 0.0
@@ -26582,7 +26615,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -15.712327003479004,
-                    "y": -383.95233154296877,
+                    "y": -352.40679931640627,
                     "z": 0.0
                 },
                 "size": {
@@ -26609,7 +26642,7 @@
                 "enabled": true,
                 "position": {
                     "x": -15.712327003479004,
-                    "y": -383.95233154296877,
+                    "y": -352.40679931640627,
                     "z": 0.0
                 },
                 "offset": {

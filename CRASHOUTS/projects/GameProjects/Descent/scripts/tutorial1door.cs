@@ -5,7 +5,7 @@
 @brief      Script to handle player interaction with the tutorial door in the first tutorial level.
             When the player collides with or triggers the door, it loads the next tutorial scene.
 
-All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 using System;
 using CrashoutsEngine;
@@ -15,10 +15,11 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class tutorial1door : ScriptBase
     {
+        // NEW: Gatekeeper boolean
+        private bool hasTriggered = false;
+
         public override void Start()
         {
-            //Console.WriteLine("[TutorialDoor] Script Initialized on Entity ID: " + Entity.ID);
-            
             // Register both Trigger and Collision events to ensure we catch the player
             // regardless of whether the door collider is set to 'Trigger' or 'Solid'.
             CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
@@ -27,18 +28,19 @@ namespace CrashoutsEngine
 
         public void OnTriggerEnter(uint otherEntityID)
         {
-            //Console.WriteLine("[TutorialDoor] Trigger Enter detected with Entity ID: " + otherEntityID);
             CheckForPlayer(otherEntityID);
         }
 
         public void OnCollideEnter(uint otherEntityID)
         {
-            //Console.WriteLine("[TutorialDoor] Collision Enter detected with Entity ID: " + otherEntityID);
             CheckForPlayer(otherEntityID);
         }
 
         private void CheckForPlayer(uint otherEntityID)
         {
+            // NEW: If we already triggered the transition, ignore all further collisions
+            if (hasTriggered) return;
+
             Entity other = new Entity(otherEntityID);
 
             // Check if it's the player
@@ -47,13 +49,12 @@ namespace CrashoutsEngine
 
             if (isPlayer)
             {
-                //Console.WriteLine("[TutorialDoor] Player detected! Loading tutorial2...");
-                SceneManager.LoadScene("tutorial2",2f);
+                // Lock the door so it can't be triggered again
+                hasTriggered = true; 
+                
+                // Console.WriteLine("[TutorialDoor] Player detected! Loading tutorial2...");
+                SceneManager.LoadScene("tutorial2", 2f);
             }
-            // else
-            // {
-            //      Console.WriteLine("[TutorialDoor] Object is not player. Tag: " + (tag != null ? "Found" : "Null"));
-            // }
         }
     }
 }
