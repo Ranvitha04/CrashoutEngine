@@ -91,23 +91,23 @@ namespace CrashoutsEngine
             InternalCalls.TransformSetLocalScale(Entity.ID, ref newLocalScale);
 
             // Debugging
-            if (drawHitbox)
-            {
-                CEVec3 color = isHovering ? new CEVec3(0, 1, 0) : new CEVec3(1, 0, 0);
-                DrawDebugRect(hitMinX, hitMaxX, hitMinY, hitMaxY, worldPos.z, color);
-            }
+            // if (drawHitbox)
+            // {
+            //     CEVec3 color = isHovering ? new CEVec3(0, 1, 0) : new CEVec3(1, 0, 0);
+            //     DrawDebugRect(hitMinX, hitMaxX, hitMinY, hitMaxY, worldPos.z, color);
+            // }
         }
-        private void DrawDebugRect(float minX, float maxX, float minY, float maxY, float z, CEVec3 color)
-        {
-            CEVec3 tl = new CEVec3(minX, maxY, z);
-            CEVec3 tr = new CEVec3(maxX, maxY, z);
-            CEVec3 bl = new CEVec3(minX, minY, z);
-            CEVec3 br = new CEVec3(maxX, minY, z);
-            float thick = 2.0f;
-            Debug.DrawLine(ref tl, ref tr, thick, ref color);
-            Debug.DrawLine(ref tr, ref br, thick, ref color);
-            Debug.DrawLine(ref br, ref bl, thick, ref color);
-            Debug.DrawLine(ref bl, ref tl, thick, ref color);
-        }
+        // private void DrawDebugRect(float minX, float maxX, float minY, float maxY, float z, CEVec3 color)
+        // {
+        //     CEVec3 tl = new CEVec3(minX, maxY, z);
+        //     CEVec3 tr = new CEVec3(maxX, maxY, z);
+        //     CEVec3 bl = new CEVec3(minX, minY, z);
+        //     CEVec3 br = new CEVec3(maxX, minY, z);
+        //     float thick = 2.0f;
+        //     Debug.DrawLine(ref tl, ref tr, thick, ref color);
+        //     Debug.DrawLine(ref tr, ref br, thick, ref color);
+        //     Debug.DrawLine(ref br, ref bl, thick, ref color);
+        //     Debug.DrawLine(ref bl, ref tl, thick, ref color);
+        // }
     }
 }

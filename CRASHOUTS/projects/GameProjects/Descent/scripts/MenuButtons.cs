@@ -1,41 +1,117 @@
-/*!
-@file       MenuButtons.cs
-@author     lee.r@digipen.edu
-@date       26/11/2025
-@brief      Handles menu button interactions in the game.
-
-All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
-*/
 using System;
-
+using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
     public class MenuButtons : ScriptBase
     {
-        private bool _hasClicked = false;
+        public Entity StartBtn;
+        public Entity SettingsBtn;
+        public Entity CloseBtn;
+        public Entity QuitBtn;
+
+        public Entity QuitCheckPanel;
+        public Entity YesBtn;
+        public Entity NoBtn;
+
+        private bool isClicking = false;
+
+        // NEW: A simple frame cooldown to prevent overlapping buttons from swapping instantly
+        private int _clickCooldown = 0;
 
         public override void Start()
         {
-            //Debug.Log("Start");
+            isClicking = false;
         }
 
         public override void Update()
         {
-            //Debug.Log("TEST");
-            var btn = Entity.GetComponent<ButtonComponent>();
-            var name = Entity.GetComponent<NameComponent>();
-            var tf = Entity.GetComponent<TransformComponent>();
+            if(!Input.IsMouseButtonDown(0)) isClicking = false;
+
+            // Tick down the cooldown every frame
+            if (_clickCooldown > 0)
+            {
+                _clickCooldown--;
+            }
+
+            // --- MAIN MENU ---
+            if (CheckButtonClick(StartBtn))
+            {
+                Debug.Log("[C#] Transitioning to Cutscene...");
+                SceneManager.LoadScene("Cutscene", 2f);
+            }
+            else if (CheckButtonClick(SettingsBtn))
+            {
+                Debug.Log("[C#] Loading Settings...");
+                SceneManager.LoadScene("descentsettings", 0.5f);
+            }
+            else if (CheckButtonClick(CloseBtn))
+            {
+                Debug.Log("[C#] Loading Scene...");
+                SceneManager.LoadScene("descentmenu", 0.5f);
+            }
+            
+            // --- UNIFIED QUIT LOGIC ---
+            else if (CheckButtonClick(QuitBtn))
+            {
+                if (QuitCheckPanel.ID != 0) 
+                {
+                    if (QuitBtn.ID != 0) InternalCalls.SetActive((uint)QuitBtn.ID, false);
+                    InternalCalls.SetActive((uint)QuitCheckPanel.ID, true);
+                }
+                else
+                {
+                    SceneManager.LoadScene("descentmenu", 0.5f);
+                }
+            }
+
+            // --- YES / NO CONFIRMATION ---
+            else if (CheckButtonClick(YesBtn))
+            {
+                Debug.Log("YES");
+                SceneManager.QuitGame();
+            }
+            else if (CheckButtonClick(NoBtn))
+            {
+                Debug.Log("NO");
+                if (QuitCheckPanel.ID != 0) InternalCalls.SetActive((uint)QuitCheckPanel.ID, false);
+                if (QuitBtn.ID != 0) InternalCalls.SetActive((uint)QuitBtn.ID, true);
+            }
+        }
+
+        public override void FixedUpdate() { }
+        public override void OnDestroy() { }
+
+        private bool CheckButtonClick(Entity btnEnt)
+        {
+            if(isClicking) return false;
+            if(Input.IsMouseButtonDown(0)) isClicking = true;
+            // 1. If we are in the cooldown period, ignore all clicks!
+            if (_clickCooldown > 0) return false;
+
+            if (btnEnt == null || btnEnt.ID == 0) return false;
+
+            Entity buttonEnt = new Entity(btnEnt.ID);
+            if (!buttonEnt.IsActive()) return false;
+
+            var btn = buttonEnt.GetComponent<ButtonComponent>();
+            var tf = buttonEnt.GetComponent<TransformComponent>();
+            
+            if (btn == null) return false;
+
+            // 2. Let C++ evaluate normally! This fixes the CloseBtn bug.
             bool clicked = btn.IsClicked();
+
+            // 3. Fallback bounds check if C++ misses the click
             if (!clicked && tf != null)
             {
-                // Fallback for scenes where button state isn't updated
                 if (Input.IsMouseButtonTriggered(0))
                 {
                     CEVec2 mouse = Input.GetMouseWorldPosition();
                     float halfW = tf.Size.x * 0.5f;
                     float halfH = tf.Size.y * 0.5f;
+                    
                     if (mouse.x >= tf.Position.x - halfW && mouse.x <= tf.Position.x + halfW &&
                         mouse.y >= tf.Position.y - halfH && mouse.y <= tf.Position.y + halfH)
                     {
@@ -44,128 +120,17 @@ namespace CrashoutsEngine
                 }
             }
 
-            if (clicked && !_hasClicked)
+            // 4. Action execution and Cooldown Trigger
+            if (clicked)
             {
-                _hasClicked = true;
-
-                //Console.WriteLine("[C#] Name is " + name);
-                string n = InternalCalls.GetName((uint)Entity.ID);
-                AudioManager.GetInstance().PlayAttached("Click", Entity.ID);
-
-                string msg = "[C#] Name is " + name;
-                Debug.Log(msg);
-
-                if (name.ToString() == "StartBtn")
-                {
-                    //Scene.Manager.LoadScene("descentgame");
-                    Debug.Log("[C#] Transitioning to Cutscene...");
-                    SceneManager.LoadScene("Cutscene", 2f);
-                }
-                else if (name.ToString() == "SettingsBtn")
-                {
-                    //Console.WriteLine("[C#] Loading Scene...");
-                    Debug.Log("[C#] Loading Scene...");
-                    SceneManager.LoadScene("descentsettings", 0.5f);
-                }
-                else if (name.ToString() == "CloseBtn")
-                {
-                    Debug.Log("[C#] Loading Scene...");
-                    SceneManager.LoadScene("descentmenu", 0.5f);
-                }
-                else if (name.ToString() == "QuitBtn")
-                {
-                    uint quitCheck = InternalCalls.FindEntityByName("QuitCheck");
-                    if (quitCheck != 0)
-                    {
-                        InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitBtn"), false);
-                        InternalCalls.SetActive(quitCheck, true);
-                        //SceneManager.LoadScene("descentconfirm", 0.5f);
-                    }
-                    else
-                    {
-                        // No confirmation UI in this scene -> return to main menu
-                        SceneManager.LoadScene("descentmenu", 0.5f);
-                    }
-                }
-                else if (name.ToString() == "Yes")
-                {
-                    Debug.Log("YES");
-                    SceneManager.QuitGame();
-                }
-                else if (name.ToString() == "No")
-                {
-                    Debug.Log("NO");
-                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitBtn"), true);
-                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitCheck"), false);
-                    //SceneManager.LoadScene("descentmenu", 0.5f); 
-                }
-               //ClosedBook
-                else if (name.ToString() == "PauseResumeBtn")
-                {
-                    // Resume Game from pause menu
-                    Debug.Log("[C#] Resume Game from pause menu.");
-                    SceneManager.LoadScene("descentgame");
-                }
-                else if (name.ToString() == "PauseSettingsBtn")
-                {
-                    // Go to settings from pause menu
-                    Debug.Log("[C#] Pause menu -> Settings.");
-                    SceneManager.LoadScene("descentsettings");
-                }
-                else if (name.ToString() == "PauseQuitBtn")
-                {
-                    
-                    SceneManager.LoadScene("descentconfirm");
-                }
-             
-
-                // --- CLOSED BOOK BUTTONS ---
-                if (n == "ResumeBtnGame")
-                {
-                    // close all book UI (resume game)
-                    if (BookUIController.Instance != null)
-                        BookUIController.Instance.HideAll();
-                }
-                else if (n == "SettingBtnGame")
-                {
-                    // go to open book UI
-                    if (BookUIController.Instance != null)
-                        BookUIController.Instance.ShowOpenBook();
-                }
-                else if (n == "ExitBtnGame")
-                {
-                    // whatever your exit flow is
-                    SceneManager.LoadScene("descentconfirm");
-                }
-
-                // --- OPEN BOOK BUTTONS ---
-                else if (n == "ClosedOpenBookBtn")
-                {
-                    if (BookUIController.Instance != null)
-                        BookUIController.Instance.ShowClosedBook();
-                }
-
-
-
+                _clickCooldown = 15; // Lock UI for 15 frames to stop rapid Quit/No swapping
+                
+                AudioManager.GetInstance().PlayAttached("Click", buttonEnt.ID);
+                Debug.Log($"[C#] Clicked Button: {InternalCalls.GetName((uint)buttonEnt.ID)}");
+                return true;
             }
 
-            else if (!btn.IsClicked())
-            {
-                _hasClicked = false;
-            }
-
-            if (btn.IsHovered())
-            {
-                //Console.WriteLine("Hovered");
-            }
-        }
-
-        public override void FixedUpdate()
-        {
-        }
-
-        public override void OnDestroy()
-        {
+            return false;
         }
     }
 }

@@ -162,8 +162,8 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 5.699999809265137,
-                    "y": 8.0
+                    "x": 10.5,
+                    "y": 10.0
                 }
             },
             "text": {
@@ -178,7 +178,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 0.6298342943191528
+                    "w": 1.0
                 },
                 "centered": true,
                 "isworldspace": false,
@@ -206,14 +206,6 @@
                         "spatial3D": false,
                         "looping": false,
                         "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MenuButtons",
-                        "fields": {}
                     }
                 ]
             },
@@ -640,8 +632,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 125.48709106445313,
-                    "y": -6.914796829223633,
+                    "x": 23.085126876831056,
+                    "y": -11.905862808227539,
                     "z": 0.0
                 },
                 "size": {
@@ -649,47 +641,13 @@
                     "y": 1.0
                 }
             },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
             "text": {
                 "font": "AlegreyaSC-Medium",
                 "text": "Switch between modes to explore\nand solve puzzles.\nUse enemies to your advantage.\nLaval & Enemies kill you instantly,\nso be careful!\n\nActivate all the pressure plates to\nopen the door at the end!",
                 "scale": 11.0,
                 "offset": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 77.30000305175781,
+                    "y": 5.300000190734863
                 },
                 "color": {
                     "x": 0.22745098173618318,
@@ -726,8 +684,8 @@
             "parent": {
                 "parentUUID": 16805797322157221579,
                 "localPos": {
-                    "x": 105.68839263916016,
-                    "y": -26.421979904174806,
+                    "x": 3.286428451538086,
+                    "y": -31.41304588317871,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -1560,6 +1518,53 @@
             "layer": {
                 "layerName": "UI",
                 "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "SettingsScript",
+            "uuid": 15749003930240525117,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {
+                            "StartBtn": 0,
+                            "SettingsBtn": 0,
+                            "CloseBtn": 3,
+                            "QuitBtn": 0,
+                            "QuitCheckPanel": 0,
+                            "YesBtn": 0,
+                            "NoBtn": 0,
+                            "PauseResumeBtn": 0,
+                            "PauseSettingsBtn": 0,
+                            "PauseQuitBtn": 0,
+                            "ExitBtnGame": 0,
+                            "ResumeBtnGame": 0,
+                            "SettingBtnGame": 0,
+                            "ClosedOpenBookBtn": 0
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

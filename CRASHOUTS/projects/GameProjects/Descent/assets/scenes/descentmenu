@@ -165,14 +165,6 @@
                     }
                 ]
             },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MenuButtons",
-                        "fields": {}
-                    }
-                ]
-            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -247,8 +239,8 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 253.1999969482422,
-                    "y": 55.0
+                    "x": 278.5199890136719,
+                    "y": 60.5
                 }
             },
             "shape": {
@@ -288,7 +280,7 @@
             "text": {
                 "font": "AlegreyaSC-Medium",
                 "text": "START GAME",
-                "scale": 15.0,
+                "scale": 16.5,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -325,14 +317,6 @@
                         "spatial3D": false,
                         "looping": false,
                         "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MenuButtons",
-                        "fields": {}
                     }
                 ]
             },
@@ -488,14 +472,6 @@
                         "spatial3D": false,
                         "looping": false,
                         "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MenuButtons",
-                        "fields": {}
                     }
                 ]
             },
@@ -879,14 +855,6 @@
                     "z": 0.0
                 }
             },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MenuButtons",
-                        "fields": {}
-                    }
-                ]
-            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -1019,14 +987,6 @@
                     "z": 0.0
                 }
             },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MenuButtons",
-                        "fields": {}
-                    }
-                ]
-            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -1103,6 +1063,46 @@
             },
             "layer": {
                 "layerName": "YesNo",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MenuScript",
+            "uuid": 1101963684839397219,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {
+                            "StartBtn": 3,
+                            "SettingsBtn": 4,
+                            "CloseBtn": 0,
+                            "QuitBtn": 2,
+                            "QuitCheckPanel": 6,
+                            "YesBtn": 9,
+                            "NoBtn": 10
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
                 "z": 0
             }
         }
