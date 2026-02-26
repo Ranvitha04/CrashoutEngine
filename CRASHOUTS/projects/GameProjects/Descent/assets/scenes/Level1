@@ -1,33 +1,18 @@
 {
     "entities": [],
     "layers": {
-        "Background": 0,
-        "Default": 3,
-        "Enemy": 4,
-        "Foreground": 2,
-        "Middleground": 1,
-        "Player": 5,
-        "UI": 6,
-        "UIButtons": 7
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
     },
     "layer_visibility": {
-        "Background": true,
         "Default": true,
-        "Enemy": true,
-        "Foreground": true,
-        "Middleground": true,
-        "Player": true,
-        "UI": true,
-        "UIButtons": true
+        "Ground": false,
+        "Player": false
     },
     "tag_mapping": {
-        "Background": 16,
         "Default": 0,
-        "Enemy": 4,
-        "Foreground": 64,
         "Ground": 2,
-        "Middleground": 32,
-        "Passthrough": 8,
         "Player": 1
     },
     "quadtree": {

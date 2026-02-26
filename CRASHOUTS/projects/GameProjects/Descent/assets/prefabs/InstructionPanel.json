@@ -1,0 +1,477 @@
+{
+    "prefabs": [
+        {
+            "name": "InstructionPanel",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "Instruction",
+                    "uuid": 16805797322157221579,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 19.79869842529297,
+                            "y": 19.507183074951173,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Medium",
+                        "text": "INSTRUCTIONS",
+                        "scale": 18.200000762939454,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.22745098173618318,
+                            "y": 0.09803921729326248,
+                            "z": 0.0117647061124444,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": false,
+                        "padding": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 0.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Instruction_1",
+                    "uuid": 9204081415001704600,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 18.258806228637697,
+                            "y": 13.34701919555664,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Medium",
+                        "text": "A & D: Left & Right",
+                        "scale": 13.0,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.22651934623718263,
+                            "y": 0.09764373302459717,
+                            "z": 0.012514880858361721,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": false,
+                        "padding": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 0.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "parent": {
+                        "parentUUID": 16805797322157221579,
+                        "localPos": {
+                            "x": -1.5398921966552735,
+                            "y": -6.160163879394531,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Instruction_2",
+                    "uuid": 1867464960956039444,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 16.67456817626953,
+                            "y": 8.934349060058594,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Medium",
+                        "text": "E: Switch Modes",
+                        "scale": 13.0,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.22745098173618318,
+                            "y": 0.09803921729326248,
+                            "z": 0.0117647061124444,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": false,
+                        "padding": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 0.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "parent": {
+                        "parentUUID": 16805797322157221579,
+                        "localPos": {
+                            "x": -3.1241302490234377,
+                            "y": -10.572834014892579,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Instruction_3",
+                    "uuid": 12904762019376009584,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 13.63911247253418,
+                            "y": 3.901434898376465,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Medium",
+                        "text": "SPACE: Jump",
+                        "scale": 13.0,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.22745098173618318,
+                            "y": 0.09803921729326248,
+                            "z": 0.0117647061124444,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": false,
+                        "padding": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 0.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "parent": {
+                        "parentUUID": 16805797322157221579,
+                        "localPos": {
+                            "x": -6.159585952758789,
+                            "y": -15.605748176574707,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Instruction_4",
+                    "uuid": 13266255524377092828,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 29.16895866394043,
+                            "y": -0.4106788635253906,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Medium",
+                        "text": "LEFT MOUSE: Move Enemies",
+                        "scale": 13.0,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.22745098173618318,
+                            "y": 0.09803921729326248,
+                            "z": 0.0117647061124444,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": false,
+                        "padding": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 0.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "parent": {
+                        "parentUUID": 16805797322157221579,
+                        "localPos": {
+                            "x": 9.370260238647461,
+                            "y": -19.917861938476564,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Instruction_5",
+                    "uuid": 7965740114697580247,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 93.46891784667969,
+                            "y": -6.914796829223633,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Medium",
+                        "text": "Switch between modes to explore\nand solve puzzles.\nUse enemies to your advantage.\nLaval & Enemies kill you instantly,\nso be careful!\n\nActivate all the pressure plates to\nopen the door at the end!",
+                        "scale": 11.0,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.22745098173618318,
+                            "y": 0.09803921729326248,
+                            "z": 0.0117647061124444,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": false,
+                        "padding": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 0.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "gui": {
+                        "uiType": 2
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 16805797322157221579,
+                        "localPos": {
+                            "x": 73.67021942138672,
+                            "y": -26.421979904174806,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                }
+            ]
+        }
+    ]
+}

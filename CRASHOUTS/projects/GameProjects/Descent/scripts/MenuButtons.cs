@@ -43,6 +43,30 @@ namespace CrashoutsEngine
                     Debug.Log("[C#] Transitioning to Cutscene...");
                     SceneManager.LoadScene("Cutscene", 2f);
                 }
+                else if (name.ToString() == "MenuBtn")
+                {
+                    //Scene.Manager.LoadScene("descentgame");
+                    Debug.Log("[C#] Transitioning to Cutscene...");
+                    SceneManager.LoadScene("descentmenu", 2f);
+                }
+                else if (name.ToString() == "RestartBtn")
+                {
+                    //Scene.Manager.LoadScene("descentgame");
+                    Debug.Log("[C#] Transitioning to Cutscene...");
+                    SceneManager.LoadScene("tutorial", 2f);
+                }
+                else if (name.ToString() == "RestartBtn2")
+                {
+                    //Scene.Manager.LoadScene("descentgame");
+                    Debug.Log("[C#] Transitioning to Cutscene...");
+                    SceneManager.LoadScene("tutorial", 2f);
+                }
+                else if (name.ToString() == "Level1Btn")
+                {
+                    //Scene.Manager.LoadScene("descentgame");
+                    Debug.Log("[C#] Transitioning to Cutscene...");
+                    SceneManager.LoadScene("tutorial2", 2f);
+                }
                 else if (name.ToString() == "SettingsBtn")
                 {
                     //Console.WriteLine("[C#] Loading Scene...");
@@ -72,7 +96,7 @@ namespace CrashoutsEngine
                     InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitCheck"), false);
                     //SceneManager.LoadScene("descentmenu", 0.5f); 
                 }
-               //ClosedBook
+                //ClosedBook
                 else if (name.ToString() == "PauseResumeBtn")
                 {
                     // Resume Game from pause menu
@@ -87,7 +111,7 @@ namespace CrashoutsEngine
                 }
                 else if (name.ToString() == "PauseQuitBtn")
                 {
-                    
+
                     SceneManager.LoadScene("descentconfirm");
                 }
              

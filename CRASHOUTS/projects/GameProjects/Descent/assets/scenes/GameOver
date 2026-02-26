@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "BG",
+            "uuid": 11715825519364482310,
             "tag": {
                 "tagMask": 0
             },
@@ -71,6 +72,7 @@
         {
             "active": true,
             "name": "QuitBtn",
+            "uuid": 11355036359503072459,
             "tag": {
                 "tagMask": 0
             },
@@ -78,12 +80,46 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 0.0,
-                    "y": -122.22946166992188,
+                    "y": -191.72845458984376,
                     "z": -0.8999999761581421
                 },
                 "size": {
                     "x": 253.1999969482422,
                     "y": 55.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/button.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "text": {
@@ -161,7 +197,12 @@
                     "y": 1.0,
                     "z": 1.0,
                     "w": 0.8066298365592957
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 6
@@ -181,6 +222,7 @@
         {
             "active": true,
             "name": "StartBtn",
+            "uuid": 2619589062745926259,
             "tag": {
                 "tagMask": 0
             },
@@ -188,7 +230,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1.1542778015136719,
-                    "y": -53.982810974121097,
+                    "y": -70.41275024414063,
                     "z": -3.3000001907348635
                 },
                 "size": {
@@ -196,9 +238,43 @@
                     "y": 55.0
                 }
             },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/button.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "text": {
                 "font": "AlegreyaSC-Medium",
-                "text": "START GAME",
+                "text": "Restart level",
                 "scale": 15.0,
                 "offset": {
                     "x": 0.0,
@@ -271,7 +347,12 @@
                     "y": 1.0,
                     "z": 1.0,
                     "w": 0.8066298365592957
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 6
@@ -291,6 +372,7 @@
         {
             "active": true,
             "name": "Title",
+            "uuid": 17893178414566487351,
             "tag": {
                 "tagMask": 0
             },
@@ -343,6 +425,156 @@
                 "paddingXY": {
                     "x": 0.0,
                     "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "ManiBtn",
+            "uuid": 16923807800986708985,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1.1542778015136719,
+                    "y": -129.32749938964845,
+                    "z": -3.3000001907348635
+                },
+                "size": {
+                    "x": 253.1999969482422,
+                    "y": 55.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/button.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Main Menu",
+                "scale": 15.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {}
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.5176470875740051,
+                    "y": 0.0784313753247261,
+                    "z": 0.0784313753247261,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.5686274766921997,
+                    "y": 0.10980392247438431,
+                    "z": 0.10980392247438431,
+                    "w": 0.8470588326454163
+                },
+                "shapePressedColor": {
+                    "x": 0.5966850519180298,
+                    "y": 0.09889807552099228,
+                    "z": 0.09889807552099228,
+                    "w": 0.18784528970718385
+                },
+                "textNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.49171268939971926
+                },
+                "textPressedColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.8066298365592957
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "gui": {
+                "uiType": 6
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 78.0,
+                    "y": 212.5
                 },
                 "uiLayout": 4
             },
