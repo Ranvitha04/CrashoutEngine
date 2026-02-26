@@ -91,11 +91,11 @@ namespace CrashoutsEngine
             InternalCalls.TransformSetLocalScale(Entity.ID, ref newLocalScale);
 
             // Debugging
-            if (drawHitbox)
-            {
-                CEVec3 color = isHovering ? new CEVec3(0, 1, 0) : new CEVec3(1, 0, 0);
-                DrawDebugRect(hitMinX, hitMaxX, hitMinY, hitMaxY, worldPos.z, color);
-            }
+            // if (drawHitbox)
+            // {
+            //     CEVec3 color = isHovering ? new CEVec3(0, 1, 0) : new CEVec3(1, 0, 0);
+            //     DrawDebugRect(hitMinX, hitMaxX, hitMinY, hitMaxY, worldPos.z, color);
+            // }
         }
         private void DrawDebugRect(float minX, float maxX, float minY, float maxY, float z, CEVec3 color)
         {
