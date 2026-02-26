@@ -1,13 +1,12 @@
 /*!
-@file       MenuButtons.cs
-@author     lee.r@digipen.edu
-@date       26/11/2025
-@brief      Handles menu button interactions in the game.
+@file      MenuButtons.cs
+@author    lee.r@digipen.edu
+@date      26/11/2025
+@brief     Handles menu button interactions in the game.
 
-All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 using System;
-
 
 namespace CrashoutsEngine
 {
@@ -28,6 +27,7 @@ namespace CrashoutsEngine
             var name = Entity.GetComponent<NameComponent>();
             var tf = Entity.GetComponent<TransformComponent>();
             bool clicked = btn.IsClicked();
+            
             if (!clicked && tf != null)
             {
                 // Fallback for scenes where button state isn't updated
@@ -48,76 +48,74 @@ namespace CrashoutsEngine
             {
                 _hasClicked = true;
 
-                //Console.WriteLine("[C#] Name is " + name);
                 string n = InternalCalls.GetName((uint)Entity.ID);
+                string nameStr = name.ToString(); // Cached for easier reading
+                
                 AudioManager.GetInstance().PlayAttached("Click", Entity.ID);
 
-                string msg = "[C#] Name is " + name;
+                string msg = "[C#] Name is " + nameStr;
                 Debug.Log(msg);
 
-                if (name.ToString() == "StartBtn")
+                if (nameStr == "StartBtn")
                 {
-                    //Scene.Manager.LoadScene("descentgame");
                     Debug.Log("[C#] Transitioning to Cutscene...");
                     SceneManager.LoadScene("Cutscene", 2f);
                 }
-                else if (name.ToString() == "SettingsBtn")
+                else if (nameStr == "SettingsBtn" || nameStr == "PauseSettingsBtn")
                 {
-                    //Console.WriteLine("[C#] Loading Scene...");
-                    Debug.Log("[C#] Loading Scene...");
+                    Debug.Log("[C#] Loading Settings...");
                     SceneManager.LoadScene("descentsettings", 0.5f);
                 }
-                else if (name.ToString() == "CloseBtn")
+                else if (nameStr == "CloseBtn")
                 {
                     Debug.Log("[C#] Loading Scene...");
                     SceneManager.LoadScene("descentmenu", 0.5f);
                 }
-                else if (name.ToString() == "QuitBtn")
-                {
-                    uint quitCheck = InternalCalls.FindEntityByName("QuitCheck");
-                    if (quitCheck != 0)
-                    {
-                        InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitBtn"), false);
-                        InternalCalls.SetActive(quitCheck, true);
-                        //SceneManager.LoadScene("descentconfirm", 0.5f);
-                    }
-                    else
-                    {
-                        // No confirmation UI in this scene -> return to main menu
-                        SceneManager.LoadScene("descentmenu", 0.5f);
-                    }
-                }
-                else if (name.ToString() == "Yes")
-                {
-                    Debug.Log("YES");
-                    SceneManager.QuitGame();
-                }
-                else if (name.ToString() == "No")
-                {
-                    Debug.Log("NO");
-                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitBtn"), true);
-                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitCheck"), false);
-                    //SceneManager.LoadScene("descentmenu", 0.5f); 
-                }
-               //ClosedBook
-                else if (name.ToString() == "PauseResumeBtn")
+                else if (nameStr == "PauseResumeBtn")
                 {
                     // Resume Game from pause menu
                     Debug.Log("[C#] Resume Game from pause menu.");
                     SceneManager.LoadScene("descentgame");
                 }
-                else if (name.ToString() == "PauseSettingsBtn")
+                // --- UNIFIED QUIT BUTTON LOGIC ---
+                else if (nameStr == "QuitBtn" || nameStr == "PauseQuitBtn" || n == "ExitBtnGame")
                 {
-                    // Go to settings from pause menu
-                    Debug.Log("[C#] Pause menu -> Settings.");
-                    SceneManager.LoadScene("descentsettings");
+                    uint quitCheck = InternalCalls.FindEntityByName("QuitCheck");
+                    if (quitCheck != 0)
+                    {
+                        // Hide whichever quit button was pressed so it can't be spammed
+                        InternalCalls.SetActive(InternalCalls.FindEntityByName(n), false);
+                        // Show the Yes/No confirmation overlay
+                        InternalCalls.SetActive(quitCheck, true);
+                    }
+                    else
+                    {
+                        // Fallback if no QuitCheck exists in the scene
+                        SceneManager.LoadScene("descentmenu", 0.5f);
+                    }
                 }
-                else if (name.ToString() == "PauseQuitBtn")
+                // --- YES / NO CONFIRMATION LOGIC ---
+                else if (nameStr == "Yes")
                 {
+                    Debug.Log("YES");
+                    SceneManager.QuitGame();
+                }
+                else if (nameStr == "No")
+                {
+                    Debug.Log("NO");
+                    // Hide the confirmation UI
+                    InternalCalls.SetActive(InternalCalls.FindEntityByName("QuitCheck"), false);
                     
-                    SceneManager.LoadScene("descentconfirm");
+                    // Safely attempt to reactivate any quit buttons that might have been disabled
+                    uint quitBtn = InternalCalls.FindEntityByName("QuitBtn");
+                    if (quitBtn != 0) InternalCalls.SetActive(quitBtn, true);
+
+                    uint pauseQuitBtn = InternalCalls.FindEntityByName("PauseQuitBtn");
+                    if (pauseQuitBtn != 0) InternalCalls.SetActive(pauseQuitBtn, true);
+
+                    uint exitBtnGame = InternalCalls.FindEntityByName("ExitBtnGame");
+                    if (exitBtnGame != 0) InternalCalls.SetActive(exitBtnGame, true);
                 }
-             
 
                 // --- CLOSED BOOK BUTTONS ---
                 if (n == "ResumeBtnGame")
@@ -132,23 +130,13 @@ namespace CrashoutsEngine
                     if (BookUIController.Instance != null)
                         BookUIController.Instance.ShowOpenBook();
                 }
-                else if (n == "ExitBtnGame")
-                {
-                    // whatever your exit flow is
-                    SceneManager.LoadScene("descentconfirm");
-                }
-
                 // --- OPEN BOOK BUTTONS ---
                 else if (n == "ClosedOpenBookBtn")
                 {
                     if (BookUIController.Instance != null)
                         BookUIController.Instance.ShowClosedBook();
                 }
-
-
-
             }
-
             else if (!btn.IsClicked())
             {
                 _hasClicked = false;

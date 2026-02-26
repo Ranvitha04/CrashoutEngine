@@ -83,7 +83,8 @@ namespace CrashoutsEngine
         // --- USE FIXED UPDATE FOR PHYSICS SYNC ---
         public override void FixedUpdate()
         {
-            if (playerScript != null && playerScript.isPaused) return;
+            if (playerScript != null) playerScript = PlayerMovement.Instance;
+            if (playerScript.isPaused) return;
             if (transform == null) return;
 
             // Use FixedDT for smoother physics interaction
