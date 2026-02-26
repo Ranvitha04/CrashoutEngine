@@ -3,7 +3,6 @@
         {
             "active": true,
             "name": "BG",
-            "uuid": 4214502071314909196,
             "tag": {
                 "tagMask": 0
             },
@@ -72,7 +71,6 @@
         {
             "active": true,
             "name": "QuitBtn",
-            "uuid": 1139658858393108622,
             "tag": {
                 "tagMask": 0
             },
@@ -163,12 +161,7 @@
                     "y": 1.0,
                     "z": 1.0,
                     "w": 0.8066298365592957
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
+                }
             },
             "gui": {
                 "uiType": 6
@@ -188,7 +181,6 @@
         {
             "active": true,
             "name": "StartBtn",
-            "uuid": 17367100139644296487,
             "tag": {
                 "tagMask": 0
             },
@@ -279,12 +271,7 @@
                     "y": 1.0,
                     "z": 1.0,
                     "w": 0.8066298365592957
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
+                }
             },
             "gui": {
                 "uiType": 6
@@ -304,7 +291,6 @@
         {
             "active": true,
             "name": "Title",
-            "uuid": 3401173710840866185,
             "tag": {
                 "tagMask": 0
             },

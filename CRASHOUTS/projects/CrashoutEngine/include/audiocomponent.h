@@ -4,7 +4,7 @@
 @date       25/10/2025
 @brief	    This file defines the AudioComponent
 
-All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -30,8 +30,6 @@ namespace Component {
         bool looping = false;
         bool isMusic = false;
         bool spatial3D = false;
-        float minDistance = 1.0f;
-        float maxDistance = 100.0f;
 
         // Internal handles (one per clip!)
         FMOD::Studio::EventInstance* inst = nullptr;

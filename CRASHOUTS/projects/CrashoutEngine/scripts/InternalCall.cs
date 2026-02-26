@@ -131,10 +131,10 @@ namespace CrashoutsEngine
         internal static extern void Audio_StopComponent(uint entityID, float fadeDuration);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_GetComponentData(uint entityID, out string name, out string path, out float vol, out float pitch, out bool loop, out bool isMusic, out bool spatial3D, out float minDistance, out float maxDistance);
+        internal static extern void Audio_GetComponentData(uint entityID, out string name, out string path, out float vol, out float pitch, out bool loop, out bool isMusic);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_PlayPathOnEntity(uint entityID, string path, float vol, float pitch, bool loop, bool isMusic, bool spatial3D, float minDistance, float maxDistance);
+        internal static extern void Audio_PlayPathOnEntity(uint entityID, string path, float vol, float pitch, bool loop, bool isMusic);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_PlayClipByName(uint entityID, string clipName);
@@ -159,18 +159,6 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern float Audio_GetMasterVolume();
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_SetClipVolume(uint entityID, string clipName, float volume);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_SetClipPosition(uint entityID, string clipName, float x, float y, float z);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_AddClipDSP(uint entityID, string clipName, int dspType);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void Audio_RemoveClipDSP(uint entityID, string clipName, int dspType);
 
         // --- BUTTON COMPONENT LIFECYCLE ---
         [MethodImpl(MethodImplOptions.InternalCall)]

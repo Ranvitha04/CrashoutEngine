@@ -16,7 +16,6 @@ All content � 2025 Digipen Institute of Technology Singapore.All rights reserv
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
-#include <fmod_common.h> // For FMOD_DSP_TYPE
 
 using namespace CrashoutsEngine;
 using namespace Component;
@@ -178,12 +177,12 @@ namespace
 
                 FMOD::Channel* ch = nullptr;
                 if (clip.isMusic) ch = audio.playMusicFile(path, clip.looping);
-                else ch = audio.playSFXFile(path, clip.spatial3D, clip.minDistance, clip.maxDistance);
+                else ch = audio.playSFXFile(path); // Or playSFXFileEx
 
                 if (ch) {
                     ch->setVolume(clip.volume);
                     ch->setPitch(clip.pitch);
-                    ch->setMode(clip.looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF); // Will be overridden if spatial3D is true
+                    ch->setMode(clip.looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
                     clip.channel = ch;
                 }
                 return;
@@ -191,7 +190,7 @@ namespace
         }
     }
 
-    static void ICALL_Audio_PlayPathOnEntity(uint32_t entityID, MonoString* pathStr, float vol, float pitch, mono_bool loop, mono_bool isMusic, mono_bool spatial3D, float minDistance, float maxDistance)
+    static void ICALL_Audio_PlayPathOnEntity(uint32_t entityID, MonoString* pathStr, float vol, float pitch, mono_bool loop, mono_bool isMusic)
     {
         auto* ecs = CrashoutsEngine::ECS::getInstance();
         if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
@@ -203,12 +202,12 @@ namespace
 
         FMOD::Channel* ch = nullptr;
         if (isMusic) ch = audio.playMusicFile(path, loop);
-        else ch = audio.playSFXFile(path, spatial3D, minDistance, maxDistance);
+        else ch = audio.playSFXFile(path);
 
         if (ch) {
             ch->setVolume(vol);
             ch->setPitch(pitch);
-            if (!isMusic && !spatial3D) ch->setMode(loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+            if (!isMusic) ch->setMode(loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
         }
     }
 
@@ -220,82 +219,6 @@ namespace
 
         if (!ac->clips.empty()) {
             ICALL_Audio_PlayClipByName(entityID, mono_string_new(mono_domain_get(), ac->clips[0].name.c_str()));
-        }
-    }
-
-    static void ICALL_Audio_SetClipVolume(uint32_t entityID, MonoString* clipNameStr, float volume)
-    {
-        auto* ecs = CrashoutsEngine::ECS::getInstance();
-        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
-
-        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
-        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
-        std::string targetClipName = MonoToStdString(clipNameStr);
-
-        for (auto& clip : ac->clips) {
-            if (clip.name == targetClipName) {
-                if (clip.channel) {
-                    audio.SetChannelVolume(clip.channel, volume);
-                }
-                return;
-            }
-        }
-    }
-
-    static void ICALL_Audio_SetClipPosition(uint32_t entityID, MonoString* clipNameStr, float x, float y, float z)
-    {
-        auto* ecs = CrashoutsEngine::ECS::getInstance();
-        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
-
-        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
-        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
-        std::string targetClipName = MonoToStdString(clipNameStr);
-
-        for (auto& clip : ac->clips) {
-            if (clip.name == targetClipName) {
-                if (clip.channel && clip.spatial3D) {
-                    audio.SetChannel3DAttributes(clip.channel, {x, y, z}, clip.minDistance, clip.maxDistance);
-                }
-                return;
-            }
-        }
-    }
-
-    static void ICALL_Audio_AddClipDSP(uint32_t entityID, MonoString* clipNameStr, FMOD_DSP_TYPE dspType)
-    {
-        auto* ecs = CrashoutsEngine::ECS::getInstance();
-        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
-
-        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
-        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
-        std::string targetClipName = MonoToStdString(clipNameStr);
-
-        for (auto& clip : ac->clips) {
-            if (clip.name == targetClipName) {
-                if (clip.channel) {
-                    audio.AddChannelDSP(clip.channel, dspType);
-                }
-                return;
-            }
-        }
-    }
-
-    static void ICALL_Audio_RemoveClipDSP(uint32_t entityID, MonoString* clipNameStr, FMOD_DSP_TYPE dspType)
-    {
-        auto* ecs = CrashoutsEngine::ECS::getInstance();
-        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
-
-        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
-        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
-        std::string targetClipName = MonoToStdString(clipNameStr);
-
-        for (auto& clip : ac->clips) {
-            if (clip.name == targetClipName) {
-                if (clip.channel) {
-                    audio.RemoveChannelDSP(clip.channel, dspType);
-                }
-                return;
-            }
         }
     }
 
@@ -343,12 +266,4 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlayPathOnEntity", (const void*)ICALL_Audio_PlayPathOnEntity);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlayClipByName", (const void*)ICALL_Audio_PlayClipByName);
-
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetClipVolume", (const void*)ICALL_Audio_SetClipVolume);
-
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetClipPosition", (const void*)ICALL_Audio_SetClipPosition);
-
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_AddClipDSP", (const void*)ICALL_Audio_AddClipDSP);
-
-    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_RemoveClipDSP", (const void*)ICALL_Audio_RemoveClipDSP);
 }

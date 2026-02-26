@@ -1369,11 +1369,6 @@ namespace {
 					ImGui::SameLine();
 					ImGui::Checkbox("3D Spatial", &clip.spatial3D);
 
-					if (clip.spatial3D) {
-						ImGui::DragFloat("Min Distance", &clip.minDistance, 0.1f, 0.0f, 1000.0f);
-						ImGui::DragFloat("Max Distance", &clip.maxDistance, 0.1f, 0.0f, 1000.0f);
-					}
-
 					static float s_debugFadeTime = 0.5f;
 					ImGui::DragFloat("Stop Fade (s)", &s_debugFadeTime, 0.1f, 0.0f, 5.0f);
 
@@ -1396,7 +1391,7 @@ namespace {
 
 							FMOD::Channel* ch = nullptr;
 							if (clip.isMusic) ch = audio.playMusicFile(p, clip.looping);
-							else ch = audio.playSFXFile(p, clip.spatial3D, clip.minDistance, clip.maxDistance);
+							else ch = audio.playSFXFile(p);
 
 							if (ch) {
 								ch->setVolume(clip.volume);

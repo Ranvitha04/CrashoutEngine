@@ -4,7 +4,7 @@
 @date        25/12/2025
 @brief       File containing the implementation of the Asset Browser panel in the debug menu.
 
-All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 #include "debugmenu_internals.h"
@@ -35,7 +35,7 @@ namespace UI {
         static std::string fileToDeleteName = "";
         static bool openDeletePopup = false;
 
-        // panel mode ï¿½ 0 = normal assets, 1 = C# scripts
+        // panel mode – 0 = normal assets, 1 = C# scripts
         static int s_location = 0;
         ImGui::Combo("Location", &s_location, "Assets\0Scripts\0");
 
@@ -423,7 +423,7 @@ namespace UI {
                 {
                     if (!previewPlaying)
                     {
-                        CrashoutsEngine::Audio::AudioSystem::instance().playSFXFile(outSelectedAsset, false, 1.0f, 100.0f);
+                        CrashoutsEngine::Audio::AudioSystem::instance().playSFXFile(outSelectedAsset);
 
                         previewPlaying = true;
                         lastPreview = outSelectedAsset;

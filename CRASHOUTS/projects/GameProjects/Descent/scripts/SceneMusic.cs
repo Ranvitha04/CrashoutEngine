@@ -23,9 +23,6 @@ namespace CrashoutsEngine
             string key, path;
             float vol, pitch;
             bool loop, isMusic;
-            bool spatial3D;     // Added for new parameter
-            float minDistance;  // Added for new parameter
-            float maxDistance;  // Added for new parameter
 
             if (stopLayer)
             {
@@ -35,7 +32,7 @@ namespace CrashoutsEngine
             }
 
             // Get Data from Component
-            InternalCalls.Audio_GetComponentData(Entity.ID, out key, out path, out vol, out pitch, out loop, out isMusic, out spatial3D, out minDistance, out maxDistance);
+            InternalCalls.Audio_GetComponentData(Entity.ID, out key, out path, out vol, out pitch, out loop, out isMusic);
 
             if (!string.IsNullOrEmpty(path) && !string.IsNullOrEmpty(key))
             {
