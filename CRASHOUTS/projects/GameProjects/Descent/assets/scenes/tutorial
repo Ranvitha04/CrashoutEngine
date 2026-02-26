@@ -21659,10 +21659,10 @@
                             "deceleration": 10.0,
                             "airAcceleration": 2.0,
                             "jumpPower": 50000.0,
-                            "gravityScale": 2.5,
+                            "gravityScale": 2.0,
                             "gravityForceMultiplier": 10.0,
                             "fallGravityMultiplier": 2.5,
-                            "footstepInterval": 0.800000011920929,
+                            "footstepInterval": 0.30000001192092898,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "goalNoOfPlates": 2,
@@ -22671,7 +22671,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 66.97383117675781,
+                    "x": -504.61468505859377,
                     "y": -219.93362426757813,
                     "z": 50.0
                 },
@@ -22789,7 +22789,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -221.08123779296876,
+                    "x": -216.55960083007813,
                     "y": -68.69497680664063,
                     "z": 0.0
                 },

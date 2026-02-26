@@ -23,7 +23,7 @@ namespace CrashoutsEngine
         public float gravityForceMultiplier = 10.0f;
         public float fallGravityMultiplier = 1.5f;
 
-        public float footstepInterval = 0.8f;
+        public float footstepInterval = 0.3f;
         public float swapPause = 1.0f;
         public float energyConsumption = 12.5f;
 
