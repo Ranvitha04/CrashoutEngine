@@ -456,7 +456,7 @@ namespace CrashoutsEngine
                         var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
                         float distToPlayer = Distance(worldPos, playerTf.WorldPosition);
                         
-                        if (distToPlayer <= grabRange + 50.0f) {
+                        if (distToPlayer <= grabRange + 50.0f && playerScript.CurrentEnergy > 0) {
                             isGrabbed = true;
                             isFollowingPath = false;
                             activePath.Clear();
