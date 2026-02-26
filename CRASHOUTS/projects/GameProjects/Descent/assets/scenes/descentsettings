@@ -1320,7 +1320,7 @@
                 "pressedScale": 0.949999988079071
             },
             "parent": {
-                "parentUUID": 18041827776891348399,
+                "parentUUID": 5425030527384020047,
                 "localPos": {
                     "x": 0.0,
                     "y": 0.0,
@@ -1458,7 +1458,7 @@
                 "pressedScale": 0.949999988079071
             },
             "parent": {
-                "parentUUID": 18041827776891348399,
+                "parentUUID": 5425030527384020047,
                 "localPos": {
                     "x": 0.0,
                     "y": 0.0,
@@ -1590,17 +1590,34 @@
                             "QuitBtn": 0,
                             "QuitCheckPanel": 0,
                             "YesBtn": 0,
-                            "NoBtn": 0,
-                            "PauseResumeBtn": 0,
-                            "PauseSettingsBtn": 0,
-                            "PauseQuitBtn": 0,
-                            "ExitBtnGame": 0,
-                            "ResumeBtnGame": 0,
-                            "SettingBtnGame": 0,
-                            "ClosedOpenBookBtn": 0
+                            "NoBtn": 0
                         }
                     }
                 ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "AudioManager",
+            "uuid": 5425030527384020047,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
             },
             "layer": {
                 "layerName": "",
