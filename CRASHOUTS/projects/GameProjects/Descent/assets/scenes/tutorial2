@@ -9491,12 +9491,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 64.50263214111328,
+                    "x": 74.30268096923828,
                     "y": -21.156089782714845,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 102.10272979736328,
+                    "x": 92.30268096923828,
                     "y": 39.843910217285159,
                     "z": 50.0
                 }
@@ -9669,9 +9669,9 @@
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
-                            "isPaused": false
-                            ,"reloadOnDeath": true
-                            ,"reloadSceneName": "tutorial2"
+                            "isPaused": false,
+                            "reloadOnDeath": true,
+                            "reloadSceneName": "tutorial2"
                         }
                     }
                 ]
