@@ -155,6 +155,7 @@ namespace CrashoutsEngine
             col = Entity.GetComponent<ColliderComponent>();
             playerScript = PlayerMovement.Instance;
 
+            CollisionEvents.RegisterPreSolve(Entity.ID, this.OnPreSolve);
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
             CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
 
@@ -202,6 +203,8 @@ namespace CrashoutsEngine
                 if (currentStunTime <= 0)
                 {
                     isStunned = false;
+                    var tag = Entity.GetComponent<TagComponent>();
+                    if (tag != null) tag.AddTag("Enemy");
                 }
                 
                 // FEATURE FIX: Force facing right while stunned
@@ -330,8 +333,8 @@ namespace CrashoutsEngine
                 var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
                 if (playerTf != null)
                 {
-                    float offsetX = playerTf.Size.x < 0 ? -60.0f : 60.0f;
-                    tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z);
+                    float offsetX = playerTf.Size.x < 0 ? -30.0f : 30.0f;
+                    tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z + 1f);
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
                 }
                 return; 
@@ -488,7 +491,7 @@ namespace CrashoutsEngine
                 activePath.Clear();
                 rb.SetDynamic(true);
                 var Tag = Entity.GetComponent<TagComponent>();
-                if (Tag != null) Tag.AddTag("Enemy");
+                // Removed AddTag("Enemy") so it doesn't damage the player while being thrown
                 Console.WriteLine("[Slime] Released/Thrown!");
 
                 if (playerScript != null)
@@ -539,6 +542,25 @@ namespace CrashoutsEngine
                 activePath.Add(nextPos);
                 currentPos = nextPos;
             }
+        }
+
+        public bool OnPreSolve(uint otherEntity)
+        {
+            // When grabbed, ignore all collisions to prevent pushing the player.
+            if (isGrabbed) return false;
+
+            // When thrown, ignore collisions ONLY with the player so it can pass through.
+            if (wasThrown)
+            {
+                Entity other = new Entity(otherEntity);
+                var tag = other.GetComponent<TagComponent>();
+                if (tag != null && tag.HasTag("Player"))
+                {
+                    return false; // Don't collide with the player while flying through the air.
+                }
+            }
+
+            return true; // Collide with everything else normally.
         }
 
         public void OnCollideEnter(uint otherEntity)
