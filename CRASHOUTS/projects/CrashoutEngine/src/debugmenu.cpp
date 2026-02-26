@@ -160,7 +160,7 @@ namespace UI { // --------------------------------------------------------------
 	void RenderDebugMenuBar(UIState& ui) {
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
-				if (ImGui::MenuItem("Save Scene"))
+				if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
 				{
 					if (!CrashoutsEngine::Serialization::currSceneName.empty()) {
 						CrashoutsEngine::Serialization::SaveScenes(CrashoutsEngine::Serialization::currSceneName);
@@ -407,6 +407,16 @@ namespace UI { // --------------------------------------------------------------
 		{
 			LOGI(Core, "Redo Triggered");
 			UndoManager::GetInstance().Redo();
+		}
+		if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::S))
+		{
+			if (!CrashoutsEngine::Serialization::currSceneName.empty()) {
+				CrashoutsEngine::Serialization::SaveScenes(CrashoutsEngine::Serialization::currSceneName);
+				LOGI(Core, "Saved scene via CTRL S.");
+			}
+			else {
+				LOGW(Core, "currSceneName is empty, nothing saved.");
+			}
 		}
 
 		if (ui.showECS) {

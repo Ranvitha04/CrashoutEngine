@@ -16,6 +16,14 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void Log(string message);
 
+        public static bool IsGameDebugDrawEnabled()
+        {
+            return InternalIsGameDebugDrawEnabled();
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalIsGameDebugDrawEnabled();
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void DrawLine(ref CEVec3 start, ref CEVec3 end, float thickness, ref CEVec3 color);
 

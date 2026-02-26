@@ -15,13 +15,13 @@ namespace CrashoutsEngine
     {
         public int PlatesActive = 0;
         [SerializeField]
-        int PlatesRequired = 1; // Set this to 2 if you need 2 plates, etc.
+        private int PlatesRequired = 1; // Set this to 2 if you need 2 plates, etc.
         [SerializeField]
-        bool MoveRight = false;
+        private bool MoveRight = false;
         [SerializeField]
-        float MoveDist = 10.0f;
+        private float MoveDist = 10.0f; // Positive for Right/Up, Negative for Left/Down
         [SerializeField]
-        float MoveSpeed = 5.0f;
+        private float MoveSpeed = 5.0f;
 
         [SerializeField]
         private float dustBurstDuration = 0.15f;
@@ -30,7 +30,7 @@ namespace CrashoutsEngine
         private bool _stopMoving = false;
         private float _dustTimer = 0.0f;
         TransformComponent transform;
-        private CEVec2 oldXY, newXY, startXY;
+        private CEVec2 newXY, startXY;
 
         void OpenWall()
         {
@@ -46,10 +46,6 @@ namespace CrashoutsEngine
             _isOpen = false;
             _stopMoving = false;
             TriggerDoorDust();
-            if (transform != null)
-            {
-                transform.Position = new CEVec3(startXY.x, startXY.y, transform.Position.z);
-            }
         }
 
         public override void Start()
@@ -95,29 +91,53 @@ namespace CrashoutsEngine
                 CloseWall();
             }
             
-                //Console.WriteLine(Time.DT);
-            if (_isOpen && !_stopMoving)
+            if (!_stopMoving && transform != null)
             {
-                //Console.WriteLine(Time.DT);
-                float increment = MoveSpeed * ((float)Time.DT);
-                //Console.WriteLine(increment);
-                // Force transform location now because collider kinda wonky (NEED FIXING)
-                if (transform != null)
+                float step = MoveSpeed * (float)Time.DT;
+                CEVec2 target = _isOpen ? newXY : startXY;
+                CEVec3 pos = transform.Position;
+                CEVec2 current = new CEVec2(pos.x, pos.y);
+
+                if (MoveRight)
                 {
-                    if (MoveRight)
+                    float diff = target.x - current.x;
+                    float direction = Math.Sign(diff);
+                    if (direction == 0)
                     {
-                        oldXY = new CEVec2(transform.Position.x + increment, transform.Position.y);
-                        if (oldXY.x >= newXY.x) _stopMoving = true;
+                        _stopMoving = true;
                     }
                     else
                     {
-                        oldXY = new CEVec2(transform.Position.x, transform.Position.y + increment);
-                        if (oldXY.y >= newXY.y) _stopMoving = true;
+                        float nextX = current.x + direction * step;
+                        // Clamp and Stop check
+                        if ((direction > 0 && nextX >= target.x) || (direction < 0 && nextX <= target.x))
+                        {
+                            nextX = target.x;
+                            _stopMoving = true;
+                        }
+                        transform.Position = new CEVec3(nextX, current.y, pos.z);
                     }
-                    transform.Position = new CEVec3(oldXY.x, oldXY.y, transform.Position.z);
-                    //Debug.Log("move");
                 }
-                //Debug.Log("wtdf");
+                else
+                {
+                    float diff = target.y - current.y;
+                    float direction = Math.Sign(diff);
+                    if (direction == 0)
+                    {
+                        _stopMoving = true;
+                    }
+                    else
+                    {
+                        float nextY = current.y + direction * step;
+                        // Clamp and Stop check
+                        if ((direction > 0 && nextY >= target.y) || (direction < 0 && nextY <= target.y))
+                        {
+                            nextY = target.y;
+                            _stopMoving = true;
+                        }
+                        transform.Position = new CEVec3(current.x, nextY, pos.z);
+                    }
+                }
             }
         }
 

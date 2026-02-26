@@ -11993,6 +11993,19 @@
                     "y": 25.0
                 }
             },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
             "collider": {
                 "ColliderType": 1,
                 "isTrigger": false,
@@ -12008,13 +12021,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -204.97128295898438,
-                    "y": -470.1745300292969,
+                    "x": -304.4712829589844,
+                    "y": -482.1745300292969,
                     "z": -5.0
                 },
                 "max": {
-                    "x": -203.97128295898438,
-                    "y": -469.1745300292969,
+                    "x": -104.47128295898438,
+                    "y": -457.1745300292969,
                     "z": -5.0
                 }
             },
@@ -12060,7 +12073,7 @@
                             "PlatesActive": 0,
                             "PlatesRequired": 2,
                             "MoveRight": true,
-                            "MoveDist": 130.0,
+                            "MoveDist": 200.0,
                             "MoveSpeed": 40.0,
                             "dustBurstDuration": 1.0
                         }
@@ -12196,6 +12209,19 @@
                     "y": 24.999998092651368
                 }
             },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
             "collider": {
                 "ColliderType": 1,
                 "isTrigger": false,
@@ -12211,13 +12237,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1681.3983154296876,
-                    "y": -712.1759643554688,
+                    "x": 1669.3983154296876,
+                    "y": -836.6759643554688,
                     "z": -5.0
                 },
                 "max": {
-                    "x": 1682.3983154296876,
-                    "y": -711.1759643554688,
+                    "x": 1694.3983154296876,
+                    "y": -586.6759643554688,
                     "z": -5.0
                 }
             },

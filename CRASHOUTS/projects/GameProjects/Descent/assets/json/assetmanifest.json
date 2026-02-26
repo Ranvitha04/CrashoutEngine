@@ -1703,6 +1703,10 @@
     ],
     "prefabs": [
         {
+            "name": "Slime V4",
+            "path": "Slime V4.json"
+        },
+        {
             "name": "Player_Prefab",
             "path": "Player_Prefab.json"
         },

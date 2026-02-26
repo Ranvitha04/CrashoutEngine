@@ -3,6 +3,7 @@
         {
             "active": true,
             "name": "BG",
+            "uuid": 14052034099703123685,
             "tag": {
                 "tagMask": 0
             },
@@ -71,6 +72,7 @@
         {
             "active": true,
             "name": "QuitBtn",
+            "uuid": 14185746470654765083,
             "tag": {
                 "tagMask": 0
             },
@@ -121,6 +123,13 @@
                     {
                         "className": "MenuButtons",
                         "fields": {}
+                    },
+                    {
+                        "className": "VictoryQuit",
+                        "fields": {
+                            "menuSceneName": "descentmenu",
+                            "fadeDuration": 0.5
+                        }
                     }
                 ]
             },
@@ -161,7 +170,12 @@
                     "y": 1.0,
                     "z": 1.0,
                     "w": 0.8066298365592957
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 6
@@ -181,6 +195,7 @@
         {
             "active": true,
             "name": "StartBtn",
+            "uuid": 8693516768987068303,
             "tag": {
                 "tagMask": 0
             },
@@ -271,7 +286,12 @@
                     "y": 1.0,
                     "z": 1.0,
                     "w": 0.8066298365592957
-                }
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
             },
             "gui": {
                 "uiType": 6
@@ -291,6 +311,7 @@
         {
             "active": true,
             "name": "Title",
+            "uuid": 1113404930845495264,
             "tag": {
                 "tagMask": 0
             },

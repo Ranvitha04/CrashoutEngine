@@ -3228,6 +3228,11 @@
                     },
                     {
                         "x": 35,
+                        "y": -14,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 35,
                         "y": -13,
                         "asset": "tilemaps/Rock"
                     },
@@ -5828,7 +5833,7 @@
         },
         {
             "active": true,
-            "name": "Slime V2",
+            "name": "Slime1",
             "uuid": 13467747073361246097,
             "tag": {
                 "tagMask": 20
@@ -5836,9 +5841,9 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 98.51133728027344,
-                    "y": -227.44769287109376,
-                    "z": 0.0
+                    "x": 140.8438262939453,
+                    "y": -235.0729522705078,
+                    "z": 50.0
                 },
                 "size": {
                     "x": 53.0,
@@ -5863,9 +5868,9 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 99.21133422851563,
-                    "y": -230.94769287109376,
-                    "z": 0.0
+                    "x": 141.5438232421875,
+                    "y": -238.5729522705078,
+                    "z": 50.0
                 },
                 "offset": {
                     "x": 0.699999988079071,
@@ -5873,413 +5878,14 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 84.31130981445313,
-                    "y": -241.14773559570313,
-                    "z": 0.0
+                    "x": 126.64378356933594,
+                    "y": -248.77296447753907,
+                    "z": 50.0
                 },
                 "max": {
-                    "x": 114.11135864257813,
-                    "y": -220.74765014648438,
-                    "z": 0.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/Monsters\\Slime spritesheet.png",
-                "uvSize": {
-                    "x": 0.25,
-                    "y": 0.3333333432674408
-                },
-                "uvOffset": {
-                    "x": 0.25,
-                    "y": 0.3333333432674408
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "slimeMove1",
-                        "path": "slime 1.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    },
-                    {
-                        "name": "slimeMove2",
-                        "path": "slime 2.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    },
-                    {
-                        "name": "slimeMove3",
-                        "path": "slime 3.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    },
-                    {
-                        "name": "slimeMove4",
-                        "path": "slime 4.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    },
-                    {
-                        "name": "slimeMove5",
-                        "path": "slime 5.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    },
-                    {
-                        "name": "slimeImpact",
-                        "path": "slime impact.wav",
-                        "volume": 0.800000011920929,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SlimeMovement",
-                        "fields": {
-                            "moveSpeed": 600.0,
-                            "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
-                            "gravityScale": 2.0,
-                            "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
-                            "maxMouseDragDist": 400.0,
-                            "airDrag": 1.0,
-                            "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
-                            "ledgeRayCastDistance": 50.0,
-                            "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            },
-            "keyframe_animator": {
-                "current": "slimeWalk",
-                "t": 0.05000000447034836,
-                "playing": true,
-                "clips": [
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeHold",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeIdle",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeChase",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 8.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        {
-            "active": true,
-            "name": "Slime V2 (2)",
-            "uuid": 3690432272913172450,
-            "tag": {
-                "tagMask": 20
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1082.8773193359376,
-                    "y": -75.65855407714844,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 53.0,
-                    "y": 49.29999923706055
-                }
-            },
-            "rigidbody": {
-                "mass": 0.10000000149011612,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.0,
-                "dynamicFriction": 0.0,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 1083.5772705078126,
-                    "y": -79.15855407714844,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.699999988079071,
-                    "y": -3.5,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 1068.67724609375,
-                    "y": -89.35858917236328,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 1098.477294921875,
-                    "y": -68.9585189819336,
-                    "z": 0.0
+                    "x": 156.44386291503907,
+                    "y": -228.37294006347657,
+                    "z": 50.0
                 }
             },
             "shape": {
@@ -6383,15 +5989,16 @@
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
                             "stopAudioDistance": 40.0,
-                            "detectionRange": 250.0,
+                            "detectionRange": 137.60000610351563,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
-                            "minThrowSpeed": 50.0,
-                            "maxThrowSpeed": 200.0,
+                            "lineOfSightYTolerance": 25.0,
+                            "minThrowSpeed": 300.0,
+                            "maxThrowSpeed": 1000.0,
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "ledgeBuffer": 40.0,
+                            "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
                             "patrolTurnInterval": 3.0
@@ -6444,12 +6051,12 @@
                 "pressedScale": 0.949999988079071
             },
             "layer": {
-                "layerName": "Default",
+                "layerName": "Player",
                 "z": 0
             },
             "keyframe_animator": {
                 "current": "slimeWalk",
-                "t": 5.833354473114014,
+                "t": 72.46766662597656,
                 "playing": true,
                 "clips": [
                     {
@@ -6626,170 +6233,6 @@
         },
         {
             "active": true,
-            "name": "PressurePlate",
-            "uuid": 8731522054906942659,
-            "tag": {
-                "tagMask": 2
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 399.8895568847656,
-                    "y": -264.3959655761719,
-                    "z": -1.0
-                },
-                "size": {
-                    "x": 32.0,
-                    "y": 50.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 399.8895568847656,
-                    "y": -285.8959655761719,
-                    "z": -1.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": -21.5,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 383.8895568847656,
-                    "y": -292.3959655761719,
-                    "z": -1.0
-                },
-                "max": {
-                    "x": 415.8895568847656,
-                    "y": -279.3959655761719,
-                    "z": -1.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI/Pressure Plate.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.4274509847164154,
-                    "y": 0.7450980544090271,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Switch",
-                        "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "wallName": "MovingWall"
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": -10
-            }
-        },
-        {
-            "active": true,
             "name": "WinDoor",
             "uuid": 4565632354060468153,
             "tag": {
@@ -6883,7 +6326,10 @@
                 "scripts": [
                     {
                         "className": "WinGame",
-                        "fields": {}
+                        "fields": {
+                            "victorySceneName": "Victory",
+                            "victoryFadeDuration": 1.0
+                        }
                     }
                 ]
             },
@@ -6946,8 +6392,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 598.1819458007813,
-                    "y": -227.2033233642578,
+                    "x": 618.0966796875,
+                    "y": -226.48597717285157,
                     "z": 0.0
                 },
                 "size": {
@@ -6973,8 +6419,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 598.1819458007813,
-                    "y": -227.2033233642578,
+                    "x": 618.0966796875,
+                    "y": -226.48597717285157,
                     "z": 0.0
                 },
                 "offset": {
@@ -6984,8 +6430,8 @@
                 },
                 "radius": 1.0,
                 "center": {
-                    "x": 598.1819458007813,
-                    "y": -227.2033233642578,
+                    "x": 618.0966796875,
+                    "y": -226.48597717285157,
                     "z": 0.0
                 }
             },
@@ -7003,7 +6449,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.0
                 },
                 "color": {
@@ -7097,7 +6543,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 5.8500213623046879,
+                "t": 81.0528335571289,
                 "playing": true,
                 "clips": [
                     {
@@ -7209,16 +6655,16 @@
         },
         {
             "active": true,
-            "name": "PressurePlate_Win",
-            "uuid": 755071055173098117,
+            "name": "Pressureplate3",
+            "uuid": 12774859011172579992,
             "tag": {
                 "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1844.2763671875,
-                    "y": 24.63775634765625,
+                    "x": 1871.1082763671876,
+                    "y": 24.68233871459961,
                     "z": -1.0
                 },
                 "size": {
@@ -7241,11 +6687,11 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isTrigger": false,
+                "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 1844.2763671875,
-                    "y": 3.13775634765625,
+                    "x": 1871.1082763671876,
+                    "y": 3.1823387145996095,
                     "z": -1.0
                 },
                 "offset": {
@@ -7254,13 +6700,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1828.2763671875,
-                    "y": -3.36224365234375,
+                    "x": 1855.1082763671876,
+                    "y": -3.3176612854003908,
                     "z": -1.0
                 },
                 "max": {
-                    "x": 1860.2763671875,
-                    "y": 9.63775634765625,
+                    "x": 1887.1082763671876,
+                    "y": 9.68233871459961,
                     "z": -1.0
                 }
             },
@@ -7272,7 +6718,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "Pressure Plate",
+                "textureName": "UI/Pressure Plate.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -7317,7 +6763,8 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "MovingWall"
+                            "goalTextName": "GoalText",
+                            "wallName": "wall3"
                         }
                     }
                 ]
@@ -7368,948 +6815,21 @@
             },
             "layer": {
                 "layerName": "Default",
-                "z": 0
+                "z": -10
             }
         },
         {
             "active": true,
-            "name": "movingplatform",
-            "uuid": 15355864860909980842,
-            "tag": {
-                "tagMask": 18
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1585.037109375,
-                    "y": -81.52706909179688,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 348.26318359375,
-                    "y": 16.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 1585.037109375,
-                    "y": -81.52706909179688,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 1410.905517578125,
-                    "y": -89.52706909179688,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 1759.168701171875,
-                    "y": -73.52706909179688,
-                    "z": 0.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/Darker Platform/Darker Platform_36.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 100.0,
-                            "MoveSpeed": 20.0,
-                            "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "WinMovingWall",
-            "uuid": 11348822246385630262,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 274.5287170410156,
-                    "y": -469.6745300292969,
-                    "z": -5.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "tilemap": {
-                "tileSize": 32,
-                "activeAsset": "tilemaps/Rock_Door",
-                "tileAssetNames": [],
-                "gridData": [
-                    {
-                        "x": 6,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 7,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 8,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 9,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 10,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 11,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 12,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 55,
-                        "y": -8,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 55,
-                        "y": -7,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 55,
-                        "y": -6,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 55,
-                        "y": -5,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 55,
-                        "y": -4,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 56,
-                        "y": -8,
-                        "asset": ""
-                    },
-                    {
-                        "x": 56,
-                        "y": -7,
-                        "asset": ""
-                    },
-                    {
-                        "x": 56,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 56,
-                        "y": -5,
-                        "asset": ""
-                    },
-                    {
-                        "x": 56,
-                        "y": -4,
-                        "asset": ""
-                    }
-                ]
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "MovingWall",
-            "uuid": 4085835288634143122,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 274.5287170410156,
-                    "y": -469.6745300292969,
-                    "z": -5.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "tilemap": {
-                "tileSize": 32,
-                "activeAsset": "tilemaps/Rock_Door",
-                "tileAssetNames": [],
-                "gridData": [
-                    {
-                        "x": 16,
-                        "y": -8,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 16,
-                        "y": -7,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 16,
-                        "y": -6,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 17,
-                        "y": -8,
-                        "asset": ""
-                    },
-                    {
-                        "x": 17,
-                        "y": -7,
-                        "asset": ""
-                    },
-                    {
-                        "x": 17,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 18,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 19,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 20,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 21,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 22,
-                        "y": -8,
-                        "asset": ""
-                    },
-                    {
-                        "x": 22,
-                        "y": -7,
-                        "asset": ""
-                    },
-                    {
-                        "x": 22,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 23,
-                        "y": -8,
-                        "asset": ""
-                    },
-                    {
-                        "x": 23,
-                        "y": -7,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": -2,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": -1,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": 0,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": 1,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": 2,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": 3,
-                        "asset": ""
-                    }
-                ]
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "MovingWall2",
-            "uuid": 13144101062120269596,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 274.5287170410156,
-                    "y": -469.6745300292969,
-                    "z": -5.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "MovingWall",
-                        "fields": {
-                            "PlatesActive": 0,
-                            "PlatesRequired": 1,
-                            "MoveRight": false,
-                            "MoveDist": 10.0,
-                            "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "tilemap": {
-                "tileSize": 32,
-                "activeAsset": "tilemaps/Darker_Platform",
-                "tileAssetNames": [],
-                "gridData": [
-                    {
-                        "x": 6,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 7,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 7,
-                        "y": -14,
-                        "asset": ""
-                    },
-                    {
-                        "x": 8,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 8,
-                        "y": -14,
-                        "asset": ""
-                    },
-                    {
-                        "x": 9,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 9,
-                        "y": -14,
-                        "asset": ""
-                    },
-                    {
-                        "x": 10,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 10,
-                        "y": -14,
-                        "asset": ""
-                    },
-                    {
-                        "x": 11,
-                        "y": -16,
-                        "asset": ""
-                    },
-                    {
-                        "x": 11,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 11,
-                        "y": -14,
-                        "asset": ""
-                    },
-                    {
-                        "x": 12,
-                        "y": -16,
-                        "asset": ""
-                    },
-                    {
-                        "x": 12,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 12,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 13,
-                        "y": -15,
-                        "asset": ""
-                    },
-                    {
-                        "x": 13,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 14,
-                        "y": -7,
-                        "asset": ""
-                    },
-                    {
-                        "x": 14,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 15,
-                        "y": -7,
-                        "asset": ""
-                    },
-                    {
-                        "x": 15,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 16,
-                        "y": -7,
-                        "asset": ""
-                    },
-                    {
-                        "x": 16,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 17,
-                        "y": -8,
-                        "asset": ""
-                    },
-                    {
-                        "x": 17,
-                        "y": -7,
-                        "asset": ""
-                    },
-                    {
-                        "x": 17,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 18,
-                        "y": -6,
-                        "asset": ""
-                    },
-                    {
-                        "x": 42,
-                        "y": -2,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 42,
-                        "y": -1,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 42,
-                        "y": 0,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 42,
-                        "y": 1,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 42,
-                        "y": 2,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 42,
-                        "y": 3,
-                        "asset": "tilemaps/Rock_Door"
-                    },
-                    {
-                        "x": 43,
-                        "y": -5,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": -4,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": -3,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": -2,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": -1,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": 0,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": 1,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": 2,
-                        "asset": ""
-                    },
-                    {
-                        "x": 43,
-                        "y": 3,
-                        "asset": ""
-                    }
-                ]
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "PressurePlate2",
-            "uuid": 8790988618552678697,
+            "name": "Pressureplate2",
+            "uuid": 2836656474309267598,
             "tag": {
                 "tagMask": 2
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1328.4091796875,
-                    "y": -71.24458312988281,
+                    "x": 1328.077880859375,
+                    "y": -71.64056396484375,
                     "z": -1.0
                 },
                 "size": {
@@ -8332,11 +6852,11 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isTrigger": false,
+                "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 1328.4091796875,
-                    "y": -92.74458312988281,
+                    "x": 1328.077880859375,
+                    "y": -93.14056396484375,
                     "z": -1.0
                 },
                 "offset": {
@@ -8345,13 +6865,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1312.4091796875,
-                    "y": -99.24458312988281,
+                    "x": 1312.077880859375,
+                    "y": -99.64056396484375,
                     "z": -1.0
                 },
                 "max": {
-                    "x": 1344.4091796875,
-                    "y": -86.24458312988281,
+                    "x": 1344.077880859375,
+                    "y": -86.64056396484375,
                     "z": -1.0
                 }
             },
@@ -8408,7 +6928,8 @@
                         "className": "PressurePlate",
                         "fields": {
                             "decrease": 5.0,
-                            "wallName": "MovingWall"
+                            "goalTextName": "",
+                            "wallName": "wall2"
                         }
                     }
                 ]
@@ -8472,7 +6993,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 218.3889923095703,
+                    "x": 542.1630249023438,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -8510,7 +7031,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 800.1233520507813,
+                    "x": 1123.8974609375,
                     "y": 7.3304443359375,
                     "z": 0.0
                 },
@@ -8588,7 +7109,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1889.3773193359376,
+                    "x": 2213.1513671875,
                     "y": -253.37962341308595,
                     "z": 0.0
                 },
@@ -8666,7 +7187,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 372.857666015625,
+                    "x": 696.6317138671875,
                     "y": -165.07293701171876,
                     "z": 0.0
                 },
@@ -8744,7 +7265,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1592.5286865234376,
+                    "x": 1916.302734375,
                     "y": -153.86849975585938,
                     "z": 0.0
                 },
@@ -8822,7 +7343,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 135.4835968017578,
+                    "x": 315.3580627441406,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -8860,7 +7381,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 293.99127197265627,
+                    "x": 473.86572265625,
                     "y": -160.05599975585938,
                     "z": 0.0
                 },
@@ -8938,7 +7459,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1141.4964599609376,
+                    "x": 1321.3709716796876,
                     "y": -150.32870483398438,
                     "z": 0.0
                 },
@@ -9016,7 +7537,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2053.86767578125,
+                    "x": 2233.7421875,
                     "y": -137.36431884765626,
                     "z": 0.0
                 },
@@ -9094,7 +7615,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 476.26776123046877,
+                    "x": 656.1422119140625,
                     "y": -149.532958984375,
                     "z": 0.0
                 },
@@ -9172,7 +7693,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 131.37686157226563,
+                    "x": 311.2513427734375,
                     "y": -234.98837280273438,
                     "z": 0.0
                 },
@@ -9250,7 +7771,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 191.88693237304688,
+                    "x": 371.76141357421877,
                     "y": -47.27287292480469,
                     "z": 0.0
                 },
@@ -9328,7 +7849,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 970.6594848632813,
+                    "x": 1150.533935546875,
                     "y": -73.43397521972656,
                     "z": 0.0
                 },
@@ -9406,7 +7927,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1669.2940673828126,
+                    "x": 1849.16845703125,
                     "y": -62.828495025634769,
                     "z": 0.0
                 },
@@ -9484,7 +8005,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -81.2901611328125,
+                    "x": -189.21484375,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -9522,7 +8043,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -157.65283203125,
+                    "x": -265.5775146484375,
                     "y": -188.97373962402345,
                     "z": 0.0
                 },
@@ -9600,7 +8121,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 291.4622802734375,
+                    "x": 183.53759765625,
                     "y": -166.88943481445313,
                     "z": 0.0
                 },
@@ -9678,7 +8199,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 737.9974365234375,
+                    "x": 630.07275390625,
                     "y": -154.73805236816407,
                     "z": 0.0
                 },
@@ -9756,7 +8277,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1710.9989013671876,
+                    "x": 1603.07421875,
                     "y": -149.14682006835938,
                     "z": 0.0
                 },
@@ -9834,7 +8355,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1132.2196044921876,
+                    "x": 1024.294921875,
                     "y": -352.1566467285156,
                     "z": 0.0
                 },
@@ -9912,7 +8433,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 843.6555786132813,
+                    "x": 735.7308959960938,
                     "y": -21.102645874023439,
                     "z": 0.0
                 },
@@ -9990,7 +8511,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1593.2978515625,
+                    "x": 1485.3731689453126,
                     "y": -19.822601318359376,
                     "z": 0.0
                 },
@@ -10068,7 +8589,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 62.40397644042969,
+                    "x": -45.52070617675781,
                     "y": -28.600387573242189,
                     "z": 0.0
                 },
@@ -10262,13 +8783,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -10.461000442504883,
-                    "y": -13.100000381469727,
+                    "x": -0.054484378546476367,
+                    "y": -0.12129630148410797,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 8.199999809265137,
-                    "y": 3.700000047683716
+                    "x": 0.04270833358168602,
+                    "y": 0.034259259700775149
                 }
             },
             "shape": {
@@ -10394,13 +8915,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -27.884002685546876,
-                    "y": -13.100000381469727,
+                    "x": -0.14522917568683625,
+                    "y": -0.12129630148410797,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 10.5,
-                    "y": 3.700000047683716
+                    "x": 0.0546875,
+                    "y": 0.034259259700775149
                 }
             },
             "shape": {
@@ -10531,8 +9052,8 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 192.0,
-                    "y": 108.0
+                    "x": 1.0,
+                    "y": 1.0
                 }
             },
             "parent": {
@@ -10570,13 +9091,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 15.433000564575196,
-                    "y": -13.600000381469727,
+                    "x": 0.08038020879030228,
+                    "y": -0.1259259283542633,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 16.899999618530275,
-                    "y": 4.900000095367432
+                    "x": 0.08802083134651184,
+                    "y": 0.04537037014961243
                 }
             },
             "shape": {
@@ -10702,13 +9223,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -19.136999130249025,
-                    "y": -13.600000381469727,
+                    "x": -0.099671870470047,
+                    "y": -0.1259259283542633,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 27.599998474121095,
-                    "y": 4.900000095367432
+                    "x": 0.14374999701976777,
+                    "y": 0.04537037014961243
                 }
             },
             "shape": {
@@ -10825,124 +9346,6 @@
             }
         },
         {
-            "active": true,
-            "name": "BGMManager",
-            "uuid": 11475334039274591349,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": -0.5,
-                    "y": -0.5,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 0.5,
-                    "y": 0.5,
-                    "z": 0.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Level_1",
-                        "path": "level bgm 1 re-mixed.wav",
-                        "volume": 0.6000000238418579,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": true,
-                        "isMusic": true
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SceneMusic",
-                        "fields": {
-                            "layerName": "Music",
-                            "fadeTime": 2.0,
-                            "stopLayer": false
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
             "active": false,
             "name": "GameOverScreen",
             "uuid": 12781599637949462904,
@@ -10957,8 +9360,8 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 192.0,
-                    "y": 108.0
+                    "x": 1.0,
+                    "y": 1.0
                 }
             },
             "shape": {
@@ -11043,124 +9446,6 @@
         },
         {
             "active": true,
-            "name": "AmbianceManager",
-            "uuid": 4423047889439126144,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": -0.5,
-                    "y": -0.5,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 0.5,
-                    "y": 0.5,
-                    "z": 0.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Lava_Ambience",
-                        "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.44999998807907107,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SceneMusic",
-                        "fields": {
-                            "layerName": "Music",
-                            "fadeTime": 2.0,
-                            "stopLayer": false
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
             "name": "Player",
             "uuid": 2235953182091816380,
             "tag": {
@@ -11169,12 +9454,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 54.84767150878906,
-                    "y": 4.9833984375,
+                    "x": 83.30268096923828,
+                    "y": 14.343911170959473,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 140.0,
+                    "x": -140.0,
                     "y": 100.0
                 }
             },
@@ -11196,8 +9481,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 54.84767150878906,
-                    "y": -0.0166015625,
+                    "x": 83.30268096923828,
+                    "y": 9.343911170959473,
                     "z": 50.0
                 },
                 "offset": {
@@ -11206,13 +9491,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 36.04762268066406,
-                    "y": -30.5166015625,
+                    "x": 64.50263214111328,
+                    "y": -21.156089782714845,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 73.64772033691406,
-                    "y": 30.4833984375,
+                    "x": 102.10272979736328,
+                    "y": 39.843910217285159,
                     "z": 50.0
                 }
             },
@@ -11370,7 +9655,7 @@
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "goalNoOfPlates": 1,
+                            "goalNoOfPlates": 2,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
                             "dustBurstDuration": 0.15000000596046449,
@@ -11385,6 +9670,8 @@
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false
+                            ,"reloadOnDeath": true
+                            ,"reloadSceneName": "tutorial2"
                         }
                     }
                 ]
@@ -11450,7 +9737,7 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 0.699999988079071,
+                "t": 62.29922103881836,
                 "playing": true,
                 "clips": [
                     {
@@ -11893,7 +10180,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "PlayerDialogue_1",
             "uuid": 17786815366027406028,
             "tag": {
@@ -11902,12 +10189,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 54.84767150878906,
-                    "y": 63.353302001953128,
+                    "x": 83.30268096923828,
+                    "y": 72.71381378173828,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -12020,12 +10307,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 54.84767150878906,
-                    "y": 63.353302001953128,
+                    "x": 83.30268096923828,
+                    "y": 72.71381378173828,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -12138,12 +10425,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 54.84767150878906,
-                    "y": 63.353302001953128,
+                    "x": 83.30268096923828,
+                    "y": 72.71381378173828,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -12256,12 +10543,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 54.84767150878906,
-                    "y": 63.353302001953128,
+                    "x": 83.30268096923828,
+                    "y": 72.71381378173828,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -12374,12 +10661,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -230.9465789794922,
-                    "y": -194.3741455078125,
+                    "x": 369.096923828125,
+                    "y": -185.0136260986328,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -12492,12 +10779,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 57.10847473144531,
-                    "y": -43.135498046875,
+                    "x": 81.04187774658203,
+                    "y": -33.774986267089847,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 140.97999572753907,
+                    "x": -140.97999572753907,
                     "y": 101.0
                 }
             },
@@ -14392,7 +12679,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "ClosedBook",
             "uuid": 17470483895618597724,
             "tag": {
@@ -16985,6 +15272,3164 @@
             "layer": {
                 "layerName": "UIButtons",
                 "z": 61
+            }
+        },
+        {
+            "active": true,
+            "name": "Pressureplate",
+            "uuid": 6561286395685221289,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 399.3816833496094,
+                    "y": -263.21893310546877,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 399.3816833496094,
+                    "y": -284.71893310546877,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -21.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 383.3816833496094,
+                    "y": -291.21893310546877,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 415.3816833496094,
+                    "y": -278.21893310546877,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pressure Plate.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Switch",
+                        "path": "switch_stepon.wav",
+                        "volume": 0.800000011920929,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "goalTextName": "GoalText",
+                            "wallName": "wall"
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": -10
+            }
+        },
+        {
+            "active": true,
+            "name": "wall",
+            "uuid": 10144011583627571335,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 556.174072265625,
+                    "y": -157.12261962890626,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 200.0,
+                    "y": 25.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 556.174072265625,
+                    "y": -199.72262573242188,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -42.599998474121097,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 543.9740600585938,
+                    "y": -255.42262268066407,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 568.3740844726563,
+                    "y": -144.0226287841797,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 300.0,
+                            "MoveSpeed": 40.0,
+                            "dustBurstDuration": 1.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            },
+            "particle": {
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": -0.10000000149011612,
+                "radiusMax": 1.0,
+                "lengthMin": 0.0,
+                "lengthMax": 1.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "startLifeMin": 0.5,
+                "startLifeMax": 5.0,
+                "startSpeedMin": 0.0,
+                "startSpeedMax": 0.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.25,
+                "startSizeXMax": 3.25,
+                "startSizeYMin": 1.25,
+                "startSizeYMax": 3.25,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.7900552749633789,
+                    "y": 0.4297234117984772,
+                    "z": 0.19205762445926667,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.14364641904830934,
+                    "y": 0.11262043565511704,
+                    "z": 0.05158573016524315,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 17354964915934747349,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 556.174072265625,
+                    "y": -237.12261962890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Rock/Rock_33.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 10144011583627571335,
+                "localPos": {
+                    "x": -0.4000000059604645,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 5721051562091538720,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 556.174072265625,
+                    "y": -197.12261962890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 10144011583627571335,
+                "localPos": {
+                    "x": -0.20000000298023225,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 9902675996029814892,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 556.174072265625,
+                    "y": -157.12261962890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 10144011583627571335,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 13572830360379442554,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 556.174072265625,
+                    "y": -117.12261962890625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 10144011583627571335,
+                "localPos": {
+                    "x": 0.20000000298023225,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 13747264830963268627,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 556.174072265625,
+                    "y": -77.12261962890625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_35.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 10144011583627571335,
+                "localPos": {
+                    "x": 0.4000000059604645,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "wall2",
+            "uuid": 17773884386278055047,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1377.2198486328126,
+                    "y": 35.06809997558594,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 200.0,
+                    "y": 25.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1377.2198486328126,
+                    "y": 35.06809997558594,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1365.81982421875,
+                    "y": -62.8319091796875,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 1388.619873046875,
+                    "y": 132.96810913085938,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 300.0,
+                            "MoveSpeed": 40.0,
+                            "dustBurstDuration": 1.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            },
+            "particle": {
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": -0.10000000149011612,
+                "radiusMax": 1.0,
+                "lengthMin": 0.0,
+                "lengthMax": 1.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "startLifeMin": 0.5,
+                "startLifeMax": 5.0,
+                "startSpeedMin": 0.0,
+                "startSpeedMax": 0.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.25,
+                "startSizeXMax": 3.25,
+                "startSizeYMin": 1.25,
+                "startSizeYMax": 3.25,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.7900552749633789,
+                    "y": 0.4297234117984772,
+                    "z": 0.19205762445926667,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.14364641904830934,
+                    "y": 0.11262043565511704,
+                    "z": 0.05158573016524315,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 193496573293854125,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1377.2198486328126,
+                    "y": -44.93190002441406,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Rock/Rock_33.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 17773884386278055047,
+                "localPos": {
+                    "x": -0.4000000059604645,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 15799912504419155857,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1377.2198486328126,
+                    "y": -4.9319000244140629,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 17773884386278055047,
+                "localPos": {
+                    "x": -0.20000000298023225,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 5275210066069322610,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1377.2198486328126,
+                    "y": 35.06809997558594,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 17773884386278055047,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 7278475821130342397,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1377.2198486328126,
+                    "y": 75.06809997558594,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 17773884386278055047,
+                "localPos": {
+                    "x": 0.20000000298023225,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 10781898928093291190,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1377.2198486328126,
+                    "y": 115.06809997558594,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_35.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 17773884386278055047,
+                "localPos": {
+                    "x": 0.4000000059604645,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "wall3",
+            "uuid": 4945335822095213246,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1774.16064453125,
+                    "y": -159.85263061523438,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 200.0,
+                    "y": 25.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1774.16064453125,
+                    "y": -159.85263061523438,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1762.360595703125,
+                    "y": -256.3526306152344,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 1785.960693359375,
+                    "y": -63.352630615234378,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": -300.0,
+                            "MoveSpeed": 40.0,
+                            "dustBurstDuration": 1.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            },
+            "particle": {
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": -0.10000000149011612,
+                "radiusMax": 1.0,
+                "lengthMin": 0.0,
+                "lengthMax": 1.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "startLifeMin": 0.5,
+                "startLifeMax": 5.0,
+                "startSpeedMin": 0.0,
+                "startSpeedMax": 0.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.25,
+                "startSizeXMax": 3.25,
+                "startSizeYMin": 1.25,
+                "startSizeYMax": 3.25,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.7900552749633789,
+                    "y": 0.4297234117984772,
+                    "z": 0.19205762445926667,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.14364641904830934,
+                    "y": 0.11262043565511704,
+                    "z": 0.05158573016524315,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 4821773505762957907,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1774.16064453125,
+                    "y": -239.85263061523438,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Rock/Rock_33.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 4945335822095213246,
+                "localPos": {
+                    "x": -0.4000000059604645,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 8594539938786215217,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1774.16064453125,
+                    "y": -199.85263061523438,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 4945335822095213246,
+                "localPos": {
+                    "x": -0.20000000298023225,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 5878472769923889374,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1774.16064453125,
+                    "y": -159.85263061523438,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 4945335822095213246,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 16740444197730819960,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1774.16064453125,
+                    "y": -119.85263061523438,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 4945335822095213246,
+                "localPos": {
+                    "x": 0.20000000298023225,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 941617896958671151,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1774.16064453125,
+                    "y": -79.85263061523438,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 40.0,
+                    "y": 25.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet/Rock/Rock_35.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 4945335822095213246,
+                "localPos": {
+                    "x": 0.4000000059604645,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Slime2",
+            "uuid": 1610264561334882712,
+            "tag": {
+                "tagMask": 20
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1163.1348876953126,
+                    "y": -90.7635498046875,
+                    "z": 50.0
+                },
+                "size": {
+                    "x": 53.0,
+                    "y": 49.29999923706055
+                }
+            },
+            "rigidbody": {
+                "mass": 0.10000000149011612,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.0,
+                "dynamicFriction": 0.0,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1163.8348388671876,
+                    "y": -94.2635498046875,
+                    "z": 50.0
+                },
+                "offset": {
+                    "x": 0.699999988079071,
+                    "y": -3.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1148.934814453125,
+                    "y": -104.46355438232422,
+                    "z": 50.0
+                },
+                "max": {
+                    "x": 1178.73486328125,
+                    "y": -84.06354522705078,
+                    "z": 50.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/Monsters\\Slime spritesheet.png",
+                "uvSize": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "uvOffset": {
+                    "x": 0.25,
+                    "y": 0.3333333432674408
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "slimeMove1",
+                        "path": "slime 1.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove2",
+                        "path": "slime 2.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove3",
+                        "path": "slime 3.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove4",
+                        "path": "slime 4.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeMove5",
+                        "path": "slime 5.wav",
+                        "volume": 0.6000000238418579,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    },
+                    {
+                        "name": "slimeImpact",
+                        "path": "slime impact.wav",
+                        "volume": 0.800000011920929,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "detectionRange": 137.60000610351563,
+                            "gravityScale": 2.0,
+                            "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
+                            "minThrowSpeed": 300.0,
+                            "maxThrowSpeed": 1000.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 1.0,
+                            "stunDuration": 1.0,
+                            "ledgeBuffer": -7.0,
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
+            },
+            "keyframe_animator": {
+                "current": "slimeWalk",
+                "t": 81.00282287597656,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "slimeHold",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeIdle",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeChase",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 8.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "active": true,
+            "name": "BGMManager",
+            "uuid": 4423047889439126144,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -0.5,
+                    "y": -0.5,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 0.5,
+                    "y": 0.5,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Lava_Ambience",
+                        "path": "lava-volcano-wind-environment_loop.wav",
+                        "volume": 0.44999998807907107,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": true,
+                        "isMusic": true
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SceneMusic",
+                        "fields": {
+                            "layerName": "Music",
+                            "fadeTime": 2.0,
+                            "stopLayer": false
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Moving_Platform_3(Sinking)",
+            "uuid": 12410761269244839352,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1486.953125,
+                    "y": -52.51662063598633,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 100.0,
+                    "y": 16.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1486.953125,
+                    "y": -52.51662063598633,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1419.453125,
+                    "y": -60.51662063598633,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1554.453125,
+                    "y": -44.51662063598633,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Character/Light Mode/Left/Falling.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WeightedPlatform",
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 320.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 150.0,
+                            "maxDrop": 140.0
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 952344552898200706,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1426.636962890625,
+                    "y": -52.51662063598633,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_33.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12410761269244839352,
+                "localPos": {
+                    "x": -0.603161633014679,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 12617888361102282472,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1466.5972900390626,
+                    "y": -52.51662063598633,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12410761269244839352,
+                "localPos": {
+                    "x": -0.20355835556983949,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 8102256963687149013,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1486.5972900390626,
+                    "y": -52.51662063598633,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12410761269244839352,
+                "localPos": {
+                    "x": -0.0035583495628088714,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 15424081059893015484,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1506.5972900390626,
+                    "y": -52.51662063598633,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12410761269244839352,
+                "localPos": {
+                    "x": 0.196441650390625,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 9700910152058840816,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1546.5972900390626,
+                    "y": -52.51662063598633,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_35.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12410761269244839352,
+                "localPos": {
+                    "x": 0.5964416265487671,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 17438621425574279706,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1446.5972900390626,
+                    "y": -52.51662063598633,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12410761269244839352,
+                "localPos": {
+                    "x": -0.4035583436489105,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 17493991753240156790,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1526.5972900390626,
+                    "y": -52.51662063598633,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12410761269244839352,
+                "localPos": {
+                    "x": 0.39644163846969607,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
             }
         }
     ],

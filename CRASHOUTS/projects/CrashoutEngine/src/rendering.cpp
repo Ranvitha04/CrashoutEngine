@@ -1002,6 +1002,14 @@ namespace Component {
 	void Rendering::FlushDebugQueue() {
 		if (!shdr_pgm) return;
 
+		// Ensure debug draws use the world camera matrices, regardless of the
+		// last Scene::RenderScene UI pass (which overwrites uView/uProjection).
+		if (!debugLines.empty() || !debugCircles.empty()) {
+			shdr_pgm->Use();
+			shdr_pgm->SetUniform("uView", viewMatrix);
+			shdr_pgm->SetUniform("uProjection", projectionMatrix);
+		}
+
 		for (const auto& line : debugLines) {
 			Shapes::CreateLine(line.start, line.end, line.thickness, line.color, line.isWorldSpace);
 		}
