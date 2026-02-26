@@ -4,7 +4,7 @@
 @date       29/11/2025
 @brief      class for entity in Crashouts Engine
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 using System;
@@ -158,6 +158,12 @@ namespace CrashoutsEngine
         public bool IsActive()
         {
             return InternalCalls.GetActive(ID);
+        }
+
+        // Helper method for easy checking
+        public bool IsValid()
+        {
+            return ID != 0;
         }
 
         ////name component

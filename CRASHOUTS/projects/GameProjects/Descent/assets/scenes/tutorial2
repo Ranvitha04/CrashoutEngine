@@ -14829,7 +14829,7 @@
                     {
                         "className": "PauseButtons",
                         "fields": {
-                            "currentScene": "tutorial"
+                            "currentScene": "tutorial2"
                         }
                     }
                 ]

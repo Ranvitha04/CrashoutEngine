@@ -306,7 +306,13 @@ namespace CrashoutsEngine
 				for (auto it = fields.MemberBegin(); it != fields.MemberEnd(); ++it) {
 					MonoClassField* field = mono_class_get_field_from_name(inst.Class, it->name.GetString());
 					if (field) {
-						int typeEnum = mono_type_get_type(mono_field_get_type(field));
+						MonoType* type = mono_field_get_type(field);
+						int typeEnum = mono_type_get_type(type);
+
+						MonoClass* fieldClass = mono_class_from_mono_type(type);
+						const char* fieldClassName = fieldClass ? mono_class_get_name(fieldClass) : "";
+
+
 						if (typeEnum == MONO_TYPE_I4 && it->value.IsInt()) {
 							int val = it->value.GetInt();
 							mono_field_set_value(instance, field, &val);
@@ -323,7 +329,37 @@ namespace CrashoutsEngine
 							MonoString* str = mono_string_new(MonoManager::GetDomain(), it->value.GetString());
 							mono_field_set_value(instance, field, str);
 						}
-						// Support for custom types like CEVec2, CEVec3, CEColor can be added here
+						else if (strcmp(fieldClassName, "Entity") == 0) {
+							if (it->value.IsUint() || it->value.IsInt()) {
+								uint32_t loadedID = it->value.GetUint();
+
+								MonoClassField* idField = mono_class_get_field_from_name(fieldClass, "ID");
+								if (!idField) idField = mono_class_get_field_from_name(fieldClass, "<ID>k__BackingField");
+								if (!idField) idField = mono_class_get_field_from_name(fieldClass, "id");
+
+								if (mono_class_is_valuetype(fieldClass)) {
+									// Struct handling
+									MonoObject* boxed = mono_object_new(MonoManager::GetDomain(), fieldClass);
+									if (idField) mono_field_set_value(boxed, idField, &loadedID);
+
+									void* rawData = mono_object_unbox(boxed);
+									mono_field_set_value(instance, field, rawData);
+								}
+								else {
+									// Class handling
+									if (loadedID == 0) {
+										// FIX: If the ID is 0, safely set the C# object to null!
+										void* nullPtr = nullptr;
+										mono_field_set_value(instance, field, nullPtr);
+									}
+									else {
+										MonoObject* newEntObj = mono_object_new(MonoManager::GetDomain(), fieldClass);
+										if (idField) mono_field_set_value(newEntObj, idField, &loadedID);
+										mono_field_set_value(instance, field, newEntObj);
+									}
+								}
+							}
+						}
 					}
 				}
 			}

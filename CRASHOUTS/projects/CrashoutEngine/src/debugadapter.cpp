@@ -1678,6 +1678,9 @@ namespace {
 							MonoType* type = mono_field_get_type(field);
 							int typeEnum = mono_type_get_type(type);
 
+							MonoClass* fieldClass = mono_class_from_mono_type(type);
+							const char* fieldClassName = fieldClass ? mono_class_get_name(fieldClass) : "";
+
 							if (typeEnum == MONO_TYPE_R4) { // Float
 								float val = 0.f;
 								mono_field_get_value(instance, field, &val);
@@ -1713,6 +1716,137 @@ namespace {
 								if (strVal != oldVal) {
 									MonoString* newMonoStr = mono_string_new(MonoManager::GetDomain(), strVal.c_str());
 									mono_field_set_value(instance, field, newMonoStr);
+								}
+							}
+							else if (strcmp(fieldClassName, "Entity") == 0) {
+								uint32_t currentID = 0;
+
+								// Attempt to find the ID field. 
+								// Fallback 1: Auto-property backing field. Fallback 2: lowercase 'id'
+								MonoClassField* idField = mono_class_get_field_from_name(fieldClass, "ID");
+								if (!idField) idField = mono_class_get_field_from_name(fieldClass, "<ID>k__BackingField");
+								if (!idField) idField = mono_class_get_field_from_name(fieldClass, "id");
+
+								// 1. Read current ID from C#
+								if (mono_class_is_valuetype(fieldClass)) {
+									int structSize = mono_class_instance_size(fieldClass) - sizeof(MonoObject);
+									void* buffer = malloc(structSize);
+									mono_field_get_value(instance, field, buffer);
+									MonoObject* boxed = mono_value_box(MonoManager::GetDomain(), fieldClass, buffer);
+									if (idField) mono_field_get_value(boxed, idField, &currentID);
+									free(buffer);
+								}
+								else {
+									MonoObject* entityObj = nullptr;
+									mono_field_get_value(instance, field, &entityObj);
+									if (entityObj && idField) mono_field_get_value(entityObj, idField, &currentID);
+								}
+
+								// 2. Resolve Entity Name for the Button
+								std::string currentName = "None (0)";
+								if (currentID != 0) {
+									if (ecs.HasComponent<Component::NameComponent>(currentID)) {
+										currentName = ecs.GetComponent<Component::NameComponent>(currentID)->name + " (" + std::to_string(currentID) + ")";
+									}
+									else {
+										currentName = "Missing/Unnamed (" + std::to_string(currentID) + ")";
+									}
+								}
+
+								bool changed = false;
+								uint32_t newID = currentID;
+
+								ImGui::PushID(fName);
+
+								// 3. Draw the UI Row (Label + Button + Clear)
+								ImGui::AlignTextToFramePadding();
+								ImGui::Text("%s", fName);
+								ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.35f);
+
+								// Open Popup Button
+								std::string popupName = std::string("EntityPicker_") + fName;
+								if (ImGui::Button(currentName.c_str(), ImVec2(ImGui::GetContentRegionAvail().x - 30, 0))) {
+									ImGui::OpenPopup(popupName.c_str());
+								}
+
+								// Retain Drag/Drop (In case you add an Inspector Lock later!)
+								if (ImGui::BeginDragDropTarget()) {
+									if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIER_ENTITY")) {
+										newID = *(const uint32_t*)payload->Data;
+										changed = true;
+									}
+									ImGui::EndDragDropTarget();
+								}
+
+								// Clear Button
+								ImGui::SameLine();
+								if (ImGui::Button("X")) {
+									newID = 0;
+									changed = true;
+								}
+
+								// 4. The Selection Popup
+								if (ImGui::BeginPopup(popupName.c_str())) {
+									static char searchBuf[64] = "";
+									ImGui::InputTextWithHint("##search", "Search...", searchBuf, sizeof(searchBuf));
+									ImGui::Separator();
+
+									if (ImGui::BeginChild("EntityList", ImVec2(250, 200))) {
+										if (ImGui::Selectable("None (0)", currentID == 0)) {
+											newID = 0;
+											changed = true;
+											ImGui::CloseCurrentPopup();
+										}
+
+										auto& nameArr = ecs.GetComponentArray<Component::NameComponent>();
+										for (size_t j = 0; j < nameArr.dense.size(); ++j) {
+											Entity ent = nameArr.indexToEntity[j];
+											std::string const& n = nameArr.dense[j]->name;
+
+											if (searchBuf[0] != '\0') {
+												std::string lowerName = n;
+												std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+												std::string lowerSearch = searchBuf;
+												std::transform(lowerSearch.begin(), lowerSearch.end(), lowerSearch.begin(), ::tolower);
+												if (lowerName.find(lowerSearch) == std::string::npos) continue;
+											}
+
+											std::string label = n + " (" + std::to_string(ent) + ")";
+											if (ImGui::Selectable(label.c_str(), currentID == ent)) {
+												newID = ent;
+												changed = true;
+												ImGui::CloseCurrentPopup();
+											}
+										}
+									}
+									ImGui::EndChild();
+									ImGui::EndPopup();
+								}
+								ImGui::PopID();
+
+								// 5. Update C# Object if modified
+								if (changed) {
+									if (mono_class_is_valuetype(fieldClass)) {
+										// Struct handling
+										MonoObject* boxed = mono_object_new(MonoManager::GetDomain(), fieldClass);
+										if (idField) mono_field_set_value(boxed, idField, &newID);
+
+										void* rawData = mono_object_unbox(boxed);
+										mono_field_set_value(instance, field, rawData);
+									}
+									else {
+										// Class handling
+										if (newID == 0) {
+											// FIX: When you press "X", safely set the C# script field to null!
+											void* nullPtr = nullptr;
+											mono_field_set_value(instance, field, nullPtr);
+										}
+										else {
+											MonoObject* newEntObj = mono_object_new(MonoManager::GetDomain(), fieldClass);
+											if (idField) mono_field_set_value(newEntObj, idField, &newID);
+											mono_field_set_value(instance, field, newEntObj);
+										}
+									}
 								}
 							}
 						}
