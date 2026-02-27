@@ -165,8 +165,41 @@ namespace CrashoutsEngine
             Console.WriteLine("[Slime] AI Initialized. Home X: " + startPos.x);
         }
 
+        // A large distance to ensure the slime resets if it gets knocked too far away or stuck.
+        [SerializeField] private float maxLeashDistance = 3000.0f;
+
         public override void Update()
         {
+            float distanceFromStart = Distance(tf.Position, startPos);
+
+            // --- OUT OF BOUNDS / LEASH CHECK ---
+            // If the slime is too far from its spawn OR has fallen through the world, reset it.
+            if (distanceFromStart > maxLeashDistance || tf.Position.y < -5000.0f)
+            {
+                // Reset position and velocity
+                tf.Position = startPos;
+                if (rb != null)
+                {
+                    rb.LinearVelocity = new CEVec3(0, 0, 0);
+                }
+
+                // Reset all state flags to be safe
+                isGrabbed = false;
+                wasThrown = false;
+                isStunned = false;
+                isChasing = false;
+                returningHome = false;
+                STOP = false;
+
+                // Ensure it's a dynamic rigidbody and has the Enemy tag
+                if(rb != null) rb.SetDynamic(true);
+                var tag = Entity.GetComponent<TagComponent>();
+                if (tag != null) tag.AddTag("Enemy");
+
+                Console.WriteLine($"[Slime] Leash broken or out of bounds (Distance: {distanceFromStart}), resetting.");
+                return; // Skip the rest of this frame's update
+            }
+
             // BUG FIX: Always grab the current player instance to prevent stale references across scene loads
             playerScript = PlayerMovement.Instance;
             
@@ -253,6 +286,25 @@ namespace CrashoutsEngine
             if (tf == null) return;
 
             float drawZ = 51.0f;
+
+            // --- Leash Range Visualization ---
+            // Determines the center of the circle based on the game state.
+            CEVec3 leashCenter;
+            // If startPos is default, game is stopped; use the current transform for editor preview.
+            if (startPos.x == 0.0f && startPos.y == 0.0f && startPos.z == 0.0f)
+            {
+                leashCenter = new CEVec3(tf.Position.x, tf.Position.y, drawZ);
+            }
+            else // Otherwise, the game is playing; use the actual startPos anchor.
+            {
+                leashCenter = new CEVec3(startPos.x, startPos.y, drawZ);
+            }
+            CEVec3 leashColor = new CEVec3(1.0f, 0.0f, 0.0f); // Red
+            CEVec2 leashSize = new CEVec2(maxLeashDistance * 2.0f, maxLeashDistance * 2.0f);
+            Debug.DrawCircle(ref leashSize, ref leashCenter, ref leashColor);
+
+
+            // --- Detection Range Visualization ---
             CEVec3 detectionColor = new CEVec3(1.0f, 1.0f, 0.0f);
             CEVec2 detectionSize = new CEVec2(detectionRange * 2.0f, detectionRange * 2.0f);
             CEVec3 myPos = new CEVec3(tf.Position.x, tf.Position.y, drawZ);
