@@ -44,3 +44,8 @@ add_custom_command(TARGET Descent POST_BUILD
 add_custom_command(TARGET CrashoutEditor POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:CrashoutEditor>/assets"
 )
+
+# Copy compiled C# Script DLL
+add_custom_command(TARGET Descent POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>/scripts/Descent" "$<TARGET_FILE_DIR:Descent>/scripts"
+)
