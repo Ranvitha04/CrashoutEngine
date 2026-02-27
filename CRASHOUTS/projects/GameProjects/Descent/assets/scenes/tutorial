@@ -21,6 +21,7 @@
             },
             "tilemap": {
                 "tileSize": 32,
+                "excludeOuterBoundary": true,
                 "activeAsset": "tilemaps/Rock",
                 "tileAssetNames": [
                     "Rock"
@@ -9779,6 +9780,7 @@
             },
             "tilemap": {
                 "tileSize": 16,
+                "excludeOuterBoundary": false,
                 "activeAsset": "tilemaps/Passthrough_Floor",
                 "tileAssetNames": [
                     "Passthrough_Floor"
@@ -10837,6 +10839,7 @@
             },
             "tilemap": {
                 "tileSize": 32,
+                "excludeOuterBoundary": false,
                 "activeAsset": "tilemaps/Lava_Platform",
                 "tileAssetNames": [
                     "Lava_Platform"
@@ -19175,7 +19178,13 @@
                     {
                         "className": "MenuButtons",
                         "fields": {
-                            "test": 0
+                            "StartBtn": 0,
+                            "SettingsBtn": 0,
+                            "CloseBtn": 0,
+                            "QuitBtn": 0,
+                            "QuitCheckPanel": 0,
+                            "YesBtn": 0,
+                            "NoBtn": 0
                         }
                     }
                 ]
@@ -21753,6 +21762,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -21805,7 +21845,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21819,14 +21859,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21879,37 +21919,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0

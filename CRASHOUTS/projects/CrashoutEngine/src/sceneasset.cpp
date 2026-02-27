@@ -584,6 +584,7 @@ namespace CrashoutsEngine {
 				const auto& c = *gECS.GetComponent<TileMapComponent>(id);
 				rapidjson::Value val(rapidjson::kObjectType);
 				val.AddMember("tileSize", c.tileSize, allocator);
+				val.AddMember("excludeOuterBoundary", c.excludeOuterBoundary, allocator);
 				val.AddMember("activeAsset", rapidjson::Value(c.activeAsset.c_str(), allocator), allocator);
 				rapidjson::Value assets(rapidjson::kArrayType);
 				for (const auto& name : c.tileAssetNames) assets.PushBack(rapidjson::Value(name.c_str(), allocator), allocator);
@@ -1109,6 +1110,7 @@ namespace CrashoutsEngine {
 				auto& t = gECS.AddComponent<TileMapComponent>(newEntity);
 				t.activeAsset = "none"; t.pOpen = false; t.isCacheDirty = true;
 				t.tileSize = GetInt(v, "tileSize");
+				t.excludeOuterBoundary = GetBool(v, "excludeOuterBoundary");
 				t.activeAsset = GetString(v, "activeAsset");
 				if (v.HasMember("tileAssetNames") && v["tileAssetNames"].IsArray()) {
 					for (const auto& a : v["tileAssetNames"].GetArray()) if (a.IsString()) t.tileAssetNames.push_back(a.GetString());

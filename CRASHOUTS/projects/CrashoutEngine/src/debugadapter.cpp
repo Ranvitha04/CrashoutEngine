@@ -2553,6 +2553,10 @@ namespace CrashoutsEngine
 				if (tm->tileSize < 1) tm->tileSize = 1;
 				tm->isCacheDirty = true; // Redraw grid lines if size changes
 			}
+			if (ImGui::Checkbox("Exclude Outer Boundary Colliders", &tm->excludeOuterBoundary)) {
+				tm->isCacheDirty = true;
+			}
+
 
 			// Open Editor Toggle
 			if (ImGui::Checkbox("Open Tile Palette", &tm->pOpen)) {
