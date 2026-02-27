@@ -77,7 +77,8 @@ namespace CrashoutsEngine {
 
 		AssetManager::AssetManager() {
 
-#ifdef ENGINE_CORE_ASSETS_PATH
+			//#ifdef ENGINE_CORE_ASSETS_PATH
+#ifdef USE_IMGUI_EDITOR
 			// 1. Convert the macro to a C++ string
 			std::string rawPath = TOSTRING(ENGINE_CORE_ASSETS_PATH);
 
@@ -90,9 +91,12 @@ namespace CrashoutsEngine {
 			}
 
 			coreAssetPath = rawPath;
+			gameAssetPath = GetGameRoot() + "/assets/";
+#else
+			coreAssetPath = "core-assets/";
+			gameAssetPath = "assets/";
 #endif
 
-			gameAssetPath = GetGameRoot() + "/assets/";
 			assetManifestPath = gameAssetPath + "json/assetmanifest.json";
 
 			// Load FT_Library

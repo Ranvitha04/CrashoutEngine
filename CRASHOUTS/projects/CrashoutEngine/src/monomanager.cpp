@@ -94,7 +94,13 @@ namespace CrashoutsEngine::Bindings {
 
 void MonoManager::Init(const std::string& domainName)
 {
+#if USE_IMGUI_EDITOR
+	// In the Editor, navigate up from the build directory
 	mono_set_dirs("../../third_party/Mono/lib", "../../third_party/Mono/etc");
+#else
+	// In Standalone, the third_party folder is right next to the .exe
+	mono_set_dirs("third_party/Mono/lib", "third_party/Mono/etc");
+#endif
 	mono_config_parse(nullptr);
 
 	s_RootDomain = mono_jit_init(domainName.c_str());
@@ -129,13 +135,18 @@ void MonoManager::LoadAssembly()
 
 	std::string gameName = fs::path(GetGameRoot()).filename().string();
 	// Attempt to find the scripts folder relative to the root
-	fs::path scriptDir = fs::path("scripts") / gameName;
+	fs::path scriptDir;
 
-	// If we can't find it (likely because we are running from Root via BAT), 
-	// we look into the build folder specifically
+#if USE_IMGUI_EDITOR
+	// Editor pathing
+	scriptDir = fs::path("scripts") / gameName;
 	if (!fs::exists(scriptDir)) {
 		scriptDir = fs::path("build/x64-Debug/scripts") / gameName;
 	}
+#else
+	// Standalone pathing: CMake copies the DLL directly into the local 'scripts' folder
+	scriptDir = fs::path("scripts");
+#endif
 
 	if (!fs::exists(scriptDir))
 	{
