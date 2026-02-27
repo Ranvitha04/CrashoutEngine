@@ -21676,6 +21676,7 @@
                             "footstepInterval": 0.30000001192092898,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
+                            "coyoteFrames": 6,
                             "goalNoOfPlates": 2,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
