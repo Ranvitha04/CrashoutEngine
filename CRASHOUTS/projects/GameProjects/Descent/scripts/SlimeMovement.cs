@@ -18,24 +18,24 @@ namespace CrashoutsEngine
     public class SlimeMovement : ScriptBase
     {
         // --- SETTINGS ---
-        [SerializeField] private float moveSpeed = 600f; // Reduced force
-        [SerializeField] private float maxSpeed = 15.0f; // Slower speed
+        [SerializeField] private float moveSpeed = 600f; 
+        [SerializeField] private float maxSpeed = 15.0f; 
         [SerializeField] private float moveAudioInterval = 0.4f;
-        [SerializeField] private float stopAudioDistance = 40.0f; // Distance to stop audio playback
+        [SerializeField] private float stopAudioDistance = 40.0f; 
         [SerializeField] private float detectionRange = 250.0f;
         [SerializeField] private float gravityScale = 2.0f;
         [SerializeField] private float grabRange = 100.0f;
+        [SerializeField] private float lineOfSightYTolerance = 25.0f;
 
         // THROW SETTINGS
-        [SerializeField] private float minThrowSpeed = 50.0f;
-        [SerializeField] private float maxThrowSpeed = 200.0f; 
+        [SerializeField] private float minThrowSpeed = 300.0f;
+        [SerializeField] private float maxThrowSpeed = 2000.0f; 
         [SerializeField] private float maxMouseDragDist = 400.0f;
         [SerializeField] private float airDrag = 1.0f; 
         [SerializeField] private float stunDuration = 1.0f;
 
         // Patrol Zone
-        //[SerializeField] private float MaxDist = 200.0f;
-        [SerializeField] private float ledgeBuffer = 40.0f; // Distance from edge of collider to check
+        [SerializeField] private float ledgeBuffer = 40.0f; 
         [SerializeField] private float ledgeRayCastDistance = 50.0f;
         [SerializeField] private float grabEnergyDrainRate = 5.0f;
         [SerializeField] private float patrolTurnInterval = 3.0f;
@@ -57,17 +57,25 @@ namespace CrashoutsEngine
         private bool isStunned = false;
         private float currentStunTime = 0.0f;
         private float flipCooldown = 0.0f;
-        //private float stuckTimer = 0.0f;
         private float ignoreHomeTimer = 0.0f;
         private float patrolTurnTimer = 0.0f;
 
         private CEVec3 startPos;
         private bool returningHome = false;
 
+        private List<CEVec3> activePath = new List<CEVec3>();
+        private bool isFollowingPath = false;
+
+        bool STOP = false;
+        private string currentAnimState = "";
+
         private bool HasLineOfSight(CEVec3 targetPos)
         {
-            CEVec3 start = tf.Position;
-            CEVec3 end = targetPos;
+            if (Math.Abs(targetPos.y - tf.Position.y) > lineOfSightYTolerance)
+                return false;
+
+            CEVec3 start = new CEVec3(tf.Position.x, targetPos.y, tf.Position.z);
+            CEVec3 end = new CEVec3(targetPos.x, targetPos.y, targetPos.z);
             uint hitID;
             
             if (InternalCalls.Raycast(ref start, ref end, out hitID, Entity.ID))
@@ -76,7 +84,7 @@ namespace CrashoutsEngine
                 if (hitEnt.ID == playerScript.Entity.ID) return true; 
 
                 var tag = hitEnt.GetComponent<TagComponent>();
-                if (tag != null && (tag.HasTag("Ground") || tag.HasTag("Wall") || tag.HasTag("Platform")))
+                if (tag != null && (tag.HasTag("Ground") || tag.HasTag("Wall") || tag.HasTag("Platform") || tag.HasTag("Tilemap")))
                 {
                     return false; 
                 }
@@ -88,9 +96,10 @@ namespace CrashoutsEngine
         {
             float checkDir = moveRight ? 1.0f : -1.0f;
             float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
+            float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
             float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
             
-            CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y, tf.Position.z);
+            CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y - (halfHeight * 0.5f), tf.Position.z);
             CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
 
             uint hitID;
@@ -105,17 +114,6 @@ namespace CrashoutsEngine
             }
             return true; 
         }
-
-        //private void CheckGrounded()
-
-        // PATH FOLLOWING STATE
-        private List<CEVec3> activePath = new List<CEVec3>();
-        private bool isFollowingPath = false;
-        //private int pathIndex = 0;
-
-        bool STOP = false;
-
-        private string currentAnimState = "";
 
         private void CheckGrounded()
         {
@@ -157,6 +155,7 @@ namespace CrashoutsEngine
             col = Entity.GetComponent<ColliderComponent>();
             playerScript = PlayerMovement.Instance;
 
+            CollisionEvents.RegisterPreSolve(Entity.ID, this.OnPreSolve);
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
             CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
 
@@ -168,9 +167,24 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-
+            // BUG FIX: Always grab the current player instance to prevent stale references across scene loads
+            playerScript = PlayerMovement.Instance;
+            
             if (playerScript != null && playerScript.isPaused) { return; } 
-            if (rb == null || tf == null) return;
+            if (rb == null || tf == null || playerScript == null) return;
+
+            if (playerScript != null)
+            {
+                HandleGrabInput();
+               
+                if (isGrabbed)
+                {
+                    STOP = false; 
+                    UpdateAnimationState(); 
+                    return;
+                }
+            }
+
             if (STOP)
             {
                 if (rb != null)
@@ -189,33 +203,21 @@ namespace CrashoutsEngine
                 if (currentStunTime <= 0)
                 {
                     isStunned = false;
+                    var tag = Entity.GetComponent<TagComponent>();
+                    if (tag != null) tag.AddTag("Enemy");
                 }
+                
+                // FEATURE FIX: Force facing right while stunned
+                moveRight = true;
+                
                 UpdateAnimationState();
-                return;
             }
 
             if (flipCooldown > 0) flipCooldown -= dt;
 
-            // Handle Grab State
-            if (playerScript != null)
-            {
-                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                if (playerTf != null)
-                {
-                     float dist = Distance(tf.Position, playerTf.Position);
-                     if (dist <= grabRange || isGrabbed) HandleGrabInput();
-                }
-               
-                if (isGrabbed)
-                {
-                    UpdateAnimationState(); 
-                    return;
-                }
-            }
-
             float horizontalSpeed = Math.Abs(rb.LinearVelocity.x);
 
-            if (horizontalSpeed > 1.0f && isGrounded)
+            if (horizontalSpeed > 1.0f && isGrounded && !isStunned)
             {
                 float distToPlayer = playerScript != null ? Distance(tf.Position, playerScript.Entity.GetComponent<TransformComponent>().Position) : 0;
 
@@ -234,7 +236,6 @@ namespace CrashoutsEngine
             }
             else
             {
-                // Reset timer when stationary so the next step plays immediately
                 moveAudioTimer = 0.0f;
             }
 
@@ -251,35 +252,53 @@ namespace CrashoutsEngine
             if (tf == null) tf = Entity.GetComponent<TransformComponent>();
             if (tf == null) return;
 
-            // Debug Drawing
-            CEVec3 detectionColor = new CEVec3(1.0f, 1.0f, 0.0f); // Yellow
+            float drawZ = 51.0f;
+            CEVec3 detectionColor = new CEVec3(1.0f, 1.0f, 0.0f);
             CEVec2 detectionSize = new CEVec2(detectionRange * 2.0f, detectionRange * 2.0f);
-            CEVec3 myPos = tf.Position;
+            CEVec3 myPos = new CEVec3(tf.Position.x, tf.Position.y, drawZ);
             Debug.DrawCircle(ref detectionSize, ref myPos, ref detectionColor);
 
-            CEVec3 grabColor = new CEVec3(0.0f, 1.0f, 0.0f); // Green
+            CEVec3 grabColor = new CEVec3(0.0f, 1.0f, 0.0f); 
             CEVec2 grabSize = new CEVec2(grabRange * 2.0f, grabRange * 2.0f);
             Debug.DrawCircle(ref grabSize, ref myPos, ref grabColor);
 
-            // Draw Ledge Check Ray
-            float checkDir = moveRight ? 1.0f : -1.0f;
-            float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
-            float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
-            
-            CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y, tf.Position.z);
-            CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, rayStart.z);
-            CEVec3 rayColor = new CEVec3(1.0f, 0.0f, 0.0f); // Red
-            Debug.DrawLine(ref rayStart, ref rayEnd, 2.0f, ref rayColor);
-
-            // Draw Trajectory Path (Visual Aid)
-            if (isGrabbed && activePath.Count > 1)
+            if (Debug.IsGameDebugDrawEnabled())
             {
-                CEVec3 pathColor = new CEVec3(1.0f, 1.0f, 1.0f);
-                for (int i = 0; i < activePath.Count - 1; i += 2)
+                float checkDir = moveRight ? 1.0f : -1.0f;
+                float halfWidth = Math.Abs(tf.Size.x) * 0.5f;
+                float halfHeight = Math.Abs(tf.Size.y) * 0.5f;
+                float rayOriginX = tf.Position.x + (checkDir * (halfWidth + ledgeBuffer));
+                
+                CEVec3 rayStart = new CEVec3(rayOriginX, tf.Position.y - (halfHeight * 0.5f), drawZ);
+                CEVec3 rayEnd = new CEVec3(rayStart.x, rayStart.y - ledgeRayCastDistance, drawZ);
+                
+                bool nearLedge = IsNearLedge();
+                CEVec3 rayColor = nearLedge ? new CEVec3(1.0f, 0.0f, 0.0f) : new CEVec3(0.0f, 1.0f, 1.0f); 
+                Debug.DrawLine(ref rayStart, ref rayEnd, 6.0f, ref rayColor);
+            }
+
+            if (isGrabbed)
+            {
+                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+
+                if (playerTf != null)
                 {
-                    CEVec3 p1 = activePath[i];
-                    CEVec3 p2 = activePath[i + 1];
-                    Debug.DrawTrajectory(ref p1, ref p2, 2.0f, ref pathColor);
+                    CEVec2 mousePos = Input.GetMouseWorldPosition();
+                    CEVec3 slimePos = new CEVec3(tf.Position.x, tf.Position.y, drawZ);
+                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
+                    SimulatePath(throwVel, slimePos);
+                }
+
+                if (activePath.Count > 1)
+                {
+                    CEVec3 pathColor = new CEVec3(1.0f, 1.0f, 1.0f); 
+                    for (int i = 0; i < activePath.Count - 2; i += 4)
+                    {
+                        CEVec3 p1 = activePath[i];
+                        CEVec3 p2 = activePath[i + 1];
+                        p1.z = drawZ; p2.z = drawZ;
+                        Debug.DrawTrajectory(ref p1, ref p2, 2.0f, ref pathColor);
+                    }
                 }
             }
         }
@@ -288,37 +307,18 @@ namespace CrashoutsEngine
         {
             if (anim == null) return;
 
-            string targetState = "slimeIdle"; // Default
+            string targetState = "slimeIdle";
 
-            // 1. High Priority States (Overrides movement)
-            if (isGrabbed)
-            {
-                targetState = "slimeHold";
-            }
-            else if (isStunned)
-            {
-                targetState = "slimeStunned";
-            }
-            // 2. Movement States (Only check if moving)
+            if (isGrabbed) targetState = "slimeHold";
+            else if (isStunned) targetState = "slimeStunned";
             else if (Math.Abs(rb.LinearVelocity.x) > 1.0f)
             {
-                if (isChasing)
-                {
-                    // Moving AND Chasing
-                    targetState = "slimeChase";
-                }
-                else
-                {
-                    // Moving normally (Patrol)
-                    targetState = "slimeWalk";
-                }
+                if (isChasing) targetState = "slimeChase";
+                else targetState = "slimeWalk";
             }
-            // 3. Idle is implicit default if velocity < 1.0f
 
-            // Apply Animation
             if (targetState != currentAnimState)
             {
-                // Play(string name, bool loop)
                 anim.Play(targetState, true);
                 currentAnimState = targetState;
             }
@@ -328,28 +328,24 @@ namespace CrashoutsEngine
         {
             if (STOP) return;
 
-            // 0. Grabbed Movement Sync (Fix for Jitter)
             if (isGrabbed && playerScript != null)
             {
                 var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
                 if (playerTf != null)
                 {
-                    float offsetX = playerTf.Size.x < 0 ? -60.0f : 60.0f;
-                    tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z);
+                    float offsetX = playerTf.Size.x < 0 ? -30.0f : 30.0f;
+                    tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z + 1f);
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
                 }
-                return; // Skip other physics logic while grabbed
+                return; 
             }
             
-            // 1. Safety Checks
-            if (rb == null || isStunned) return; // Removed isGrabbed check as it's handled above
+            if (rb == null || isStunned) return; 
             if (playerScript != null && playerScript.isPaused) return;
 
-            // 2. Environment Checks
             CheckGrounded();
             float dt = (float)Time.FixedDT;
 
-            // 3. Audio Logic (Landing/Jumping)
             if (isGrounded != wasGroundedLastFrame)
             {
                 if (!isGrounded && rb.LinearVelocity.y > 5.0f)
@@ -358,7 +354,6 @@ namespace CrashoutsEngine
                     AudioManager.GetInstance().PlayAttached("slimeImpact", Entity.ID);
             }
 
-            // 4. Timers
             if (flipCooldown > 0) flipCooldown -= dt;
             if (ignoreHomeTimer > 0) ignoreHomeTimer -= dt;
 
@@ -369,22 +364,16 @@ namespace CrashoutsEngine
                 {
                     float distToPlayer = Distance(tf.Position, playerTf.Position);
 
-                    // 1. Check for Chase Start (With Line of Sight)
                     if (distToPlayer < detectionRange && HasLineOfSight(playerTf.Position))
                     {
                         isChasing = true;
                         returningHome = false;
-
-                        // Face the player
                         if (playerTf.Position.x > tf.Position.x) moveRight = true;
                         else moveRight = false;
                     }
-                    // 2. Stop Chasing (Player too far or out of sight)
                     else
                     {
                         isChasing = false;
-
-                        // Return to home if far away
                         float distToHome = Distance(tf.Position, startPos);
                         if (distToHome > 100.0f && ignoreHomeTimer <= 0)
                         {
@@ -395,8 +384,6 @@ namespace CrashoutsEngine
                         else
                         {
                             returningHome = false;
-                            
-                            // Patrol logic: Flip if hit ledge or timer expires
                             if (isGrounded && flipCooldown <= 0)
                             {
                                 patrolTurnTimer -= dt;
@@ -412,47 +399,31 @@ namespace CrashoutsEngine
                 }
             }
 
-
-            // 5. MOVEMENT LOGIC
-            // Only calculate movement forces if the player is ALIVE and slime wasn't thrown
-            // If player is dead, we skip this block, effectively making the slime "Idle" but still subject to gravity
             if (!wasThrown && (playerScript == null || playerScript.alive))
             {
-                // ... (Keep your existing AI/Patrol/Stuck logic here) ...
-                // ... For brevity, assuming the AI logic block is here ...
-                // ... Copy the AI Logic block from your original script ...
-
-                // --- APPLY MOVEMENT FORCES ---
                 CEVec3 velocity = rb.LinearVelocity;
                 float dir = moveRight ? 1.0f : -1.0f;
                 float speedMult = (isChasing || returningHome) ? 1.2f : 1.0f;
 
                 if (isGrounded || isChasing)
                 {
-                    // Ground Movement
                     if (Math.Abs(velocity.x) < maxSpeed * speedMult)
                     {
                         rb.AddForce(new CEVec3(moveSpeed * dir * speedMult, 0, 0));
                     }
-                    // Horizontal Friction
                     rb.AddForce(new CEVec3(-velocity.x * 5.0f * rb.Mass, 0, 0));
                 }
                 else
                 {
-                    // Air Drag - REMOVED Y AXIS DRAG to prevent floating
-                    // Only damp X axis in air
                     rb.AddForce(new CEVec3(-velocity.x * airDrag * rb.Mass, 0, 0));
                 }
             }
             else
             {
-                // If player is dead or slime was thrown, applies simple friction so it slides to a stop
                 CEVec3 velocity = rb.LinearVelocity;
                 if (isGrounded) rb.AddForce(new CEVec3(-velocity.x * 2.0f * rb.Mass, 0, 0));
             }
 
-            // 6. GRAVITY (ALWAYS RUNS)
-            // This is now outside the "if player alive" check
             float gravityForce = -9.81f * 100.0f * gravityScale * rb.Mass;
             rb.AddForce(new CEVec3(0f, gravityForce, 0f));
 
@@ -473,52 +444,68 @@ namespace CrashoutsEngine
             {
                 if (!isGrabbed)
                 {
-                    float halfW = Math.Abs(tf.Size.x) * 0.5f + 40.0f;
-                    float halfH = Math.Abs(tf.Size.y) * 0.5f + 40.0f;
+                    float halfW = Math.Abs(tf.Size.x) * 0.5f + 100.0f;
+                    float halfH = Math.Abs(tf.Size.y) * 0.5f + 100.0f;
 
-                    if (mousePos.x >= tf.Position.x - halfW && mousePos.x <= tf.Position.x + halfW &&
-                        mousePos.y >= tf.Position.y - halfH && mousePos.y <= tf.Position.y + halfH)
+                    CEVec3 worldPos = tf.WorldPosition;
+                    bool mouseOverSlime = mousePos.x >= worldPos.x - halfW && mousePos.x <= worldPos.x + halfW &&
+                                          mousePos.y >= worldPos.y - halfH && mousePos.y <= worldPos.y + halfH;
+
+                    if (mouseOverSlime)
                     {
-                        isGrabbed = true;
-                        isFollowingPath = false;
-                        activePath.Clear();
-                        rb.SetDynamic(false);
-                        var Tag = Entity.GetComponent<TagComponent>();
-                        if (Tag != null) Tag.RemoveTag("Enemy");
+                        var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                        float distToPlayer = Distance(worldPos, playerTf.WorldPosition);
+                        
+                        if (distToPlayer <= grabRange + 50.0f && playerScript.CurrentEnergy > 0) {
+                            isGrabbed = true;
+                            isFollowingPath = false;
+                            activePath.Clear();
+                            rb.SetDynamic(false);
+                            var Tag = Entity.GetComponent<TagComponent>();
+                            if (Tag != null) Tag.RemoveTag("Enemy");
+                            Console.WriteLine("[Slime] Grabbed!");
+                        }
                     }
                 }
 
                 if (isGrabbed && playerScript != null)
                 {
+                    CEVec3 worldPos = tf.WorldPosition;
                     RemoveEnergy(grabEnergyDrainRate * (float)Time.DT);
-                    // Position update moved to FixedUpdate to prevent jitter
-                    
                     var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
-                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, playerTf.Position);
-                    SimulatePath(throwVel, tf.Position);
+                    if (playerTf != null)
+                    {
+                        CEVec3 throwVel = CalculateThrowVelocity(mousePos, worldPos);
+                        SimulatePath(throwVel, worldPos);
+                    }
                 }
             }
             else if (isGrabbed)
             {
                 isGrabbed = false;
                 wasThrown = true;
+                
+                // BUG FIX 1: Ensure STOP is false so physics immediately applies
+                STOP = false; 
+
                 activePath.Clear();
                 rb.SetDynamic(true);
                 var Tag = Entity.GetComponent<TagComponent>();
-                if (Tag != null) Tag.AddTag("Enemy");
+                // Removed AddTag("Enemy") so it doesn't damage the player while being thrown
+                Console.WriteLine("[Slime] Released/Thrown!");
 
                 if (playerScript != null)
                 {
-                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, playerScript.Entity.GetComponent<TransformComponent>().Position);
+                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
                     rb.LinearVelocity = throwVel;
                 }
             }
         }
 
-        private CEVec3 CalculateThrowVelocity(CEVec2 mousePos, CEVec3 playerPos)
+        private CEVec3 CalculateThrowVelocity(CEVec2 mousePos, CEVec3 anchorPos)
         {
-            float dx = playerPos.x - mousePos.x;
-            float dy = playerPos.y - mousePos.y;
+            float dx = anchorPos.x - mousePos.x;
+            float dy = anchorPos.y - mousePos.y;
             float dist = (float)Math.Sqrt(dx * dx + dy * dy);
             
             float dirX = 0f, dirY = 0f;
@@ -535,25 +522,21 @@ namespace CrashoutsEngine
             activePath.Clear();
 
             CEVec3 currentPos = startPos;
-            
             float dt = (float)Time.FixedDT;
             if (dt <= 0.0001f) dt = 0.0166f; 
 
             int steps = (int)(2.0f / dt);
-
             CEVec3 simVel = velocity;
-            float totalAccelY = (-9.81f * 100.0f * gravityScale); // Matched to FixedUpdate gravity
+            float totalAccelY = (-9.81f * 100.0f * gravityScale); 
 
             for (int i = 0; i < steps; i++)
             {
                 simVel.y += totalAccelY * dt;
-                
                 simVel.x += (-simVel.x * airDrag) * dt;
                 simVel.y += (-simVel.y * airDrag * 0.2f) * dt;
-                
                 CEVec3 nextPos = currentPos + (simVel * dt);
 
-                if (playerScript != null && playerScript.IsGrounded && nextPos.y < playerScript.Entity.GetComponent<TransformComponent>().Position.y - 50.0f)
+                if (playerScript != null && nextPos.y < playerScript.Entity.GetComponent<TransformComponent>().Position.y - 200.0f)
                     break;
 
                 activePath.Add(nextPos);
@@ -561,22 +544,46 @@ namespace CrashoutsEngine
             }
         }
 
+        public bool OnPreSolve(uint otherEntity)
+        {
+            // When grabbed, ignore all collisions to prevent pushing the player.
+            if (isGrabbed) return false;
+
+            // When thrown, ignore collisions ONLY with the player so it can pass through.
+            if (wasThrown)
+            {
+                Entity other = new Entity(otherEntity);
+                var tag = other.GetComponent<TagComponent>();
+                if (tag != null && tag.HasTag("Player"))
+                {
+                    return false; // Don't collide with the player while flying through the air.
+                }
+            }
+
+            return true; // Collide with everything else normally.
+        }
+
         public void OnCollideEnter(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);
             var Tag = other.GetComponent<TagComponent>();
+            if (Tag == null) return;
 
-            if (Tag.HasTag("Player")) STOP = true;
+            // BUG FIX 2: Prevent instant stop race-condition when thrown next to player
+            if (Tag.HasTag("Player")) 
+            {
+                if (!isGrabbed && !wasThrown) 
+                {
+                    STOP = true;
+                }
+            }
 
-            // Universal collision check for path cancellation
-            // If we hit ANYTHING static (Ground, Wall, Platform), stop flying.
             if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Wall") || Tag.HasTag("Platform")))
             {
                 if (isFollowingPath)
                 {
                     isFollowingPath = false;
                     activePath.Clear();
-                    // Reset velocity to prevent "shooting" through the wall after releasing path control
                     rb.LinearVelocity = new CEVec3(0, 0, 0); 
                 }
 
@@ -588,19 +595,15 @@ namespace CrashoutsEngine
                     currentStunTime = stunDuration;
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
                 }
-            }
-
-            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Wall") || Tag.HasTag("Platform")))
-            {
+                
                 var otherTf = other.GetComponent<TransformComponent>();
                 bool isOnTop = otherTf != null && tf.Position.y > otherTf.Position.y + (otherTf.Size.y * 0.4f);
 
-                // Side collision (Wall/Platform/Ground from side) -> Flip & Kick
                 if (!isOnTop && flipCooldown <= 0 && !isChasing && !returningHome)
                 {
                     moveRight = !moveRight;
                     float newDir = moveRight ? 1.0f : -1.0f;
-                    rb.LinearVelocity = new CEVec3(newDir * 50.0f, rb.LinearVelocity.y, 0); // Kick away
+                    rb.LinearVelocity = new CEVec3(newDir * 50.0f, rb.LinearVelocity.y, 0); 
                     flipCooldown = 0.2f;
                     ignoreHomeTimer = 4.0f; 
                 }
@@ -609,9 +612,14 @@ namespace CrashoutsEngine
 
         public void OnCollideExit(uint otherEntity)
         {
-            // Ground check is handled by Raycast now.
         }
 
-        private float Distance(CEVec3 a, CEVec3 b) => (float)Math.Sqrt(Math.Pow(a.x - b.x, 2) + Math.Pow(a.y - b.y, 2));
+        // PERFORMANCE MATH FIX: Removed slow Math.Pow implementation
+        private float Distance(CEVec3 a, CEVec3 b) 
+        {
+            float dx = a.x - b.x;
+            float dy = a.y - b.y;
+            return (float)Math.Sqrt((dx * dx) + (dy * dy));
+        }
     }
 }

@@ -1,6 +1,6 @@
 /*!
 @file		checkpointbindings.cpp
-@author     Interactive CLI Agent
+@author     m.biniswandi@digipen.edu
 @brief		Definition of checkpoint bindings functions
 */
 #include "checkpointbindings.h"

@@ -142,11 +142,19 @@ add_custom_target({{GAME_NAME}}_Scripts ALL
 add_dependencies(${PROJECT_NAME} {{GAME_NAME}}_Scripts)
 add_dependencies(CrashoutEditor {{GAME_NAME}}_Scripts)
 
+# Copy Game Assets
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
 )
-add_custom_command(TARGET CrashoutEditor POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:CrashoutEditor>/assets"
+
+# Copy Engine Core Assets
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/core-assets" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/core-assets"
+)
+
+# Copy compiled C# Script DLL
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>/scripts/${PROJECT_NAME}" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/scripts"
 )
 )";
 
@@ -1304,7 +1312,7 @@ namespace UI {
 				}
 
 				// Play as SFX (One-Shot)
-				FMOD::Channel* ch = audio.playSFXFile(full);
+				FMOD::Channel* ch = audio.playSFXFile(full, false, 1.0f, 100.0f);
 				if (ch) {
 					result.ptr = ch;
 					result.type = EditorHandle::Channel;

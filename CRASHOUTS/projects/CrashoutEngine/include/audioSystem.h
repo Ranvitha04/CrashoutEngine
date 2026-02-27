@@ -4,7 +4,7 @@
 @date        28/9/2025
 @brief       Header file that defines the AudioSystem class and a simple wrapper around FMOD
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -20,6 +20,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <fmod_studio.hpp>
 #include <fmod.hpp>
 #include <fmod_errors.h>
+
+#include "CEVec3.h"
 
 namespace CrashoutsEngine
 {
@@ -83,13 +85,17 @@ namespace CrashoutsEngine
 
             // File-based playback (Core API)
             FMOD::Channel* playMusicFile(const std::string& path, bool loop = true);
-            FMOD::Channel* playSFXFile(const std::string& path);
+            FMOD::Channel* playSFXFile(const std::string& path, bool spatial3D, float minDistance, float maxDistance);
 
             // Setters
             bool setMusicGroupVolume(float v01);
             bool setSFXGroupVolume(float v01);
             bool setMasterVolume(float v01);
             bool setTaggedVolume(const std::string& key, float vol);
+            void SetChannelVolume(FMOD::Channel* channel, float volume);
+            void SetChannel3DAttributes(FMOD::Channel* channel, const CEVec3& position, float minDistance, float maxDistance);
+            void AddChannelDSP(FMOD::Channel* channel, FMOD_DSP_TYPE dspType);
+            void RemoveChannelDSP(FMOD::Channel* channel, FMOD_DSP_TYPE dspType);
 
             // Getters
             float GetMusicVolume() const;
@@ -160,6 +166,7 @@ namespace CrashoutsEngine
             std::unordered_map<std::string, FMOD::Channel*> mTaggedChannels;
 
             std::list<std::pair<FMOD::Channel*, FMOD::Sound*>> mActiveSounds;
+            std::unordered_map<FMOD::Channel*, std::unordered_map<FMOD_DSP_TYPE, FMOD::DSP*>> mChannelDSPs;
 
             // Helpers
             FMOD::Studio::EventDescription* getEventDesc(const std::string& eventPath);

@@ -291,7 +291,7 @@ namespace CrashoutsEngine {
 			}
 
 			if (gECS.HasComponent<Component::UUIDComponent>(id)) {
-				entityValue.AddMember(rapidjson::StringRef(Keys::UUID_COMPONENT), 
+				entityValue.AddMember(rapidjson::StringRef(Keys::UUID_COMPONENT),
 					gECS.GetComponent<Component::UUIDComponent>(id)->id, allocator);
 			}
 
@@ -456,25 +456,29 @@ namespace CrashoutsEngine {
 					MonoObject* instance = inst.GCHandle ? mono_gchandle_get_target(inst.GCHandle) : nullptr;
 					if (instance && inst.Class) {
 						rapidjson::Value fields(rapidjson::kObjectType);
-												void* iter = nullptr;
-												while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
-													const char* fName = mono_field_get_name(field);
-													uint32_t flags = mono_field_get_flags(field);
-													if (flags & MONO_FIELD_ATTR_STATIC) continue;
-						
-													bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
-													bool hasAttr = false;
-													MonoClass* attrClass = MonoManager::GetSerializeFieldClass();
-													if (attrClass) {
-														MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
-														if (attrInfo) {
-															hasAttr = mono_custom_attrs_has_attr(attrInfo, attrClass);
-															mono_custom_attrs_free(attrInfo);
-														}
-													}
+						void* iter = nullptr;
+						while (MonoClassField* field = mono_class_get_fields(inst.Class, &iter)) {
+							const char* fName = mono_field_get_name(field);
+							uint32_t flags = mono_field_get_flags(field);
+							if (flags & MONO_FIELD_ATTR_STATIC) continue;
+
+							bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
+							bool hasAttr = false;
+							MonoClass* attrClass = MonoManager::GetSerializeFieldClass();
+							if (attrClass) {
+								MonoCustomAttrInfo* attrInfo = mono_custom_attrs_from_field(inst.Class, field);
+								if (attrInfo) {
+									hasAttr = mono_custom_attrs_has_attr(attrInfo, attrClass);
+									mono_custom_attrs_free(attrInfo);
+								}
+							}
 							if (isPublic || hasAttr) {
 								MonoType* type = mono_field_get_type(field);
 								int tEnum = mono_type_get_type(type);
+
+								MonoClass* fieldClass = mono_class_from_mono_type(type);
+								const char* fieldClassName = fieldClass ? mono_class_get_name(fieldClass) : "";
+
 								rapidjson::Value key(fName, allocator);
 								if (tEnum == MONO_TYPE_I4) { int v; mono_field_get_value(instance, field, &v); fields.AddMember(key, v, allocator); }
 								else if (tEnum == MONO_TYPE_R4) { float v; mono_field_get_value(instance, field, &v); fields.AddMember(key, v, allocator); }
@@ -482,6 +486,29 @@ namespace CrashoutsEngine {
 								else if (tEnum == MONO_TYPE_STRING) {
 									MonoString* ms = nullptr; mono_field_get_value(instance, field, &ms);
 									if (ms) { char* s = mono_string_to_utf8(ms); fields.AddMember(key, rapidjson::Value(s, allocator), allocator); mono_free(s); }
+								}
+								else if (strcmp(fieldClassName, "Entity") == 0) {
+									uint32_t currentID = 0;
+									MonoClassField* idField = mono_class_get_field_from_name(fieldClass, "ID");
+									if (!idField) idField = mono_class_get_field_from_name(fieldClass, "<ID>k__BackingField");
+									if (!idField) idField = mono_class_get_field_from_name(fieldClass, "id");
+
+									if (mono_class_is_valuetype(fieldClass)) {
+										int structSize = mono_class_instance_size(fieldClass) - sizeof(MonoObject);
+										void* buffer = malloc(structSize);
+										mono_field_get_value(instance, field, buffer);
+										MonoObject* boxed = mono_value_box(MonoManager::GetDomain(), fieldClass, buffer);
+										if (idField) mono_field_get_value(boxed, idField, &currentID);
+										free(buffer);
+									}
+									else {
+										MonoObject* entityObj = nullptr;
+										mono_field_get_value(instance, field, &entityObj);
+										if (entityObj && idField) mono_field_get_value(entityObj, idField, &currentID);
+									}
+
+									// Save the extracted ID to the JSON
+									fields.AddMember(key, currentID, allocator);
 								}
 							}
 						}
@@ -721,7 +748,7 @@ namespace CrashoutsEngine {
 			if (gECS.HasComponent<VideoComponent>(id)) {
 				const auto& vc = *gECS.GetComponent<VideoComponent>(id);
 				rapidjson::Value vVal(rapidjson::kObjectType);
-				
+
 				vVal.AddMember("videoPath", rapidjson::Value(vc.videoPath.c_str(), allocator), allocator);
 				vVal.AddMember("isPlaying", vc.isPlaying, allocator);
 				vVal.AddMember("loop", vc.loop, allocator);
@@ -793,7 +820,7 @@ namespace CrashoutsEngine {
 			if (entityValue.HasMember(Keys::TAG_COMPONENT)) {
 				const auto& v = entityValue[Keys::TAG_COMPONENT];
 				if (v.IsObject()) gECS.GetComponent<Component::TagComponent>(newEntity)->tagMask = GetInt(v, "tagMask");
-			} 
+			}
 			else if (entityValue.HasMember("layer") && entityValue["layer"].HasMember("currentLayer")) {
 				// LEGACY MIGRATION: Old 'LayerComponent' -> New 'TagComponent'
 				const auto& v = entityValue["layer"];
@@ -810,7 +837,7 @@ namespace CrashoutsEngine {
 					c->z = GetInt(v, "z", 0);
 				}
 			}
-			
+
 			// LEGACY ZORDER MIGRATION
 			if (entityValue.HasMember("zorder")) {
 				const auto& v = entityValue["zorder"];
@@ -818,14 +845,14 @@ namespace CrashoutsEngine {
 				// Map old enum int to new string
 				int oldEnum = GetInt(v, "layer", 2);
 				c->z = GetInt(v, "z", 0);
-				
-				switch(oldEnum) {
-					case 0: c->layerName = "StaticBackground"; break;
-					case 1: c->layerName = "InteractiveBG"; break;
-					case 2: c->layerName = "WorldGeometry"; break;
-					case 3: c->layerName = "EffectsAndItems"; break;
-					case 4: c->layerName = "Players"; break;
-					default: c->layerName = "Default"; break;
+
+				switch (oldEnum) {
+				case 0: c->layerName = "StaticBackground"; break;
+				case 1: c->layerName = "InteractiveBG"; break;
+				case 2: c->layerName = "WorldGeometry"; break;
+				case 3: c->layerName = "EffectsAndItems"; break;
+				case 4: c->layerName = "Players"; break;
+				default: c->layerName = "Default"; break;
 				}
 			}
 

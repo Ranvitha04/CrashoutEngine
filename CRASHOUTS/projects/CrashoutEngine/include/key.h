@@ -50,6 +50,8 @@ enum class Key {
     Equal = GLFW_KEY_EQUAL,
 	LeftCtrl = GLFW_KEY_LEFT_CONTROL,
 
+    F3 = GLFW_KEY_F3,
+
     /// arrows
     Up = GLFW_KEY_UP,
     Down = GLFW_KEY_DOWN,
@@ -114,6 +116,8 @@ inline std::string KeyToString(Key key) {
     case Key::Enter: return "Enter";
     case Key::Tab: return "Tab";
     case Key::Backspace: return "Backspace";
+    
+    case Key::F3: return "F3";
 
     case Key::MouseLeft: return "Mouse Left";
     case Key::MouseRight: return "Mouse Right";

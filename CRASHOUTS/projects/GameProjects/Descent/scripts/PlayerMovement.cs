@@ -23,7 +23,7 @@ namespace CrashoutsEngine
         public float gravityForceMultiplier = 10.0f;
         public float fallGravityMultiplier = 1.5f;
 
-        public float footstepInterval = 0.075f;
+        public float footstepInterval = 0.3f;
         public float swapPause = 1.0f;
         public float energyConsumption = 12.5f;
 
@@ -88,6 +88,8 @@ namespace CrashoutsEngine
 
         private Entity pauseScreenEntity;
         private CEVec3 storedVelocity;
+        [SerializeField] private bool reloadOnDeath = false;
+        [SerializeField] private string reloadSceneName = "";
 
         // --- CORE LOGIC ---
 
@@ -113,6 +115,7 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
+            currentGoalPlates = 0;
             Instance = this;
             rb = Entity.GetComponent<RigidBodyComponent>();
             tf = Entity.GetComponent<TransformComponent>();
@@ -402,7 +405,21 @@ namespace CrashoutsEngine
 
         private void HandleLanding() { if (IsGrounded && !wasGroundedLastFrame && !isPhasing) AudioManager.GetInstance().PlayAttached("jumpLand", Entity.ID); wasGroundedLastFrame = IsGrounded; }
         private void TriggerLandingDust() { if (landingDustID == 0 || tf == null) return; var dustTf = new Entity(landingDustID).GetComponent<TransformComponent>(); if (dustTf != null) dustTf.Position = new CEVec3(tf.Position.x, tf.Position.y - Math.Abs(tf.Size.y) * 0.5f, dustTf.Position.z); InternalCalls.Particle_SetEmitting(landingDustID, true); landingDustTimer = dustBurstDuration; }
-        private void HandleDeath() { alive = false; Respawn(); }
+        private void HandleDeath()
+        {
+            alive = false;
+            if (!reloadOnDeath)
+            {
+                Respawn();
+                return;
+            }
+
+            if (!SceneManager.IsTransitioning())
+            {
+                string target = string.IsNullOrEmpty(reloadSceneName) ? "tutorial2" : reloadSceneName;
+                SceneManager.LoadScene(target, 1.0f);
+            }
+        }
         public void Respawn() { alive = true; tf.Position = respawnPos; rb.LinearVelocity = new CEVec3(0, 0, 0); CurrentEnergy = MaxEnergy; isPhasing = false; passthroughContactCount = 0; }
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
         public void RemoveEnergy(float amount) { CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f); }

@@ -57,7 +57,6 @@ namespace CrashoutsEngine::Bindings {
 	}
 
 	static void InternalDrawLine(CEVec3* start, CEVec3* end, float thickness, CEVec3* color) {
-		if (!UI::IsGameDebugDrawEnabled()) return;
 		if (!start || !end || !color) return;
 		CEColor col(color->x, color->y, color->z, 1.0f);
 		// Queue the line to be drawn at the end of the frame (Post-Clear)
@@ -78,9 +77,14 @@ namespace CrashoutsEngine::Bindings {
 		Component::Rendering::Get().QueueCircle(*size, *position, col, true);
 	}
 
+	static bool InternalIsGameDebugDrawEnabled() {
+		return UI::IsGameDebugDrawEnabled();
+	}
+
 	// 2. Register it (Call this where you register other bindings)
 	void RegisterDebugBindings() {
 		mono_add_internal_call("CrashoutsEngine.Debug::Log", (const void*)InternalLog);
+		mono_add_internal_call("CrashoutsEngine.Debug::InternalIsGameDebugDrawEnabled", (const void*)InternalIsGameDebugDrawEnabled);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawLine", (const void*)InternalDrawLine);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawTrajectory", (const void*)InternalDrawTrajectory);
 		mono_add_internal_call("CrashoutsEngine.Debug::DrawCircle", (const void*)InternalDrawCircle);
@@ -90,7 +94,13 @@ namespace CrashoutsEngine::Bindings {
 
 void MonoManager::Init(const std::string& domainName)
 {
+#if USE_IMGUI_EDITOR
+	// In the Editor, navigate up from the build directory
 	mono_set_dirs("../../third_party/Mono/lib", "../../third_party/Mono/etc");
+#else
+	// In Standalone, the third_party folder is right next to the .exe
+	mono_set_dirs("third_party/Mono/lib", "third_party/Mono/etc");
+#endif
 	mono_config_parse(nullptr);
 
 	s_RootDomain = mono_jit_init(domainName.c_str());
@@ -125,13 +135,18 @@ void MonoManager::LoadAssembly()
 
 	std::string gameName = fs::path(GetGameRoot()).filename().string();
 	// Attempt to find the scripts folder relative to the root
-	fs::path scriptDir = fs::path("scripts") / gameName;
+	fs::path scriptDir;
 
-	// If we can't find it (likely because we are running from Root via BAT), 
-	// we look into the build folder specifically
+#if USE_IMGUI_EDITOR
+	// Editor pathing
+	scriptDir = fs::path("scripts") / gameName;
 	if (!fs::exists(scriptDir)) {
 		scriptDir = fs::path("build/x64-Debug/scripts") / gameName;
 	}
+#else
+	// Standalone pathing: CMake copies the DLL directly into the local 'scripts' folder
+	scriptDir = fs::path("scripts");
+#endif
 
 	if (!fs::exists(scriptDir))
 	{

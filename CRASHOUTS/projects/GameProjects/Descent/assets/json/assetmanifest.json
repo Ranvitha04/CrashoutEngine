@@ -1699,10 +1699,6 @@
         {
             "name": "Victory",
             "path": "Victory"
-        },
-        {
-            "name": "Victory2",
-            "path": "Victory2"
         }
     ],
     "prefabs": [
@@ -1711,20 +1707,24 @@
             "path": "Player_Prefab.json"
         },
         {
-            "name": "Moving_Platform",
-            "path": "Moving_Platform.json"
+            "name": "PlayerBarrier",
+            "path": "PlayerBarrier.json"
         },
         {
             "name": "AudioManager_Prefab",
             "path": "AudioManager_Prefab.json"
         },
         {
+            "name": "Moving_Platform",
+            "path": "Moving_Platform.json"
+        },
+        {
             "name": "Moving_Gate",
             "path": "Moving_Gate.json"
         },
         {
-            "name": "InstructionPanel",
-            "path": "InstructionPanel.json"
+            "name": "FilledAudioManager_Prefab",
+            "path": "FilledAudioManager_Prefab.json"
         },
         {
             "name": "PlayerUI_Prefab",
@@ -1737,6 +1737,10 @@
         {
             "name": "PressurePlate",
             "path": "PressurePlate.json"
+        },
+        {
+            "name": "Slime V4",
+            "path": "Slime V4.json"
         }
     ],
     "tilemaps": [

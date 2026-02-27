@@ -1,6 +1,6 @@
 /*!
 @file		checkpointbindings.h
-@author     Interactive CLI Agent
+@author     m.biniswandi@digipen.edu
 @brief		Declaration of checkpoint bindings functions
 */
 #pragma once
