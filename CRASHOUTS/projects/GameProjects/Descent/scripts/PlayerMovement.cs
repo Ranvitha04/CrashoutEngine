@@ -26,6 +26,7 @@ namespace CrashoutsEngine
         public float footstepInterval = 0.3f;
         public float swapPause = 1.0f;
         public float energyConsumption = 12.5f;
+        [SerializeField] private int coyoteFrames = 6;
 
         public int goalNoOfPlates = 1;
         public int currentGoalPlates = 0;
@@ -85,6 +86,7 @@ namespace CrashoutsEngine
         private float jumpCooldown = 0.0f;
         private bool isPhasing = false;
         private int passthroughContactCount = 0;
+        private int coyoteFramesRemaining = 0;
 
         private Entity pauseScreenEntity;
         private CEVec3 storedVelocity;
@@ -196,7 +198,7 @@ namespace CrashoutsEngine
             if (Input.IsKeyPressed(Key.A)) horizontalInput = -1f;
             else if (Input.IsKeyPressed(Key.D)) horizontalInput = 1f;
 
-            if (Input.IsKeyTriggered(Key.Space) && IsGrounded && !isPhasing) jumpRequested = true;
+            if (Input.IsKeyTriggered(Key.Space) && (IsGrounded || coyoteFramesRemaining > 0) && !isPhasing) jumpRequested = true;
 
             // 6. Visual Logic
             if (landingDustTimer > 0.0f)
@@ -231,6 +233,8 @@ namespace CrashoutsEngine
 
             bool wasGrounded = IsGrounded;
             CheckGround();
+            if (IsGrounded) coyoteFramesRemaining = coyoteFrames;
+            else if (coyoteFramesRemaining > 0) coyoteFramesRemaining--;
 
             if (!wasGrounded && IsGrounded && landingDustArmed && !isPhasing)
             {
@@ -245,7 +249,7 @@ namespace CrashoutsEngine
                 AudioManager.GetInstance().PlayAttached("JumpUp", Entity.ID);
                 rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
-                IsGrounded = false; jumpRequested = false; jumpCooldown = 0.1f; landingDustArmed = true;
+                IsGrounded = false; jumpRequested = false; jumpCooldown = 0.1f; landingDustArmed = true; coyoteFramesRemaining = 0;
             }
 
             ApplyMovementPhysics();

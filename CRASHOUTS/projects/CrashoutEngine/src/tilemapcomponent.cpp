@@ -30,6 +30,8 @@ __________________________________________________________________________*/
 #include "hierarchy.h"
 #include <filesystem>
 #include <cmath> // For std::floor
+#include <queue>
+#include <unordered_set>
 #include "inputmanager.h"
 #include "engine.h"
 
@@ -45,6 +47,13 @@ namespace CrashoutsEngine::TileMapUtils {
 		int x1, y1; // Start Grid Coords
 		int x2, y2; // End Grid Coords
 		EdgeType edge;
+	};
+
+	struct PairHash {
+		size_t operator()(const std::pair<int, int>& p) const noexcept {
+			// Large primes reduce collisions for grid coords
+			return (static_cast<size_t>(p.first) * 73856093u) ^ (static_cast<size_t>(p.second) * 19349663u);
+		}
 	};
 
 	using namespace CrashoutsEngine::Assets;
@@ -169,6 +178,47 @@ namespace CrashoutsEngine::TileMapUtils {
 			if (pos.second > maxY) maxY = pos.second;
 		}
 
+		int boundaryMinX = minX;
+		int boundaryMaxX = maxX;
+		int boundaryMinY = minY;
+		int boundaryMaxY = maxY;
+		bool excludeBoundary = map.excludeOuterBoundary;
+
+		std::unordered_set<std::pair<int, int>, PairHash> outsideEmpty;
+		if (excludeBoundary) {
+			// Flood-fill empty space connected to the outside of the tilemap bounds
+			int floodMinX = minX - 1;
+			int floodMaxX = maxX + 1;
+			int floodMinY = minY - 1;
+			int floodMaxY = maxY + 1;
+
+			std::queue<std::pair<int, int>> q;
+			auto TryPush = [&](int x, int y) {
+				if (x < floodMinX || x > floodMaxX || y < floodMinY || y > floodMaxY) return;
+				if (IsSolid(map, x, y)) return;
+				std::pair<int, int> p{ x, y };
+				if (outsideEmpty.insert(p).second) q.push(p);
+			};
+
+			for (int x = floodMinX; x <= floodMaxX; ++x) {
+				TryPush(x, floodMinY);
+				TryPush(x, floodMaxY);
+			}
+			for (int y = floodMinY; y <= floodMaxY; ++y) {
+				TryPush(floodMinX, y);
+				TryPush(floodMaxX, y);
+			}
+
+			while (!q.empty()) {
+				auto [cx, cy] = q.front();
+				q.pop();
+				TryPush(cx + 1, cy);
+				TryPush(cx - 1, cy);
+				TryPush(cx, cy + 1);
+				TryPush(cx, cy - 1);
+			}
+		}
+
 		// Add 1 to max to ensure we check the empty space right after the last tile
 		maxX++; maxY++;
 
@@ -184,7 +234,8 @@ namespace CrashoutsEngine::TileMapUtils {
 				bool belowSolid = IsSolid(map, x, y - 1);
 
 				// --- TOP EDGE LOGIC (Current is Solid, Above is Empty) ---
-				if (currSolid && !aboveSolid) {
+				bool allowTop = currSolid && !aboveSolid && !(excludeBoundary && outsideEmpty.count({ x, y + 1 }) > 0);
+				if (allowTop) {
 					if (startTop == -1) startTop = x; // Start new line
 				}
 				else {
@@ -196,7 +247,8 @@ namespace CrashoutsEngine::TileMapUtils {
 				}
 
 				// --- BOTTOM EDGE LOGIC (Current is Solid, Below is Empty) ---
-				if (currSolid && !belowSolid) {
+				bool allowBottom = currSolid && !belowSolid && !(excludeBoundary && outsideEmpty.count({ x, y - 1 }) > 0);
+				if (allowBottom) {
 					if (startBottom == -1) startBottom = x; // Start new line
 				}
 				else {
@@ -219,7 +271,8 @@ namespace CrashoutsEngine::TileMapUtils {
 				bool rightSolid = IsSolid(map, x + 1, y);
 
 				// --- LEFT EDGE LOGIC (Current Solid, Left Empty) ---
-				if (currSolid && !leftSolid) {
+				bool allowLeft = currSolid && !leftSolid && !(excludeBoundary && outsideEmpty.count({ x - 1, y }) > 0);
+				if (allowLeft) {
 					if (startLeft == -1) startLeft = y;
 				}
 				else {
@@ -231,7 +284,8 @@ namespace CrashoutsEngine::TileMapUtils {
 				}
 
 				// --- RIGHT EDGE LOGIC (Current Solid, Right Empty) ---
-				if (currSolid && !rightSolid) {
+				bool allowRight = currSolid && !rightSolid && !(excludeBoundary && outsideEmpty.count({ x + 1, y }) > 0);
+				if (allowRight) {
 					if (startRight == -1) startRight = y;
 				}
 				else {

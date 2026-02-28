@@ -39,12 +39,20 @@ namespace CrashoutsEngine
         [SerializeField] private float ledgeRayCastDistance = 50.0f;
         [SerializeField] private float grabEnergyDrainRate = 5.0f;
         [SerializeField] private float patrolTurnInterval = 3.0f;
+        [SerializeField] private bool resizePlayerColliderWhileHolding = true;
+        [SerializeField] private float carryBoundsPadding = 10.0f;
 
         private RigidBodyComponent rb;
         private TransformComponent tf;
         private Animator anim;
         private ColliderComponent col;
         private PlayerMovement playerScript;
+        private ColliderComponent playerCol;
+        private bool holdCollidersDisabled = false;
+        private CEVec3 playerAabbLocalMin;
+        private CEVec3 playerAabbLocalMax;
+        private bool playerAabbCached = false;
+        private bool playerAabbResized = false;
 
         private bool isGrounded = false;
         private bool wasGroundedLastFrame = true;
@@ -154,6 +162,7 @@ namespace CrashoutsEngine
             anim = Entity.GetComponent<Animator>(); 
             col = Entity.GetComponent<ColliderComponent>();
             playerScript = PlayerMovement.Instance;
+            CachePlayerCollider();
 
             CollisionEvents.RegisterPreSolve(Entity.ID, this.OnPreSolve);
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
@@ -165,10 +174,46 @@ namespace CrashoutsEngine
             Console.WriteLine("[Slime] AI Initialized. Home X: " + startPos.x);
         }
 
+        // A large distance to ensure the slime resets if it gets knocked too far away or stuck.
+        [SerializeField] private float maxLeashDistance = 3000.0f;
+
         public override void Update()
         {
+            float distanceFromStart = Distance(tf.Position, startPos);
+
+            // --- OUT OF BOUNDS / LEASH CHECK ---
+            // If the slime is too far from its spawn OR has fallen through the world, reset it.
+            if (distanceFromStart > maxLeashDistance || tf.Position.y < -5000.0f)
+            {
+                // Reset position and velocity
+                tf.Position = startPos;
+                if (rb != null)
+                {
+                    rb.LinearVelocity = new CEVec3(0, 0, 0);
+                }
+
+                // Reset all state flags to be safe
+                isGrabbed = false;
+                wasThrown = false;
+                isStunned = false;
+                isChasing = false;
+                returningHome = false;
+                STOP = false;
+                UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
+                UpdateHoldColliders(false);
+
+                // Ensure it's a dynamic rigidbody and has the Enemy tag
+                if(rb != null) rb.SetDynamic(true);
+                var tag = Entity.GetComponent<TagComponent>();
+                if (tag != null) tag.AddTag("Enemy");
+
+                Console.WriteLine($"[Slime] Leash broken or out of bounds (Distance: {distanceFromStart}), resetting.");
+                return; // Skip the rest of this frame's update
+            }
+
             // BUG FIX: Always grab the current player instance to prevent stale references across scene loads
             playerScript = PlayerMovement.Instance;
+            CachePlayerCollider();
             
             if (playerScript != null && playerScript.isPaused) { return; } 
             if (rb == null || tf == null || playerScript == null) return;
@@ -183,6 +228,8 @@ namespace CrashoutsEngine
                     UpdateAnimationState(); 
                     return;
                 }
+                UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
+                UpdateHoldColliders(false);
             }
 
             if (STOP)
@@ -253,6 +300,25 @@ namespace CrashoutsEngine
             if (tf == null) return;
 
             float drawZ = 51.0f;
+
+            // --- Leash Range Visualization ---
+            // Determines the center of the circle based on the game state.
+            CEVec3 leashCenter;
+            // If startPos is default, game is stopped; use the current transform for editor preview.
+            if (startPos.x == 0.0f && startPos.y == 0.0f && startPos.z == 0.0f)
+            {
+                leashCenter = new CEVec3(tf.Position.x, tf.Position.y, drawZ);
+            }
+            else // Otherwise, the game is playing; use the actual startPos anchor.
+            {
+                leashCenter = new CEVec3(startPos.x, startPos.y, drawZ);
+            }
+            CEVec3 leashColor = new CEVec3(1.0f, 0.0f, 0.0f); // Red
+            CEVec2 leashSize = new CEVec2(maxLeashDistance * 2.0f, maxLeashDistance * 2.0f);
+            Debug.DrawCircle(ref leashSize, ref leashCenter, ref leashColor);
+
+
+            // --- Detection Range Visualization ---
             CEVec3 detectionColor = new CEVec3(1.0f, 1.0f, 0.0f);
             CEVec2 detectionSize = new CEVec2(detectionRange * 2.0f, detectionRange * 2.0f);
             CEVec3 myPos = new CEVec3(tf.Position.x, tf.Position.y, drawZ);
@@ -336,6 +402,8 @@ namespace CrashoutsEngine
                     float offsetX = playerTf.Size.x < 0 ? -30.0f : 30.0f;
                     tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z + 1f);
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
+                    UpdatePlayerAabb(true, playerTf);
+                    UpdateHoldColliders(true);
                 }
                 return; 
             }
@@ -484,6 +552,8 @@ namespace CrashoutsEngine
             {
                 isGrabbed = false;
                 wasThrown = true;
+                UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
+                UpdateHoldColliders(false);
                 
                 // BUG FIX 1: Ensure STOP is false so physics immediately applies
                 STOP = false; 
@@ -500,6 +570,87 @@ namespace CrashoutsEngine
                     rb.LinearVelocity = throwVel;
                 }
             }
+        }
+
+        private void UpdateHoldColliders(bool shouldDisable)
+        {
+            if (shouldDisable == holdCollidersDisabled) return;
+
+            if (col == null) col = Entity.GetComponent<ColliderComponent>();
+            if (col != null) col.Enabled = !shouldDisable;
+
+            holdCollidersDisabled = shouldDisable;
+        }
+
+        private void CachePlayerCollider()
+        {
+            if (playerScript == null) return;
+            if (playerCol == null) playerCol = playerScript.Entity.GetComponent<ColliderComponent>();
+
+            if (!playerAabbCached && playerCol != null)
+            {
+                var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
+                if (playerTf != null)
+                {
+                    playerCol.GetAABB(out CEVec3 min, out CEVec3 max);
+                    playerAabbLocalMin = min - playerTf.Position;
+                    playerAabbLocalMax = max - playerTf.Position;
+                    playerAabbCached = true;
+                }
+            }
+        }
+
+        private void UpdatePlayerAabb(bool shouldResize, TransformComponent playerTf)
+        {
+            if (!resizePlayerColliderWhileHolding || playerTf == null) return;
+
+            if (playerCol == null) playerCol = playerScript.Entity.GetComponent<ColliderComponent>();
+            if (playerCol == null) return;
+
+            if (!playerAabbCached)
+            {
+                playerCol.GetAABB(out CEVec3 min, out CEVec3 max);
+                playerAabbLocalMin = min - playerTf.Position;
+                playerAabbLocalMax = max - playerTf.Position;
+                playerAabbCached = true;
+            }
+
+            if (!shouldResize)
+            {
+                if (playerAabbResized)
+                {
+                    playerCol.SetAABB(playerAabbLocalMin, playerAabbLocalMax);
+                    playerAabbResized = false;
+                }
+                return;
+            }
+
+            CEVec3 playerPos = playerTf.Position;
+
+            // Player AABB in world space from cached local min/max
+            CEVec3 playerWorldMin = playerAabbLocalMin + playerPos;
+            CEVec3 playerWorldMax = playerAabbLocalMax + playerPos;
+
+            // Slime AABB in world space from collider (more accurate than size)
+            if (col == null) col = Entity.GetComponent<ColliderComponent>();
+            CEVec3 slimeWorldMin = tf.Position;
+            CEVec3 slimeWorldMax = tf.Position;
+            if (col != null)
+            {
+                col.GetAABB(out CEVec3 sMin, out CEVec3 sMax);
+                slimeWorldMin = sMin;
+                slimeWorldMax = sMax;
+            }
+
+            float minX = Math.Min(playerWorldMin.x, slimeWorldMin.x) - carryBoundsPadding;
+            float maxX = Math.Max(playerWorldMax.x, slimeWorldMax.x) + carryBoundsPadding;
+            float minY = playerWorldMin.y; // Keep bottom aligned to player collider to avoid hop
+            float maxY = Math.Max(playerWorldMax.y, slimeWorldMax.y) + carryBoundsPadding;
+
+            CEVec3 localMin = new CEVec3(minX - playerPos.x, minY - playerPos.y, 0.0f);
+            CEVec3 localMax = new CEVec3(maxX - playerPos.x, maxY - playerPos.y, 0.0f);
+            playerCol.SetAABB(localMin, localMax);
+            playerAabbResized = true;
         }
 
         private CEVec3 CalculateThrowVelocity(CEVec2 mousePos, CEVec3 anchorPos)

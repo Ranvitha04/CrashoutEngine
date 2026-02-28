@@ -33,6 +33,7 @@ namespace Component {
 		std::string activeAsset;								// The currently active / selected Tile Asset
 		int tileSize = 32;										// Size of one tile in world units
 		bool pOpen = false;										// Toggle editor window
+		bool excludeOuterBoundary = false;						// Skip collider generation on outer boundary edges
 
 		// --- DATA (THE SPARSE GRID) ---
 		// Key:   Pair of (GridX, GridY)
