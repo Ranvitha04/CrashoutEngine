@@ -11160,7 +11160,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1440.900146484375,
-                    "y": -439.6247863769531,
+                    "y": -408.3055114746094,
                     "z": 0.0
                 },
                 "size": {
@@ -11187,7 +11187,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1440.900146484375,
-                    "y": -439.6247863769531,
+                    "y": -408.3055114746094,
                     "z": 0.0
                 },
                 "offset": {
@@ -11198,7 +11198,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1440.900146484375,
-                    "y": -439.6247863769531,
+                    "y": -408.3055114746094,
                     "z": 0.0
                 }
             },
@@ -11297,7 +11297,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 0.40000012516975405,
+                "t": 1.116666316986084,
                 "playing": true,
                 "clips": [
                     {
@@ -11418,7 +11418,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 95.82136535644531,
-                    "y": -725.3151245117188,
+                    "y": -693.9944458007813,
                     "z": 0.0
                 },
                 "size": {
@@ -11445,7 +11445,7 @@
                 "enabled": true,
                 "position": {
                     "x": 95.82136535644531,
-                    "y": -725.3151245117188,
+                    "y": -693.9944458007813,
                     "z": 0.0
                 },
                 "offset": {
@@ -11456,7 +11456,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 95.82136535644531,
-                    "y": -725.3151245117188,
+                    "y": -693.9944458007813,
                     "z": 0.0
                 }
             },
@@ -11555,7 +11555,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 0.40000012516975405,
+                "t": 1.116666316986084,
                 "playing": true,
                 "clips": [
                     {
@@ -11921,7 +11921,9 @@
                 "scripts": [
                     {
                         "className": "tutorial1door",
-                        "fields": {}
+                        "fields": {
+                            "doorParticleName": "Door Particles"
+                        }
                     }
                 ]
             },
@@ -12124,6 +12126,8 @@
                 "circleSegments": 48,
                 "triangleWidthMultiplier": 1.0,
                 "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": false,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12335,6 +12339,8 @@
                 "circleSegments": 48,
                 "triangleWidthMultiplier": 1.0,
                 "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": false,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12406,7 +12412,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 954.6134643554688,
+                    "x": 1652.6138916015626,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -12433,7 +12439,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 954.6134643554688,
+                    "x": 1652.6138916015626,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -12443,12 +12449,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 906.6134643554688,
+                    "x": 1604.6138916015626,
                     "y": -391.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1002.6134643554688,
+                    "x": 1700.6138916015626,
                     "y": -375.3426513671875,
                     "z": 0.0
                 }
@@ -12517,7 +12523,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 834.9522094726563,
+                    "x": 1609.9420166015626,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -12637,6 +12643,8 @@
                 "circleSegments": 48,
                 "triangleWidthMultiplier": 1.0,
                 "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12750,6 +12758,8 @@
                 "circleSegments": 48,
                 "triangleWidthMultiplier": 1.0,
                 "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12863,6 +12873,8 @@
                 "circleSegments": 48,
                 "triangleWidthMultiplier": 1.0,
                 "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12976,6 +12988,8 @@
                 "circleSegments": 48,
                 "triangleWidthMultiplier": 1.0,
                 "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 100,
@@ -13089,6 +13103,8 @@
                 "circleSegments": 48,
                 "triangleWidthMultiplier": 1.0,
                 "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 100,
@@ -13160,7 +13176,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 754.9522094726563,
+                    "x": 1529.9420166015626,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -21489,8 +21505,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -218.82041931152345,
-                    "y": -20.576072692871095,
+                    "x": 1736.615966796875,
+                    "y": -796.5,
                     "z": 50.0
                 },
                 "size": {
@@ -21516,8 +21532,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -218.82041931152345,
-                    "y": -25.576072692871095,
+                    "x": 1736.615966796875,
+                    "y": -801.5,
                     "z": 50.0
                 },
                 "offset": {
@@ -21526,13 +21542,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -237.62046813964845,
-                    "y": -56.076072692871097,
+                    "x": 1717.81591796875,
+                    "y": -832.0,
                     "z": 50.0
                 },
                 "max": {
-                    "x": -200.02037048339845,
-                    "y": 4.923927307128906,
+                    "x": 1755.416015625,
+                    "y": -771.0,
                     "z": 50.0
                 }
             },
@@ -21700,7 +21716,7 @@
                             "groundCheckWidth": 10.0,
                             "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
-                            "isDialogueActive": true,
+                            "isDialogueActive": false,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -21770,9 +21786,40 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 0.40000012516975405,
+                "t": 1.0833330154418946,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -21826,7 +21873,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21840,14 +21887,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21900,37 +21947,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22222,8 +22238,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -218.82041931152345,
-                    "y": 37.79383850097656,
+                    "x": 1736.615966796875,
+                    "y": -738.1300659179688,
                     "z": 50.0
                 },
                 "size": {
@@ -22340,8 +22356,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -218.82041931152345,
-                    "y": 37.79383850097656,
+                    "x": 1736.615966796875,
+                    "y": -738.1300659179688,
                     "z": 50.0
                 },
                 "size": {
@@ -22449,7 +22465,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "PlayerDialogue_3",
             "uuid": 2995568646537024137,
             "tag": {
@@ -22458,8 +22474,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -218.82041931152345,
-                    "y": 37.79383850097656,
+                    "x": 1736.615966796875,
+                    "y": -738.1300659179688,
                     "z": 50.0
                 },
                 "size": {
@@ -22576,8 +22592,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -218.82041931152345,
-                    "y": 37.79383850097656,
+                    "x": 1806.615966796875,
+                    "y": -787.1300659179688,
                     "z": 50.0
                 },
                 "size": {
@@ -22662,8 +22678,8 @@
             "parent": {
                 "parentUUID": 17142618762681968282,
                 "localPos": {
-                    "x": 0.0,
-                    "y": 0.583699107170105,
+                    "x": 0.5,
+                    "y": 0.09369934350252152,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -22694,8 +22710,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 66.97383117675781,
-                    "y": -219.93362426757813,
+                    "x": 1450.82177734375,
+                    "y": -995.8575439453125,
                     "z": 50.0
                 },
                 "size": {
@@ -22812,8 +22828,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -221.08123779296876,
-                    "y": -68.69497680664063,
+                    "x": 1737.135498046875,
+                    "y": -833.8634033203125,
                     "z": 0.0
                 },
                 "size": {
@@ -22824,8 +22840,8 @@
             "parent": {
                 "parentUUID": 17142618762681968282,
                 "localPos": {
-                    "x": 0.016148703172802926,
-                    "y": -0.4811890423297882,
+                    "x": 0.0037109374534338714,
+                    "y": -0.3736341893672943,
                     "z": -50.0
                 },
                 "localRot": 0.0,
@@ -22846,24 +22862,26 @@
                 "z": 0
             },
             "particle": {
-                "preset": 2,
-                "burstCount": 0,
+                "preset": 4,
+                "burstCount": 650,
                 "renderShape": 1,
                 "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 14.25,
-                "circleSegments": 128,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
                 "triangleWidthMultiplier": 1.0,
                 "triangleHeightMultiplier": 1.0,
-                "isEmitting": true,
+                "superheroLandingAngleDeg": 76.0999984741211,
+                "superheroLandingAngleSpreadDeg": 5.599999904632568,
+                "isEmitting": false,
                 "useWorldSpace": true,
-                "maxParticles": 1800,
-                "emitRate": 950.0,
+                "maxParticles": 900,
+                "emitRate": 1200.0,
                 "playOnStop": true,
-                "emissionShape": 1,
-                "radiusMin": -0.10000000149011612,
-                "radiusMax": 0.949999988079071,
-                "lengthMin": 0.0,
-                "lengthMax": 5.0,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 0.15000000596046449,
+                "lengthMin": -0.4000000059604645,
+                "lengthMax": -0.10000000149011612,
                 "areaMin": {
                     "x": 0.0,
                     "y": 0.0
@@ -22872,34 +22890,34 @@
                     "x": 5.0,
                     "y": 5.0
                 },
-                "startLifeMin": 0.75,
-                "startLifeMax": 0.8500000238418579,
-                "startSpeedMin": 5.900000095367432,
-                "startSpeedMax": 6.5,
+                "startLifeMin": 0.3499999940395355,
+                "startLifeMax": 0.8999999761581421,
+                "startSpeedMin": 10.0,
+                "startSpeedMax": 26.0,
                 "uniformSize": true,
-                "startSizeXMin": 0.18000000715255738,
-                "startSizeXMax": 0.30000001192092898,
-                "startSizeYMin": 0.18000000715255738,
-                "startSizeYMax": 0.44999998807907107,
-                "sizeOverTime": -0.3499999940395355,
-                "rotationOverTime": 35.0,
+                "startSizeXMin": 3.200000047683716,
+                "startSizeXMax": 4.5,
+                "startSizeYMin": 0.20000000298023225,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.6000000238418579,
+                "rotationOverTime": 220.0,
                 "startRotationMin": 0.0,
                 "startRotationMax": 360.0,
                 "startColor": {
-                    "x": 0.9226519465446472,
-                    "y": 0.5836665630340576,
-                    "z": 0.050975244492292407,
-                    "w": 0.949999988079071
+                    "x": 0.9134199023246765,
+                    "y": 0.7730458378791809,
+                    "z": 0.6326717734336853,
+                    "w": 0.8999999761581421
                 },
                 "endColor": {
-                    "x": 0.4000000059604645,
-                    "y": 0.05000000074505806,
-                    "z": 0.0,
+                    "x": 0.30000001192092898,
+                    "y": 0.2800000011920929,
+                    "z": 0.25,
                     "w": 0.0
                 },
                 "gravity": {
                     "x": 0.0,
-                    "y": 5.0,
+                    "y": -25.0,
                     "z": 0.0
                 },
                 "startVelocity": {
@@ -23003,8 +23021,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 816.4113159179688,
-                    "y": -567.8425903320313,
+                    "x": 1375.834716796875,
+                    "y": -713.4459838867188,
                     "z": 0.0
                 },
                 "size": {
@@ -23049,8 +23067,8 @@
             "parent": {
                 "parentUUID": 442153553620421166,
                 "localPos": {
-                    "x": 970.1986083984375,
-                    "y": -567.8425903320313,
+                    "x": 1529.6220703125,
+                    "y": -713.4459838867188,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -23705,7 +23723,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 914.2973022460938,
+                    "x": 1612.2977294921876,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -23783,7 +23801,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 934.2576293945313,
+                    "x": 1632.258056640625,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -23861,7 +23879,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 954.2576293945313,
+                    "x": 1652.258056640625,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -23939,7 +23957,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 974.2576293945313,
+                    "x": 1672.258056640625,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24017,7 +24035,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 994.2576293945313,
+                    "x": 1692.258056640625,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24095,7 +24113,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1324.0693359375,
+                    "x": 822.7530517578125,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24122,7 +24140,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1324.0693359375,
+                    "x": 822.7530517578125,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24132,12 +24150,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1276.0693359375,
+                    "x": 774.7530517578125,
                     "y": -391.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1372.0693359375,
+                    "x": 870.7530517578125,
                     "y": -375.3426513671875,
                     "z": 0.0
                 }
@@ -24206,7 +24224,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1283.753173828125,
+                    "x": 782.4368896484375,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24284,7 +24302,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1303.7135009765626,
+                    "x": 802.397216796875,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24362,7 +24380,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1323.7135009765626,
+                    "x": 822.397216796875,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24440,7 +24458,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1343.7135009765626,
+                    "x": 842.397216796875,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24518,7 +24536,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1363.7135009765626,
+                    "x": 862.397216796875,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24596,7 +24614,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 325.406005859375,
+                    "x": 1158.7308349609376,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24623,7 +24641,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 325.406005859375,
+                    "x": 1158.7308349609376,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24633,12 +24651,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 257.906005859375,
+                    "x": 1091.2308349609376,
                     "y": -334.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 392.906005859375,
+                    "x": 1226.2308349609376,
                     "y": -318.3426513671875,
                     "z": 0.0
                 }
@@ -24707,7 +24725,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 265.08984375,
+                    "x": 1098.4146728515626,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24785,7 +24803,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 305.0501708984375,
+                    "x": 1138.375,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24863,7 +24881,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 325.0501708984375,
+                    "x": 1158.375,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24941,7 +24959,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 345.0501708984375,
+                    "x": 1178.375,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -25019,7 +25037,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 385.0501708984375,
+                    "x": 1218.375,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -25097,7 +25115,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 285.0501708984375,
+                    "x": 1118.375,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -25175,7 +25193,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 365.0501708984375,
+                    "x": 1198.375,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -25253,7 +25271,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 795.3080444335938,
+                    "x": 1570.2978515625,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25280,7 +25298,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 795.3080444335938,
+                    "x": 1570.2978515625,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25290,12 +25308,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 727.8080444335938,
+                    "x": 1502.7978515625,
                     "y": -769.9077758789063,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 862.8080444335938,
+                    "x": 1637.7978515625,
                     "y": -753.9077758789063,
                     "z": 0.0
                 }
@@ -25364,7 +25382,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 734.9918823242188,
+                    "x": 1509.981689453125,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25442,7 +25460,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 774.9522094726563,
+                    "x": 1549.9420166015626,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25520,7 +25538,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 794.9522094726563,
+                    "x": 1569.9420166015626,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25598,7 +25616,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 814.9522094726563,
+                    "x": 1589.9420166015626,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25676,7 +25694,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 854.9522094726563,
+                    "x": 1629.9420166015626,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25754,7 +25772,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 331.6126708984375,
+                    "x": 1013.6173095703125,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -25781,7 +25799,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 331.6126708984375,
+                    "x": 1013.6173095703125,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -25791,12 +25809,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 283.6126708984375,
+                    "x": 965.6173095703125,
                     "y": -836.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 379.6126708984375,
+                    "x": 1061.6173095703126,
                     "y": -820.3426513671875,
                     "z": 0.0
                 }
@@ -25865,7 +25883,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 291.2965087890625,
+                    "x": 973.3011474609375,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -25943,7 +25961,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 311.2568359375,
+                    "x": 993.261474609375,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -26021,7 +26039,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 331.2568359375,
+                    "x": 1013.261474609375,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -26099,7 +26117,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 351.2568359375,
+                    "x": 1033.261474609375,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -26177,7 +26195,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 371.2568359375,
+                    "x": 1053.261474609375,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -27085,6 +27103,121 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Door Particles",
+            "uuid": 9478966523423520205,
+            "tag": {
+                "tagMask": 1
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1808.301513671875,
+                    "y": -786.4923095703125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 4576864458208606520,
+                "localPos": {
+                    "x": 0.0054569244384765629,
+                    "y": -0.03593688830733299,
+                    "z": 10.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015625,
+                    "y": 0.009999999776482582
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            },
+            "particle": {
+                "preset": 3,
+                "burstCount": 1400,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 6.230000019073486,
+                "circleSegments": 76,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 1308,
+                "emitRate": 1200.0,
+                "playOnStop": true,
+                "emissionShape": 1,
+                "radiusMin": 4.800000190734863,
+                "radiusMax": 52.70000076293945,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.25,
+                "startLifeMax": 0.6000000238418579,
+                "startSpeedMin": 8.0,
+                "startSpeedMax": 20.0,
+                "uniformSize": true,
+                "startSizeXMin": -0.41999998688697817,
+                "startSizeXMax": 0.75,
+                "startSizeYMin": 0.18000000715255738,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.3799999952316284,
+                "rotationOverTime": 80.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.7672864198684692,
+                    "y": 0.8917748928070068,
+                    "z": 0.1544199138879776,
+                    "w": 0.949999988079071
+                },
+                "endColor": {
+                    "x": 0.25,
+                    "y": 0.05000000074505806,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -3.0,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
             }
         }
     ],

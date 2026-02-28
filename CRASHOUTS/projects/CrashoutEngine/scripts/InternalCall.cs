@@ -242,6 +242,9 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Particle_SetEmitting(uint entityID, bool emitting);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Particle_TriggerBurst(uint entityID);
         // Active Component
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void SetActive(uint entityID, bool isActive);

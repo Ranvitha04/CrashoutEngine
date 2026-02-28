@@ -20,7 +20,7 @@ namespace ParticleSystem {
     */
     enum class ParticleShape { LINE, CIRCLE, SQUARE };
 
-    enum class ParticlePreset { Custom = 0, Smoke = 1, Fire = 2, Explosion = 3 };
+    enum class ParticlePreset { Custom = 0, Smoke = 1, Fire = 2, Explosion = 3, SuperheroLanding = 4 };
 
     enum class ParticleRenderShape { Square = 0, Circle = 1, Triangle = 2 };
 }
@@ -59,6 +59,9 @@ namespace Component {
         int circleSegments{ 48 };
         float triangleWidthMultiplier{ 1.0f };
         float triangleHeightMultiplier{ 1.0f };
+
+        f32 superheroLandingAngleDeg{ 8.0f };
+        f32 superheroLandingAngleSpreadDeg{ 18.0f };
 
         bool playOnStop{ false };
         bool isEmitting{ false };

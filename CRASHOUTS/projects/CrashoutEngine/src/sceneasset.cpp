@@ -673,6 +673,8 @@ namespace CrashoutsEngine {
 				pVal.AddMember("circleSegments", pc.circleSegments, allocator);
 				pVal.AddMember("triangleWidthMultiplier", pc.triangleWidthMultiplier, allocator);
 				pVal.AddMember("triangleHeightMultiplier", pc.triangleHeightMultiplier, allocator);
+				pVal.AddMember("superheroLandingAngleDeg", pc.superheroLandingAngleDeg, allocator);
+				pVal.AddMember("superheroLandingAngleSpreadDeg", pc.superheroLandingAngleSpreadDeg, allocator);
 				pVal.AddMember("isEmitting", pc.isEmitting, allocator);
 				pVal.AddMember("useWorldSpace", pc.useWorldSpace, allocator);
 				pVal.AddMember("maxParticles", pc.maxParticles, allocator);
@@ -1219,6 +1221,8 @@ namespace CrashoutsEngine {
 				pc.circleSegments = GetInt(v, "circleSegments", 48);
 				pc.triangleWidthMultiplier = GetFloat(v, "triangleWidthMultiplier", 1.0f);
 				pc.triangleHeightMultiplier = GetFloat(v, "triangleHeightMultiplier", 1.0f);
+				pc.superheroLandingAngleDeg = GetFloat(v, "superheroLandingAngleDeg", 8.0f);
+				pc.superheroLandingAngleSpreadDeg = GetFloat(v, "superheroLandingAngleSpreadDeg", 18.0f);
 				pc.isEmitting = GetBool(v, "isEmitting", true);
 				pc.playOnStop = GetBool(v, "playOnStop", false);
 				pc.useWorldSpace = GetBool(v, "useWorldSpace", false);

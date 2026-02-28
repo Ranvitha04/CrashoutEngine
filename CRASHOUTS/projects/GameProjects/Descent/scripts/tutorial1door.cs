@@ -15,6 +15,9 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class tutorial1door : ScriptBase
     {
+        [SerializeField] private string doorParticleName = "Door Particles";
+        private uint doorParticleID = 0;
+
         public override void Start()
         {
             //Console.WriteLine("[TutorialDoor] Script Initialized on Entity ID: " + Entity.ID);
@@ -23,6 +26,13 @@ namespace CrashoutsEngine
             // regardless of whether the door collider is set to 'Trigger' or 'Solid'.
             CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
             CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
+
+            Entity dust = Entity.Find(doorParticleName);
+            if (dust != null)
+            {
+                doorParticleID = dust.ID;
+                InternalCalls.Particle_SetEmitting(doorParticleID, false);
+            }
         }
 
         public void OnTriggerEnter(uint otherEntityID)
@@ -48,6 +58,7 @@ namespace CrashoutsEngine
             if (isPlayer)
             {
                 //Console.WriteLine("[TutorialDoor] Player detected! Loading tutorial2...");
+                if (doorParticleID != 0) InternalCalls.Particle_TriggerBurst(doorParticleID);
                 SceneManager.LoadScene("tutorial2",2f);
             }
             // else

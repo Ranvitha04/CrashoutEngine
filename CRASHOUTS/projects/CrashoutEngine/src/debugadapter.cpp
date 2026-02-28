@@ -2922,7 +2922,7 @@ namespace CrashoutsEngine
 			if (!pc) return;
 
 			ImGui::SeparatorText("Preset");
-			const char* presetNames[] = { "Custom", "Smoke", "Fire", "Explosion" };
+			const char* presetNames[] = { "Custom", "Smoke", "Fire", "Explosion", "Superhero Landing" };
 			int preset = static_cast<int>(pc->preset);
 			if (ImGui::Combo("##ParticlePreset", &preset, presetNames, IM_ARRAYSIZE(presetNames))) {
 				ParticleSystem::ApplyPreset(*pc, static_cast<ParticleSystem::ParticlePreset>(preset));
@@ -3036,6 +3036,28 @@ namespace CrashoutsEngine
 			else if (pc->renderShape == ParticleSystem::ParticleRenderShape::Triangle) {
 				UIHelpers::DrawUndoableFloat("Width Multiplier", pc->triangleWidthMultiplier, 0.01f, 0.0f, 100.0f);
 				UIHelpers::DrawUndoableFloat("Height Multiplier", pc->triangleHeightMultiplier, 0.01f, 0.0f, 100.0f);
+			}
+
+			if (pc->preset == ParticleSystem::ParticlePreset::SuperheroLanding) {
+				ImGui::SeparatorText("Superhero Landing");
+				bool trigger = false;
+
+				if (ImGui::Button("Trigger Burst")) trigger = true;
+
+				f32 prevAngle = pc->superheroLandingAngleDeg;
+				UIHelpers::DrawUndoableFloat("Angle (deg)", pc->superheroLandingAngleDeg, 0.1f, 0.0f, 89.0f);
+				if (pc->superheroLandingAngleDeg != prevAngle) trigger = true;
+
+				f32 prevSpread = pc->superheroLandingAngleSpreadDeg;
+				UIHelpers::DrawUndoableFloat("Angle Spread (deg)", pc->superheroLandingAngleSpreadDeg, 0.1f, 0.0f, 89.0f);
+				if (pc->superheroLandingAngleSpreadDeg != prevSpread) trigger = true;
+
+				if (trigger) {
+					pc->data.activeCount = 0;
+					pc->emitAccumulator = 0.0f;
+					pc->burstRequested = true;
+					pc->isEmitting = true;
+				}
 			}
 
 			// --- 3. Particle Properties (Compacted) ---
