@@ -24,6 +24,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "cameracomponent.h"
 #include "gamestatemanager.h"
 #include "tilemapcomponent.h"
+#include "tagcomponent.h"
 #include "ppmanager.h"
 #include "textureasset.h"
 #include "scriptsystem.h"
@@ -538,7 +539,38 @@ void Update(double const& dt) {
         {
         FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
 
-        // Sync Audio Components (Mute/Unmute based on Active State)
+        // Update Listener Position (Follow Player)
+        CEVec3 listenerPos = { 0.0f, 0.0f, 0.0f };
+        bool foundPlayer = false;
+        auto& tagArray = ecs.GetComponentArray<Component::TagComponent>();
+        for (size_t i = 0; i < tagArray.dense.size(); ++i) {
+            auto it = Component::TagComponent::tags.find("Player");
+            if (it != Component::TagComponent::tags.end() && (tagArray.dense[i]->tagMask & it->second)) {
+
+                CrashoutsEngine::Entity pID = tagArray.indexToEntity[i];
+
+                if (ecs.HasComponent<Component::TransformComponent>(pID)) {
+                    listenerPos = ecs.GetComponent<Component::TransformComponent>(pID)->position;
+                    foundPlayer = true;
+                }
+                break;
+            }
+        }
+        
+        static int debugLogCounter = 0;
+        if (debugLogCounter++ % 120 == 0) {
+            if (!foundPlayer) LOGW(Audio, "Listener Warning: No entity with 'Player' tag found! 3D Audio may stay at max volume.");
+            else {
+                std::stringstream ss;
+                ss << "Listener Tracking Player at: (" << listenerPos.x << ", " << listenerPos.y << ")";
+                LOGI(Audio, ss.str());
+            }
+        }
+        
+        // For 2D games, forward is into the screen (0,0,1) and up is (0,1,0)
+        CrashoutsEngine::Audio::AudioSystem::instance().SetListenerAttributes(listenerPos, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f });
+
+        // Sync Audio Components (Mute/Unmute based on Active State & Update 3D Positions)
         auto& audioArray = ecs.GetComponentArray<Component::AudioEmitterComponent>();
         for (size_t i = 0; i < audioArray.dense.size(); ++i) {
             CrashoutsEngine::Entity entityID = audioArray.indexToEntity[i];
@@ -550,8 +582,21 @@ void Update(double const& dt) {
                 isEntityActive = IsEntityActive(ecs, entityID);
             }
 
+            // Get transform for 3D spatial audio
+            Component::TransformComponent* transform = nullptr;
+            if (ecs.HasComponent<Component::TransformComponent>(entityID)) {
+                transform = ecs.GetComponent<Component::TransformComponent>(entityID);
+            }
+
             // Loop through ALL clips on this component
             for (auto& clip : audioComp->clips) {
+
+                // Cleanup stale channel pointer if sound finished
+                if (clip.channel) {
+                    bool isPlaying = false;
+                    clip.channel->isPlaying(&isPlaying);
+                    if (!isPlaying) clip.channel = nullptr;
+                }
 
                 // Case 1: Entity is Inactive -> Force Pause
                 if (!isEntityActive) {
@@ -567,9 +612,14 @@ void Update(double const& dt) {
                             if (p) clip.channel->setPaused(false);
                         }
                         if (clip.inst) {
-                            bool p; clip.inst->getPaused(&p);
+                            bool p; clip.inst->setPaused(&p);
                             if (p) clip.inst->setPaused(false);
                         }
+                    }
+
+                    // Update 3D Position if applicable
+                    if (clip.spatial3D && clip.channel && transform) {
+                        CrashoutsEngine::Audio::AudioSystem::instance().SetChannel3DAttributes(clip.channel, transform->position, clip.minDistance, clip.maxDistance);
                     }
                 }
             }

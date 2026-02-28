@@ -94,6 +94,7 @@ namespace CrashoutsEngine
             bool setTaggedVolume(const std::string& key, float vol);
             void SetChannelVolume(FMOD::Channel* channel, float volume);
             void SetChannel3DAttributes(FMOD::Channel* channel, const CEVec3& position, float minDistance, float maxDistance);
+            void SetListenerAttributes(const CEVec3& position, const CEVec3& forward, const CEVec3& up, const CEVec3& velocity = { 0.0f, 0.0f, 0.0f });
             void AddChannelDSP(FMOD::Channel* channel, FMOD_DSP_TYPE dspType);
             void RemoveChannelDSP(FMOD::Channel* channel, FMOD_DSP_TYPE dspType);
 

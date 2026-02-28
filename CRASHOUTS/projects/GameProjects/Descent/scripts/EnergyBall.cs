@@ -35,6 +35,8 @@ namespace CrashoutsEngine
             _tf = Entity.GetComponent<TransformComponent>();
             _anim = Entity.GetComponent<Animator>(); // Get Animator
 
+            AudioManager.SetClip3DDistances(Entity.ID, "Pickup", 50.0f, 800.0f);
+
             // Register Trigger Event
             CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
 
