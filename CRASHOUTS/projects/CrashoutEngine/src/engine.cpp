@@ -919,8 +919,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     int displayWidth, displayHeight;
     glfwGetFramebufferSize(GLApp::ptr_window, &displayWidth, &displayHeight);
 
-    const float targetAspectRatio = 16.0f / 9.0f;
-    float currentAspectRatio = (float)displayWidth / (float)displayHeight;
+    currentAspectRatio = (float)displayWidth / (float)displayHeight;
     int mVpX = 0, mVpY = 0, mVpW = displayWidth, mVpH = displayHeight;
 
     if (currentAspectRatio > targetAspectRatio) {
