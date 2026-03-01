@@ -63,7 +63,7 @@ namespace UI {
         bool freezeOnCollision = false;
         bool showAnimation = true; 
         bool showSpriteSheet = true;
-
+        bool showVisualScripting = false;
         bool drawAllColliders = false;   // draw wireframes for every collider, not just colliding ones
         bool drawVelocities = false;    // draw velocity arrows if RigidBodyComponent exists
         float overlayThickness = .35f;  // line thickness for wireframes

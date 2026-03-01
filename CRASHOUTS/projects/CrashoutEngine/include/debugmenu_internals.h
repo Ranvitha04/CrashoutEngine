@@ -169,4 +169,5 @@ namespace UI {
     void RenderGameScenePanel(UIState& ui);
     void RenderEngineStateBar(UIState& ui);
     void RenderProjectManager(UIState& ui);
+    void RenderVisualScriptingPanel(UIState& ui);
 }

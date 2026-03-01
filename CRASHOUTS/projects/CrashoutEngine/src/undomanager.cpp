@@ -22,10 +22,11 @@ void UndoManager::AddCommand(std::unique_ptr<EditorCommand>&& command)
     if (!command)
         return;
 
-    mUndoStack.push_back(std::move(command));
+    
 
     mRedoStack.clear(); // new command invalidates redo history
-
+    command->Execute();
+    mUndoStack.push_back(std::move(command));
     // trim oldest undo if we exceed max history
     if (mUndoStack.size() > mMaxHistory)
         mUndoStack.pop_front();
