@@ -128,6 +128,8 @@ namespace CrashoutsEngine
             CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
             CollisionEvents.RegisterTriggerExit(Entity.ID, OnTriggerExit);
 
+            AudioManager.SetClip3DDistances(Entity.ID, "Switch", 20.0f, 1000.0f);
+
             transform = Entity.GetComponent<TransformComponent>();
 
             if (transform != null)

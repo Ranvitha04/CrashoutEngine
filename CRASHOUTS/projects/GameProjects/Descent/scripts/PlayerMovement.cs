@@ -139,6 +139,15 @@ namespace CrashoutsEngine
             CurrentEnergy = MaxEnergy;
             respawnPos = tf.Position;
 
+            // Audio Setup
+            for (int i = 1; i <= 8; i++) AudioManager.SetClip3DDistances(Entity.ID, "footstep" + i, 10.0f, 500.0f);
+            AudioManager.SetClip3DDistances(Entity.ID, "jumpLand", 20.0f, 600.0f);
+            AudioManager.SetClip3DDistances(Entity.ID, "JumpUp", 20.0f, 600.0f);
+            AudioManager.SetClip3DDistances(Entity.ID, "switchMassSound", 20.0f, 600.0f);
+
+            // Add an effect to the mass switching to make it sound "muffled" or "heavy"
+            AudioManager.AddClipDSP(Entity.ID, "switchMassSound", AudioManager.FMOD_DSP_TYPE.LOWPASS);
+
             dialogueEntities = new Entity[5];
             for (int i = 0; i < 5; ++i)
             {
@@ -154,6 +163,10 @@ namespace CrashoutsEngine
         public override void Update()
         {
             if (tf == null || rb == null) return;
+
+            // Update Audio Listener to follow the player
+            AudioManager.SetListenerPosition(tf.Position);
+
             if (isPaused || !alive) return;
 
             // 1. Facing/Flipping (Always runs)

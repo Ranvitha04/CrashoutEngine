@@ -1374,6 +1374,24 @@ namespace {
 						ImGui::DragFloat("Max Distance", &clip.maxDistance, 0.1f, 0.0f, 1000.0f);
 					}
 
+					// DSP Selection
+					const char* dspNames[] = { "None", "Oscillator", "LowPass", "ITLowPass", "HighPass", "Echo", "Fader", "Flanger", "Distortion", "Normalize", "Limit", "Parameq", "PitchShift", "Chorus", "VSTPlugin", "WinampPlugin", "ITEcho", "Compressor", "SFXReverb", "LowPassSimple", "Delay", "Tremolo", "LadspaPlugin", "Send", "Return", "HighPassSimple", "Pan", "ThreeEQ", "FFT", "LoudnessMeter", "EnvelopeFollower", "ConvolutionReverb", "ChannelMix", "Transceiver", "ObjectPan", "MultibandEq" };
+					int currentDsp = clip.dspType + 1; // -1 -> 0 (None)
+					if (ImGui::Combo("Audio Effect", &currentDsp, dspNames, IM_ARRAYSIZE(dspNames))) {
+						int newDspType = currentDsp - 1;
+						if (clip.channel) {
+							// Remove old DSP if any
+							if (clip.dspType != -1) {
+								Audio::AudioSystem::instance().RemoveChannelDSP(clip.channel, (FMOD_DSP_TYPE)clip.dspType);
+							}
+							// Add new DSP if not None
+							if (newDspType != -1) {
+								Audio::AudioSystem::instance().AddChannelDSP(clip.channel, (FMOD_DSP_TYPE)newDspType);
+							}
+						}
+						clip.dspType = newDspType;
+					}
+
 					static float s_debugFadeTime = 0.5f;
 					ImGui::DragFloat("Stop Fade (s)", &s_debugFadeTime, 0.1f, 0.0f, 5.0f);
 
@@ -1403,6 +1421,10 @@ namespace {
 								ch->setPitch(clip.pitch);
 								ch->setMode(clip.looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
 								clip.channel = ch;
+
+								if (clip.dspType != -1) {
+									audio.AddChannelDSP(ch, (FMOD_DSP_TYPE)clip.dspType);
+								}
 							}
 						}
 					}

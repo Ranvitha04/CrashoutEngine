@@ -161,10 +161,16 @@ namespace CrashoutsEngine
         internal static extern float Audio_GetMasterVolume();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_SetListenerAttributes(ref CEVec3 pos, ref CEVec3 forward, ref CEVec3 up, ref CEVec3 velocity);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetClipVolume(uint entityID, string clipName, float volume);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetClipPosition(uint entityID, string clipName, float x, float y, float z);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_SetClip3DDistances(uint entityID, string clipName, float minDist, float maxDist);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_AddClipDSP(uint entityID, string clipName, int dspType);

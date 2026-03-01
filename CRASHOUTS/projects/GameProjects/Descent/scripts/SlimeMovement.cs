@@ -21,7 +21,9 @@ namespace CrashoutsEngine
         [SerializeField] private float moveSpeed = 600f; 
         [SerializeField] private float maxSpeed = 15.0f; 
         [SerializeField] private float moveAudioInterval = 0.4f;
-        [SerializeField] private float stopAudioDistance = 40.0f; 
+        [SerializeField] private float stopAudioDistance = 40.0f;
+        [SerializeField] private float minAudioDistance = 1.0f;
+        [SerializeField] private float maxAudioDistance = 50.0f;
         [SerializeField] private float detectionRange = 250.0f;
         [SerializeField] private float gravityScale = 2.0f;
         [SerializeField] private float grabRange = 100.0f;
@@ -164,6 +166,13 @@ namespace CrashoutsEngine
             playerScript = PlayerMovement.Instance;
             CachePlayerCollider();
 
+            // Set 3D Distances for all slime sounds to handle distance-based attenuation
+            for (int i = 1; i <= 5; i++)
+            {
+                AudioManager.SetClip3DDistances(Entity.ID, "slimeMove" + i, minAudioDistance, maxAudioDistance);
+            }
+            AudioManager.SetClip3DDistances(Entity.ID, "slimeImpact", minAudioDistance, maxAudioDistance);
+
             CollisionEvents.RegisterPreSolve(Entity.ID, this.OnPreSolve);
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
             CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
@@ -266,19 +275,14 @@ namespace CrashoutsEngine
 
             if (horizontalSpeed > 1.0f && isGrounded && !isStunned)
             {
-                float distToPlayer = playerScript != null ? Distance(tf.Position, playerScript.Entity.GetComponent<TransformComponent>().Position) : 0;
-
-                if (distToPlayer <= stopAudioDistance)
+                moveAudioTimer -= dt;
+                if (moveAudioTimer <= 0.0f)
                 {
-                    moveAudioTimer -= dt;
-                    if (moveAudioTimer <= 0.0f)
-                    {
-                        int index = rng.Next(1, 6);
-                        AudioManager.GetInstance().PlayAttached("slimeMove" + index, Entity.ID);
+                    int index = rng.Next(1, 6);
+                    AudioManager.GetInstance().PlayAttached("slimeMove" + index, Entity.ID);
 
-                        float speedFactor = Math.Min(Math.Max(horizontalSpeed / maxSpeed, 0.5f), 2.0f);
-                        moveAudioTimer = moveAudioInterval / speedFactor;
-                    }
+                    float speedFactor = Math.Min(Math.Max(horizontalSpeed / maxSpeed, 0.5f), 2.0f);
+                    moveAudioTimer = moveAudioInterval / speedFactor;
                 }
             }
             else

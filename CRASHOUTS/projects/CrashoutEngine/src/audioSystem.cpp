@@ -225,6 +225,10 @@ namespace CrashoutsEngine::Audio
             master->addGroup(mSFXGroup);
         }
 
+        // Configure 3D settings for standard distance attenuation
+        // Doppler Scale, Distance Factor (1 unit = 1 meter), Roll-off Scale
+        mCore->set3DSettings(1.0f, 1.0f, 1.0f);
+
         // Scan Directory
         try {
             namespace fs = std::filesystem;
@@ -316,6 +320,15 @@ namespace CrashoutsEngine::Audio
                     else {
                         ++mapIt;
                     }
+                }
+
+                // Cleanup DSPs for this channel
+                auto dspIt = mChannelDSPs.find(ch);
+                if (dspIt != mChannelDSPs.end()) {
+                    for (auto& pair : dspIt->second) {
+                        pair.second->release();
+                    }
+                    mChannelDSPs.erase(dspIt);
                 }
 
                 // release only the sounds we created temporarily (those tracked in mActiveSounds)
@@ -1130,11 +1143,30 @@ namespace CrashoutsEngine::Audio
     {
         if (channel)
         {
+            FMOD_MODE mode;
+            channel->getMode(&mode);
+            // Force 3D and LINEARROLLOFF for predictable "fade to zero" behavior
+            if (!(mode & FMOD_3D) || !(mode & FMOD_3D_LINEARROLLOFF)) {
+                channel->setMode(FMOD_3D | FMOD_3D_LINEARROLLOFF);
+            }
+
             FMOD_VECTOR pos = { position.x, position.y, position.z };
-            FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f }; // Assuming static for now, dynamic velocity can be added later
+            FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
             channel->set3DAttributes(&pos, &vel);
             channel->set3DMinMaxDistance(minDistance, maxDistance);
         }
+    }
+
+    void AudioSystem::SetListenerAttributes(const CEVec3& position, const CEVec3& forward, const CEVec3& up, const CEVec3& velocity)
+    {
+        if (!mCore) return;
+
+        FMOD_VECTOR pos = { position.x, position.y, position.z };
+        FMOD_VECTOR vel = { velocity.x, velocity.y, velocity.z };
+        FMOD_VECTOR fwd = { forward.x, forward.y, forward.z };
+        FMOD_VECTOR u = { up.x, up.y, up.z };
+
+        mCore->set3DListenerAttributes(0, &pos, &vel, &fwd, &u);
     }
 
     void AudioSystem::AddChannelDSP(FMOD::Channel* channel, FMOD_DSP_TYPE dspType)
