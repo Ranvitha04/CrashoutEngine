@@ -69,6 +69,8 @@ namespace CrashoutsEngine
         private float flipCooldown = 0.0f;
         private float ignoreHomeTimer = 0.0f;
         private float patrolTurnTimer = 0.0f;
+        [SerializeField] private float ignorePlayerStopDuration = 0.2f;
+        private float ignorePlayerStopTimer = 0.0f;
 
         private CEVec3 startPos;
         private bool returningHome = false;
@@ -77,6 +79,7 @@ namespace CrashoutsEngine
         private bool isFollowingPath = false;
 
         bool STOP = false;
+        private bool stopApplied = false;
         private string currentAnimState = "";
 
         private bool HasLineOfSight(CEVec3 targetPos)
@@ -233,7 +236,7 @@ namespace CrashoutsEngine
                
                 if (isGrabbed)
                 {
-                    STOP = false; 
+                    ClearStopState();
                     UpdateAnimationState(); 
                     return;
                 }
@@ -245,8 +248,9 @@ namespace CrashoutsEngine
             {
                 if (rb != null)
                 {
-                    rb.Mass = 0.0f;
+                    if (!stopApplied) rb.SetDynamic(false);
                     rb.LinearVelocity = new CEVec3(0.0f, 0.0f, 0.0f);
+                    stopApplied = true;
                 }
                 return;
             }
@@ -259,7 +263,7 @@ namespace CrashoutsEngine
                 if (currentStunTime <= 0)
                 {
                     isStunned = false;
-                    STOP = false; // Clear STOP so AI/physics resumes after stun
+                    ClearStopState(); // Clear STOP so AI/physics resumes after stun
                     var tag = Entity.GetComponent<TagComponent>();
                     if (tag != null) tag.AddTag("Enemy");
                 }
@@ -271,6 +275,7 @@ namespace CrashoutsEngine
             }
 
             if (flipCooldown > 0) flipCooldown -= dt;
+            if (ignorePlayerStopTimer > 0) ignorePlayerStopTimer -= dt;
 
             float horizontalSpeed = Math.Abs(rb.LinearVelocity.x);
 
@@ -578,11 +583,16 @@ namespace CrashoutsEngine
             UpdateHoldColliders(false);
 
             // BUG FIX 1: Ensure STOP is false so physics immediately applies
-            STOP = false;
+            ClearStopState();
 
             activePath.Clear();
             rb.SetDynamic(true);
             var Tag = Entity.GetComponent<TagComponent>();
+            if (Tag == null)
+            {
+                Entity.Add<TagComponent>();
+                Tag = Entity.GetComponent<TagComponent>();
+            }
             // Removed AddTag("Enemy") so it doesn't damage the player while being thrown
             Console.WriteLine(applyThrow ? "[Slime] Released/Thrown!" : "[Slime] Released (Energy Depleted)!");
 
@@ -594,6 +604,8 @@ namespace CrashoutsEngine
             else
             {
                 rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
+                ignorePlayerStopTimer = ignorePlayerStopDuration;
+                if (Tag != null) Tag.AddTag("Enemy");
             }
         }
 
@@ -720,6 +732,14 @@ namespace CrashoutsEngine
             }
         }
 
+        private void ClearStopState()
+        {
+            if (!STOP) return;
+            STOP = false;
+            stopApplied = false;
+            if (rb != null) rb.SetDynamic(true);
+        }
+
         public bool OnPreSolve(uint otherEntity)
         {
             // When grabbed, ignore all collisions to prevent pushing the player.
@@ -748,7 +768,7 @@ namespace CrashoutsEngine
             // BUG FIX 2: Prevent instant stop race-condition when thrown next to player
             if (Tag.HasTag("Player")) 
             {
-                if (!isGrabbed && !wasThrown && !isStunned) 
+                if (!isGrabbed && !wasThrown && !isStunned && !isChasing && !returningHome && ignorePlayerStopTimer <= 0.0f) 
                 {
                     STOP = true;
                 }
@@ -788,6 +808,12 @@ namespace CrashoutsEngine
 
         public void OnCollideExit(uint otherEntity)
         {
+            Entity other = new Entity(otherEntity);
+            var Tag = other.GetComponent<TagComponent>();
+            if (Tag != null && Tag.HasTag("Player"))
+            {
+                ClearStopState();
+            }
         }
 
         // PERFORMANCE MATH FIX: Removed slow Math.Pow implementation
