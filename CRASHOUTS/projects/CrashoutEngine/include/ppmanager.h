@@ -22,6 +22,11 @@ namespace CrashoutsEngine {
 		extern float g_brightness;
 		extern float g_contrast;
 		extern float g_saturation;
+		extern float g_ambient;
+		extern bool g_bloomEnabled;
+		extern float g_bloomThreshold;
+		extern float g_bloomIntensity;
+		extern int g_bloomIterations;
 		
 		extern bool active;
 

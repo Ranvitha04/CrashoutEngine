@@ -244,6 +244,32 @@
                             "y": 2000.0
                         }
                     },
+                    "postprocessing": {
+                        "brightness": 0.0,
+                        "contrast": 0.0,
+                        "saturation": 0.0,
+                        "ambient": 0.15,
+                        "bloomEnabled": true,
+                        "bloomThreshold": 1.0,
+                        "bloomIntensity": 0.8,
+                        "bloomIterations": 6,
+                        "active": true
+                    },
+                    "light": {
+                        "active": true,
+                        "intensity": 1.0,
+                        "radius": 250.0,
+                        "color": {
+                            "x": 1.0,
+                            "y": 0.95,
+                            "z": 0.85
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "button": {
                         "buttonState": 0,
                         "shapeNormalColor": {

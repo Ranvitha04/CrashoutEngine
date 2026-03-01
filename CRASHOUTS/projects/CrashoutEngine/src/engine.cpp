@@ -395,7 +395,7 @@ void Init() {
     // --- Color Texture ---
     glGenTextures(1, &gameTextureColorBuffer);
     glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gameTextureWidth, gameTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gameTextureColorBuffer, 0);
@@ -795,7 +795,7 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         // 1. Resize the Color Texture
         glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
         // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gameTextureWidth, gameTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
         // 2. Resize the Depth/Stencil Buffer (Use RBO or Texture depending on your setup)
         // Based on your variables, you likely use 'gameRboDepthStencil'

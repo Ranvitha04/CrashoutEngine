@@ -28,6 +28,7 @@ __________________________________________________________________________*/
 #include "textureasset.h"
 #include "hierarchycomponent.h"
 #include "hierarchy.h"
+#include "ppcomponent.h"
 #include <filesystem>
 #include <cmath> // For std::floor
 #include <queue>
@@ -327,6 +328,10 @@ namespace CrashoutsEngine::TileMapUtils {
 		if (ecs->HasComponent<Component::LayerComponent>(parentEnt)) {
 			parentLayer = ecs->GetComponent<Component::LayerComponent>(parentEnt);
 		}
+		Component::LightComponent* parentLight = nullptr;
+		if (ecs->HasComponent<Component::LightComponent>(parentEnt)) {
+			parentLight = ecs->GetComponent<Component::LightComponent>(parentEnt);
+		}
 
 		// Iterate over every painted tile
 		for (auto const& [pos, tileAssetName] : map.gridData) {
@@ -389,6 +394,10 @@ namespace CrashoutsEngine::TileMapUtils {
 			s.enableTexture = true;
 			s.textureName = matchedRule->texAssetName;
 			s.type = Component::ShapeType::Rectangle;
+			if (map.emissiveBoost > 0.0f) {
+				float boost = 1.0f + map.emissiveBoost;
+				s.color = CEColor(boost, boost, boost, 1.0f);
+			}
 			ecs->AddComponent<Component::ShapeComponent>(ent, std::move(s));
 
 			// 2. Transform (Place it in world space)
@@ -397,6 +406,18 @@ namespace CrashoutsEngine::TileMapUtils {
 			t.position.y = (float)pos.second * map.tileSize + map.tileSize * .5f;
 			t.position.z = ecs->GetComponent<Component::TransformComponent>(parentEnt)->position.z;
 			t.size = CEVec2((float)map.tileSize, (float)map.tileSize);
+
+			// --- E. OPTIONAL LIGHT PER TILE ---
+			if (map.lightPerTile && parentLight) {
+				auto& lc = ecs->AddComponent<Component::LightComponent>(ent);
+				lc.color = parentLight->color;
+				lc.intensity = parentLight->intensity;
+				lc.radius = parentLight->radius;
+				lc.affectBloom = parentLight->affectBloom;
+				lc.renderBehind = parentLight->renderBehind;
+				lc.active = parentLight->active;
+				lc.useTransform = true;
+			}
 
 			// Apply Parent Layer to Child
 			if (parentLayer) {

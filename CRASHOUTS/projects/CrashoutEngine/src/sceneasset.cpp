@@ -201,6 +201,7 @@ namespace CrashoutsEngine {
 			const char* const UI_LAYOUT_COMPONENT = "uilayout";
 			// POST PROCESSING ITEMS
 			const char* const PP_COMPONENT = "postprocessing";
+			const char* const LIGHT_COMPONENT = "light";
 			// HIERACHY ITEMS
 			const char* const PARENT_COMPONENT = "parent";
 			const char* const Z_ORDER_COMPONENT = "zorder";
@@ -576,8 +577,28 @@ namespace CrashoutsEngine {
 				val.AddMember("brightness", c.brightness, allocator);
 				val.AddMember("contrast", c.contrast, allocator);
 				val.AddMember("saturation", c.saturation, allocator);
+				val.AddMember("ambient", c.ambient, allocator);
+				val.AddMember("bloomEnabled", c.bloomEnabled, allocator);
+				val.AddMember("bloomThreshold", c.bloomThreshold, allocator);
+				val.AddMember("bloomIntensity", c.bloomIntensity, allocator);
+				val.AddMember("bloomIterations", c.bloomIterations, allocator);
 				val.AddMember("active", c.active, allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::PP_COMPONENT), val, allocator);
+			}
+
+			if (gECS.HasComponent<LightComponent>(id)) {
+				const auto& c = *gECS.GetComponent<LightComponent>(id);
+				rapidjson::Value val(rapidjson::kObjectType);
+				val.AddMember("active", c.active, allocator);
+				val.AddMember("intensity", c.intensity, allocator);
+				val.AddMember("radius", c.radius, allocator);
+				val.AddMember("affectBloom", c.affectBloom, allocator);
+				val.AddMember("useTransform", c.useTransform, allocator);
+				val.AddMember("renderSelf", c.renderSelf, allocator);
+				val.AddMember("renderBehind", c.renderBehind, allocator);
+				WriteVec3(val, "color", c.color, allocator);
+				WriteVec3(val, "position", c.position, allocator);
+				entityValue.AddMember(rapidjson::StringRef(Keys::LIGHT_COMPONENT), val, allocator);
 			}
 
 			if (gECS.HasComponent<TileMapComponent>(id)) {
@@ -585,6 +606,8 @@ namespace CrashoutsEngine {
 				rapidjson::Value val(rapidjson::kObjectType);
 				val.AddMember("tileSize", c.tileSize, allocator);
 				val.AddMember("excludeOuterBoundary", c.excludeOuterBoundary, allocator);
+				val.AddMember("lightPerTile", c.lightPerTile, allocator);
+				val.AddMember("emissiveBoost", c.emissiveBoost, allocator);
 				val.AddMember("activeAsset", rapidjson::Value(c.activeAsset.c_str(), allocator), allocator);
 				rapidjson::Value assets(rapidjson::kArrayType);
 				for (const auto& name : c.tileAssetNames) assets.PushBack(rapidjson::Value(name.c_str(), allocator), allocator);
@@ -1111,7 +1134,27 @@ namespace CrashoutsEngine {
 				p.brightness = GetFloat(v, "brightness");
 				p.contrast = GetFloat(v, "contrast");
 				p.saturation = GetFloat(v, "saturation");
-				p.active = GetBool(v, "active");
+				p.ambient = GetFloat(v, "ambient", p.ambient);
+				p.bloomEnabled = GetBool(v, "bloomEnabled", p.bloomEnabled);
+				p.bloomThreshold = GetFloat(v, "bloomThreshold", p.bloomThreshold);
+				p.bloomIntensity = GetFloat(v, "bloomIntensity", p.bloomIntensity);
+				p.bloomIterations = GetInt(v, "bloomIterations", p.bloomIterations);
+				p.active = GetBool(v, "active", p.active);
+			}
+
+			// Light
+			if (entityValue.HasMember(Keys::LIGHT_COMPONENT)) {
+				const auto& v = entityValue[Keys::LIGHT_COMPONENT];
+				auto& l = gECS.AddComponent<LightComponent>(newEntity);
+				l.active = GetBool(v, "active", l.active);
+				l.intensity = GetFloat(v, "intensity", l.intensity);
+				l.radius = GetFloat(v, "radius", l.radius);
+				l.affectBloom = GetBool(v, "affectBloom", l.affectBloom);
+				l.useTransform = GetBool(v, "useTransform", l.useTransform);
+				l.renderSelf = GetBool(v, "renderSelf", l.renderSelf);
+				l.renderBehind = GetBool(v, "renderBehind", l.renderBehind);
+				if (v.HasMember("color")) l.color = ReadVec3(v["color"], l.color);
+				if (v.HasMember("position")) l.position = ReadVec3(v["position"], l.position);
 			}
 
 			// TileMap
@@ -1121,6 +1164,8 @@ namespace CrashoutsEngine {
 				t.activeAsset = "none"; t.pOpen = false; t.isCacheDirty = true;
 				t.tileSize = GetInt(v, "tileSize");
 				t.excludeOuterBoundary = GetBool(v, "excludeOuterBoundary");
+				t.lightPerTile = GetBool(v, "lightPerTile", t.lightPerTile);
+				t.emissiveBoost = GetFloat(v, "emissiveBoost", t.emissiveBoost);
 				t.activeAsset = GetString(v, "activeAsset");
 				if (v.HasMember("tileAssetNames") && v["tileAssetNames"].IsArray()) {
 					for (const auto& a : v["tileAssetNames"].GetArray()) if (a.IsString()) t.tileAssetNames.push_back(a.GetString());

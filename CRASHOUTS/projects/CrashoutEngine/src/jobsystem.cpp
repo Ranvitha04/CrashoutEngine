@@ -7,69 +7,84 @@
 
 namespace CrashoutsEngine {
 
-    void JobSystem::Initialize(unsigned int threadCount) {
-        if (!workers.empty()) return;
+	void JobSystem::Initialize(unsigned int threadCount) {
+		if (!workers.empty()) return;
 
-        if (threadCount == 0) {
-            threadCount = std::thread::hardware_concurrency();
-            if (threadCount == 0) threadCount = 2; // Fallback
-        }
+		if (threadCount == 0) {
+			threadCount = std::thread::hardware_concurrency();
+			if (threadCount == 0) threadCount = 2; // Fallback
+		}
 
-        stop = false;
-        for (unsigned int i = 0; i < threadCount; ++i) {
-            workers.emplace_back([this] {
-                for (;;) {
-                    std::function<void()> task;
-                    {
-                        std::unique_lock<std::mutex> lock(this->queueMutex);
-                        this->condition.wait(lock, [this] { return this->stop || !this->tasks.empty(); });
-                        if (this->stop && this->tasks.empty()) return;
-                        task = std::move(this->tasks.front());
-                        this->tasks.pop();
-                    }
-                    task();
-                }
-            });
-        }
-    }
+		stop = false;
+		for (unsigned int i = 0; i < threadCount; ++i) {
+			workers.emplace_back([this] {
+				for (;;) {
+					std::function<void()> task;
+					{
+						std::unique_lock<std::mutex> lock(this->queueMutex);
+						this->condition.wait(lock, [this] { return this->stop || !this->tasks.empty(); });
+						if (this->stop && this->tasks.empty()) return;
+						task = std::move(this->tasks.front());
+						this->tasks.pop();
+					}
+					task();
+				}
+			});
+		}
+	}
 
-    void JobSystem::Shutdown() {
-        {
-            std::unique_lock<std::mutex> lock(queueMutex);
-            if (stop) return;
-            stop = true;
-        }
-        condition.notify_all();
-        for (std::thread& worker : workers) {
-            if (worker.joinable()) worker.join();
-        }
-        workers.clear();
-    }
+	void JobSystem::Shutdown() {
+		{
+			std::unique_lock<std::mutex> lock(queueMutex);
+			if (stop) return;
+			stop = true;
+		}
+		condition.notify_all();
+		for (std::thread& worker : workers) {
+			if (worker.joinable()) worker.join();
+		}
+		workers.clear();
+	}
 
-    void JobSystem::ParallelFor(unsigned int count, std::function<void(unsigned int start, unsigned int end)> func) {
-        if (count == 0) return;
+	void JobSystem::ParallelFor(unsigned int count, std::function<void(unsigned int start, unsigned int end)> func) {
+		ParallelFor(count, 1u, std::move(func));
+	}
 
-        unsigned int numThreads = GetThreadCount();
-        if (numThreads <= 1 || count < numThreads) {
-            func(0, count);
-            return;
-        }
+	void JobSystem::ParallelFor(unsigned int count, unsigned int minChunkSize,
+		std::function<void(unsigned int start, unsigned int end)> func) {
+		if (count == 0) return;
+		if (minChunkSize == 0) minChunkSize = 1;
 
-        unsigned int chunkSize = count / numThreads;
-        std::vector<std::future<void>> futures;
+		unsigned int numThreads = GetThreadCount();
+		if (numThreads <= 1 || count <= minChunkSize) {
+			func(0, count);
+			return;
+		}
 
-        for (unsigned int i = 0; i < numThreads; ++i) {
-            unsigned int start = i * chunkSize;
-            unsigned int end = (i == numThreads - 1) ? count : start + chunkSize;
+		unsigned int idealChunks = (count + minChunkSize - 1) / minChunkSize;
+		unsigned int numChunks = std::min(numThreads, idealChunks);
+		if (numChunks <= 1) {
+			func(0, count);
+			return;
+		}
 
-            futures.push_back(Enqueue([start, end, &func]() {
-                func(start, end);
-            }));
-        }
+		unsigned int chunkSize = (count + numChunks - 1) / numChunks;
+		std::vector<std::future<void>> futures;
+		futures.reserve(numChunks);
 
-        for (auto& f : futures) {
-            f.get();
-        }
-    }
+		for (unsigned int i = 0; i < numChunks; ++i) {
+			unsigned int start = i * chunkSize;
+			unsigned int end = std::min(count, start + chunkSize);
+			if (start >= end) continue;
+
+			futures.push_back(Enqueue([start, end, &func]() {
+				func(start, end);
+			}));
+		}
+
+		for (auto& f : futures) {
+			f.get();
+		}
+	}
 
 }

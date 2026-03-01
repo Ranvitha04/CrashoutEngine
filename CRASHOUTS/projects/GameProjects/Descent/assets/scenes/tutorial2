@@ -22,6 +22,8 @@
             "tilemap": {
                 "tileSize": 32,
                 "excludeOuterBoundary": true,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
                 "activeAsset": "tilemaps/Rock",
                 "tileAssetNames": [
                     "Rock"
@@ -5982,6 +5984,7 @@
                             "patrolTurnInterval": 20.399999618530275,
                             "resizePlayerColliderWhileHolding": true,
                             "carryBoundsPadding": 0.0,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
                             "maxLeashDistance": 470.3999938964844
                         }
                     }
@@ -6030,6 +6033,24 @@
                 "texturePressed": "",
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.15000000596046449,
+                "radius": 194.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Player",
@@ -10762,8 +10783,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 54.354164123535159,
-                    "y": -41.099632263183597,
+                    "x": 55.354164123535159,
+                    "y": -32.099632263183597,
                     "z": 0.0
                 },
                 "size": {
@@ -17463,6 +17484,7 @@
                             "patrolTurnInterval": 3.0,
                             "resizePlayerColliderWhileHolding": true,
                             "carryBoundsPadding": 10.0,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
                             "maxLeashDistance": 389.79998779296877
                         }
                     }
@@ -17703,7 +17725,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1881.56787109375,
+                    "x": 1500.0,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -17730,7 +17752,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1881.56787109375,
+                    "x": 1500.0,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -17740,12 +17762,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1814.06787109375,
+                    "x": 1432.5,
                     "y": -63.6754150390625,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1949.06787109375,
+                    "x": 1567.5,
                     "y": -47.6754150390625,
                     "z": 0.0
                 }
@@ -17814,7 +17836,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1821.251708984375,
+                    "x": 1439.683837890625,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -17892,7 +17914,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1861.2120361328126,
+                    "x": 1479.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -17970,7 +17992,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1881.2120361328126,
+                    "x": 1499.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18048,7 +18070,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1901.2120361328126,
+                    "x": 1519.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18126,7 +18148,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1941.2120361328126,
+                    "x": 1559.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18204,7 +18226,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1841.2120361328126,
+                    "x": 1459.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18282,7 +18304,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1921.2120361328126,
+                    "x": 1539.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18903,6 +18925,41 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            }
+        },
+        {
+            "active": true,
+            "name": "PPManager",
+            "uuid": 15783037753545283158,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "postprocessing": {
+                "brightness": 0.0,
+                "contrast": 0.0,
+                "saturation": 0.0,
+                "ambient": 0.5,
+                "bloomEnabled": true,
+                "bloomThreshold": 1.0,
+                "bloomIntensity": 0.800000011920929,
+                "bloomIterations": 6,
+                "active": true
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],
