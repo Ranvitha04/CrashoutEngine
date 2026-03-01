@@ -11929,7 +11929,9 @@
                 "scripts": [
                     {
                         "className": "tutorial1door",
-                        "fields": {}
+                        "fields": {
+                            "doorParticleName": "Door Particles"
+                        }
                     }
                 ]
             },
@@ -12137,6 +12139,16 @@
                 "z": 100
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": false,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12353,6 +12365,16 @@
                 "z": 100
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": false,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12647,6 +12669,16 @@
                 "z": -5
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12752,6 +12784,16 @@
                 "z": 0
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12857,6 +12899,16 @@
                 "z": 0
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12962,6 +13014,16 @@
                 "z": 0
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 100,
@@ -13067,6 +13129,16 @@
                 "z": 0
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 100,
@@ -22835,6 +22907,16 @@
                 "z": 0
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": false,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
