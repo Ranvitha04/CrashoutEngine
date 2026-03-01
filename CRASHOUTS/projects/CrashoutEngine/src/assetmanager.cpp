@@ -77,25 +77,21 @@ namespace CrashoutsEngine {
 
 		AssetManager::AssetManager() {
 
-			//#ifdef ENGINE_CORE_ASSETS_PATH
-#ifdef USE_IMGUI_EDITOR
-			// 1. Convert the macro to a C++ string
-			std::string rawPath = TOSTRING(ENGINE_CORE_ASSETS_PATH);
-
-			// 2. Strip the literal quotes if the string looks like ""D:/Path"" or "\"D:/Path\""
-			// rawPath.front() checks the first character, rawPath.back() checks the last.
-			if (rawPath.size() >= 2 && rawPath.front() == '"' && rawPath.back() == '"') {
-				// substr(start_index, length)
-				// We start at index 1 and take (TotalSize - 2) characters
-				rawPath = rawPath.substr(1, rawPath.size() - 2);
+			// --- RUNTIME DETECTION ---
+			if (std::filesystem::exists("core-assets")) {
+				// STANDALONE MODE: Local folders next to the .exe
+				coreAssetPath = "core-assets/";
+				gameAssetPath = "assets/";
 			}
-
-			coreAssetPath = rawPath;
-			gameAssetPath = GetGameRoot() + "/assets/";
-#else
-			coreAssetPath = "core-assets/";
-			gameAssetPath = "assets/";
-#endif
+			else {
+				// EDITOR MODE: Use CMake absolute paths
+				std::string rawPath = TOSTRING(ENGINE_CORE_ASSETS_PATH);
+				if (rawPath.size() >= 2 && rawPath.front() == '"' && rawPath.back() == '"') {
+					rawPath = rawPath.substr(1, rawPath.size() - 2);
+				}
+				coreAssetPath = rawPath;
+				gameAssetPath = GetGameRoot() + "/assets/";
+			}
 
 			assetManifestPath = gameAssetPath + "json/assetmanifest.json";
 

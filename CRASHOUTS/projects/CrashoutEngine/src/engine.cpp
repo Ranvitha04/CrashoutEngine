@@ -148,7 +148,13 @@ std::string GetGameRoot() {
 
 std::string GetStartingSceneName()
 {
-    std::string manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+    std::string manifestPath;
+    if (std::filesystem::exists("core-assets")) {
+        manifestPath = "assets/json/assetmanifest.json";
+    }
+    else {
+        manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+    }
     std::ifstream ifs(manifestPath);
 
     if (ifs.is_open()) {
@@ -272,13 +278,15 @@ void Init() {
     using namespace Messaging;
     namespace fs = std::filesystem;
 
-#if USE_IMGUI_EDITOR
-    // Look for prefabs inside the current game project's assets
-    const fs::path prefabDir = fs::path(GetGameRoot()) / "assets" / "prefabs";
-#else
-    // RELEASE MODE: Look in the dynamic LocalAppData folder we just fixed
-    const fs::path prefabDir = fs::path(GetLocalAppData()) / "prefabs";
-#endif
+    fs::path prefabDir;
+    if (fs::exists("core-assets")) {
+        // STANDALONE MODE
+        prefabDir = "assets/prefabs";
+    }
+    else {
+        // EDITOR MODE
+        prefabDir = fs::path(GetGameRoot()) / "assets" / "prefabs";
+    }
 
     fs::create_directories(prefabDir);
     CrashoutsEngine::ReloadPrefabsFromDisk(prefabDir.generic_string());
@@ -332,16 +340,20 @@ void Init() {
         }
     );
 
-    CrashoutsEngine::Audio::AudioSystem::instance().init(GetGameRoot() + "/assets/audio/");
+    std::string manifestPath;
 
-    // 1. Define the manifest location for the CURRENT project
-    std::string manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
-#if USE_IMGUI_EDITOR
-
-    // 2. Generate it at that specific project location
-    CrashoutsEngine::Assets::GenerateAssetManifest(manifestPath);
-
-#endif
+    if (std::filesystem::exists("core-assets")) {
+        // STANDALONE MODE
+        CrashoutsEngine::Audio::AudioSystem::instance().init("assets/audio/");
+        manifestPath = "assets/json/assetmanifest.json";
+        // Do NOT generate manifest. We use the one shipped in the folder.
+    }
+    else {
+        // EDITOR MODE
+        CrashoutsEngine::Audio::AudioSystem::instance().init(GetGameRoot() + "/assets/audio/");
+        manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+        CrashoutsEngine::Assets::GenerateAssetManifest(manifestPath);
+    }
 
     // 3. Load the manifest we just created
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets(manifestPath);

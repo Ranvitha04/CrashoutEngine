@@ -178,10 +178,10 @@ namespace CrashoutsEngine::TileMapUtils {
 			if (pos.second > maxY) maxY = pos.second;
 		}
 
-		int boundaryMinX = minX;
+		/*int boundaryMinX = minX;
 		int boundaryMaxX = maxX;
 		int boundaryMinY = minY;
-		int boundaryMaxY = maxY;
+		int boundaryMaxY = maxY;*/
 		bool excludeBoundary = map.excludeOuterBoundary;
 
 		std::unordered_set<std::pair<int, int>, PairHash> outsideEmpty;
