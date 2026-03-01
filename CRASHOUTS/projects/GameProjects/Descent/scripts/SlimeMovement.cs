@@ -69,6 +69,8 @@ namespace CrashoutsEngine
         private float flipCooldown = 0.0f;
         private float ignoreHomeTimer = 0.0f;
         private float patrolTurnTimer = 0.0f;
+        [SerializeField] private float ignorePlayerStopDuration = 0.2f;
+        private float ignorePlayerStopTimer = 0.0f;
 
         private CEVec3 startPos;
         private bool returningHome = false;
@@ -271,6 +273,7 @@ namespace CrashoutsEngine
             }
 
             if (flipCooldown > 0) flipCooldown -= dt;
+            if (ignorePlayerStopTimer > 0) ignorePlayerStopTimer -= dt;
 
             float horizontalSpeed = Math.Abs(rb.LinearVelocity.x);
 
@@ -594,6 +597,7 @@ namespace CrashoutsEngine
             else
             {
                 rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
+                ignorePlayerStopTimer = ignorePlayerStopDuration;
             }
         }
 
@@ -748,7 +752,7 @@ namespace CrashoutsEngine
             // BUG FIX 2: Prevent instant stop race-condition when thrown next to player
             if (Tag.HasTag("Player")) 
             {
-                if (!isGrabbed && !wasThrown && !isStunned) 
+                if (!isGrabbed && !wasThrown && !isStunned && ignorePlayerStopTimer <= 0.0f) 
                 {
                     STOP = true;
                 }
