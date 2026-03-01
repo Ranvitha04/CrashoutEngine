@@ -259,6 +259,7 @@ namespace CrashoutsEngine
                 if (currentStunTime <= 0)
                 {
                     isStunned = false;
+                    STOP = false; // Clear STOP so AI/physics resumes after stun
                     var tag = Entity.GetComponent<TagComponent>();
                     if (tag != null) tag.AddTag("Enemy");
                 }
@@ -514,6 +515,12 @@ namespace CrashoutsEngine
 
             if (isDown)
             {
+                if (isGrabbed && playerScript != null && playerScript.CurrentEnergy <= 0.0f)
+                {
+                    ReleaseSlime(false, mousePos);
+                    return;
+                }
+
                 if (!isGrabbed)
                 {
                     float halfW = Math.Abs(tf.Size.x) * 0.5f + 100.0f;
@@ -544,6 +551,11 @@ namespace CrashoutsEngine
                 {
                     CEVec3 worldPos = tf.WorldPosition;
                     RemoveEnergy(grabEnergyDrainRate * (float)Time.DT);
+                    if (playerScript.CurrentEnergy <= 0.0f)
+                    {
+                        ReleaseSlime(false, mousePos);
+                        return;
+                    }
                     var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
                     if (playerTf != null)
                     {
@@ -554,25 +566,34 @@ namespace CrashoutsEngine
             }
             else if (isGrabbed)
             {
-                isGrabbed = false;
-                wasThrown = true;
-                UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
-                UpdateHoldColliders(false);
-                
-                // BUG FIX 1: Ensure STOP is false so physics immediately applies
-                STOP = false; 
+                ReleaseSlime(true, mousePos);
+            }
+        }
 
-                activePath.Clear();
-                rb.SetDynamic(true);
-                var Tag = Entity.GetComponent<TagComponent>();
-                // Removed AddTag("Enemy") so it doesn't damage the player while being thrown
-                Console.WriteLine("[Slime] Released/Thrown!");
+        private void ReleaseSlime(bool applyThrow, CEVec2 mousePos)
+        {
+            isGrabbed = false;
+            wasThrown = applyThrow;
+            UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
+            UpdateHoldColliders(false);
 
-                if (playerScript != null)
-                {
-                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
-                    rb.LinearVelocity = throwVel;
-                }
+            // BUG FIX 1: Ensure STOP is false so physics immediately applies
+            STOP = false;
+
+            activePath.Clear();
+            rb.SetDynamic(true);
+            var Tag = Entity.GetComponent<TagComponent>();
+            // Removed AddTag("Enemy") so it doesn't damage the player while being thrown
+            Console.WriteLine(applyThrow ? "[Slime] Released/Thrown!" : "[Slime] Released (Energy Depleted)!");
+
+            if (applyThrow && playerScript != null)
+            {
+                CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
+                rb.LinearVelocity = throwVel;
+            }
+            else
+            {
+                rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
             }
         }
 
@@ -727,7 +748,7 @@ namespace CrashoutsEngine
             // BUG FIX 2: Prevent instant stop race-condition when thrown next to player
             if (Tag.HasTag("Player")) 
             {
-                if (!isGrabbed && !wasThrown) 
+                if (!isGrabbed && !wasThrown && !isStunned) 
                 {
                     STOP = true;
                 }
