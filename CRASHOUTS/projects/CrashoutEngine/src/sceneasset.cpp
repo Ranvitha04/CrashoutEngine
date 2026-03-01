@@ -62,7 +62,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "guicomponent.h"
 #include "textinputcomponent.h"
 #include "uilayoutcomponent.h"
-
+#include "debugmenu.h"
 // Script + Reflection
 #include <mono/metadata/reflection.h>
 #include <mono/metadata/attrdefs.h>
@@ -1350,7 +1350,56 @@ namespace CrashoutsEngine {
 					<< " at offset " << doc.GetErrorOffset() << std::endl;
 				return;
 			}
+			// Visual Scripting Load
+			{
+				UI::ClearVisualScriptingGraph();
+				auto& graph = UI::GetVisualScriptingGraph();
 
+				if (doc.HasMember("VisualScripting") && doc["VisualScripting"].IsObject())
+				{
+					const rapidjson::Value& vsObj = doc["VisualScripting"];
+
+					if (vsObj.HasMember("nextNodeId") && vsObj["nextNodeId"].IsInt())
+						graph.nextNodeId = vsObj["nextNodeId"].GetInt();
+
+					if (vsObj.HasMember("nodes") && vsObj["nodes"].IsArray())
+					{
+						const rapidjson::Value& nodesArr = vsObj["nodes"];
+						for (rapidjson::SizeType i = 0; i < nodesArr.Size(); ++i)
+						{
+							const auto& n = nodesArr[i];
+							if (!n.IsObject()) continue;
+
+							UI::VSNode node;
+							if (n.HasMember("id") && n["id"].IsInt()) node.id = n["id"].GetInt();
+							if (n.HasMember("type") && n["type"].IsInt()) node.type = static_cast<UI::VSNodeType>(n["type"].GetInt());
+							if (n.HasMember("title") && n["title"].IsString()) node.title = n["title"].GetString();
+							if (n.HasMember("x") && n["x"].IsNumber()) node.pos.x = n["x"].GetFloat();
+							if (n.HasMember("y") && n["y"].IsNumber()) node.pos.y = n["y"].GetFloat();
+							if (n.HasMember("w") && n["w"].IsNumber()) node.size.x = n["w"].GetFloat();
+							if (n.HasMember("h") && n["h"].IsNumber()) node.size.y = n["h"].GetFloat();
+
+							graph.nodes.push_back(node);
+						}
+					}
+
+					if (vsObj.HasMember("links") && vsObj["links"].IsArray())
+					{
+						const rapidjson::Value& linksArr = vsObj["links"];
+						for (rapidjson::SizeType i = 0; i < linksArr.Size(); ++i)
+						{
+							const auto& l = linksArr[i];
+							if (!l.IsObject()) continue;
+
+							UI::VSLink link;
+							if (l.HasMember("from") && l["from"].IsInt()) link.fromNode = l["from"].GetInt();
+							if (l.HasMember("to") && l["to"].IsInt()) link.toNode = l["to"].GetInt();
+
+							graph.links.push_back(link);
+						}
+					}
+				}
+			}
 			// 5. Use the local document (replaces sceneAsset->GetSceneData())
 			if (!doc.HasMember(Keys::ENTITIES) || !doc[Keys::ENTITIES].IsArray()) {
 				std::cout << "Warning: Scene JSON has no '" << Keys::ENTITIES << "' array. Starting with empty scene." << std::endl;
@@ -1655,7 +1704,41 @@ namespace CrashoutsEngine {
 			quadTree.AddMember("max", max, allocator);
 
 			doc.AddMember("quadtree", quadTree, allocator);
+			// Visual Scripting Save
+			{
+				const auto& graph = UI::GetVisualScriptingGraph();
 
+				rapidjson::Value vsObj(rapidjson::kObjectType);
+				vsObj.AddMember("nextNodeId", graph.nextNodeId, allocator);
+
+				rapidjson::Value nodesArr(rapidjson::kArrayType);
+				for (const auto& node : graph.nodes)
+				{
+					rapidjson::Value nodeObj(rapidjson::kObjectType);
+					nodeObj.AddMember("id", node.id, allocator);
+					nodeObj.AddMember("type", static_cast<int>(node.type), allocator);
+					nodeObj.AddMember("title", rapidjson::Value(node.title.c_str(), allocator), allocator);
+					nodeObj.AddMember("x", node.pos.x, allocator);
+					nodeObj.AddMember("y", node.pos.y, allocator);
+					nodeObj.AddMember("w", node.size.x, allocator);
+					nodeObj.AddMember("h", node.size.y, allocator);
+					nodesArr.PushBack(nodeObj, allocator);
+				}
+
+				rapidjson::Value linksArr(rapidjson::kArrayType);
+				for (const auto& link : graph.links)
+				{
+					rapidjson::Value linkObj(rapidjson::kObjectType);
+					linkObj.AddMember("from", link.fromNode, allocator);
+					linkObj.AddMember("to", link.toNode, allocator);
+					linksArr.PushBack(linkObj, allocator);
+				}
+
+				vsObj.AddMember("nodes", nodesArr, allocator);
+				vsObj.AddMember("links", linksArr, allocator);
+
+				doc.AddMember("VisualScripting", vsObj, allocator);
+			}
 			// =========================================================
 			// 5. Serialize the Document directly to a JSON string
 			// (REPLACING sceneAsset->SetSceneData(std::move(doc));)

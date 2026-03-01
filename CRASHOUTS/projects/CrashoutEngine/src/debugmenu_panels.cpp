@@ -1639,41 +1639,23 @@ namespace UI {
 		if (!ui.showVisualScripting) return;
 
 		ScopedWindow w("Visual Scripting", LockFlags(ui.lockLayout));
-		enum class VSNodeType
-		{
-			Start = 0,
-			Move,
-			Attack,
-			Wait,
-			Branch
-		};
-		struct VSNode
-		{
-			int id;
-			VSNodeType type;
-			std::string title;
-			ImVec2 pos;
-			ImVec2 size;
-		};
 
-		struct VSLink
-		{
-			int fromNode;
-			int toNode;
-		};
+		auto& graph = ui.visualGraph;
+		auto& nodes = graph.nodes;
+		auto& links = graph.links;
+		auto& nextNodeId = graph.nextNodeId;
 
-		static std::vector<VSNode> nodes =
+		if (nodes.empty())
 		{
-			{ 1, VSNodeType::Start,  "Start",  ImVec2(60.0f,  80.0f), ImVec2(140.0f, 70.0f) },
-			{ 2, VSNodeType::Move,   "Move",   ImVec2(320.0f, 80.0f), ImVec2(140.0f, 70.0f) },
-			{ 3, VSNodeType::Attack, "Attack", ImVec2(580.0f, 80.0f), ImVec2(140.0f, 70.0f) }
-		};
-		static int nextNodeId = 4;
-		static std::vector<VSLink> links =
-		{
-			{ 1, 2 },
-			{ 2, 3 }
-		};
+			nodes.push_back({ 1, VSNodeType::Start,  "Start",  ImVec2(60.0f, 80.0f),  ImVec2(140.0f, 70.0f) });
+			nodes.push_back({ 2, VSNodeType::Move,   "Move",   ImVec2(320.0f, 80.0f), ImVec2(140.0f, 70.0f) });
+			nodes.push_back({ 3, VSNodeType::Attack, "Attack", ImVec2(580.0f, 80.0f), ImVec2(140.0f, 70.0f) });
+
+			links.push_back({ 1, 2 });
+			links.push_back({ 2, 3 });
+
+			nextNodeId = 4;
+		}
 		static int contextNodeId = -1;
 		static int selectedNode = -1;
 		static int draggingNode = -1;
@@ -1853,7 +1835,10 @@ namespace UI {
 			{
 				nodes.push_back({ nextNodeId++, VSNodeType::Branch, "Branch", localPos, ImVec2(140.0f, 70.0f) });
 			}
-
+			if (ImGui::MenuItem("Add Script Call Node"))
+			{
+				nodes.push_back({ nextNodeId++, VSNodeType::ScriptCall, "ScriptCall", localPos, ImVec2(180.0f, 90.0f), "", "" });
+			}
 			ImGui::EndPopup();
 		}
 		if (ImGui::BeginPopup("VSNodeContextPopup"))
@@ -2086,7 +2071,7 @@ namespace UI {
 				ImGui::Text("Node ID: %d", selected->id);
 
 				int nodeType = static_cast<int>(selected->type);
-				const char* typeNames[] = { "Start", "Move", "Attack", "Wait", "Branch" };
+				const char* typeNames[] = { "Start", "Move", "Attack", "Wait", "Branch", "ScriptCall" };
 
 				if (ImGui::Combo("Type", &nodeType, typeNames, IM_ARRAYSIZE(typeNames)))
 				{
@@ -2103,6 +2088,26 @@ namespace UI {
 						selected->title = getTypeName(selected->type);
 						std::snprintf(nodeTitleBuffer, sizeof(nodeTitleBuffer), "%s", selected->title.c_str());
 					}
+					if (selected->type == VSNodeType::ScriptCall)
+					{
+						static char scriptBuffer[128] = "";
+						static char functionBuffer[128] = "";
+
+						std::snprintf(scriptBuffer, sizeof(scriptBuffer), "%s", selected->scriptName.c_str());
+						std::snprintf(functionBuffer, sizeof(functionBuffer), "%s", selected->functionName.c_str());
+
+						if (ImGui::InputText("Script Name", scriptBuffer, sizeof(scriptBuffer)))
+						{
+							selected->scriptName = scriptBuffer;
+						}
+
+						if (ImGui::InputText("Function Name", functionBuffer, sizeof(functionBuffer)))
+						{
+							selected->functionName = functionBuffer;
+						}
+					}
+
+
 				}
 				if (ImGui::InputText("Title", nodeTitleBuffer, sizeof(nodeTitleBuffer)))
 				{

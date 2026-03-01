@@ -39,7 +39,40 @@ namespace Collision { struct CollisionEvent; }
 namespace DebugReflection { class PanelRegistry; }
 
 namespace UI {
+    enum class VSNodeType
+    {
+        Start = 0,
+        Move,
+        Attack,
+        Wait,
+        Branch,
+        ScriptCall
+    };
 
+    struct VSNode
+    {
+        int id = 0;
+        VSNodeType type = VSNodeType::Start;
+        std::string title;
+        ImVec2 pos{ 0.0f, 0.0f };
+        ImVec2 size{ 140.0f, 70.0f };
+
+        std::string scriptName;
+        std::string functionName;
+    };
+
+    struct VSLink
+    {
+        int fromNode = 0;
+        int toNode = 0;
+    };
+
+    struct VisualScriptingGraph
+    {
+        std::vector<VSNode> nodes;
+        std::vector<VSLink> links;
+        int nextNodeId = 1;
+    };
     /*!
     @struct UIState
     @brief Stores runtime toggles and layout states for the UI.
@@ -68,7 +101,7 @@ namespace UI {
         bool drawVelocities = false;    // draw velocity arrows if RigidBodyComponent exists
         float overlayThickness = .35f;  // line thickness for wireframes
         float fontScale = 1.0f;         // Set the font scale
-
+        VisualScriptingGraph visualGraph;
         bool drawGameDebug = false;     // Toggle for script-based debug drawing (circles/lines)
     };
 
@@ -128,7 +161,8 @@ namespace UI {
     @param selected Currently selected entity.
     */
     void RenderAll(FrameProfiler& profiler, UIState& ui, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
-
+    VisualScriptingGraph& GetVisualScriptingGraph();
+    void ClearVisualScriptingGraph();
     void SetDarkGrayTheme();
 
 } // namespace UI

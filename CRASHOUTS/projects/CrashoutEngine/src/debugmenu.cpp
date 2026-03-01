@@ -40,7 +40,7 @@ namespace UI { // --------------------------------------------------------------
 
 	static std::string g_IniPath;
     static bool* s_GameDebugDrawPtr = nullptr;
-
+	static UIState* s_UIStatePtr = nullptr;
 	// -- Lifecycle ------------------------------------------------------------
 	/*!
 	 @brief Initializes ImGui context, allocators, and platform bindings.
@@ -90,7 +90,7 @@ namespace UI { // --------------------------------------------------------------
 		SetDarkGrayTheme();
 		// Load custom settings
 		Settings::LoadEditorSettings(uiState);
-
+		s_UIStatePtr = &uiState;
 		ScopedMemTag boot(MemTag::Resources);
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 330");
@@ -116,7 +116,7 @@ namespace UI { // --------------------------------------------------------------
 			Settings::SaveEditorSettings(uiState);
 			ImGui::SaveIniSettingsToDisk(g_IniPath.c_str());
 		}
-
+		s_UIStatePtr = nullptr;
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -309,7 +309,20 @@ namespace UI { // --------------------------------------------------------------
 			ImGui::EndMenuBar();
 		}
 	}
+     
+	VisualScriptingGraph& GetVisualScriptingGraph()
+	{
+		static VisualScriptingGraph dummy;
+		return s_UIStatePtr ? s_UIStatePtr->visualGraph : dummy;
+	}
 
+	void ClearVisualScriptingGraph()
+	{
+		auto& g = GetVisualScriptingGraph();
+		g.nodes.clear();
+		g.links.clear();
+		g.nextNodeId = 1;
+	}
 	/*!
 	 @brief Renders all panels and overlays in a single call.
 	 @param profiler Frame profiler reference.

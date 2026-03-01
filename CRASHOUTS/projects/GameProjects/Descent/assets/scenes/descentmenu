@@ -226,8 +226,8 @@
         },
         {
             "active": true,
-            "name": "StartBtn",
-            "uuid": 16826164419070565077,
+            "name": "AudioManager",
+            "uuid": 6273075079174648405,
             "tag": {
                 "tagMask": 0
             },
@@ -235,147 +235,16 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 0.0,
-                    "y": -10.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 278.5199890136719,
-                    "y": 60.5
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI/button.png",
-                "uvSize": {
                     "x": 1.0,
                     "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
                 }
             },
-            "text": {
-                "font": "AlegreyaSC-Medium",
-                "text": "START GAME",
-                "scale": 16.5,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": true,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "letterSpacing": 0.0,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Click",
-                        "path": "button click.wav",
-                        "volume": 1.0,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapePressedColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "textNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "textHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "textPressedColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "gui": {
-                "uiType": 7
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 78.0,
-                    "y": 212.5
-                },
-                "uiLayout": 4
-            },
             "layer": {
-                "layerName": "StaticBackground",
+                "layerName": "",
                 "z": 0
             }
         },
@@ -1148,25 +1017,156 @@
         },
         {
             "active": true,
-            "name": "AudioManager",
-            "uuid": 6273075079174648405,
+            "name": "StartBtn",
+            "uuid": 16826164419070565077,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
+                    "x": -58.81161880493164,
+                    "y": -10.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 278.5199890136719,
+                    "y": 60.5
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/button.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "START GAME",
+                "scale": 16.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapePressedColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textPressedColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 78.0,
+                    "y": 212.5
+                },
+                "uiLayout": 4
+            },
             "layer": {
-                "layerName": "",
+                "layerName": "StaticBackground",
                 "z": 0
             }
         }
@@ -1197,5 +1197,10 @@
             "x": 2000.0,
             "y": 2000.0
         }
+    },
+    "VisualScripting": {
+        "nextNodeId": 1,
+        "nodes": [],
+        "links": []
     }
 }

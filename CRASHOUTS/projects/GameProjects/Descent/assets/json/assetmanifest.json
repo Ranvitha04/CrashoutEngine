@@ -1699,13 +1699,13 @@
         {
             "name": "Victory",
             "path": "Victory"
+        },
+        {
+            "name": "Victory2",
+            "path": "Victory2"
         }
     ],
     "prefabs": [
-        {
-            "name": "Player_Prefab",
-            "path": "Player_Prefab.json"
-        },
         {
             "name": "PlayerBarrier",
             "path": "PlayerBarrier.json"
@@ -1723,6 +1723,10 @@
             "path": "Moving_Gate.json"
         },
         {
+            "name": "InstructionPanel",
+            "path": "InstructionPanel.json"
+        },
+        {
             "name": "FilledAudioManager_Prefab",
             "path": "FilledAudioManager_Prefab.json"
         },
@@ -1733,6 +1737,10 @@
         {
             "name": "Moving_Platform(Sinking)",
             "path": "Moving_Platform(Sinking).json"
+        },
+        {
+            "name": "Player_Prefab",
+            "path": "Player_Prefab.json"
         },
         {
             "name": "PressurePlate",
