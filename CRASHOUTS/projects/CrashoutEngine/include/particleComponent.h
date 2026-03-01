@@ -5,7 +5,7 @@
 @brief      Particle Component data.
 @details    Declare data types and functions that would be used for particles.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -19,6 +19,10 @@ namespace ParticleSystem {
     @brief  ParticleShape enum determines the way particle emits over lifetime.
     */
     enum class ParticleShape { LINE, CIRCLE, SQUARE };
+
+    enum class ParticlePreset { Custom = 0, Smoke = 1, Fire = 2, Explosion = 3, SuperheroLanding = 4 };
+
+    enum class ParticleRenderShape { Square = 0, Circle = 1, Triangle = 2 };
 }
 
 namespace Component {
@@ -45,6 +49,20 @@ namespace Component {
     @brief  Particle Component data.
     */
     struct ParticleComponent {
+        ParticleSystem::ParticlePreset preset{ ParticleSystem::ParticlePreset::Custom };
+        bool burstRequested{ false };
+        int burstCount{ 0 };
+
+        ParticleSystem::ParticleRenderShape renderShape{ ParticleSystem::ParticleRenderShape::Square };
+        float squareSizeMultiplier{ 1.0f };
+        float circleRadiusMultiplier{ 1.0f };
+        int circleSegments{ 48 };
+        float triangleWidthMultiplier{ 1.0f };
+        float triangleHeightMultiplier{ 1.0f };
+
+        f32 superheroLandingAngleDeg{ 8.0f };
+        f32 superheroLandingAngleSpreadDeg{ 18.0f };
+
         bool playOnStop{ false };
         bool isEmitting{ false };
         bool useWorldSpace{ false };
@@ -101,6 +119,8 @@ namespace ParticleSystem {
     @param dt       - Delta time to reference
     */
     void ParticleUpdate(CrashoutsEngine::Entity const entityId, Component::ParticleComponent& comp, f32 dt);
+
+    void ApplyPreset(Component::ParticleComponent& comp, ParticlePreset preset);
     
 }
 

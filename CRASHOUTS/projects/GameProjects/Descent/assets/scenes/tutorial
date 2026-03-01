@@ -11929,7 +11929,9 @@
                 "scripts": [
                     {
                         "className": "tutorial1door",
-                        "fields": {}
+                        "fields": {
+                            "doorParticleName": "Door Particles"
+                        }
                     }
                 ]
             },
@@ -12137,6 +12139,16 @@
                 "z": 100
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": false,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12353,6 +12365,16 @@
                 "z": 100
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": false,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12647,6 +12669,16 @@
                 "z": -5
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12752,6 +12784,16 @@
                 "z": 0
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12857,6 +12899,16 @@
                 "z": 0
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
@@ -12962,6 +13014,16 @@
                 "z": 0
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 100,
@@ -13067,6 +13129,16 @@
                 "z": 0
             },
             "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 100,
@@ -21763,37 +21835,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -21846,7 +21887,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21860,14 +21901,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21920,6 +21961,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22801,8 +22873,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.55960083007813,
-                    "y": -68.69497680664063,
+                    "x": -218.30088806152345,
+                    "y": -57.939491271972659,
                     "z": 0.0
                 },
                 "size": {
@@ -22813,8 +22885,8 @@
             "parent": {
                 "parentUUID": 17142618762681968282,
                 "localPos": {
-                    "x": 0.016148703172802926,
-                    "y": -0.4811890423297882,
+                    "x": 0.0037109374534338714,
+                    "y": -0.3736341893672943,
                     "z": -50.0
                 },
                 "localRot": 0.0,
@@ -22835,16 +22907,26 @@
                 "z": 0
             },
             "particle": {
+                "preset": 4,
+                "burstCount": 650,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 76.0999984741211,
+                "superheroLandingAngleSpreadDeg": 5.599999904632568,
                 "isEmitting": false,
                 "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 100.0,
+                "maxParticles": 900,
+                "emitRate": 1200.0,
                 "playOnStop": true,
-                "emissionShape": 1,
-                "radiusMin": -0.10000000149011612,
-                "radiusMax": 0.20000000298023225,
-                "lengthMin": 0.0,
-                "lengthMax": 5.0,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 0.15000000596046449,
+                "lengthMin": -0.4000000059604645,
+                "lengthMax": -0.10000000149011612,
                 "areaMin": {
                     "x": 0.0,
                     "y": 0.0
@@ -22853,39 +22935,39 @@
                     "x": 5.0,
                     "y": 5.0
                 },
-                "startLifeMin": 1.0,
-                "startLifeMax": 1.0,
-                "startSpeedMin": 1.0,
-                "startSpeedMax": 1.0,
+                "startLifeMin": 0.3499999940395355,
+                "startLifeMax": 0.8999999761581421,
+                "startSpeedMin": 10.0,
+                "startSpeedMax": 26.0,
                 "uniformSize": true,
-                "startSizeXMin": 1.25,
-                "startSizeXMax": 3.25,
-                "startSizeYMin": 1.25,
-                "startSizeYMax": 3.25,
-                "sizeOverTime": 0.0,
-                "rotationOverTime": 0.0,
+                "startSizeXMin": 3.200000047683716,
+                "startSizeXMax": 4.5,
+                "startSizeYMin": 0.20000000298023225,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.6000000238418579,
+                "rotationOverTime": 220.0,
                 "startRotationMin": 0.0,
-                "startRotationMax": 0.0,
+                "startRotationMax": 360.0,
                 "startColor": {
-                    "x": 0.6117647290229797,
-                    "y": 0.4274510145187378,
-                    "z": 0.30588236451148989,
-                    "w": 1.0
+                    "x": 0.9134199023246765,
+                    "y": 0.7730458378791809,
+                    "z": 0.6326717734336853,
+                    "w": 0.8999999761581421
                 },
                 "endColor": {
-                    "x": 0.3803921639919281,
-                    "y": 0.3607843220233917,
-                    "z": 0.3607843220233917,
+                    "x": 0.30000001192092898,
+                    "y": 0.2800000011920929,
+                    "z": 0.25,
                     "w": 0.0
                 },
                 "gravity": {
                     "x": 0.0,
-                    "y": -9.800000190734864,
+                    "y": -25.0,
                     "z": 0.0
                 },
                 "startVelocity": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 2.0,
                     "z": 0.0
                 },
                 "useTexture": false,
@@ -27066,6 +27148,121 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "Door Particles",
+            "uuid": 9478966523423520205,
+            "tag": {
+                "tagMask": 1
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1808.301513671875,
+                    "y": -786.4923095703125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 4576864458208606520,
+                "localPos": {
+                    "x": 0.0054569244384765629,
+                    "y": -0.03593688830733299,
+                    "z": 10.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015625,
+                    "y": 0.009999999776482582
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            },
+            "particle": {
+                "preset": 3,
+                "burstCount": 1400,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 6.230000019073486,
+                "circleSegments": 76,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 1308,
+                "emitRate": 1200.0,
+                "playOnStop": true,
+                "emissionShape": 1,
+                "radiusMin": 4.800000190734863,
+                "radiusMax": 52.70000076293945,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.25,
+                "startLifeMax": 0.6000000238418579,
+                "startSpeedMin": 8.0,
+                "startSpeedMax": 20.0,
+                "uniformSize": true,
+                "startSizeXMin": -0.41999998688697817,
+                "startSizeXMax": 0.75,
+                "startSizeYMin": 0.18000000715255738,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.3799999952316284,
+                "rotationOverTime": 80.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.7672864198684692,
+                    "y": 0.8917748928070068,
+                    "z": 0.1544199138879776,
+                    "w": 0.949999988079071
+                },
+                "endColor": {
+                    "x": 0.25,
+                    "y": 0.05000000074505806,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -3.0,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
             }
         }
     ],

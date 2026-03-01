@@ -17,6 +17,8 @@ namespace CrashoutsEngine
     {
         // NEW: Gatekeeper boolean
         private bool hasTriggered = false;
+        [SerializeField] private string doorParticleName = "Door Particles";
+        private uint doorParticleID = 0;
 
         public override void Start()
         {
@@ -24,6 +26,13 @@ namespace CrashoutsEngine
             // regardless of whether the door collider is set to 'Trigger' or 'Solid'.
             CollisionEvents.RegisterTriggerEnter(Entity.ID, OnTriggerEnter);
             CollisionEvents.RegisterCollideEnter(Entity.ID, OnCollideEnter);
+
+            Entity dust = Entity.Find(doorParticleName);
+            if (dust != null)
+            {
+                doorParticleID = dust.ID;
+                InternalCalls.Particle_SetEmitting(doorParticleID, false);
+            }
         }
 
         public void OnTriggerEnter(uint otherEntityID)
@@ -52,8 +61,9 @@ namespace CrashoutsEngine
                 // Lock the door so it can't be triggered again
                 hasTriggered = true; 
                 
-                // Console.WriteLine("[TutorialDoor] Player detected! Loading tutorial2...");
-                SceneManager.LoadScene("tutorial2", 2f);
+                //Console.WriteLine("[TutorialDoor] Player detected! Loading tutorial2...");
+                if (doorParticleID != 0) InternalCalls.Particle_TriggerBurst(doorParticleID);
+                SceneManager.LoadScene("tutorial2",2f);
             }
         }
     }

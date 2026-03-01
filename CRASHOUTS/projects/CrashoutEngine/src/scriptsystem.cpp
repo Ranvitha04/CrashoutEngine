@@ -403,6 +403,19 @@ namespace CrashoutsEngine
 		comp->isEmitting = emitting;
 	}
 
+	static void InternalParticleTriggerBurst(uint32_t entityID) {
+		auto* ecs = ECS::getInstance();
+		if (!ecs) return;
+		if (!ecs->HasComponent<Component::ParticleComponent>(entityID)) return;
+		auto* comp = ecs->GetComponent<Component::ParticleComponent>(entityID);
+		if (!comp) return;
+
+		comp->data.activeCount = 0;
+		comp->emitAccumulator = 0.0f;
+		comp->burstRequested = true;
+		comp->isEmitting = true;
+	}
+
 	void ScriptSystem::RegisterAllBindings()
 	{
         Bindings::RegisterTransformBindings();
@@ -427,6 +440,7 @@ namespace CrashoutsEngine
 
 		mono_add_internal_call("CrashoutsEngine.InternalCalls::GetScript", (const void*)InternalGetScript);
 		mono_add_internal_call("CrashoutsEngine.InternalCalls::Particle_SetEmitting", (const void*)InternalSetParticleEmitting);
+		mono_add_internal_call("CrashoutsEngine.InternalCalls::Particle_TriggerBurst", (const void*)InternalParticleTriggerBurst);
 	}
 
 
