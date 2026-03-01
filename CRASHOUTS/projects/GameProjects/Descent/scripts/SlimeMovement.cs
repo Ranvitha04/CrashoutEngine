@@ -21,7 +21,7 @@ namespace CrashoutsEngine
         [SerializeField] private float moveSpeed = 600f; 
         [SerializeField] private float maxSpeed = 15.0f; 
         [SerializeField] private float moveAudioInterval = 0.4f;
-        [SerializeField] private float stopAudioDistance = 40.0f;
+        //[SerializeField] private float stopAudioDistance = 40.0f;
         [SerializeField] private float minAudioDistance = 1.0f;
         [SerializeField] private float maxAudioDistance = 50.0f;
         [SerializeField] private float detectionRange = 250.0f;

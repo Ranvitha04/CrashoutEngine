@@ -19474,8 +19474,7 @@
                         "fields": {
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0,
-                            "drawHitbox": true
+                            "clickHeight": 3.0
                         }
                     }
                 ]
@@ -19565,8 +19564,7 @@
                         "fields": {
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0,
-                            "drawHitbox": true
+                            "clickHeight": 3.0
                         }
                     }
                 ]
@@ -21532,6 +21530,40 @@
                     "y": 1.0
                 }
             },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "layer": {
                 "layerName": "",
                 "z": 0
@@ -21760,6 +21792,7 @@
                             "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
                             "isDialogueActive": true,
+                            "facingRight": true,
                             "CurrentEnergy": 75.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -21769,17 +21802,6 @@
                         }
                     }
                 ]
-            },
-            "camera": {
-                "zoom": 0.30000001192092898,
-                "xBounds": {
-                    "x": -148.60000610351563,
-                    "y": 1750.0
-                },
-                "yBounds": {
-                    "x": -2000.0,
-                    "y": 2000.0
-                }
             },
             "button": {
                 "buttonState": 0,
@@ -21835,6 +21857,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -21887,7 +21940,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21901,14 +21954,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21961,37 +22014,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -27243,6 +27265,55 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            }
+        },
+        {
+            "active": true,
+            "name": "Camera",
+            "uuid": 10095249895054869713,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "CameraController",
+                        "fields": {
+                            "playerEntityName": "Player",
+                            "lookAheadDistance": 50.0,
+                            "smoothSpeedX": 4.0,
+                            "smoothSpeedY": 4.0,
+                            "defaultOffsetY": 20.0
+                        }
+                    }
+                ]
+            },
+            "camera": {
+                "zoom": 0.30000001192092898,
+                "xBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "yBounds": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

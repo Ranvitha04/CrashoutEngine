@@ -551,6 +551,9 @@ void Update(double const& dt) {
         {
         FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Audio");
 
+        // Runs after physics
+        CrashoutsEngine::ScriptSystem::LateUpdateAll();
+
         // Update Listener Position (Follow Player)
         CEVec3 listenerPos = { 0.0f, 0.0f, 0.0f };
         bool foundPlayer = false;

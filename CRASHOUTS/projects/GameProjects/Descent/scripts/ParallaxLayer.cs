@@ -15,27 +15,27 @@ namespace CrashoutsEngine
     public class ParallaxLayer : ScriptBase
     {
         // --- SETTINGS ---
-        // 1.0 = Moves exactly with Player (Pinned to screen)
+        // 1.0 = Moves exactly with Cam (Pinned to screen)
         // 0.0 = Static in world (Normal objects)
-        // 0.9 = Far Background (Moves slowly relative to player)
-        // -0.5 = Foreground (Moves faster than player)
+        // 0.9 = Far Background (Moves slowly relative to Cam)
+        // -0.5 = Foreground (Moves faster than Cam)
         [SerializeField] public float bgFactor = 0.9f;
         [SerializeField] public float midFactor = 0.5f;
         [SerializeField] public float fgFactor = -0.3f;
 
         [SerializeField] public bool lockY = true; // Keep background at original Y height?
-        [SerializeField] public string targetName = "Player"; // Name of the entity to follow
+        [SerializeField] public string targetName = "Camera"; // Name of the entity to follow
 
         // --- STATE ---
-        private Entity playerEntity;
+        private Entity CamEntity;
         private TransformComponent myTransform;
-        private TransformComponent playerTransform;
+        private TransformComponent CamTransform;
         private TagComponent myTag;
 
         private float startPosX;
         private float startPosY;
-        private float startPlayerX;
-        private float startPlayerY;
+        private float startCamX;
+        private float startCamY;
 
         private float currentFactor = 0.0f;
 
@@ -45,31 +45,20 @@ namespace CrashoutsEngine
             myTransform = Entity.GetComponent<TransformComponent>();
             myTag = Entity.GetComponent<TagComponent>();
 
-            // 2. FIND PLAYER (The "Camera")
-            playerEntity = Entity.Find(targetName);
+            // 2. FIND Cam (The "Camera")
+            CamEntity = Entity.Find(targetName);
 
-            if (playerEntity != null)
+            if (CamEntity != null)
             {
-                playerTransform = playerEntity.GetComponent<TransformComponent>();
+                CamTransform = CamEntity.GetComponent<TransformComponent>();
 
                 // Cache starting positions for relative calculation
-                startPlayerX = playerTransform.Position.x;
-                startPlayerY = playerTransform.Position.y;
+                startCamX = CamTransform.Position.x;
+                startCamY = CamTransform.Position.y;
             }
             else
             {
-                // Fallback: Check if PlayerMovement singleton exists
-                if (PlayerMovement.Instance != null)
-                {
-                    playerEntity = PlayerMovement.Instance.Entity;
-                    playerTransform = playerEntity.GetComponent<TransformComponent>();
-                    startPlayerX = playerTransform.Position.x;
-                    startPlayerY = playerTransform.Position.y;
-                }
-                else
-                {
-                    Console.WriteLine("[Parallax] Error: Could not find Player entity!");
-                }
+                Console.WriteLine("[Parallax] Error: Could not find Cam entity!");
             }
 
             // 3. CACHE MY STARTING POS
@@ -100,16 +89,16 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            if (playerTransform == null) return;
+            if (CamTransform == null) return;
 
             // 1. CALCULATE DISTANCE MOVED
-            // How far has the player moved from the start of the scene?
-            float distMovedX = playerTransform.Position.x - startPlayerX;
-            float distMovedY = playerTransform.Position.y - startPlayerY;
+            // How far has the Cam moved from the start of the scene?
+            float distMovedX = CamTransform.Position.x - startCamX;
+            float distMovedY = CamTransform.Position.y - startCamY;
 
             // 2. CALCULATE PARALLAX OFFSET
-            // If factor is 0.9, we move 0.9 units for every 1 unit the player moves.
-            // This means the player "outruns" the background by 0.1 units, creating depth.
+            // If factor is 0.9, we move 0.9 units for every 1 unit the Cam moves.
+            // This means the Cam "outruns" the background by 0.1 units, creating depth.
             float parallaxX = distMovedX * currentFactor;
             float parallaxY = distMovedY * currentFactor;
 
