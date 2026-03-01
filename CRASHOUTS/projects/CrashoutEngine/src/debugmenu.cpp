@@ -300,6 +300,7 @@ namespace UI { // --------------------------------------------------------------
 				ImGui::MenuItem("Physics", nullptr, &ui.showPhysics);
 				ImGui::MenuItem("Audio", nullptr, &ui.showAudio);
 				ImGui::MenuItem("Animation", nullptr, &ui.showAnimation);
+				ImGui::MenuItem("Visual Scripting", nullptr, &ui.showVisualScripting);
 				ImGui::MenuItem("Game State", nullptr, &ui.showGameState);
 				ImGui::MenuItem("Game Scene", nullptr, &ui.showGameScene);
 				ImGui::MenuItem("Project Manager", nullptr, &ui.showProjectManager);
@@ -394,7 +395,7 @@ namespace UI { // --------------------------------------------------------------
 			ImGui::DockBuilderDockWindow("Engine Controls", dock_top);
 			ImGui::DockBuilderDockWindow("Game Viewport", dock_main);
 			ImGui::DockBuilderDockWindow("Project Manager", dock_bottom);
-
+			ImGui::DockBuilderDockWindow("Visual Scripting", dock_bottom);
 			ImGui::DockBuilderFinish(dockspace_id);
 		}
 
@@ -408,6 +409,7 @@ namespace UI { // --------------------------------------------------------------
 			LOGI(Core, "Redo Triggered");
 			UndoManager::GetInstance().Redo();
 		}
+
 		if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::S))
 		{
 			if (!CrashoutsEngine::Serialization::currSceneName.empty()) {
@@ -459,7 +461,9 @@ namespace UI { // --------------------------------------------------------------
 		if (ui.showProjectManager) {
 			RenderProjectManager(ui);
 		}
-
+		if (ui.showVisualScripting) {
+			RenderVisualScriptingPanel(ui);
+		}
 		//EndFrame();
 
 #if USE_IMGUI_EDITOR

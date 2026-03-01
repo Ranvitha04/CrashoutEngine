@@ -17,7 +17,10 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "collidereventmanager.h"
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/ostreamwrapper.h>
-
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdio>
 using namespace CrashoutsEngine;
 using namespace Serialization;
 using namespace KeyframeUnity;
@@ -1630,7 +1633,492 @@ namespace UI {
 
 		ImGui::End();
 	}
+	//VISUAL SCRIPTING PANEL
+	void UI::RenderVisualScriptingPanel(UIState& ui)
+	{
+		if (!ui.showVisualScripting) return;
 
+		ScopedWindow w("Visual Scripting", LockFlags(ui.lockLayout));
+		enum class VSNodeType
+		{
+			Start = 0,
+			Move,
+			Attack,
+			Wait,
+			Branch
+		};
+		struct VSNode
+		{
+			int id;
+			VSNodeType type;
+			std::string title;
+			ImVec2 pos;
+			ImVec2 size;
+		};
+
+		struct VSLink
+		{
+			int fromNode;
+			int toNode;
+		};
+
+		static std::vector<VSNode> nodes =
+		{
+			{ 1, VSNodeType::Start,  "Start",  ImVec2(60.0f,  80.0f), ImVec2(140.0f, 70.0f) },
+			{ 2, VSNodeType::Move,   "Move",   ImVec2(320.0f, 80.0f), ImVec2(140.0f, 70.0f) },
+			{ 3, VSNodeType::Attack, "Attack", ImVec2(580.0f, 80.0f), ImVec2(140.0f, 70.0f) }
+		};
+		static int nextNodeId = 4;
+		static std::vector<VSLink> links =
+		{
+			{ 1, 2 },
+			{ 2, 3 }
+		};
+		static int contextNodeId = -1;
+		static int selectedNode = -1;
+		static int draggingNode = -1;
+		static ImVec2 dragOffset(0, 0);
+		static bool showGrid = true;
+		static bool creatingLink = false;
+		static int linkStartNode = -1;
+		static int inspectorNodeId = -1;
+		static char nodeTitleBuffer[128] = "";
+		auto deleteNodeById = [&](int nodeId)
+			{
+				links.erase(
+					std::remove_if(links.begin(), links.end(),
+						[&](const VSLink& link)
+						{
+							return link.fromNode == nodeId || link.toNode == nodeId;
+						}),
+					links.end()
+				);
+
+				nodes.erase(
+					std::remove_if(nodes.begin(), nodes.end(),
+						[&](const VSNode& node)
+						{
+							return node.id == nodeId;
+						}),
+					nodes.end()
+				);
+
+				if (selectedNode == nodeId) selectedNode = -1;
+				if (draggingNode == nodeId) draggingNode = -1;
+				if (linkStartNode == nodeId) linkStartNode = -1;
+
+				creatingLink = false;
+				inspectorNodeId = -1;
+				nodeTitleBuffer[0] = '\0';
+			};
+		ImGui::Checkbox("Show Grid", &showGrid);
+		ImGui::Separator();
+
+		ImVec2 canvasPos = ImGui::GetCursorScreenPos();
+		ImVec2 canvasSize = ImGui::GetContentRegionAvail();
+		if (canvasSize.x < 300.0f) canvasSize.x = 300.0f;
+		if (canvasSize.y < 250.0f) canvasSize.y = 250.0f;
+
+		ImVec2 canvasEnd(canvasPos.x + canvasSize.x, canvasPos.y + canvasSize.y);
+		ImDrawList* draw = ImGui::GetWindowDrawList();
+
+		draw->AddRectFilled(canvasPos, canvasEnd, IM_COL32(35, 35, 40, 255));
+		draw->AddRect(canvasPos, canvasEnd, IM_COL32(255, 255, 255, 60));
+
+		if (showGrid)
+		{
+			const float gridStep = 32.0f;
+			for (float x = canvasPos.x; x < canvasEnd.x; x += gridStep)
+			{
+				draw->AddLine(ImVec2(x, canvasPos.y), ImVec2(x, canvasEnd.y), IM_COL32(255, 255, 255, 20));
+			}
+			for (float y = canvasPos.y; y < canvasEnd.y; y += gridStep)
+			{
+				draw->AddLine(ImVec2(canvasPos.x, y), ImVec2(canvasEnd.x, y), IM_COL32(255, 255, 255, 20));
+			}
+		}
+
+		auto getNodeRectMin = [&](const VSNode& node)
+			{
+				return ImVec2(canvasPos.x + node.pos.x, canvasPos.y + node.pos.y);
+			};
+
+		auto getNodeRectMax = [&](const VSNode& node)
+			{
+				ImVec2 minP = getNodeRectMin(node);
+				return ImVec2(minP.x + node.size.x, minP.y + node.size.y);
+			};
+
+		auto getInputPinPos = [&](const VSNode& node)
+			{
+				ImVec2 minP = getNodeRectMin(node);
+				return ImVec2(minP.x, minP.y + node.size.y * 0.5f);
+			};
+
+		auto getOutputPinPos = [&](const VSNode& node)
+			{
+				ImVec2 minP = getNodeRectMin(node);
+				return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.5f);
+			};
+
+		auto findNodeById = [&](int id) -> VSNode*
+			{
+				for (auto& node : nodes)
+				{
+					if (node.id == id) return &node;
+				}
+				return nullptr;
+			};
+
+		auto isMouseNearPoint = [&](ImVec2 p, float radius)
+			{
+				ImVec2 mouse = ImGui::GetIO().MousePos;
+				float dx = mouse.x - p.x;
+				float dy = mouse.y - p.y;
+				return (dx * dx + dy * dy) <= (radius * radius);
+			};
+		auto getTypeName = [](VSNodeType type) -> const char*
+			{
+				switch (type)
+				{
+				case VSNodeType::Start:  return "Start";
+				case VSNodeType::Move:   return "Move";
+				case VSNodeType::Attack: return "Attack";
+				case VSNodeType::Wait:   return "Wait";
+				case VSNodeType::Branch: return "Branch";
+				default:                 return "Unknown";
+				}
+			};
+
+		ImGui::InvisibleButton("VisualScriptingCanvas", canvasSize);
+		bool canvasHovered = ImGui::IsItemHovered();
+		ImVec2 mousePos = ImGui::GetIO().MousePos;
+		bool mouseClicked = ImGui::IsMouseClicked(0);
+		bool mouseDown = ImGui::IsMouseDown(0);
+		bool mouseReleased = ImGui::IsMouseReleased(0);
+		if (canvasHovered && ImGui::IsMouseClicked(1))
+		{
+			contextNodeId = -1;
+
+			for (int i = (int)nodes.size() - 1; i >= 0; --i)
+			{
+				ImVec2 minP = getNodeRectMin(nodes[i]);
+				ImVec2 maxP = getNodeRectMax(nodes[i]);
+
+				if (mousePos.x >= minP.x && mousePos.x <= maxP.x &&
+					mousePos.y >= minP.y && mousePos.y <= maxP.y)
+				{
+					contextNodeId = nodes[i].id;
+					selectedNode = nodes[i].id;
+					ImGui::OpenPopup("VSNodeContextPopup");
+					break;
+				}
+			}
+
+			if (contextNodeId == -1)
+			{
+				ImGui::OpenPopup("VSAddNodePopup");
+			}
+		}
+
+		if (ImGui::BeginPopup("VSAddNodePopup"))
+		{
+			ImVec2 popupMouse = ImGui::GetMousePos();
+			ImVec2 localPos(
+				popupMouse.x - canvasPos.x,
+				popupMouse.y - canvasPos.y
+			);
+
+			if (ImGui::MenuItem("Add Start Node"))
+			{
+				nodes.push_back({ nextNodeId++, VSNodeType::Start, "Start", localPos, ImVec2(140.0f, 70.0f) });
+			}
+
+			if (ImGui::MenuItem("Add Move Node"))
+			{
+				nodes.push_back({ nextNodeId++, VSNodeType::Move, "Move", localPos, ImVec2(140.0f, 70.0f) });
+			}
+
+			if (ImGui::MenuItem("Add Attack Node"))
+			{
+				nodes.push_back({ nextNodeId++, VSNodeType::Attack, "Attack", localPos, ImVec2(140.0f, 70.0f) });
+			}
+
+			if (ImGui::MenuItem("Add Wait Node"))
+			{
+				nodes.push_back({ nextNodeId++, VSNodeType::Wait, "Wait", localPos, ImVec2(140.0f, 70.0f) });
+			}
+
+			if (ImGui::MenuItem("Add Branch Node"))
+			{
+				nodes.push_back({ nextNodeId++, VSNodeType::Branch, "Branch", localPos, ImVec2(140.0f, 70.0f) });
+			}
+
+			ImGui::EndPopup();
+		}
+		if (ImGui::BeginPopup("VSNodeContextPopup"))
+		{
+			VSNode* contextNode = findNodeById(contextNodeId);
+
+			if (contextNode)
+			{
+				if (ImGui::MenuItem("Delete Node"))
+				{
+					deleteNodeById(contextNodeId);
+					contextNodeId = -1;
+					ImGui::CloseCurrentPopup();
+				}
+
+				if (ImGui::MenuItem("Duplicate Node"))
+				{
+					VSNode copy = *contextNode;
+					copy.id = nextNodeId++;
+					copy.pos.x += 40.0f;
+					copy.pos.y += 40.0f;
+					nodes.push_back(copy);
+
+					contextNodeId = copy.id;
+					selectedNode = copy.id;
+					ImGui::CloseCurrentPopup();
+				}
+
+				if (ImGui::MenuItem("Rename To Type"))
+				{
+					contextNode->title = getTypeName(contextNode->type);
+					std::snprintf(nodeTitleBuffer, sizeof(nodeTitleBuffer), "%s", contextNode->title.c_str());
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			ImGui::EndPopup();
+		}
+	
+		if (mouseClicked && canvasHovered)
+		{
+			selectedNode = -1;
+			draggingNode = -1;
+
+			
+			bool pinHandled = false;
+			for (int i = (int)nodes.size() - 1; i >= 0; --i)
+			{
+				ImVec2 outPin = getOutputPinPos(nodes[i]);
+				if (isMouseNearPoint(outPin, 8.0f))
+				{
+					creatingLink = true;
+					linkStartNode = nodes[i].id;
+					pinHandled = true;
+					break;
+				}
+			}
+
+		
+			if (!pinHandled)
+			{
+				for (int i = (int)nodes.size() - 1; i >= 0; --i)
+				{
+					ImVec2 minP = getNodeRectMin(nodes[i]);
+					ImVec2 maxP = getNodeRectMax(nodes[i]);
+
+					if (mousePos.x >= minP.x && mousePos.x <= maxP.x &&
+						mousePos.y >= minP.y && mousePos.y <= maxP.y)
+					{
+						selectedNode = nodes[i].id;
+						draggingNode = nodes[i].id;
+						dragOffset = ImVec2(mousePos.x - minP.x, mousePos.y - minP.y);
+						break;
+					}
+				}
+			}
+		}
+
+		
+		if (mouseDown && draggingNode != -1 && !creatingLink)
+		{
+			VSNode* node = findNodeById(draggingNode);
+			if (node)
+			{
+				node->pos = ImVec2(
+					mousePos.x - canvasPos.x - dragOffset.x,
+					mousePos.y - canvasPos.y - dragOffset.y
+				);
+			}
+		}
+
+		
+		if (mouseReleased)
+		{
+			if (creatingLink && linkStartNode != -1)
+			{
+				for (const auto& node : nodes)
+				{
+					if (node.id == linkStartNode) continue;
+
+					ImVec2 inPin = getInputPinPos(node);
+					if (isMouseNearPoint(inPin, 8.0f))
+					{
+						bool alreadyExists = false;
+						for (const auto& link : links)
+						{
+							if (link.fromNode == linkStartNode && link.toNode == node.id)
+							{
+								alreadyExists = true;
+								break;
+							}
+						}
+
+						if (!alreadyExists)
+						{
+							links.push_back({ linkStartNode, node.id });
+						}
+						break;
+					}
+				}
+			}
+
+			draggingNode = -1;
+			creatingLink = false;
+			linkStartNode = -1;
+		}
+		if (selectedNode != -1 && selectedNode != inspectorNodeId)
+		{
+			inspectorNodeId = selectedNode;
+
+			VSNode* selected = findNodeById(selectedNode);
+			if (selected)
+			{
+				std::snprintf(nodeTitleBuffer, sizeof(nodeTitleBuffer), "%s", selected->title.c_str());
+			}
+		}
+		else if (selectedNode == -1)
+		{
+			inspectorNodeId = -1;
+			nodeTitleBuffer[0] = '\0';
+		}
+		
+		for (const auto& link : links)
+		{
+			VSNode* from = findNodeById(link.fromNode);
+			VSNode* to = findNodeById(link.toNode);
+			if (!from || !to) continue;
+
+			ImVec2 p1 = getOutputPinPos(*from);
+			ImVec2 p2 = getInputPinPos(*to);
+
+			draw->AddBezierCubic(
+				p1,
+				ImVec2(p1.x + 80.0f, p1.y),
+				ImVec2(p2.x - 80.0f, p2.y),
+				p2,
+				IM_COL32(255, 220, 100, 255),
+				3.0f
+			);
+		}
+
+		
+		if (creatingLink && linkStartNode != -1)
+		{
+			VSNode* from = findNodeById(linkStartNode);
+			if (from)
+			{
+				ImVec2 p1 = getOutputPinPos(*from);
+				ImVec2 p2 = mousePos;
+
+				draw->AddBezierCubic(
+					p1,
+					ImVec2(p1.x + 80.0f, p1.y),
+					ImVec2(p2.x - 80.0f, p2.y),
+					p2,
+					IM_COL32(180, 255, 180, 255),
+					2.5f
+				);
+			}
+		}
+
+		
+		for (const auto& node : nodes)
+		{
+			ImVec2 minP = getNodeRectMin(node);
+			ImVec2 maxP = getNodeRectMax(node);
+
+			bool isSelected = (selectedNode == node.id);
+
+			ImU32 fillColor = isSelected
+				? IM_COL32(95, 120, 190, 255)
+				: IM_COL32(70, 90, 140, 255);
+
+			draw->AddRectFilled(minP, maxP, fillColor, 8.0f);
+			draw->AddRect(minP, maxP, IM_COL32(255, 255, 255, 180), 8.0f);
+			draw->AddText(ImVec2(minP.x + 16.0f, minP.y + 24.0f), IM_COL32(255, 255, 255, 255), node.title.c_str());
+			draw->AddText(ImVec2(minP.x + 16.0f, minP.y + 44.0f), IM_COL32(200, 200, 220, 255), getTypeName(node.type));
+			ImVec2 inPin = getInputPinPos(node);
+			ImVec2 outPin = getOutputPinPos(node);
+
+			draw->AddCircleFilled(inPin, 6.0f, IM_COL32(180, 220, 255, 255));
+			draw->AddCircleFilled(outPin, 6.0f, IM_COL32(255, 210, 100, 255));
+		}
+
+		if (selectedNode != -1)
+		{
+			if (ImGui::Button("Delete Selected Node"))
+			{
+				deleteNodeById(selectedNode);
+			}
+		}
+		bool deletePressed =
+			ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+			ImGui::IsKeyPressed(ImGuiKey_Delete, false) &&
+			!ImGui::GetIO().WantTextInput &&
+			!ImGui::IsAnyItemActive();
+
+		if (selectedNode != -1 && deletePressed)
+		{
+			deleteNodeById(selectedNode);
+		}
+		ImGui::Separator();
+		ImGui::Text("Selected Node Inspector");
+
+		if (selectedNode != -1)
+		{
+			VSNode* selected = findNodeById(selectedNode);
+			if (selected)
+			{
+				ImGui::Text("Node ID: %d", selected->id);
+
+				int nodeType = static_cast<int>(selected->type);
+				const char* typeNames[] = { "Start", "Move", "Attack", "Wait", "Branch" };
+
+				if (ImGui::Combo("Type", &nodeType, typeNames, IM_ARRAYSIZE(typeNames)))
+				{
+					selected->type = static_cast<VSNodeType>(nodeType);
+
+					// Optional: auto-rename title to match type
+					if (selected->title.empty() ||
+						selected->title == "Start" ||
+						selected->title == "Move" ||
+						selected->title == "Attack" ||
+						selected->title == "Wait" ||
+						selected->title == "Branch")
+					{
+						selected->title = getTypeName(selected->type);
+						std::snprintf(nodeTitleBuffer, sizeof(nodeTitleBuffer), "%s", selected->title.c_str());
+					}
+				}
+				if (ImGui::InputText("Title", nodeTitleBuffer, sizeof(nodeTitleBuffer)))
+				{
+					selected->title = nodeTitleBuffer;
+				}
+
+				ImGui::DragFloat2("Position", &selected->pos.x, 1.0f);
+
+				ImGui::Text("Size: %.1f x %.1f", selected->size.x, selected->size.y);
+			}
+		}
+		else
+		{
+			ImGui::TextDisabled("No node selected.");
+		}
+	}
 	/*!
 	 @brief Renders a panel to create new game projects and manage the current project root.
 	*/
