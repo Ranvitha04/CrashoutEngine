@@ -5,7 +5,7 @@
 @brief      Particle Functionalities.
 @details    Functions that would be used to sync particles with the engine's update.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -28,6 +28,208 @@ namespace ParticleSystem {
 
 	f32 RandomRange(f32 min, f32 max) {
 		return min + gDist01(gRng) * (max - min);
+	}
+
+	void ApplyPreset(Component::ParticleComponent& comp, ParticlePreset preset) {
+		comp.preset = preset;
+
+		auto ResetRuntime = [&]() {
+			comp.emitAccumulator = 0.0f;
+			comp.data.activeCount = 0;
+			ParticleInit(comp);
+		};
+
+		switch (preset) {
+		case ParticlePreset::Smoke: {
+			comp.burstRequested = false;
+			comp.burstCount = 0;
+			comp.isEmitting = true;
+			comp.playOnStop = true;
+			comp.useWorldSpace = true;
+
+			comp.renderShape = ParticleRenderShape::Circle;
+			comp.circleSegments = 48;
+			comp.circleRadiusMultiplier = 1.0f;
+
+			comp.maxParticles = 1200;
+			comp.emitRate = 220.0f;
+
+			comp.emissionShape = ParticleShape::CIRCLE;
+			comp.radiusMin = 0.0f;
+			comp.radiusMax = 0.7f;
+
+			comp.startLifeMin = 1.4f;
+			comp.startLifeMax = 2.6f;
+			comp.startSpeedMin = 0.4f;
+			comp.startSpeedMax = 1.2f;
+
+			comp.uniformSize = true;
+			comp.startSizeXMin = 0.35f;
+			comp.startSizeXMax = 0.75f;
+			comp.startSizeYMin = 0.35f;
+			comp.startSizeYMax = 0.75f;
+
+			comp.sizeOverTime = 0.25f;
+			comp.rotationOverTime = 10.0f;
+			comp.startRotationMin = 0.0f;
+			comp.startRotationMax = 360.0f;
+
+			comp.gravity = { 0.0f, 0.9f, 0.0f };
+			comp.startVelocity = { 0.0f, 0.9f, 0.0f };
+
+			comp.useTexture = false;
+			comp.textureName.clear();
+			comp.textureUV = { 1.0f, 1.0f };
+
+			comp.startcolor = { 0.45f, 0.45f, 0.45f, 0.35f };
+			comp.endColor = { 0.15f, 0.15f, 0.15f, 0.0f };
+
+			ResetRuntime();
+		} break;
+		case ParticlePreset::Fire: {
+			comp.burstRequested = false;
+			comp.burstCount = 0;
+			comp.isEmitting = true;
+			comp.playOnStop = true;
+			comp.useWorldSpace = true;
+
+			comp.renderShape = ParticleRenderShape::Square;
+			comp.squareSizeMultiplier = 1.0f;
+
+			comp.maxParticles = 1800;
+			comp.emitRate = 950.0f;
+
+			comp.emissionShape = ParticleShape::CIRCLE;
+			comp.radiusMin = 0.0f;
+			comp.radiusMax = 0.35f;
+
+			comp.startLifeMin = 0.35f;
+			comp.startLifeMax = 0.85f;
+			comp.startSpeedMin = 2.5f;
+			comp.startSpeedMax = 6.5f;
+
+			comp.uniformSize = true;
+			comp.startSizeXMin = 0.18f;
+			comp.startSizeXMax = 0.45f;
+			comp.startSizeYMin = 0.18f;
+			comp.startSizeYMax = 0.45f;
+
+			comp.sizeOverTime = -0.35f;
+			comp.rotationOverTime = 35.0f;
+			comp.startRotationMin = 0.0f;
+			comp.startRotationMax = 360.0f;
+
+			comp.gravity = { 0.0f, 5.0f, 0.0f };
+			comp.startVelocity = { 0.0f, 2.0f, 0.0f };
+
+			comp.useTexture = false;
+			comp.textureName.clear();
+			comp.textureUV = { 1.0f, 1.0f };
+
+			comp.startcolor = { 1.0f, 0.65f, 0.1f, 0.95f };
+			comp.endColor = { 0.4f, 0.05f, 0.0f, 0.0f };
+
+			ResetRuntime();
+		} break;
+		case ParticlePreset::Explosion: {
+			comp.isEmitting = true;
+			comp.playOnStop = true;
+			comp.useWorldSpace = true;
+
+			comp.renderShape = ParticleRenderShape::Circle;
+			comp.circleSegments = 64;
+			comp.circleRadiusMultiplier = 1.0f;
+
+			comp.maxParticles = 1400;
+			comp.emitRate = 1200.0f;
+			comp.burstRequested = true;
+			comp.burstCount = comp.maxParticles;
+
+			comp.emissionShape = ParticleShape::CIRCLE;
+			comp.radiusMin = 0.0f;
+			comp.radiusMax = 0.2f;
+
+			comp.startLifeMin = 0.25f;
+			comp.startLifeMax = 0.6f;
+			comp.startSpeedMin = 8.0f;
+			comp.startSpeedMax = 20.0f;
+
+			comp.uniformSize = true;
+			comp.startSizeXMin = 0.18f;
+			comp.startSizeXMax = 0.55f;
+			comp.startSizeYMin = 0.18f;
+			comp.startSizeYMax = 0.55f;
+
+			comp.sizeOverTime = -0.55f;
+			comp.rotationOverTime = 80.0f;
+			comp.startRotationMin = 0.0f;
+			comp.startRotationMax = 360.0f;
+
+			comp.gravity = { 0.0f, -3.0f, 0.0f };
+			comp.startVelocity = { 0.0f, 0.0f, 0.0f };
+
+			comp.useTexture = false;
+			comp.textureName.clear();
+			comp.textureUV = { 1.0f, 1.0f };
+
+			comp.startcolor = { 1.0f, 0.7f, 0.2f, 0.95f };
+			comp.endColor = { 0.25f, 0.05f, 0.0f, 0.0f };
+
+			ResetRuntime();
+		} break;
+		case ParticlePreset::SuperheroLanding: {
+			comp.isEmitting = true;
+			comp.playOnStop = true;
+			comp.useWorldSpace = true;
+
+			comp.renderShape = ParticleRenderShape::Circle;
+			comp.circleSegments = 48;
+			comp.circleRadiusMultiplier = 1.0f;
+
+			comp.superheroLandingAngleDeg = 8.0f;
+			comp.superheroLandingAngleSpreadDeg = 18.0f;
+
+			comp.maxParticles = 600;
+			comp.emitRate = 1600.0f;
+			comp.burstRequested = true;
+			comp.burstCount = 380;
+
+			comp.emissionShape = ParticleShape::CIRCLE;
+			comp.radiusMin = 0.0f;
+			comp.radiusMax = 0.18f;
+
+			comp.startLifeMin = 0.9f;
+			comp.startLifeMax = 1.9f;
+			comp.startSpeedMin = 2.5f;
+			comp.startSpeedMax = 7.5f;
+
+			comp.uniformSize = true;
+			comp.startSizeXMin = 1.2f;
+			comp.startSizeXMax = 3.0f;
+			comp.startSizeYMin = 1.2f;
+			comp.startSizeYMax = 3.0f;
+
+			comp.sizeOverTime = 1.35f;
+			comp.rotationOverTime = 8.0f;
+			comp.startRotationMin = 0.0f;
+			comp.startRotationMax = 360.0f;
+
+			comp.gravity = { 0.0f, -0.8f, 0.0f };
+			comp.startVelocity = { 0.0f, 0.6f, 0.0f };
+
+			comp.useTexture = false;
+			comp.textureName.clear();
+			comp.textureUV = { 1.0f, 1.0f };
+
+			comp.startcolor = { 0.62f, 0.58f, 0.52f, 0.75f };
+			comp.endColor = { 0.32f, 0.30f, 0.28f, 0.0f };
+
+			ResetRuntime();
+		} break;
+		case ParticlePreset::Custom:
+		default:
+			break;
+		}
 	}
 
 	void ParticleInit(Component::ParticleComponent& comp) {
@@ -76,10 +278,26 @@ namespace ParticleSystem {
 		const Component::TransformComponent* t = 
 			ecs->GetComponent<Component::TransformComponent>(entityId);
 
+		if (!t) {
+			data.activeCount = 0;
+			return;
+		}
+
 		f32 scaleX = t->size.x;
 		f32 scaleY = t->size.y;
 
 		// 1. Emission
+		bool stopEmittingAfterThisEmissionStage = false;
+		if (comp.burstRequested && comp.burstCount > 0) {
+			if (comp.emitRate <= 0.0f) comp.emitRate = 1.0f;
+			f32 secondsPerParticle = 1.f / comp.emitRate;
+			comp.emitAccumulator += secondsPerParticle * static_cast<f32>(comp.burstCount);
+			comp.burstRequested = false;
+			if (comp.preset == ParticlePreset::Explosion || comp.preset == ParticlePreset::SuperheroLanding) {
+				stopEmittingAfterThisEmissionStage = true;
+			}
+		}
+
 		if (comp.isEmitting && comp.emitRate > 0.f && comp.maxParticles > 0) {
 			comp.emitAccumulator += dt;
 			f32 secondsPerParticle = 1.f / comp.emitRate;
@@ -166,6 +384,31 @@ namespace ParticleSystem {
 					CEVec3 rotatedDir;
 					rotatedDir.x = localDir.x * c - localDir.y * s;
 					rotatedDir.y = localDir.x * s + localDir.y * c;
+					if (comp.preset == ParticlePreset::SuperheroLanding) {
+						f32 baseDeg = comp.superheroLandingAngleDeg;
+						f32 spreadDeg = comp.superheroLandingAngleSpreadDeg;
+						if (spreadDeg < 0.0f) spreadDeg = 0.0f;
+
+						f32 minDeg = baseDeg - (spreadDeg * 0.5f);
+						f32 maxDeg = baseDeg + (spreadDeg * 0.5f);
+						if (minDeg < 0.0f) minDeg = 0.0f;
+						if (maxDeg > 89.0f) maxDeg = 89.0f;
+						if (minDeg > maxDeg) minDeg = maxDeg;
+
+						f32 thetaDeg = RandomRange(minDeg, maxDeg);
+						f32 theta = thetaDeg * (CEMath::PI / 180.0f);
+						f32 x = cosf(theta);
+						f32 y = sinf(theta);
+
+						f32 sign = (localPos.x >= 0.0f) ? 1.0f : -1.0f;
+						if (fabsf(localPos.x) < 0.0001f) {
+							sign = (RandomRange(0.0f, 1.0f) < 0.5f) ? -1.0f : 1.0f;
+						}
+
+						CEVec3 heroLocalDir{ sign * x, y, 0.0f };
+						rotatedDir.x = heroLocalDir.x * c - heroLocalDir.y * s;
+						rotatedDir.y = heroLocalDir.x * s + heroLocalDir.y * c;
+					}
 
 					// --- SPAWN LOGIC ---
 					if (comp.useWorldSpace) {
@@ -200,6 +443,10 @@ namespace ParticleSystem {
 				comp.emitAccumulator -= secondsPerParticle;
 			}
 		}
+		if (stopEmittingAfterThisEmissionStage) {
+			comp.isEmitting = false;
+			comp.emitAccumulator = 0.0f;
+		}
 
 		// 2. Simulation & Recycling
 		for (size_t i = 0; i < data.activeCount;) {
@@ -227,6 +474,25 @@ namespace ParticleSystem {
 			// Simulate Movement & Physics
 			data.velocities[i] += comp.gravity * dt;
 			data.positions[i] += data.velocities[i] * dt;
+			if (comp.preset == ParticlePreset::SuperheroLanding) {
+				const float baseY = t->position.y;
+				if (data.positions[i].y < baseY) {
+					data.positions[i].y = baseY;
+					if (data.velocities[i].y < 0.0f) data.velocities[i].y = 0.0f;
+				}
+
+				float a = comp.superheroLandingAngleDeg;
+				if (a < 0.0f) a = 0.0f;
+				if (a > 89.0f) a = 89.0f;
+				float t01 = a / 89.0f;
+
+				const float dragX = 3.0f;
+				const float dragY = 3.0f - (2.2f * t01);
+				const float dampX = std::max(0.0f, 1.0f - dragX * dt);
+				const float dampY = std::max(0.0f, 1.0f - dragY * dt);
+				data.velocities[i].x *= dampX;
+				data.velocities[i].y *= dampY;
+			}
 
 			// Rotation & Scale Over Time (Angular Velocity)
 			data.rotations[i] += comp.rotationOverTime * dt;

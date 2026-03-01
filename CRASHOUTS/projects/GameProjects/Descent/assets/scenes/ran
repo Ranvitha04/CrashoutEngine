@@ -26,7 +26,7 @@
                 "wrapModeV": 0,
                 "thickness": 1.0,
                 "preview": false,
-                "type": 0,
+                "type": 1,
                 "textureName": "Monsters(5)",
                 "uvSize": {
                     "x": 1.0,
@@ -300,8 +300,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 27.621170043945314,
-                    "y": 15.445619583129883,
+                    "x": -31.186248779296876,
+                    "y": 6.874101638793945,
                     "z": 0.0
                 },
                 "size": {
@@ -328,7 +328,7 @@
                 },
                 "color": {
                     "x": 1.0,
-                    "y": 1.0,
+                    "y": 0.8784313797950745,
                     "z": 1.0,
                     "w": 1.0
                 },
@@ -350,16 +350,16 @@
         },
         {
             "active": true,
-            "name": "Entity 7",
-            "uuid": 17984768587446070860,
+            "name": "Entity 8",
+            "uuid": 3813912751566637841,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1.8651344776153565,
-                    "y": -33.428985595703128,
+                    "x": 4.328769683837891,
+                    "y": -5.472539901733398,
                     "z": 0.0
                 },
                 "size": {
@@ -367,21 +367,65 @@
                     "y": 1.0
                 }
             },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 1,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.36464089155197146,
+                    "y": 0.3606117069721222,
+                    "z": 0.3606117069721222,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": -0.5,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 0.5,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "layer": {
-                "layerName": "StaticBackground",
+                "layerName": "",
                 "z": 0
             },
             "particle": {
-                "isEmitting": true,
-                "useWorldSpace": false,
-                "maxParticles": 1000,
-                "emitRate": 100.0,
-                "playOnStop": false,
-                "emissionShape": 0,
+                "preset": 4,
+                "burstCount": 650,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 15.199999809265137,
+                "superheroLandingAngleSpreadDeg": 15.5,
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 900,
+                "emitRate": 1200.0,
+                "playOnStop": true,
+                "emissionShape": 1,
                 "radiusMin": 0.0,
-                "radiusMax": 5.0,
+                "radiusMax": 0.15000000596046449,
                 "lengthMin": 0.0,
-                "lengthMax": 5.0,
+                "lengthMax": 21.899999618530275,
                 "areaMin": {
                     "x": 0.0,
                     "y": 0.0
@@ -390,39 +434,39 @@
                     "x": 5.0,
                     "y": 5.0
                 },
-                "startLifeMin": 1.0,
-                "startLifeMax": 1.0,
-                "startSpeedMin": 1.0,
-                "startSpeedMax": 1.0,
+                "startLifeMin": 0.3499999940395355,
+                "startLifeMax": 0.8999999761581421,
+                "startSpeedMin": 10.0,
+                "startSpeedMax": 26.0,
                 "uniformSize": true,
-                "startSizeXMin": 1.0,
-                "startSizeXMax": 1.0,
-                "startSizeYMin": 1.0,
-                "startSizeYMax": 1.0,
-                "sizeOverTime": 0.0,
-                "rotationOverTime": 0.0,
+                "startSizeXMin": 1.5,
+                "startSizeXMax": 1.7000000476837159,
+                "startSizeYMin": 0.20000000298023225,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.6000000238418579,
+                "rotationOverTime": 220.0,
                 "startRotationMin": 0.0,
-                "startRotationMax": 0.0,
+                "startRotationMax": 360.0,
                 "startColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
+                    "x": 0.6277056336402893,
+                    "y": 0.44020915031433108,
+                    "z": 0.2527126669883728,
+                    "w": 0.8999999761581421
                 },
                 "endColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
+                    "x": 0.30000001192092898,
+                    "y": 0.2800000011920929,
+                    "z": 0.25,
                     "w": 0.0
                 },
                 "gravity": {
                     "x": 0.0,
-                    "y": -9.800000190734864,
+                    "y": -25.0,
                     "z": 0.0
                 },
                 "startVelocity": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 2.0,
                     "z": 0.0
                 },
                 "useTexture": false,
