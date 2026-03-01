@@ -58,7 +58,7 @@ namespace CrashoutsEngine
             }
             else
             {
-                Console.WriteLine("[Parallax] Error: Could not find Cam entity!");
+                Console.WriteLine("[Parallax] Error: Could not find Camera entity!");
             }
 
             // 3. CACHE MY STARTING POS
@@ -87,7 +87,7 @@ namespace CrashoutsEngine
             }
         }
 
-        public override void Update()
+        public override void LateUpdate()
         {
             if (CamTransform == null) return;
 

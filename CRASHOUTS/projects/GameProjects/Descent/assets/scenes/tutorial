@@ -12446,7 +12446,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 930.6127319335938,
+                    "x": 831.4270629882813,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -12473,7 +12473,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 930.6127319335938,
+                    "x": 831.4270629882813,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -12483,12 +12483,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 882.6127319335938,
+                    "x": 783.4270629882813,
                     "y": -391.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 978.6127319335938,
+                    "x": 879.4270629882813,
                     "y": -375.3426513671875,
                     "z": 0.0
                 }
@@ -15032,7 +15032,7 @@
                             "midFactor": 0.6000000238418579,
                             "fgFactor": 0.30000001192092898,
                             "lockY": true,
-                            "targetName": "Player"
+                            "targetName": "Camera"
                         }
                     }
                 ]
@@ -15532,7 +15532,7 @@
                             "midFactor": 0.6000000238418579,
                             "fgFactor": 0.30000001192092898,
                             "lockY": true,
-                            "targetName": "Player"
+                            "targetName": "Camera"
                         }
                     }
                 ]
@@ -16194,7 +16194,7 @@
                             "midFactor": 0.6000000238418579,
                             "fgFactor": 0.30000001192092898,
                             "lockY": true,
-                            "targetName": "Player"
+                            "targetName": "Camera"
                         }
                     }
                 ]
@@ -21857,37 +21857,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -21940,7 +21909,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21954,14 +21923,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22014,6 +21983,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23770,7 +23770,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 890.2965698242188,
+                    "x": 791.1109008789063,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -23848,7 +23848,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 910.2568969726563,
+                    "x": 811.0712280273438,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -23926,7 +23926,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 930.2568969726563,
+                    "x": 831.0712280273438,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24004,7 +24004,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 950.2568969726563,
+                    "x": 851.0712280273438,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24082,7 +24082,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 970.2568969726563,
+                    "x": 871.0712280273438,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24160,7 +24160,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1324.0693359375,
+                    "x": 1305.7022705078126,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24187,7 +24187,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1324.0693359375,
+                    "x": 1305.7022705078126,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24197,12 +24197,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1276.0693359375,
+                    "x": 1257.7022705078126,
                     "y": -391.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1372.0693359375,
+                    "x": 1353.7022705078126,
                     "y": -375.3426513671875,
                     "z": 0.0
                 }
@@ -24271,7 +24271,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1283.753173828125,
+                    "x": 1265.3861083984376,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24349,7 +24349,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1303.7135009765626,
+                    "x": 1285.346435546875,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24427,7 +24427,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1323.7135009765626,
+                    "x": 1305.346435546875,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24505,7 +24505,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1343.7135009765626,
+                    "x": 1325.346435546875,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -24583,7 +24583,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1363.7135009765626,
+                    "x": 1345.346435546875,
                     "y": -383.3426513671875,
                     "z": 0.0
                 },
@@ -27292,10 +27292,11 @@
                         "className": "CameraController",
                         "fields": {
                             "playerEntityName": "Player",
-                            "lookAheadDistance": 50.0,
+                            "lookAheadDistance": 70.0,
                             "smoothSpeedX": 4.0,
                             "smoothSpeedY": 4.0,
-                            "defaultOffsetY": 20.0
+                            "defaultOffsetY": 20.0,
+                            "directionChangeSpeed": 2.0
                         }
                     }
                 ]
@@ -27309,6 +27310,444 @@
                 "yBounds": {
                     "x": 0.0,
                     "y": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "CameraZones",
+            "uuid": 7610932790271590026,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Cam_Zone_1",
+            "uuid": 3574140040263968269,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 604.1163330078125,
+                    "y": 111.87814331054688,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 604.1163330078125,
+                    "y": 111.87814331054688,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -318.78369140625,
+                    "y": -97.0218505859375,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1527.016357421875,
+                    "y": 320.77813720703127,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "CameraZone",
+                        "fields": {
+                            "lookAtEntity": 181,
+                            "resetOnExit": true,
+                            "zoneDampingY": 1.5
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 7610932790271590026,
+                "localPos": {
+                    "x": 604.1163330078125,
+                    "y": 111.87814331054688,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Zone1_Target",
+            "uuid": 18326897668472248579,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 604.1163330078125,
+                    "y": -15.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 7610932790271590026,
+                "localPos": {
+                    "x": 604.1163330078125,
+                    "y": -15.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Cam_Zone_2",
+            "uuid": 291501849524691167,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1725.94921875,
+                    "y": -75.84198760986328,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 1725.94921875,
+                    "y": -75.84198760986328,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1515.94921875,
+                    "y": -175.94198608398438,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1935.94921875,
+                    "y": 24.258018493652345,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "CameraZone",
+                        "fields": {
+                            "lookAtEntity": 183,
+                            "resetOnExit": true,
+                            "zoneDampingY": 1.7000000476837159
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 7610932790271590026,
+                "localPos": {
+                    "x": 1725.94921875,
+                    "y": -75.84198760986328,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Zone2_Target",
+            "uuid": 7501953576664699140,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 821.4185180664063,
+                    "y": -302.2229919433594,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 7610932790271590026,
+                "localPos": {
+                    "x": 821.4185180664063,
+                    "y": -302.2229919433594,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Cam_Zone_3",
+            "uuid": 15210152257478282386,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 814.5052490234375,
+                    "y": -349.560791015625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 814.5052490234375,
+                    "y": -349.560791015625,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -309.9947509765625,
+                    "y": -493.26080322265627,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1939.0052490234376,
+                    "y": -205.86077880859376,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "CameraZone",
+                        "fields": {
+                            "lookAtEntity": 185,
+                            "resetOnExit": true,
+                            "zoneDampingY": 1.5
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 7610932790271590026,
+                "localPos": {
+                    "x": 814.5052490234375,
+                    "y": -349.560791015625,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Zone3_Target",
+            "uuid": 7749896844376282855,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 821.4185180664063,
+                    "y": -423.5746154785156,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 7610932790271590026,
+                "localPos": {
+                    "x": 821.4185180664063,
+                    "y": -423.5746154785156,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {

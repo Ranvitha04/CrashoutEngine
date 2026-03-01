@@ -13,8 +13,8 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 736.1807861328125,
-                            "y": -320.5,
+                            "x": -218.82041931152345,
+                            "y": -20.576072692871095,
                             "z": 50.0
                         },
                         "size": {
@@ -40,8 +40,8 @@
                         "isTrigger": false,
                         "enabled": true,
                         "position": {
-                            "x": 736.1807861328125,
-                            "y": -325.5,
+                            "x": -218.82041931152345,
+                            "y": -25.576072692871095,
                             "z": 50.0
                         },
                         "offset": {
@@ -50,13 +50,13 @@
                             "z": 0.0
                         },
                         "min": {
-                            "x": 717.3807373046875,
-                            "y": -356.0,
+                            "x": -227.82041931152345,
+                            "y": -56.076072692871097,
                             "z": 50.0
                         },
                         "max": {
-                            "x": 754.9808349609375,
-                            "y": -295.0,
+                            "x": -209.82041931152345,
+                            "y": 4.923927307128906,
                             "z": 50.0
                         }
                     },
@@ -99,7 +99,7 @@
                             {
                                 "name": "footstep1",
                                 "path": "footsteps 1.wav",
-                                "volume": 0.800000011920929,
+                                "volume": 1.5,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": false,
@@ -108,7 +108,7 @@
                             {
                                 "name": "footstep2",
                                 "path": "footsteps 2.wav",
-                                "volume": 0.800000011920929,
+                                "volume": 1.5,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": false,
@@ -117,7 +117,7 @@
                             {
                                 "name": "footstep3",
                                 "path": "footsteps 3.wav",
-                                "volume": 0.800000011920929,
+                                "volume": 1.5,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": false,
@@ -126,7 +126,7 @@
                             {
                                 "name": "footstep4",
                                 "path": "footsteps 4.wav",
-                                "volume": 0.800000011920929,
+                                "volume": 1.5,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": false,
@@ -135,7 +135,7 @@
                             {
                                 "name": "footstep5",
                                 "path": "footsteps 5.wav",
-                                "volume": 0.800000011920929,
+                                "volume": 1.5,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": false,
@@ -144,7 +144,7 @@
                             {
                                 "name": "footstep6",
                                 "path": "footsteps 6.wav",
-                                "volume": 0.800000011920929,
+                                "volume": 1.5,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": false,
@@ -153,7 +153,7 @@
                             {
                                 "name": "footstep7",
                                 "path": "footsteps 7.wav",
-                                "volume": 0.800000011920929,
+                                "volume": 1.5,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": false,
@@ -162,7 +162,7 @@
                             {
                                 "name": "footstep8",
                                 "path": "footsteps 8.wav",
-                                "volume": 0.800000011920929,
+                                "volume": 1.5,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": false,
@@ -171,7 +171,7 @@
                             {
                                 "name": "jumpLand",
                                 "path": "jump landing.wav",
-                                "volume": 0.4000000059604645,
+                                "volume": 1.0,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": false,
@@ -208,13 +208,14 @@
                                     "deceleration": 10.0,
                                     "airAcceleration": 2.0,
                                     "jumpPower": 50000.0,
-                                    "gravityScale": 2.5,
+                                    "gravityScale": 2.0,
                                     "gravityForceMultiplier": 10.0,
-                                    "fallGravityMultiplier": 1.5,
-                                    "footstepInterval": 0.07500000298023224,
+                                    "fallGravityMultiplier": 2.5,
+                                    "footstepInterval": 0.30000001192092898,
                                     "swapPause": 1.0,
                                     "energyConsumption": 12.5,
-                                    "goalNoOfPlates": 1,
+                                    "coyoteFrames": 6,
+                                    "goalNoOfPlates": 2,
                                     "currentGoalPlates": 0,
                                     "landingDustName": "LandingDust",
                                     "dustBurstDuration": 0.15000000596046449,
@@ -225,24 +226,16 @@
                                     "playDialogueOnStart": true,
                                     "dialogueCooldown": 1.0,
                                     "isDialogueActive": true,
-                                    "CurrentEnergy": 100.0,
+                                    "facingRight": true,
+                                    "CurrentEnergy": 75.0,
                                     "MaxEnergy": 100.0,
                                     "alive": true,
-                                    "isPaused": false
+                                    "isPaused": false,
+                                    "reloadOnDeath": false,
+                                    "reloadSceneName": ""
                                 }
                             }
                         ]
-                    },
-                    "camera": {
-                        "zoom": 0.30000001192092898,
-                        "xBounds": {
-                            "x": -148.60000610351563,
-                            "y": 2000.0
-                        },
-                        "yBounds": {
-                            "x": -2000.0,
-                            "y": 2000.0
-                        }
                     },
                     "button": {
                         "buttonState": 0,
@@ -294,40 +287,9 @@
                     },
                     "keyframe_animator": {
                         "current": "playerIdle",
-                        "t": 0.699999988079071,
+                        "t": 5.60001802444458,
                         "playing": true,
                         "clips": [
-                            {
-                                "name": "playerFall",
-                                "wrap": 0,
-                                "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                                "spriteCols": 2,
-                                "spriteRows": 1,
-                                "useCustomSize": true,
-                                "targetWidth": 140.0,
-                                "targetHeight": 100.0,
-                                "bindings": [
-                                    {
-                                        "property": 6,
-                                        "keys": [
-                                            {
-                                                "t": 0.0,
-                                                "v": 0.0,
-                                                "i": 0,
-                                                "in": 0.0,
-                                                "out": 0.0
-                                            },
-                                            {
-                                                "t": 0.25,
-                                                "v": 0.0,
-                                                "i": 0,
-                                                "in": 0.0,
-                                                "out": 0.0
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
                             {
                                 "name": "playerWalk",
                                 "wrap": 0,
@@ -381,7 +343,7 @@
                                 ]
                             },
                             {
-                                "name": "playerFallLight",
+                                "name": "playerFall",
                                 "wrap": 0,
                                 "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                                 "spriteCols": 2,
@@ -395,14 +357,14 @@
                                         "keys": [
                                             {
                                                 "t": 0.0,
-                                                "v": 1.0,
+                                                "v": 0.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
                                                 "t": 0.25,
-                                                "v": 1.0,
+                                                "v": 0.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
@@ -455,6 +417,37 @@
                                             {
                                                 "t": 1.0,
                                                 "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerFallLight",
+                                "wrap": 0,
+                                "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                                "spriteCols": 2,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 1.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
@@ -737,7 +730,7 @@
                     }
                 },
                 {
-                    "active": true,
+                    "active": false,
                     "name": "PlayerDialogue_1",
                     "uuid": 4672454392646077867,
                     "tag": {
@@ -746,8 +739,8 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 736.1807861328125,
-                            "y": -262.1300964355469,
+                            "x": -218.82041931152345,
+                            "y": 37.79383850097656,
                             "z": 50.0
                         },
                         "size": {
@@ -864,8 +857,8 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 736.1807861328125,
-                            "y": -262.1300964355469,
+                            "x": -218.82041931152345,
+                            "y": 37.79383850097656,
                             "z": 50.0
                         },
                         "size": {
@@ -982,8 +975,8 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 736.1807861328125,
-                            "y": -262.1300964355469,
+                            "x": -218.82041931152345,
+                            "y": 37.79383850097656,
                             "z": 50.0
                         },
                         "size": {
@@ -1100,8 +1093,8 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 736.1807861328125,
-                            "y": -262.1300964355469,
+                            "x": -218.82041931152345,
+                            "y": 37.79383850097656,
                             "z": 50.0
                         },
                         "size": {
@@ -1218,8 +1211,8 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 450.38653564453127,
-                            "y": -519.8575439453125,
+                            "x": -504.61468505859377,
+                            "y": -219.93362426757813,
                             "z": 50.0
                         },
                         "size": {
@@ -1324,111 +1317,6 @@
                     "layer": {
                         "layerName": "Default",
                         "z": 0
-                    }
-                },
-                {
-                    "active": true,
-                    "name": "LandingDust",
-                    "uuid": 5978115013613082295,
-                    "tag": {
-                        "tagMask": 0
-                    },
-                    "transform": {
-                        "rotation": 0.0,
-                        "position": {
-                            "x": 738.4415893554688,
-                            "y": -368.618896484375,
-                            "z": 0.0
-                        },
-                        "size": {
-                            "x": 140.97999572753907,
-                            "y": 101.0
-                        }
-                    },
-                    "parent": {
-                        "parentUUID": 17142618762681968282,
-                        "localPos": {
-                            "x": 0.016148703172802926,
-                            "y": -0.4811890423297882,
-                            "z": -50.0
-                        },
-                        "localRot": 0.0,
-                        "localScale": {
-                            "x": 1.0069999694824219,
-                            "y": 1.0099999904632569
-                        },
-                        "inheritColor": false,
-                        "colorMul": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0,
-                            "w": 1.0
-                        }
-                    },
-                    "layer": {
-                        "layerName": "Player",
-                        "z": 0
-                    },
-                    "particle": {
-                        "isEmitting": false,
-                        "useWorldSpace": true,
-                        "maxParticles": 1000,
-                        "emitRate": 100.0,
-                        "playOnStop": true,
-                        "emissionShape": 1,
-                        "radiusMin": -0.10000000149011612,
-                        "radiusMax": 0.20000000298023225,
-                        "lengthMin": 0.0,
-                        "lengthMax": 5.0,
-                        "areaMin": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "areaMax": {
-                            "x": 5.0,
-                            "y": 5.0
-                        },
-                        "startLifeMin": 1.0,
-                        "startLifeMax": 1.0,
-                        "startSpeedMin": 1.0,
-                        "startSpeedMax": 1.0,
-                        "uniformSize": true,
-                        "startSizeXMin": 1.25,
-                        "startSizeXMax": 3.25,
-                        "startSizeYMin": 1.25,
-                        "startSizeYMax": 3.25,
-                        "sizeOverTime": 0.0,
-                        "rotationOverTime": 0.0,
-                        "startRotationMin": 0.0,
-                        "startRotationMax": 0.0,
-                        "startColor": {
-                            "x": 0.6117647290229797,
-                            "y": 0.4274510145187378,
-                            "z": 0.30588236451148989,
-                            "w": 1.0
-                        },
-                        "endColor": {
-                            "x": 0.3803921639919281,
-                            "y": 0.3607843220233917,
-                            "z": 0.3607843220233917,
-                            "w": 0.0
-                        },
-                        "gravity": {
-                            "x": 0.0,
-                            "y": -9.800000190734864,
-                            "z": 0.0
-                        },
-                        "startVelocity": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "useTexture": false,
-                        "textureName": "",
-                        "textureUV": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
                     }
                 }
             ]

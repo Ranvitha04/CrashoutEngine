@@ -18901,7 +18901,8 @@
                             "lookAheadDistance": 50.0,
                             "smoothSpeedX": 4.0,
                             "smoothSpeedY": 4.0,
-                            "defaultOffsetY": 20.0
+                            "defaultOffsetY": 20.0,
+                            "directionChangeSpeed": 2.0
                         }
                     }
                 ]

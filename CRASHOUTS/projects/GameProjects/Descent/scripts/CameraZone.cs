@@ -11,17 +11,19 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class CameraZone : ScriptBase
     {
-        // Type the name of the empty entity you placed in the level for the camera to look at
-        [SerializeField] public string lookAtObjectName = "Zone1_Target";
+        // Drag and drop the target entity directly in the inspector!
+        public Entity lookAtEntity;
         
         // If true, leaving the zone will return the camera back to the player
         [SerializeField] public bool resetOnExit = false; 
 
-        private Entity lookAtEntity;
+        // NEW: Control how fast the camera transitions when entering THIS specific zone.
+        // Lower number = Slower, more cinematic pan. (Your camera default is usually 4.0)
+        [SerializeField] public float zoneDampingY = 1.5f; 
 
         public override void Start()
-        {
-            lookAtEntity = Entity.Find(lookAtObjectName);
+        {          
+            lookAtEntity = new Entity(lookAtEntity.ID);
             
             // Register Physics Overlaps
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnZoneEnter);
@@ -33,8 +35,12 @@ namespace CrashoutsEngine
             var tag = new Entity(otherID).GetComponent<TagComponent>();
             if (tag != null && tag.HasTag("Player"))
             {
-                // Set the global target!
-                CameraController.CurrentLookAtTarget = lookAtEntity;
+                if (lookAtEntity != null && lookAtEntity.ID != 0)
+                {
+                    // Set the global target AND the custom speed!
+                    CameraController.CurrentLookAtTarget = lookAtEntity;
+                    CameraController.ActiveZoneDampingY = zoneDampingY; 
+                }
             }
         }
 
@@ -46,9 +52,11 @@ namespace CrashoutsEngine
                 if (tag != null && tag.HasTag("Player"))
                 {
                     // Remove the target so the camera goes back to normal
-                    if (CameraController.CurrentLookAtTarget == lookAtEntity)
+                    if (CameraController.CurrentLookAtTarget != null && 
+                        CameraController.CurrentLookAtTarget.ID == lookAtEntity.ID)
                     {
                         CameraController.CurrentLookAtTarget = null;
+                        CameraController.ActiveZoneDampingY = -1.0f; // Reset to default speed
                     }
                 }
             }
