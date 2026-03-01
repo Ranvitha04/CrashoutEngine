@@ -22931,28 +22931,8 @@
                     "y": 101.0
                 }
             },
-            "parent": {
-                "parentUUID": 17142618762681968282,
-                "localPos": {
-                    "x": 0.0037109374534338714,
-                    "y": -0.3736341893672943,
-                    "z": -50.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0069999694824219,
-                    "y": 1.0099999904632569
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
-                "layerName": "Player",
+                "layerName": "UI",
                 "z": 0
             },
             "particle": {

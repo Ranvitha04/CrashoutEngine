@@ -48,5 +48,5 @@ private:
 private:
     std::deque<std::unique_ptr<EditorCommand>> mUndoStack;
     std::deque<std::unique_ptr<EditorCommand>> mRedoStack;
-    size_t mMaxHistory = 20; //!< default limit
+    size_t mMaxHistory = 30; //!< default limit
 };

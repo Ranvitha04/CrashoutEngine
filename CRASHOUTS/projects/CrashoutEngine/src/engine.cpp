@@ -745,78 +745,68 @@ Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
 */
 void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     Component::Rendering::Get().drawCalls = 0;
+    const float targetAspectRatio = 16.0f / 9.0f;
+    float currentAspectRatio;
 
 #if !USE_IMGUI_EDITOR 
     (void)globalSelectedEntity;
 #endif
 
     // --- 1: RENDER THE RAW GAME SCENE ---
-    // FOR USE_IMGUI_EDITOR AND NOT USING
-    // All game objects, sprites, text, etc., draw into 'gameFboID'.
     glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
 
 #if !USE_IMGUI_EDITOR
     int windowW, windowH;
     glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
 
-    //const float targetAspectRatio = 16.0f / 9.0f;
-    //float currentAspectRatio = (float)windowW / (float)windowH;
+    // 1. Calculate the 16:9 Aspect Ratio
+    currentAspectRatio = (float)windowW / (float)windowH;
 
-    int vpX{ 0 }, vpY{ 0 }, vpW, vpH;
+    int vpX = 0, vpY = 0, vpW = windowW, vpH = windowH;
 
-    vpH = windowH;
-    vpW = windowW;
+    if (currentAspectRatio > targetAspectRatio) {
+        // Screen is wider than 16:9 (Pillarbox - black bars on left/right)
+        vpH = windowH;
+        vpW = static_cast<int>(windowH * targetAspectRatio);
+        vpX = (windowW - vpW) / 2;
+    }
+    else {
+        // Screen is taller than 16:9 (Letterbox - black bars on top/bottom)
+        vpW = windowW;
+        vpH = static_cast<int>(windowW / targetAspectRatio);
+        vpY = (windowH - vpH) / 2;
+    }
 
-    // 4. Clear the FULL window to black (The "Bars")
-
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // 5. Set Viewport to the Game Area & Enable Scissor Test
-    glViewport(vpX, vpY, vpW, vpH);
-    //glEnable(GL_SCISSOR_TEST);
-    //glScissor(vpX, vpY, vpW, vpH);
-    //
-    //// 6. Clear Game Area to Default Grey
-    //glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glDisable(GL_SCISSOR_TEST);
-
-    // 7. Update Camera Matrices to match the VIEWPORT size, not window size
+    // 2. Update Camera Matrices to match the correctly scaled dimensions
     CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
 
-    // If the window size differs from our internal texture size
+    // 3. Resize internal textures if the actual gameplay window area changed
     if (vpW != gameTextureWidth || vpH != gameTextureHeight) {
         gameTextureWidth = vpW;
         gameTextureHeight = vpH;
 
-        // --- RESIZE THE TEXTURE MEMORY ---
-
-        // 1. Resize the Color Texture
         glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
         // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gameTextureWidth, gameTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
-        // 2. Resize the Depth/Stencil Buffer (Use RBO or Texture depending on your setup)
-        // Based on your variables, you likely use 'gameRboDepthStencil'
         if (gameRboDepthStencil != 0) {
             glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
         }
-
-        // Unbind to be safe
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-        // Note: We don't need to re-attach them to the gameFboID usually, 
-        // as the FBO holds references to the IDs, which haven't changed.
     }
-#else
 
+    // 4. When drawing to the internal FBO, the viewport is exactly the texture size!
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+#else
+    // EDITOR MODE
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #endif
 
     glEnable(GL_DEPTH_TEST);
@@ -855,24 +845,32 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #if USE_IMGUI_EDITOR
-    // 1. Start the Dear ImGui frame
+    // ==========================================
+    // 1. EDITOR MODE
+    // ==========================================
+
+    // Apply Post Processing to the internal FBO first
+    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // Start ImGui Frame
     UI::BeginFrame();
 
-    // 2. Setup Dockspace 
+    // Setup Dockspace 
     ImGuiViewport* viewport = ImGui::GetMainViewport();
-    /*ImVec2 dockPos = ImVec2(viewport->Pos.x, viewport->Pos.y + titleBarHeight);
-    ImVec2 dockSize = ImVec2(viewport->Size.x, viewport->Size.y - titleBarHeight);*/
     ImVec2 dockPos = viewport->Pos;
     ImVec2 dockSize = viewport->Size;
-    /*ImGui::SetNextWindowPos(viewport->WorkPos);
-    ImGui::SetNextWindowSize(viewport->WorkSize);*/
     ImGui::SetNextWindowPos(dockPos);
     ImGui::SetNextWindowSize(dockSize);
     ImGui::SetNextWindowViewport(viewport->ID);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-    // Begin Dockspace window (needs ImGuiWindowFlags_MenuBar for the menu)
+
     bool dockspaceVisible = ImGui::Begin("Dockspace", nullptr,
         ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar |
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
@@ -882,27 +880,19 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     if (dockspaceVisible == true) {
         ImGui::PopStyleVar(3);
 
-        // Render the menu bar *inside* the Dockspace Begin/End
-        //UI::RenderDebugMenuBar(g_uiState);
-
-        // Define the actual dockspace area
         ImGuiID dockspace_id = ImGui::GetID("Dockspace");
         ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
-        // Render ImGui UI on top of the scene
         glBindFramebuffer(GL_FRAMEBUFFER, gameFboID);
         {
             FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "UI");
             UI::Render(gProfiler, globalSelectedEntity, g_uiState);
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // Cycle and draw Tile Map Editor if needed
         CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
             CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
-
         for (Component::TileMapComponent* tm : tmArray.dense) {
             CrashoutsEngine::Editor::DrawTileMapEditor(tm, &tm->pOpen);
         }
@@ -911,46 +901,40 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         ImGui::PopStyleVar(3);
     }
 
-
-    ImGui::End(); // End the Dockspace window begun earlier
-
-    // End the ImGui frame and render draw data
+    ImGui::End();
     UI::EndFrame();
 
-
 #else
-    // --- NON-EDITOR (RELEASE) MOUSE-TO-WORLD CALCULATION ---
-    // 1. Compute letterboxed viewport (must match Update() camera sizing)
+    // ==========================================
+    // 2. STANDALONE RELEASE MODE
+    // ==========================================
+
     int displayWidth, displayHeight;
     glfwGetFramebufferSize(GLApp::ptr_window, &displayWidth, &displayHeight);
 
-    const float targetAspectRatio = 16.0f / 9.0f;
-    float currentAspectRatio = (float)displayWidth / (float)displayHeight;
+    currentAspectRatio = (float)displayWidth / (float)displayHeight;
     int mVpX = 0, mVpY = 0, mVpW = displayWidth, mVpH = displayHeight;
 
     if (currentAspectRatio > targetAspectRatio) {
         mVpH = displayHeight;
         mVpW = static_cast<int>(displayHeight * targetAspectRatio);
         mVpX = (displayWidth - mVpW) / 2;
-    } else if (currentAspectRatio < targetAspectRatio) {
+    }
+    else if (currentAspectRatio < targetAspectRatio) {
         mVpW = displayWidth;
         mVpH = static_cast<int>(displayWidth / targetAspectRatio);
         mVpY = (displayHeight - mVpH) / 2;
     }
 
-    // 2. Get raw mouse (window space)
+    // Unproject Mouse
     double mx, my;
     glfwGetCursorPos(GLApp::ptr_window, &mx, &my);
-
-    // 3. Convert to viewport-local coords
     float localX = static_cast<float>(mx) - mVpX;
     float localY = static_cast<float>(my) - mVpY;
     bool insideVP = (localX >= 0.0f && localX <= mVpW && localY >= 0.0f && localY <= mVpH);
 
-    // 4. Push game-view mouse + size for UI input (buttons, etc.)
     InputManager::SetGameViewMouse(localX, localY, (float)mVpW, (float)mVpH);
 
-    // 5. Unproject to world (only if inside viewport)
     if (insideVP) {
         float ndcX = (localX / (float)mVpW) * 2.0f - 1.0f;
         float ndcY = 1.0f - (localY / (float)mVpH) * 2.0f;
@@ -959,34 +943,27 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         InputManager::g_mouseWorldPos = CEVec2{ worldPos.x, worldPos.y };
     }
 
-    // Render directly to screen
-    glViewport(0, 0, displayWidth, displayHeight); // Use main window size
+    // --- DRAW TO SCREEN ---
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Target the main monitor
+    glViewport(0, 0, displayWidth, displayHeight);
 
+    // 1. Fill the whole window with black to create the bars
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
 
-    //CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
-
-#endif
-    // APPLY POST_PROCESSING TO FBO 
-
-    // Bind FBO to get post-processed image
-    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
-    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-    glClear(GL_COLOR_BUFFER_BIT);
+    // 2. Set the perfectly centered viewport
+    glViewport(mVpX, mVpY, mVpW, mVpH);
     glDisable(GL_DEPTH_TEST);
 
+    // 3. Render the Post Processing image directly into that centered box!
     CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // render scene
-    // GLApp::draw();
+#endif
 
     // end of frame profiling
     PerformanceSystem::Get().EndFrame();
 
-    // swap buffers: front <-> back
-    // GLApp::ptr_window is handle to window that defines the OpenGL context
+    // swap buffers
     glfwSwapBuffers(GLApp::ptr_window);
 }
 

@@ -133,9 +133,13 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
-    GLApp::ptr_window = glfwCreateWindow(w, h, title.c_str(), NULL, NULL);
-    glfwMaximizeWindow(GLApp::ptr_window);
+#if !USE_IMGUI_EDITOR
+    // Force 1920x1080 default for Standalone Game
+    w = 1920;
+    h = 1080;
+#endif
 
+    GLApp::ptr_window = glfwCreateWindow(w, h, title.c_str(), NULL, NULL);
 
     if (!GLApp::ptr_window) {
         LOGE(Core, "GLFW create window failed");
@@ -144,12 +148,11 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     }
     glfwSetWindowAttrib(GLApp::ptr_window, GLFW_DECORATED, GLFW_TRUE);
 
-
-    // Center the window initially
+    // CENTER THE WINDOW FIRST (For when it is un-maximized)
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(monitor);
     int startX = (mode->width - w) / 2;
-    int startY = (mode->height - h) / 2 +32;
+    int startY = (mode->height - h) / 2 + 32;
     glfwSetWindowPos(GLApp::ptr_window, startX, startY);
 
     // Store initial windowed state
@@ -158,17 +161,13 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     windowed_w = w;
     windowed_h = h;
 
-    // Borderless fullscreen (windowed)
-    //glfwSetWindowMonitor(GLApp::ptr_window,NULL,0, 0,mode->width,mode->height,0);
-    // Move window to exact fullscreen position (0,0)
-    //glfwSetWindowPos(GLApp::ptr_window, 0, 0);
-
-    //// Override engine width/height
-    //GLApp::width = mode->width;
-    //GLApp::height = mode->height;
+    // MAXIMIZE SECOND (This ensures it stays maximized on boot!)
+    glfwMaximizeWindow(GLApp::ptr_window);
+    is_maximized = true;
 
     // make the previously created OpenGL context current ...
     glfwMakeContextCurrent(GLApp::ptr_window);
+
     glfwSetDropCallback(ptr_window, [](GLFWwindow*, int count, const char** paths) {
         namespace fs = std::filesystem;
 
