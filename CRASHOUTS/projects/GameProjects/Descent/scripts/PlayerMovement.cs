@@ -51,9 +51,9 @@ namespace CrashoutsEngine
         private float dialogueTimer = 0.0f;
 
         // --- STATE VARIABLES ---
+        public bool facingRight = true;
         private float horizontalInput;
         private bool jumpRequested;
-        private bool facingRight = true;
         public bool IsGrounded { get; private set; } = false;
         public bool OnWall { get; private set; } = false;
 

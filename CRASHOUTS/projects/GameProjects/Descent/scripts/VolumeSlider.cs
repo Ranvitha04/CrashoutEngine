@@ -19,7 +19,7 @@ namespace CrashoutsEngine
         // Try setting this to something like 30.0f or 40.0f in the Inspector.
         [SerializeField] private float clickWidth = 30.0f;
         [SerializeField] private float clickHeight = 10.0f;
-        [SerializeField] private bool drawHitbox = true;
+        //[SerializeField] private bool drawHitbox = true;
 
         private bool _isDragging = false;
         private float _currentT = 1.0f;
