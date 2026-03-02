@@ -58,18 +58,57 @@ public class AudioManager
     public enum FMOD_DSP_TYPE
     {
         UNKNOWN,
-        CHORUS,
-        COMPRESSOR,
-        DISTORTION,
-        ECHO,
-        FLANGER,
-        HIGHPASS,
+        OSCILLATOR,
         LOWPASS,
+        ITLOWPASS,
+        HIGHPASS,
+        ECHO,
+        FADER,
+        FLANGER,
+        DISTORTION,
+        NORMALIZE,
+        LIMIT,
         PARAMEQ,
-        REVERB,
+        PITCHSHIFT,
+        CHORUS,
+        VSTPLUGIN,
+        WINAMPPLUGIN,
+        ITECHO,
+        COMPRESSOR,
         SFXREVERB,
+        LOWPASSSIMPLE,
+        DELAY,
         TREMOLO,
-        // Add other DSP types as needed
+        LADSPAPLUGIN,
+        SEND,
+        RETURN,
+        HIGHPASSSIMPLE,
+        PAN,
+        THREEEQ,
+        FFT,
+        LOUDNESSMETER,
+        ENVELOPEFOLLOWER,
+        CONVOLUTIONREVERB,
+        CHANNELMIX,
+        TRANSCEIVER,
+        OBJECTPAN,
+        MULTIBANDEQ
+    }
+
+    public static void SetListenerAttributes(CEVec3 position, CEVec3 forward, CEVec3 up, CEVec3 velocity)
+    {
+        InternalCalls.Audio_SetListenerAttributes(ref position, ref forward, ref up, ref velocity);
+    }
+
+    /// <summary>
+    /// Update listener position only (typical for 2D games).
+    /// </summary>
+    public static void SetListenerPosition(CEVec3 position)
+    {
+        CEVec3 forward = new CEVec3(0, 0, 1);
+        CEVec3 up = new CEVec3(0, 1, 0);
+        CEVec3 velocity = new CEVec3(0, 0, 0);
+        InternalCalls.Audio_SetListenerAttributes(ref position, ref forward, ref up, ref velocity);
     }
 
     // Equivalent to setting Unity inspector fields
@@ -159,6 +198,11 @@ public class AudioManager
     public static void SetClipPosition(uint entityID, string clipName, CEVec3 position)
     {
         InternalCalls.Audio_SetClipPosition(entityID, clipName, position.x, position.y, position.z);
+    }
+
+    public static void SetClip3DDistances(uint entityID, string clipName, float minDist, float maxDist)
+    {
+        InternalCalls.Audio_SetClip3DDistances(entityID, clipName, minDist, maxDist);
     }
 
     public static void AddClipDSP(uint entityID, string clipName, FMOD_DSP_TYPE dspType)

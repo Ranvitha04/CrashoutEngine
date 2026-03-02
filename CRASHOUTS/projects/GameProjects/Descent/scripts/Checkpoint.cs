@@ -13,6 +13,8 @@ namespace CrashoutsEngine
             cp = Entity.GetComponent<CheckpointComponent>();
             tm = Entity.GetComponent<TriggerMetadataComponent>();
 
+            AudioManager.SetClip3DDistances(Entity.ID, "checkpointSound", 50.0f, 1000.0f);
+
             // If it doesn't have metadata, add it for tracking
             if (tm == null)
             {

@@ -13,6 +13,7 @@ All content � 2025 Digipen Institute of Technology Singapore.All rights reserv
 #include "audiocomponent.h"
 #include "entitymanager.h"
 #include "activecomponent.h"
+#include "transformcomponent.h"
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
@@ -125,12 +126,19 @@ namespace
         return AudioSystem::instance().GetMasterVolume();
     }
 
-    static void ICALL_Audio_GetComponentData(uint32_t entityID, MonoString** outName, MonoString** outPath, float* outVol, float* outPitch, mono_bool* outLoop, mono_bool* outIsMusic)
+    static void ICALL_Audio_SetListenerAttributes(CEVec3* pos, CEVec3* forward, CEVec3* up, CEVec3* velocity)
+    {
+        if (!pos || !forward || !up || !velocity) return;
+        AudioSystem::instance().SetListenerAttributes(*pos, *forward, *up, *velocity);
+    }
+
+    static void ICALL_Audio_GetComponentData(uint32_t entityID, MonoString** outName, MonoString** outPath, float* outVol, float* outPitch, mono_bool* outLoop, mono_bool* outIsMusic, mono_bool* outSpatial3D, float* outMinDist, float* outMaxDist)
     {
         // Initialize defaults
         *outName = nullptr;
         *outPath = nullptr;
         *outVol = 1.0f; *outPitch = 1.0f; *outLoop = false; *outIsMusic = false;
+        *outSpatial3D = false; *outMinDist = 1.0f; *outMaxDist = 100.0f;
 
         auto* ecs = CrashoutsEngine::ECS::getInstance();
         if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
@@ -155,6 +163,28 @@ namespace
             *outPitch = c.pitch;
             *outLoop = c.looping;
             *outIsMusic = c.isMusic;
+            *outSpatial3D = c.spatial3D;
+            *outMinDist = c.minDistance;
+            *outMaxDist = c.maxDistance;
+        }
+    }
+
+    static void ICALL_Audio_SetClip3DDistances(uint32_t entityID, MonoString* clipNameStr, float minDist, float maxDist)
+    {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
+
+        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
+        std::string targetClipName = MonoToStdString(clipNameStr);
+
+        for (auto& clip : ac->clips) {
+            if (clip.name == targetClipName) {
+                clip.minDistance = minDist;
+                clip.maxDistance = maxDist;
+                clip.spatial3D = true; // Auto-enable 3D if distances are being set
+                // Position and distance sync is handled by engine.cpp every frame
+                return;
+            }
         }
     }
 
@@ -183,8 +213,20 @@ namespace
                 if (ch) {
                     ch->setVolume(clip.volume);
                     ch->setPitch(clip.pitch);
-                    ch->setMode(clip.looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF); // Will be overridden if spatial3D is true
+                    ch->setMode(clip.looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
                     clip.channel = ch;
+
+                    // Immediately sync 3D attributes if spatial
+                    if (clip.spatial3D) {
+                        Component::TransformComponent* transform = ecs->GetComponent<Component::TransformComponent>(entityID);
+                        if (transform) {
+                            audio.SetChannel3DAttributes(ch, transform->position, clip.minDistance, clip.maxDistance);
+                        }
+                    }
+
+                    if (clip.dspType != -1) {
+                        audio.AddChannelDSP(ch, (FMOD_DSP_TYPE)clip.dspType);
+                    }
                 }
                 return;
             }
@@ -338,6 +380,8 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
 
 	mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_GetMasterVolume", (const void*)ICALL_Audio_GetMasterVolume);
 
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetListenerAttributes", (const void*)ICALL_Audio_SetListenerAttributes);
+
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_GetComponentData", (const void*)ICALL_Audio_GetComponentData);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlayPathOnEntity", (const void*)ICALL_Audio_PlayPathOnEntity);
@@ -347,6 +391,8 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetClipVolume", (const void*)ICALL_Audio_SetClipVolume);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetClipPosition", (const void*)ICALL_Audio_SetClipPosition);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetClip3DDistances", (const void*)ICALL_Audio_SetClip3DDistances);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_AddClipDSP", (const void*)ICALL_Audio_AddClipDSP);
 

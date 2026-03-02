@@ -693,6 +693,16 @@ namespace CrashoutsEngine {
 				rapidjson::Value pVal(rapidjson::kObjectType);
 
 				// 1. General Settings
+				pVal.AddMember("preset", static_cast<int>(pc.preset), allocator);
+				pVal.AddMember("burstCount", pc.burstCount, allocator);
+				pVal.AddMember("renderShape", static_cast<int>(pc.renderShape), allocator);
+				pVal.AddMember("squareSizeMultiplier", pc.squareSizeMultiplier, allocator);
+				pVal.AddMember("circleRadiusMultiplier", pc.circleRadiusMultiplier, allocator);
+				pVal.AddMember("circleSegments", pc.circleSegments, allocator);
+				pVal.AddMember("triangleWidthMultiplier", pc.triangleWidthMultiplier, allocator);
+				pVal.AddMember("triangleHeightMultiplier", pc.triangleHeightMultiplier, allocator);
+				pVal.AddMember("superheroLandingAngleDeg", pc.superheroLandingAngleDeg, allocator);
+				pVal.AddMember("superheroLandingAngleSpreadDeg", pc.superheroLandingAngleSpreadDeg, allocator);
 				pVal.AddMember("isEmitting", pc.isEmitting, allocator);
 				pVal.AddMember("useWorldSpace", pc.useWorldSpace, allocator);
 				pVal.AddMember("maxParticles", pc.maxParticles, allocator);
@@ -1232,6 +1242,16 @@ namespace CrashoutsEngine {
 
 				// 1. General
 				// Use defaults here (e.g., 100 max particles) so empty JSON doesn't break logic
+				pc.preset = static_cast<ParticleSystem::ParticlePreset>(GetInt(v, "preset", 0));
+				pc.burstCount = GetInt(v, "burstCount", 0);
+				pc.renderShape = static_cast<ParticleSystem::ParticleRenderShape>(GetInt(v, "renderShape", 0));
+				pc.squareSizeMultiplier = GetFloat(v, "squareSizeMultiplier", 1.0f);
+				pc.circleRadiusMultiplier = GetFloat(v, "circleRadiusMultiplier", 1.0f);
+				pc.circleSegments = GetInt(v, "circleSegments", 48);
+				pc.triangleWidthMultiplier = GetFloat(v, "triangleWidthMultiplier", 1.0f);
+				pc.triangleHeightMultiplier = GetFloat(v, "triangleHeightMultiplier", 1.0f);
+				pc.superheroLandingAngleDeg = GetFloat(v, "superheroLandingAngleDeg", 8.0f);
+				pc.superheroLandingAngleSpreadDeg = GetFloat(v, "superheroLandingAngleSpreadDeg", 18.0f);
 				pc.isEmitting = GetBool(v, "isEmitting", true);
 				pc.playOnStop = GetBool(v, "playOnStop", false);
 				pc.useWorldSpace = GetBool(v, "useWorldSpace", false);
@@ -1277,6 +1297,8 @@ namespace CrashoutsEngine {
 				pc.useTexture = GetBool(v, "useTexture", false);
 				pc.textureName = GetString(v, "textureName", "");
 				if (v.HasMember("textureUV")) pc.textureUV = ReadVec2(v["textureUV"], { 1.f, 1.f });
+
+				ParticleSystem::ParticleInit(pc);
 			}
 
 			// CheckpointComponent

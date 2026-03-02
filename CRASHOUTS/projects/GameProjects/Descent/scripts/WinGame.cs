@@ -20,6 +20,9 @@ namespace CrashoutsEngine
         [SerializeField] private float victoryFadeDuration = 1.0f;
         private bool gameWon = false;
 
+        [SerializeField] private string doorParticleName = "Door Particele";
+        private uint doorParticleID = 0;
+
         public override void Start()
         {
             gameWon = false;
@@ -32,6 +35,13 @@ namespace CrashoutsEngine
             if (winScreen != null)
             {
                 InternalCalls.SetActive(winScreen.ID, false);
+            }
+
+            Entity dust = Entity.Find(doorParticleName);
+            if (dust != null)
+            {
+                doorParticleID = dust.ID;
+                InternalCalls.Particle_SetEmitting(doorParticleID, false);
             }
         }
 
@@ -65,6 +75,8 @@ namespace CrashoutsEngine
         {
             Console.WriteLine("[WinGame] YOU WIN!");
             gameWon = true;
+
+            if (doorParticleID != 0) InternalCalls.Particle_TriggerBurst(doorParticleID);
 
             // 1. Disable player Control
             if (PlayerMovement.Instance != null)

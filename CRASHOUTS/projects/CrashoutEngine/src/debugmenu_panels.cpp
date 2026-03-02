@@ -1541,53 +1541,73 @@ namespace UI {
 			ImGuiWindowFlags_NoCollapse |
 			ImGuiWindowFlags_NoMove;
 
+		static CEVec3 s_SavedEditorCamPos{ 0.0f, 0.0f, 0.0f };
+		static float s_SavedEditorCamZoom = 1.0f;
+
 		if (ImGui::Begin("Engine Controls", nullptr, window_flags)) {
 
-			// Play Stop Pause buttons
-			// Play
+			// ==================== PLAY BUTTON ====================
+			// We only save the scene if we are moving from STOP to PLAY.
 			if (ImGui::Button("PLAY", ImVec2(70, 25))) {
-				if (engineState != EngineState::PLAY && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
+				if (engineState == EngineState::STOP && !currSceneName.empty()) {
+					Serialization::SaveScenes(currSceneName);
+
+					// SAVE THE CAMERA STATE BEFORE WE ENTER PLAY MODE
+					s_SavedEditorCamPos = CrashoutsEngine::RenderCamera::engineCamera.GetPosition();
+					s_SavedEditorCamZoom = CrashoutsEngine::RenderCamera::engineCamera.GetZoom();
+				}
+
 				engineState = EngineState::PLAY;
 
 				::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(false);
 				CrashoutsEngine::Audio::AudioSystem::instance().setPaused(false);
-
-				CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(CEVec3{ 0.f, 0.f, 0.f });
-				CrashoutsEngine::RenderCamera::engineCamera.SetZoom(1.f);
-				CrashoutsEngine::RenderCamera::engineCamera.SetTargetAR(16.0f / 9.0f);
-				CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
-
 			}
-			ImGui::SameLine();
-			// Pause
-			if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
-				if (engineState != EngineState::PLAY && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
-				engineState = EngineState::PAUSE;
 
+			ImGui::SameLine();
+
+			// ==================== PAUSE BUTTON ====================
+			// Disable the pause button if we are in STOP mode.
+			if (engineState == EngineState::STOP) {
+				ImGui::BeginDisabled();
+			}
+
+			if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
+				// Just change state and pause systems. NO SAVING HERE.
+				engineState = EngineState::PAUSE;
 				::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
 				CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
 			}
-			ImGui::SameLine();
-			// Stop
-			if (ImGui::Button("STOP", ImVec2(70, 25))) {
-				// If we were in STOP or PAUSE, save our tweaks before reloading
-				if (engineState != EngineState::PLAY && !currSceneName.empty()) Serialization::SaveScenes(currSceneName);
 
-				if (currSceneName.empty()) RestartGameState();       // Legacy scene system
+			if (engineState == EngineState::STOP) {
+				ImGui::EndDisabled();
+			}
+
+			ImGui::SameLine();
+
+			// ==================== STOP BUTTON ====================
+			if (ImGui::Button("STOP", ImVec2(70, 25))) {
+				// NEVER SAVE THE SCENE HERE! 
+				// We want to discard everything that happened during Play/Pause.
+
+				if (currSceneName.empty()) RestartGameState();
 				else {
 					g_PendingSceneName = currSceneName;
-					g_IsSceneLoadPending = true;
+					g_IsSceneLoadPending = true; // Triggers the reload in Update()
 				}
-				//MonoManager::ReloadScripts();
+
 				engineState = EngineState::STOP;
 
 				::Physics::PhysicsHandler::PhysicsHandler::GetInstance().SetPaused(true);
 
 				auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
-				audio.stopAll(false);          // Stop FMOD Studio Events (Immediate, no fade)
-				audio.stopAllChannels();       // Stop FMOD Core Sounds (Music & SFX)
-				audio.setPaused(false);        // Unpause the system for the editor
+				audio.stopAll(false);
+				audio.stopAllChannels();
+				audio.setPaused(false);
 
+				// RESTORE THE CAMERA STATE ON STOP
+				CrashoutsEngine::RenderCamera::engineCamera.SetPostiion(s_SavedEditorCamPos);
+				CrashoutsEngine::RenderCamera::engineCamera.SetZoom(s_SavedEditorCamZoom);
+				CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 			}
 			ImGui::SameLine();
 			// --- ADD THE RECOMPILE BUTTON ---

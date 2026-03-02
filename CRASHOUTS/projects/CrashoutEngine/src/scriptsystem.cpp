@@ -41,12 +41,14 @@ namespace CrashoutsEngine
 	using namespace Component;
 
 	static MonoMethod* s_ScriptManagerUpdate = nullptr;
+	static MonoMethod* s_ScriptManagerLateUpdate = nullptr;
 	static MonoMethod* s_ScriptManagerFixedUpdate = nullptr;
 	static MonoMethod* s_ScriptManagerOnDrawGizmos = nullptr;
 	static MonoMethod* s_ScriptManagerClear = nullptr;
 
 	typedef void(__stdcall* ScriptManagerUpdateThunk)(MonoObject** exc);
 	static ScriptManagerUpdateThunk s_ScriptManagerUpdateThunk = nullptr;
+	static ScriptManagerUpdateThunk s_ScriptManagerLateUpdateThunk = nullptr;
 	static ScriptManagerUpdateThunk s_ScriptManagerFixedUpdateThunk = nullptr;
 	static ScriptManagerUpdateThunk s_ScriptManagerOnDrawGizmosThunk = nullptr;
 
@@ -403,6 +405,19 @@ namespace CrashoutsEngine
 		comp->isEmitting = emitting;
 	}
 
+	static void InternalParticleTriggerBurst(uint32_t entityID) {
+		auto* ecs = ECS::getInstance();
+		if (!ecs) return;
+		if (!ecs->HasComponent<Component::ParticleComponent>(entityID)) return;
+		auto* comp = ecs->GetComponent<Component::ParticleComponent>(entityID);
+		if (!comp) return;
+
+		comp->data.activeCount = 0;
+		comp->emitAccumulator = 0.0f;
+		comp->burstRequested = true;
+		comp->isEmitting = true;
+	}
+
 	void ScriptSystem::RegisterAllBindings()
 	{
         Bindings::RegisterTransformBindings();
@@ -427,6 +442,7 @@ namespace CrashoutsEngine
 
 		mono_add_internal_call("CrashoutsEngine.InternalCalls::GetScript", (const void*)InternalGetScript);
 		mono_add_internal_call("CrashoutsEngine.InternalCalls::Particle_SetEmitting", (const void*)InternalSetParticleEmitting);
+		mono_add_internal_call("CrashoutsEngine.InternalCalls::Particle_TriggerBurst", (const void*)InternalParticleTriggerBurst);
 	}
 
 
@@ -448,11 +464,13 @@ namespace CrashoutsEngine
 			MonoClass* scriptManagerClass = mono_class_from_name(image, "CrashoutsEngine", "ScriptManager");
 			if (scriptManagerClass) {
 				s_ScriptManagerUpdate = mono_class_get_method_from_name(scriptManagerClass, "UpdateAll", 0);
+				s_ScriptManagerLateUpdate = mono_class_get_method_from_name(scriptManagerClass, "LateUpdateAll", 0);
 				s_ScriptManagerFixedUpdate = mono_class_get_method_from_name(scriptManagerClass, "FixedUpdateAll", 0);
 				s_ScriptManagerOnDrawGizmos = mono_class_get_method_from_name(scriptManagerClass, "OnDrawGizmosAll", 0);
 				s_ScriptManagerClear = mono_class_get_method_from_name(scriptManagerClass, "ClearAll", 0);
 
 				if (s_ScriptManagerUpdate) s_ScriptManagerUpdateThunk = (ScriptManagerUpdateThunk)mono_method_get_unmanaged_thunk(s_ScriptManagerUpdate);
+				if (s_ScriptManagerLateUpdate) s_ScriptManagerLateUpdateThunk = (ScriptManagerUpdateThunk)mono_method_get_unmanaged_thunk(s_ScriptManagerLateUpdate);
 				if (s_ScriptManagerFixedUpdate) s_ScriptManagerFixedUpdateThunk = (ScriptManagerUpdateThunk)mono_method_get_unmanaged_thunk(s_ScriptManagerFixedUpdate);
 				if (s_ScriptManagerOnDrawGizmos) s_ScriptManagerOnDrawGizmosThunk = (ScriptManagerUpdateThunk)mono_method_get_unmanaged_thunk(s_ScriptManagerOnDrawGizmos);
 			}
@@ -488,6 +506,39 @@ namespace CrashoutsEngine
 		else if (s_ScriptManagerUpdate) {
 			MonoObject* exc = nullptr;
 			mono_runtime_invoke(s_ScriptManagerUpdate, nullptr, nullptr, &exc);
+			if (exc) mono_print_unhandled_exception(exc);
+		}
+	}
+
+	void ScriptSystem::LateUpdateAll()
+	{
+		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "MonoLateUpdate");
+		auto& ecs = *ECS::getInstance();
+		auto& scripts = ecs.GetComponentArray<ScriptComponent>();
+
+		// 1. Process Start() for any new scripts (must stay in C++ loop for now to track Started flag)
+		for (size_t i = 0; i < scripts.dense.size(); ++i)
+		{
+			Entity entityID = scripts.indexToEntity[i];
+			if (ecs.HasComponent<ActiveComponent>(entityID)) {
+				if (!IsEntityActive(ecs, entityID)) continue;
+			}
+
+			if (ecs.HasComponent<ScriptComponent>(entityID))
+			{
+				ecs.GetComponent<ScriptComponent>(entityID)->Start();
+			}
+		}
+
+		// 2. Batch Update via ScriptManager
+		if (s_ScriptManagerLateUpdateThunk) {
+			MonoObject* exc = nullptr;
+			s_ScriptManagerLateUpdateThunk(&exc);
+			if (exc) mono_print_unhandled_exception(exc);
+		}
+		else if (s_ScriptManagerLateUpdateThunk) {
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(s_ScriptManagerLateUpdate, nullptr, nullptr, &exc);
 			if (exc) mono_print_unhandled_exception(exc);
 		}
 	}
@@ -536,11 +587,13 @@ namespace CrashoutsEngine
 		}
 
 		s_ScriptManagerUpdate = nullptr;
+		s_ScriptManagerLateUpdateThunk = nullptr;
 		s_ScriptManagerFixedUpdate = nullptr;
 		s_ScriptManagerOnDrawGizmos = nullptr;
 		s_ScriptManagerClear = nullptr;
 
 		s_ScriptManagerUpdateThunk = nullptr;
+		s_ScriptManagerLateUpdateThunk = nullptr;
 		s_ScriptManagerFixedUpdateThunk = nullptr;
 		s_ScriptManagerOnDrawGizmosThunk = nullptr;
 
@@ -564,10 +617,12 @@ namespace CrashoutsEngine
 
 		// Reset static pointers as they belong to the old domain
 		s_ScriptManagerUpdate = nullptr;
+		s_ScriptManagerLateUpdate = nullptr;
 		s_ScriptManagerFixedUpdate = nullptr;
 		s_ScriptManagerOnDrawGizmos = nullptr;
 		s_ScriptManagerClear = nullptr;
 		s_ScriptManagerUpdateThunk = nullptr;
+		s_ScriptManagerLateUpdateThunk = nullptr;
 		s_ScriptManagerFixedUpdateThunk = nullptr;
 		s_ScriptManagerOnDrawGizmosThunk = nullptr;
 

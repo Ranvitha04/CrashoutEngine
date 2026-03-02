@@ -1374,6 +1374,24 @@ namespace {
 						ImGui::DragFloat("Max Distance", &clip.maxDistance, 0.1f, 0.0f, 1000.0f);
 					}
 
+					// DSP Selection
+					const char* dspNames[] = { "None", "Oscillator", "LowPass", "ITLowPass", "HighPass", "Echo", "Fader", "Flanger", "Distortion", "Normalize", "Limit", "Parameq", "PitchShift", "Chorus", "VSTPlugin", "WinampPlugin", "ITEcho", "Compressor", "SFXReverb", "LowPassSimple", "Delay", "Tremolo", "LadspaPlugin", "Send", "Return", "HighPassSimple", "Pan", "ThreeEQ", "FFT", "LoudnessMeter", "EnvelopeFollower", "ConvolutionReverb", "ChannelMix", "Transceiver", "ObjectPan", "MultibandEq" };
+					int currentDsp = clip.dspType + 1; // -1 -> 0 (None)
+					if (ImGui::Combo("Audio Effect", &currentDsp, dspNames, IM_ARRAYSIZE(dspNames))) {
+						int newDspType = currentDsp - 1;
+						if (clip.channel) {
+							// Remove old DSP if any
+							if (clip.dspType != -1) {
+								Audio::AudioSystem::instance().RemoveChannelDSP(clip.channel, (FMOD_DSP_TYPE)clip.dspType);
+							}
+							// Add new DSP if not None
+							if (newDspType != -1) {
+								Audio::AudioSystem::instance().AddChannelDSP(clip.channel, (FMOD_DSP_TYPE)newDspType);
+							}
+						}
+						clip.dspType = newDspType;
+					}
+
 					static float s_debugFadeTime = 0.5f;
 					ImGui::DragFloat("Stop Fade (s)", &s_debugFadeTime, 0.1f, 0.0f, 5.0f);
 
@@ -1403,6 +1421,10 @@ namespace {
 								ch->setPitch(clip.pitch);
 								ch->setMode(clip.looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
 								clip.channel = ch;
+
+								if (clip.dspType != -1) {
+									audio.AddChannelDSP(ch, (FMOD_DSP_TYPE)clip.dspType);
+								}
 							}
 						}
 					}
@@ -3046,6 +3068,8 @@ namespace CrashoutsEngine
 				Component::ParticleComponent pc;
 				// Initialize defaults if needed
 				pc.isEmitting = true;
+				pc.playOnStop = true;
+				pc.useWorldSpace = true;
 				pc.maxParticles = 1000;
 				auto& p = ecs.AddComponent<Component::ParticleComponent>(e, pc);
 				ParticleSystem::ParticleInit(p);
@@ -3061,6 +3085,13 @@ namespace CrashoutsEngine
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* pc = ecs.GetComponent<Component::ParticleComponent>(e);
 			if (!pc) return;
+
+			ImGui::SeparatorText("Preset");
+			const char* presetNames[] = { "Custom", "Smoke", "Fire", "Explosion", "Superhero Landing" };
+			int preset = static_cast<int>(pc->preset);
+			if (ImGui::Combo("##ParticlePreset", &preset, presetNames, IM_ARRAYSIZE(presetNames))) {
+				ParticleSystem::ApplyPreset(*pc, static_cast<ParticleSystem::ParticlePreset>(preset));
+			}
 
 			// Helper to draw two float inputs side-by-side
 			auto DrawMinMaxRow = [](const char* label, float& minRef, float& maxRef, float speed, float minLimit, float maxLimit) {
@@ -3130,7 +3161,7 @@ namespace CrashoutsEngine
 
 			// Draw Shape selector with label on left
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Shape:"); ImGui::SameLine();
+			ImGui::Text("Emission Shape:"); ImGui::SameLine();
 			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 			if (ImGui::Combo("##Shape", &currentShape, shapes, IM_ARRAYSIZE(shapes))) {
 				pc->emissionShape = (ParticleSystem::ParticleShape)currentShape;
@@ -3152,6 +3183,46 @@ namespace CrashoutsEngine
 
 				// Y Axis (Height)
 				DrawMinMaxRow("Height (Min / Max)", pc->areaMin.y, pc->areaMax.y, 0.1f, 0.0f, 0.0f);
+			}
+
+			ImGui::SeparatorText("Render Shape");
+			const char* renderShapes[] = { "Square", "Circle", "Triangle" };
+			int renderShape = (int)pc->renderShape;
+			if (ImGui::Combo("##RenderShape", &renderShape, renderShapes, IM_ARRAYSIZE(renderShapes))) {
+				pc->renderShape = (ParticleSystem::ParticleRenderShape)renderShape;
+			}
+			if (pc->renderShape == ParticleSystem::ParticleRenderShape::Square) {
+				UIHelpers::DrawUndoableFloat("Size Multiplier", pc->squareSizeMultiplier, 0.01f, 0.0f, 100.0f);
+			}
+			else if (pc->renderShape == ParticleSystem::ParticleRenderShape::Circle) {
+				UIHelpers::DrawUndoableInt("Segments", pc->circleSegments, 1.0f, 3, 128);
+				UIHelpers::DrawUndoableFloat("Radius Multiplier", pc->circleRadiusMultiplier, 0.01f, 0.0f, 100.0f);
+			}
+			else if (pc->renderShape == ParticleSystem::ParticleRenderShape::Triangle) {
+				UIHelpers::DrawUndoableFloat("Width Multiplier", pc->triangleWidthMultiplier, 0.01f, 0.0f, 100.0f);
+				UIHelpers::DrawUndoableFloat("Height Multiplier", pc->triangleHeightMultiplier, 0.01f, 0.0f, 100.0f);
+			}
+
+			if (pc->preset == ParticleSystem::ParticlePreset::SuperheroLanding) {
+				ImGui::SeparatorText("Superhero Landing");
+				bool trigger = false;
+
+				if (ImGui::Button("Trigger Burst")) trigger = true;
+
+				f32 prevAngle = pc->superheroLandingAngleDeg;
+				UIHelpers::DrawUndoableFloat("Angle (deg)", pc->superheroLandingAngleDeg, 0.1f, 0.0f, 89.0f);
+				if (pc->superheroLandingAngleDeg != prevAngle) trigger = true;
+
+				f32 prevSpread = pc->superheroLandingAngleSpreadDeg;
+				UIHelpers::DrawUndoableFloat("Angle Spread (deg)", pc->superheroLandingAngleSpreadDeg, 0.1f, 0.0f, 89.0f);
+				if (pc->superheroLandingAngleSpreadDeg != prevSpread) trigger = true;
+
+				if (trigger) {
+					pc->data.activeCount = 0;
+					pc->emitAccumulator = 0.0f;
+					pc->burstRequested = true;
+					pc->isEmitting = true;
+				}
 			}
 
 			// --- 3. Particle Properties (Compacted) ---

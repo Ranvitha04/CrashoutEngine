@@ -32,6 +32,7 @@ namespace Component {
         bool spatial3D = false;
         float minDistance = 1.0f;
         float maxDistance = 100.0f;
+        int dspType = -1; // -1 for none, otherwise index into FMOD_DSP_TYPE
 
         // Internal handles (one per clip!)
         FMOD::Studio::EventInstance* inst = nullptr;

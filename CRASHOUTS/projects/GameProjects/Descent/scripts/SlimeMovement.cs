@@ -21,7 +21,9 @@ namespace CrashoutsEngine
         [SerializeField] private float moveSpeed = 600f; 
         [SerializeField] private float maxSpeed = 15.0f; 
         [SerializeField] private float moveAudioInterval = 0.4f;
-        [SerializeField] private float stopAudioDistance = 40.0f; 
+        //[SerializeField] private float stopAudioDistance = 40.0f;
+        [SerializeField] private float minAudioDistance = 1.0f;
+        [SerializeField] private float maxAudioDistance = 50.0f;
         [SerializeField] private float detectionRange = 250.0f;
         [SerializeField] private float gravityScale = 2.0f;
         [SerializeField] private float grabRange = 100.0f;
@@ -67,6 +69,8 @@ namespace CrashoutsEngine
         private float flipCooldown = 0.0f;
         private float ignoreHomeTimer = 0.0f;
         private float patrolTurnTimer = 0.0f;
+        [SerializeField] private float ignorePlayerStopDuration = 0.2f;
+        private float ignorePlayerStopTimer = 0.0f;
 
         private CEVec3 startPos;
         private bool returningHome = false;
@@ -75,6 +79,7 @@ namespace CrashoutsEngine
         private bool isFollowingPath = false;
 
         bool STOP = false;
+        private bool stopApplied = false;
         private string currentAnimState = "";
 
         private bool HasLineOfSight(CEVec3 targetPos)
@@ -164,6 +169,13 @@ namespace CrashoutsEngine
             playerScript = PlayerMovement.Instance;
             CachePlayerCollider();
 
+            // Set 3D Distances for all slime sounds to handle distance-based attenuation
+            for (int i = 1; i <= 5; i++)
+            {
+                AudioManager.SetClip3DDistances(Entity.ID, "slimeMove" + i, minAudioDistance, maxAudioDistance);
+            }
+            AudioManager.SetClip3DDistances(Entity.ID, "slimeImpact", minAudioDistance, maxAudioDistance);
+
             CollisionEvents.RegisterPreSolve(Entity.ID, this.OnPreSolve);
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
             CollisionEvents.RegisterCollideExit(Entity.ID, this.OnCollideExit);
@@ -224,7 +236,7 @@ namespace CrashoutsEngine
                
                 if (isGrabbed)
                 {
-                    STOP = false; 
+                    ClearStopState();
                     UpdateAnimationState(); 
                     return;
                 }
@@ -236,8 +248,9 @@ namespace CrashoutsEngine
             {
                 if (rb != null)
                 {
-                    rb.Mass = 0.0f;
+                    if (!stopApplied) rb.SetDynamic(false);
                     rb.LinearVelocity = new CEVec3(0.0f, 0.0f, 0.0f);
+                    stopApplied = true;
                 }
                 return;
             }
@@ -250,6 +263,7 @@ namespace CrashoutsEngine
                 if (currentStunTime <= 0)
                 {
                     isStunned = false;
+                    ClearStopState(); // Clear STOP so AI/physics resumes after stun
                     var tag = Entity.GetComponent<TagComponent>();
                     if (tag != null) tag.AddTag("Enemy");
                 }
@@ -261,24 +275,20 @@ namespace CrashoutsEngine
             }
 
             if (flipCooldown > 0) flipCooldown -= dt;
+            if (ignorePlayerStopTimer > 0) ignorePlayerStopTimer -= dt;
 
             float horizontalSpeed = Math.Abs(rb.LinearVelocity.x);
 
             if (horizontalSpeed > 1.0f && isGrounded && !isStunned)
             {
-                float distToPlayer = playerScript != null ? Distance(tf.Position, playerScript.Entity.GetComponent<TransformComponent>().Position) : 0;
-
-                if (distToPlayer <= stopAudioDistance)
+                moveAudioTimer -= dt;
+                if (moveAudioTimer <= 0.0f)
                 {
-                    moveAudioTimer -= dt;
-                    if (moveAudioTimer <= 0.0f)
-                    {
-                        int index = rng.Next(1, 6);
-                        AudioManager.GetInstance().PlayAttached("slimeMove" + index, Entity.ID);
+                    int index = rng.Next(1, 6);
+                    AudioManager.GetInstance().PlayAttached("slimeMove" + index, Entity.ID);
 
-                        float speedFactor = Math.Min(Math.Max(horizontalSpeed / maxSpeed, 0.5f), 2.0f);
-                        moveAudioTimer = moveAudioInterval / speedFactor;
-                    }
+                    float speedFactor = Math.Min(Math.Max(horizontalSpeed / maxSpeed, 0.5f), 2.0f);
+                    moveAudioTimer = moveAudioInterval / speedFactor;
                 }
             }
             else
@@ -510,6 +520,12 @@ namespace CrashoutsEngine
 
             if (isDown)
             {
+                if (isGrabbed && playerScript != null && playerScript.CurrentEnergy <= 0.0f)
+                {
+                    ReleaseSlime(false, mousePos);
+                    return;
+                }
+
                 if (!isGrabbed)
                 {
                     float halfW = Math.Abs(tf.Size.x) * 0.5f + 100.0f;
@@ -540,6 +556,11 @@ namespace CrashoutsEngine
                 {
                     CEVec3 worldPos = tf.WorldPosition;
                     RemoveEnergy(grabEnergyDrainRate * (float)Time.DT);
+                    if (playerScript.CurrentEnergy <= 0.0f)
+                    {
+                        ReleaseSlime(false, mousePos);
+                        return;
+                    }
                     var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
                     if (playerTf != null)
                     {
@@ -550,25 +571,41 @@ namespace CrashoutsEngine
             }
             else if (isGrabbed)
             {
-                isGrabbed = false;
-                wasThrown = true;
-                UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
-                UpdateHoldColliders(false);
-                
-                // BUG FIX 1: Ensure STOP is false so physics immediately applies
-                STOP = false; 
+                ReleaseSlime(true, mousePos);
+            }
+        }
 
-                activePath.Clear();
-                rb.SetDynamic(true);
-                var Tag = Entity.GetComponent<TagComponent>();
-                // Removed AddTag("Enemy") so it doesn't damage the player while being thrown
-                Console.WriteLine("[Slime] Released/Thrown!");
+        private void ReleaseSlime(bool applyThrow, CEVec2 mousePos)
+        {
+            isGrabbed = false;
+            wasThrown = applyThrow;
+            UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
+            UpdateHoldColliders(false);
 
-                if (playerScript != null)
-                {
-                    CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
-                    rb.LinearVelocity = throwVel;
-                }
+            // BUG FIX 1: Ensure STOP is false so physics immediately applies
+            ClearStopState();
+
+            activePath.Clear();
+            rb.SetDynamic(true);
+            var Tag = Entity.GetComponent<TagComponent>();
+            if (Tag == null)
+            {
+                Entity.Add<TagComponent>();
+                Tag = Entity.GetComponent<TagComponent>();
+            }
+            // Removed AddTag("Enemy") so it doesn't damage the player while being thrown
+            Console.WriteLine(applyThrow ? "[Slime] Released/Thrown!" : "[Slime] Released (Energy Depleted)!");
+
+            if (applyThrow && playerScript != null)
+            {
+                CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
+                rb.LinearVelocity = throwVel;
+            }
+            else
+            {
+                rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0);
+                ignorePlayerStopTimer = ignorePlayerStopDuration;
+                if (Tag != null) Tag.AddTag("Enemy");
             }
         }
 
@@ -695,6 +732,14 @@ namespace CrashoutsEngine
             }
         }
 
+        private void ClearStopState()
+        {
+            if (!STOP) return;
+            STOP = false;
+            stopApplied = false;
+            if (rb != null) rb.SetDynamic(true);
+        }
+
         public bool OnPreSolve(uint otherEntity)
         {
             // When grabbed, ignore all collisions to prevent pushing the player.
@@ -723,7 +768,7 @@ namespace CrashoutsEngine
             // BUG FIX 2: Prevent instant stop race-condition when thrown next to player
             if (Tag.HasTag("Player")) 
             {
-                if (!isGrabbed && !wasThrown) 
+                if (!isGrabbed && !wasThrown && !isStunned && !isChasing && !returningHome && ignorePlayerStopTimer <= 0.0f) 
                 {
                     STOP = true;
                 }
@@ -763,6 +808,12 @@ namespace CrashoutsEngine
 
         public void OnCollideExit(uint otherEntity)
         {
+            Entity other = new Entity(otherEntity);
+            var Tag = other.GetComponent<TagComponent>();
+            if (Tag != null && Tag.HasTag("Player"))
+            {
+                ClearStopState();
+            }
         }
 
         // PERFORMANCE MATH FIX: Removed slow Math.Pow implementation
