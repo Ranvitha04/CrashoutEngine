@@ -1660,7 +1660,7 @@ namespace UI {
 
 		ScopedWindow w("Visual Scripting", LockFlags(ui.lockLayout));
 
-		auto& graph = ui.visualGraph;
+		auto& graph = UI::GetVisualScriptingGraph();
 		auto& nodes = graph.nodes;
 		auto& links = graph.links;
 		auto& nextNodeId = graph.nextNodeId;

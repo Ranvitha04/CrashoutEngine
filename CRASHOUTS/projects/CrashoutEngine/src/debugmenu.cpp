@@ -37,7 +37,7 @@ using namespace CrashoutsEngine;
 namespace UI { // ----------------------------------------------------------------------------- public UI API
 
 	std::string& currSceneName = CrashoutsEngine::Serialization::currSceneName;
-
+	static VisualScriptingGraph s_VisualGraph;
 	static std::string g_IniPath;
     static bool* s_GameDebugDrawPtr = nullptr;
 	static UIState* s_UIStatePtr = nullptr;
@@ -312,16 +312,14 @@ namespace UI { // --------------------------------------------------------------
      
 	VisualScriptingGraph& GetVisualScriptingGraph()
 	{
-		static VisualScriptingGraph dummy;
-		return s_UIStatePtr ? s_UIStatePtr->visualGraph : dummy;
+		return s_VisualGraph;
 	}
 
 	void ClearVisualScriptingGraph()
 	{
-		auto& g = GetVisualScriptingGraph();
-		g.nodes.clear();
-		g.links.clear();
-		g.nextNodeId = 1;
+		s_VisualGraph.nodes.clear();
+		s_VisualGraph.links.clear();
+		s_VisualGraph.nextNodeId = 1;
 	}
 	/*!
 	 @brief Renders all panels and overlays in a single call.
