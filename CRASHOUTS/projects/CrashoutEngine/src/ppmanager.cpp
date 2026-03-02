@@ -28,6 +28,8 @@ All content ? 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <cmath>
 #include <glm/glm.hpp>
 
+#include "textureasset.h"
+
 /*                                                                   
 ----------------------------------------------------------------------------- */
 namespace CrashoutsEngine {
@@ -367,6 +369,8 @@ namespace CrashoutsEngine {
 
                 GLSLShader& lightShader = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("LightShader")->shaderObject;
                 lightShader.Use();
+                float aspect = (gameTextureHeight > 0) ? (float)gameTextureWidth / (float)gameTextureHeight : 1.0f;
+                glUniform1f(glGetUniformLocation(lightShader.GetHandle(), "uAspect"), aspect);
 
                 static std::vector<LightInstance> instances;
                 instances.clear();
@@ -421,6 +425,7 @@ namespace CrashoutsEngine {
                 glEnable(GL_BLEND);
                 glBlendEquation(GL_MAX);
                 glBlendFunc(GL_ONE, GL_ONE);
+                glDisable(GL_CULL_FACE);
 
                 glBindVertexArray(occluderVao);
                 glBindBuffer(GL_ARRAY_BUFFER, occluderVbo);
@@ -456,10 +461,10 @@ namespace CrashoutsEngine {
                     if (lc->useTransform) worldPos = tc->position;
 
                     glm::vec2 local[4] = {
-                        {-half.x, -half.y},
-                        {-half.x,  half.y},
-                        { half.x,  half.y},
-                        { half.x, -half.y}
+                        { -half.x, -half.y }, // BL
+                        {  half.x, -half.y }, // BR
+                        {  half.x,  half.y }, // TR
+                        { -half.x,  half.y }  // TL
                     };
 
                     glm::vec2 ndc[4];
@@ -477,12 +482,12 @@ namespace CrashoutsEngine {
                     if (!ok) continue;
 
                     OccVertex verts[6] = {
-                        { ndc[0].x, ndc[0].y, u0, v0 },
-                        { ndc[1].x, ndc[1].y, u0, v1 },
-                        { ndc[2].x, ndc[2].y, u1, v1 },
-                        { ndc[0].x, ndc[0].y, u0, v0 },
-                        { ndc[2].x, ndc[2].y, u1, v1 },
-                        { ndc[3].x, ndc[3].y, u1, v0 }
+                        { ndc[0].x, ndc[0].y, u0, v1 }, // BL
+                        { ndc[1].x, ndc[1].y, u1, v1 }, // BR
+                        { ndc[2].x, ndc[2].y, u1, v0 }, // TR
+                        { ndc[0].x, ndc[0].y, u0, v1 }, // BL
+                        { ndc[2].x, ndc[2].y, u1, v0 }, // TR
+                        { ndc[3].x, ndc[3].y, u0, v0 }  // TL
                     };
 
                     glUniform1i(glGetUniformLocation(occShader.GetHandle(), "uUseTexture"), sc->enableTexture ? 1 : 0);
@@ -502,6 +507,7 @@ namespace CrashoutsEngine {
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
                 glBlendEquation(GL_FUNC_ADD);
                 glDisable(GL_BLEND);
+                glEnable(GL_CULL_FACE);
             }
 
             // --- Combine Pass ---
@@ -582,5 +588,11 @@ namespace CrashoutsEngine {
     }
 
 }
+
+
+
+
+
+
 
 
