@@ -6033,24 +6033,6 @@
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
             },
-            "light": {
-                "active": true,
-                "intensity": 0.15000000596046449,
-                "radius": 194.0,
-                "affectBloom": true,
-                "useTransform": true,
-                "renderSelf": true,
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
             "layer": {
                 "layerName": "Player",
                 "z": 0
@@ -9723,6 +9705,25 @@
                 "texturePressed": "",
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.25,
+                "radius": 129.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": false,
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Player",

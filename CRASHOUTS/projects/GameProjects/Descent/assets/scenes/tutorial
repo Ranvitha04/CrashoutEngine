@@ -17386,6 +17386,8 @@
                 "contrast": -0.07999999821186066,
                 "saturation": 0.10000000149011612,
                 "ambient": 0.15000000596046449,
+                "shadowsEnabled": true,
+                "shadowRays": 128,
                 "bloomEnabled": true,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,
@@ -21822,6 +21824,7 @@
                             "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
                             "isDialogueActive": true,
+                            "facingRight": true,
                             "CurrentEnergy": 87.5,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -21905,37 +21908,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -21988,7 +21960,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -22002,14 +21974,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22062,6 +22034,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -27797,6 +27800,43 @@
                     "z": 1.0,
                     "w": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "PPManager",
+            "uuid": 1600728882397032906,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "postprocessing": {
+                "brightness": 0.0,
+                "contrast": 0.0,
+                "saturation": 0.0,
+                "ambient": 0.6000000238418579,
+                "shadowsEnabled": true,
+                "shadowRays": 512,
+                "bloomEnabled": false,
+                "bloomThreshold": 1.0,
+                "bloomIntensity": 0.800000011920929,
+                "bloomIterations": 6,
+                "active": true
             },
             "layer": {
                 "layerName": "",

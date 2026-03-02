@@ -38,6 +38,10 @@ namespace Component {
         float bloomThreshold{ 1.0f };
         float bloomIntensity{ 0.8f };
         int bloomIterations{ 6 };
+        // Raycast shadow toggle
+        bool shadowsEnabled{ true };
+        // Raycast shadow quality
+        int shadowRays{ 128 };
     };
 
     /*!

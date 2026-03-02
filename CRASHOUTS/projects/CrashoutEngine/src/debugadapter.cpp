@@ -11,7 +11,7 @@ Declares and registers built-in Debug Menu adapters & providers:
 These adapters make the ECS inspector and physics/game-state panels
 runtime-extensible and project-agnostic.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -2476,6 +2476,8 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableFloat("Contrast", ppc->contrast, 0.01f, -1.0f, 1.0f);
 			UIHelpers::DrawUndoableFloat("Saturation", ppc->saturation, 0.01f, -1.0f, 1.0f);
 			UIHelpers::DrawUndoableFloat("Ambient", ppc->ambient, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableBool("Shadows Enabled", ppc->shadowsEnabled);
+			ImGui::SliderInt("Shadow Rays", &ppc->shadowRays, 8, 512);
 			UIHelpers::DrawUndoableBool("Bloom Enabled", ppc->bloomEnabled);
 			UIHelpers::DrawUndoableFloat("Bloom Threshold", ppc->bloomThreshold, 0.01f, 0.0f, 5.0f);
 			UIHelpers::DrawUndoableFloat("Bloom Intensity", ppc->bloomIntensity, 0.01f, 0.0f, 5.0f);
@@ -2484,6 +2486,8 @@ namespace CrashoutsEngine
 			if (ImGui::Button("Reset")) {
 				ppc->brightness = 0.0f; ppc->contrast = 0.0f; ppc->saturation = 0.0f;
 				ppc->ambient = 0.15f;
+				ppc->shadowsEnabled = true;
+				ppc->shadowRays = 128;
 				ppc->bloomEnabled = true;
 				ppc->bloomThreshold = 1.0f;
 				ppc->bloomIntensity = 0.8f;

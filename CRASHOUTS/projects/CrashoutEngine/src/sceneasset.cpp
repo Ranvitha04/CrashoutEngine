@@ -8,7 +8,7 @@
 		is designed to be used with the AssetManager and provides a static factory
 		method for safe creation and resource management.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 //#pragma once
@@ -578,6 +578,8 @@ namespace CrashoutsEngine {
 				val.AddMember("contrast", c.contrast, allocator);
 				val.AddMember("saturation", c.saturation, allocator);
 				val.AddMember("ambient", c.ambient, allocator);
+				val.AddMember("shadowsEnabled", c.shadowsEnabled, allocator);
+				val.AddMember("shadowRays", c.shadowRays, allocator);
 				val.AddMember("bloomEnabled", c.bloomEnabled, allocator);
 				val.AddMember("bloomThreshold", c.bloomThreshold, allocator);
 				val.AddMember("bloomIntensity", c.bloomIntensity, allocator);
@@ -1135,6 +1137,8 @@ namespace CrashoutsEngine {
 				p.contrast = GetFloat(v, "contrast");
 				p.saturation = GetFloat(v, "saturation");
 				p.ambient = GetFloat(v, "ambient", p.ambient);
+				p.shadowsEnabled = GetBool(v, "shadowsEnabled", p.shadowsEnabled);
+				p.shadowRays = GetInt(v, "shadowRays", p.shadowRays);
 				p.bloomEnabled = GetBool(v, "bloomEnabled", p.bloomEnabled);
 				p.bloomThreshold = GetFloat(v, "bloomThreshold", p.bloomThreshold);
 				p.bloomIntensity = GetFloat(v, "bloomIntensity", p.bloomIntensity);

@@ -4,7 +4,7 @@
 @date       08/09/2025
 @brief      Function definitions for Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 
 //__________________________________________________________________________*/
@@ -1304,8 +1304,8 @@ namespace Collision {
 		max = max + padding;
 
 		AABBRect region(min, max);
-		static std::vector<CrashoutsEngine::Entity> candidates;
-		candidates.clear();
+		std::vector<CrashoutsEngine::Entity> candidates;
+		candidates.reserve(128);
 		quadTree.Query(region, candidates);
 
 		// Check Collisions
@@ -1329,6 +1329,27 @@ namespace Collision {
 			auto* transformComp = globalECS.GetComponent<Component::TransformComponent>(entity);
 			if (!transformComp) continue;
 
+			switch (colliderComp->collider->type) {
+			case ColliderType::LINE:
+			case ColliderType::AABB:
+			case ColliderType::CIRCLE:
+				colliderComp->collider->UpdateCollider(transformComp->position);
+				break;
+			case ColliderType::OBB: {
+				colliderComp->collider->UpdateCollider(transformComp->position);
+				colliderComp->collider->UpdateRotation(transformComp->rotation);
+				break;
+			}
+			case ColliderType::POLYGON:
+			case ColliderType::TRIANGLE: {
+				colliderComp->collider->UpdateCollider(transformComp->position);
+				colliderComp->collider->UpdateRotation(transformComp->rotation);
+				break;
+			}
+			default:
+				break;
+			}
+
 			CEVec3 vel{ 0,0,0 };
 			if (globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
 				vel = globalECS.GetComponent<Component::RigidBodyComponent>(entity)->GetVelocity();
@@ -1348,6 +1369,95 @@ namespace Collision {
 				if (distSq < closestDistSq) {
 					closestDistSq = distSq;
 					outEntity = entity;
+					hitFound = true;
+				}
+			}
+		}
+
+		return hitFound;
+	}
+
+bool CollisionHandler::RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity) {
+		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
+
+		LineSegment rayLine(start, end);
+		rayLine.UpdateCollider(CEVec3{ 0.f, 0.f, 0.f });
+
+		CEVec3 min, max;
+		CEVec3 pts[2] = { rayLine.GetWorldP1(), rayLine.GetWorldP2() };
+		min.x = std::min(pts[0].x, pts[1].x);
+		min.y = std::min(pts[0].y, pts[1].y);
+		min.z = 0.0f;
+		max.x = std::max(pts[0].x, pts[1].x);
+		max.y = std::max(pts[0].y, pts[1].y);
+		max.z = 0.0f;
+
+		CEVec3 padding{ 5.0f, 5.0f, 0.0f };
+		min = min - padding;
+		max = max + padding;
+
+		AABBRect region(min, max);
+		std::vector<CrashoutsEngine::Entity> candidates;
+		candidates.reserve(128);
+		quadTree.Query(region, candidates);
+
+		float closestDistSq = std::numeric_limits<float>::max();
+		bool hitFound = false;
+
+		std::unique_ptr<Collider> rayCollider = std::make_unique<LineSegment>(rayLine);
+		CollisionProps rayProps{ rayCollider, CEVec3{0,0,0}, CEVec3{0,0,0} };
+
+		for (CrashoutsEngine::Entity const& entity : candidates) {
+			if (!IsEntityActive(globalECS, entity)) continue;
+			if (entity == ignoredEntity) continue;
+
+			auto* colliderComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
+			if (!colliderComp || !colliderComp->collider) continue;
+			if (colliderComp->collider->isTrigger) continue;
+			if (!colliderComp->collider->enabled) continue;
+
+			auto* transformComp = globalECS.GetComponent<Component::TransformComponent>(entity);
+			if (!transformComp) continue;
+
+			switch (colliderComp->collider->type) {
+			case ColliderType::LINE:
+			case ColliderType::AABB:
+			case ColliderType::CIRCLE:
+				colliderComp->collider->UpdateCollider(transformComp->position);
+				break;
+			case ColliderType::OBB: {
+				colliderComp->collider->UpdateCollider(transformComp->position);
+				colliderComp->collider->UpdateRotation(transformComp->rotation);
+				break;
+			}
+			case ColliderType::POLYGON:
+			case ColliderType::TRIANGLE: {
+				colliderComp->collider->UpdateCollider(transformComp->position);
+				colliderComp->collider->UpdateRotation(transformComp->rotation);
+				break;
+			}
+			default:
+				break;
+			}
+
+			CEVec3 vel{ 0,0,0 };
+			if (globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
+				vel = globalECS.GetComponent<Component::RigidBodyComponent>(entity)->GetVelocity();
+			}
+
+			CollisionProps targetProps{ colliderComp->collider, vel, transformComp->position };
+
+			auto colFunc = callCollFunct(ColliderType::LINE, colliderComp->collider->type);
+			if (!colFunc) continue;
+
+			CollisionManifold manifold = colFunc(rayProps, targetProps);
+
+			if (manifold.collisionOccured) {
+				float distSq = CEMath::LengthSq(manifold.contactPoints[0] - start);
+				if (distSq < closestDistSq) {
+					closestDistSq = distSq;
+					outEntity = entity;
+					outPoint = manifold.contactPoints[0];
 					hitFound = true;
 				}
 			}

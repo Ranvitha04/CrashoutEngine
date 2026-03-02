@@ -22,6 +22,7 @@ All content ? 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "camera.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
+#include "collisionmanager.h"
 #include "jobsystem.h"
 #include <iostream>
 #include <algorithm>
@@ -46,6 +47,8 @@ namespace CrashoutsEngine {
         float g_bloomThreshold = 1.0f;
         float g_bloomIntensity = 0.8f;
         int g_bloomIterations = 6;
+        bool g_shadowsEnabled = true;
+        int g_shadowRays = 128;
         bool active = false;
 
         GLuint quadvao = 0;
@@ -72,6 +75,9 @@ namespace CrashoutsEngine {
         static GLuint brightTexture = 0;
         static GLuint pingpongFbo[2]{ 0, 0 };
         static GLuint pingpongTex[2]{ 0, 0 };
+        static GLuint shadowTex = 0;
+        static int shadowTexWidth = 0;
+        static int shadowTexHeight = 0;
         static int cachedWidth = 0;
         static int cachedHeight = 0;
 
@@ -116,6 +122,8 @@ namespace CrashoutsEngine {
             CreateFboWithTexture(pingpongFbo[0], pingpongTex[0], halfW, halfH);
             CreateFboWithTexture(pingpongFbo[1], pingpongTex[1], halfW, halfH);
 
+            if (shadowTex == 0) glGenTextures(1, &shadowTex);
+
 #if USE_IMGUI_EDITOR
             if (ppFboID == 0) glGenFramebuffers(1, &ppFboID);
             glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
@@ -157,23 +165,28 @@ namespace CrashoutsEngine {
 
             // layout(location = 2) vec2 iLightPos
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
             glVertexAttribDivisor(2, 1);
 
             // layout(location = 3) float iLightRadius
             glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(2 * sizeof(float)));
+            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(2 * sizeof(float)));
             glVertexAttribDivisor(3, 1);
 
             // layout(location = 4) vec3 iLightColor
             glEnableVertexAttribArray(4);
-            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(3 * sizeof(float)));
+            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
             glVertexAttribDivisor(4, 1);
 
             // layout(location = 5) float iIntensity
             glEnableVertexAttribArray(5);
-            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(6 * sizeof(float)));
+            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
             glVertexAttribDivisor(5, 1);
+
+            // layout(location = 6) float iShadowIndex
+            glEnableVertexAttribArray(6);
+            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(7 * sizeof(float)));
+            glVertexAttribDivisor(6, 1);
 
             glBindVertexArray(0); // Unbind
 
@@ -219,6 +232,12 @@ namespace CrashoutsEngine {
             glDeleteTextures(1, &brightTexture);
             glDeleteFramebuffers(2, pingpongFbo);
             glDeleteTextures(2, pingpongTex);
+            if (shadowTex != 0) {
+                glDeleteTextures(1, &shadowTex);
+                shadowTex = 0;
+                shadowTexWidth = 0;
+                shadowTexHeight = 0;
+            }
         }
 
         void UpdatePP() {
@@ -243,6 +262,8 @@ namespace CrashoutsEngine {
                 if (g_bloomThreshold != p.bloomThreshold) g_bloomThreshold = p.bloomThreshold;
                 if (g_bloomIntensity != p.bloomIntensity) g_bloomIntensity = p.bloomIntensity;
                 if (g_bloomIterations != p.bloomIterations) g_bloomIterations = p.bloomIterations;
+                if (g_shadowsEnabled != p.shadowsEnabled) g_shadowsEnabled = p.shadowsEnabled;
+                if (g_shadowRays != p.shadowRays) g_shadowRays = p.shadowRays;
                 if (active != p.active) active = p.active;
             }
         }
@@ -287,18 +308,22 @@ namespace CrashoutsEngine {
                 bool renderBehind{ false };
                 glm::vec2 uvCenter{ 0.0f, 0.0f };
                 float radiusUV{ 0.0f };
+                CEVec3 worldPos{ 0.0f, 0.0f, 0.0f };
+                float radiusWorld{ 0.0f };
                 CEVec3 color{ 1.0f, 1.0f, 1.0f };
                 float intensity{ 1.0f };
+                int shadowRow{ -1 };
             };
 
             struct LightInstance {
                 float posX;
                 float posY;
-                float radius;
+                float radiusWorld;
                 float colorR;
                 float colorG;
                 float colorB;
                 float intensity;
+                float shadowIndex;
             };
 
 
@@ -350,12 +375,99 @@ namespace CrashoutsEngine {
                         lightDraws[i].renderBehind = lc->renderBehind;
                         lightDraws[i].uvCenter = uvCenter;
                         lightDraws[i].radiusUV = radiusUV;
+                        lightDraws[i].worldPos = worldPos;
+                        lightDraws[i].radiusWorld = lc->radius;
                         lightDraws[i].color = lc->color;
                         lightDraws[i].intensity = lc->intensity;
 
                         // Occluder rectangles are built on the main thread after this pass.
                     }
                 });
+
+            // --- Build shadow map rows ---
+            static std::vector<int> shadowRowByLight;
+            shadowRowByLight.assign(lightDraws.size(), -1);
+            static std::vector<size_t> shadowLights;
+            shadowLights.clear();
+            shadowLights.reserve(lightDraws.size());
+
+            if (g_shadowsEnabled) {
+                for (size_t i = 0; i < lightDraws.size(); ++i) {
+                    if (!lightDraws[i].active) continue;
+                    shadowRowByLight[i] = static_cast<int>(shadowLights.size());
+                    shadowLights.push_back(i);
+                }
+            }
+
+            int shadowRays = std::max(8, g_shadowRays);
+            int shadowRows = static_cast<int>(shadowLights.size());
+
+            if (shadowRows < 1) shadowRows = 1;
+            if (shadowTexWidth != shadowRays || shadowTexHeight != shadowRows) {
+                shadowTexWidth = shadowRays;
+                shadowTexHeight = shadowRows;
+                glBindTexture(GL_TEXTURE_2D, shadowTex);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, shadowTexWidth, shadowTexHeight, 0, GL_RED, GL_FLOAT, nullptr);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+
+            static std::vector<float> shadowData;
+            shadowData.assign(shadowTexWidth * shadowTexHeight, 1.0f);
+
+            if (!shadowLights.empty()) {
+                float camWidth = currentCamera.GetVisibleWorldWidth();
+                float camHeight = currentCamera.GetVisibleWorldHeight();
+
+                CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(shadowLights.size()),
+                    [&](unsigned int start, unsigned int end) {
+                        for (unsigned int idx = start; idx < end; ++idx) {
+                            size_t lightIndex = shadowLights[idx];
+                            const LightDraw& ld = lightDraws[lightIndex];
+                            Entity ent = lightArray.indexToEntity[lightIndex];
+                            int row = shadowRowByLight[lightIndex];
+                            if (row < 0) continue;
+
+                            for (int r = 0; r < shadowRays; ++r) {
+                                float angle = (static_cast<float>(r) + 0.5f) / static_cast<float>(shadowRays);
+                                angle *= 6.28318530718f;
+                                float ux = std::cos(angle);
+                                float uy = std::sin(angle);
+
+                                // Map UV direction to world direction using camera extents
+                                CEVec3 dir{ ux * camWidth, uy * camHeight, 0.f };
+                                float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+                                if (len > 0.0001f) {
+                                    dir.x /= len;
+                                    dir.y /= len;
+                                }
+
+                                CEVec3 startPos = ld.worldPos;
+                                CEVec3 endPos = startPos + dir * ld.radiusWorld;
+                                CEVec3 hitPoint{};
+                                CrashoutsEngine::Entity hitEnt = 0;
+                                bool hit = Collision::CollisionHandler::GetInstance().RaycastHit(startPos, endPos, hitPoint, hitEnt, ent);
+
+                                float dist = ld.radiusWorld;
+                                if (hit) {
+                                    CEVec3 delta = hitPoint - startPos;
+                                    dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+                                    if (dist > ld.radiusWorld) dist = ld.radiusWorld;
+                                }
+
+                                float norm = (ld.radiusWorld > 0.0001f) ? (dist / ld.radiusWorld) : 1.0f;
+                                shadowData[row * shadowRays + r] = norm;
+                            }
+                        }
+                    });
+
+                glBindTexture(GL_TEXTURE_2D, shadowTex);
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, shadowTexWidth, shadowTexHeight, GL_RED, GL_FLOAT, shadowData.data());
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
 
 
             auto renderLightsToFbo = [&](GLuint targetFbo, bool affectBloom, bool renderBehind) {
@@ -369,8 +481,14 @@ namespace CrashoutsEngine {
 
                 GLSLShader& lightShader = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("LightShader")->shaderObject;
                 lightShader.Use();
-                float aspect = (gameTextureHeight > 0) ? (float)gameTextureWidth / (float)gameTextureHeight : 1.0f;
-                glUniform1f(glGetUniformLocation(lightShader.GetHandle(), "uAspect"), aspect);
+                float camWidth = currentCamera.GetVisibleWorldWidth();
+                float camHeight = currentCamera.GetVisibleWorldHeight();
+                glUniform2f(glGetUniformLocation(lightShader.GetHandle(), "uWorldSize"), camWidth, camHeight);
+                glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uUseShadows"), (g_shadowsEnabled && !shadowLights.empty()) ? 1 : 0);
+                glUniform1f(glGetUniformLocation(lightShader.GetHandle(), "uShadowTexHeight"), (float)shadowTexHeight);
+                glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uShadowTex"), 1);
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, shadowTex);
 
                 static std::vector<LightInstance> instances;
                 instances.clear();
@@ -385,11 +503,12 @@ namespace CrashoutsEngine {
                     LightInstance inst{};
                     inst.posX = ld.uvCenter.x;
                     inst.posY = ld.uvCenter.y;
-                    inst.radius = ld.radiusUV;
+                    inst.radiusWorld = ld.radiusWorld;
                     inst.colorR = ld.color.x;
                     inst.colorG = ld.color.y;
                     inst.colorB = ld.color.z;
                     inst.intensity = ld.intensity;
+                    inst.shadowIndex = (shadowRowByLight[i] >= 0) ? (float)shadowRowByLight[i] : -1.0f;
                     instances.push_back(inst);
                 }
 
@@ -502,6 +621,7 @@ namespace CrashoutsEngine {
                     glDrawArrays(GL_TRIANGLES, 0, 6);
                     Component::Rendering::Get().drawCalls++;
                 }
+
 
                 glBindVertexArray(0);
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
