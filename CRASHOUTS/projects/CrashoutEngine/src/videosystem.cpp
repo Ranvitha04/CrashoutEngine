@@ -66,6 +66,7 @@ namespace CrashoutsEngine {
                 if (ecs->HasComponent<Component::ShapeComponent>(entityID)) {
                     auto* sc = ecs->GetComponent<Component::ShapeComponent>(entityID);
                     sc->textureHandle = vc->loader->GetTextureHandle();
+                    sc->textureName = "RUNTIME_VIDEO_" + std::to_string(entityID);
                     sc->enableTexture = true;
                     // Reset UVs to full for video
                     sc->uvSize = CEVec2(1.0f, 1.0f); 
