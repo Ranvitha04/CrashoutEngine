@@ -25,10 +25,20 @@
             "path": "assetmanifest.json"
         }
     ],
+    "dialogue": [
+        {
+            "name": "dialogue",
+            "path": "dialogue.json"
+        }
+    ],
     "images": [
         {
             "name": "missing",
             "path": "missing.png"
+        },
+        {
+            "name": "map",
+            "path": "map.png"
         }
     ],
     "scenes": [
@@ -39,6 +49,16 @@
         {
             "name": "StartScene",
             "path": "StartScene.json"
+        },
+        {
+            "name": "GameScene",
+            "path": "GameScene"
+        }
+    ],
+    "tilemaps": [
+        {
+            "name": "track",
+            "path": "track"
         }
     ],
     "start_scene": "StartScene"
