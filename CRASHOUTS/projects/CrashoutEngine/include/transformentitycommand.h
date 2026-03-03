@@ -12,7 +12,7 @@ All content � 2025 Digipen Institute of Technology Singapore.All rights reserv
 #include "UndoManager.h"
 #include "entitymanager.h" // for ECS access
 #include "transformcomponent.h"
-
+#include "hierarchycomponent.h"
 namespace CrashoutsEngine
 {
 	struct TransformState
@@ -20,7 +20,35 @@ namespace CrashoutsEngine
 		CEVec3 position;
 		float  rotation; // in radians
 		CEVec2 scale;
+
+		bool   hasParent = false;
+		Entity parent = 0;
+		CEVec3 localPos{ 0.f, 0.f, 0.f };
+		float  localRot = 0.f;
+		CEVec2 localScale{ 1.f, 1.f };
 	};
+	static inline void ApplyTransformState(ECS& ecs, Entity e, const TransformState& s)
+	{
+		auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+		if (!t) return;
+
+		if (s.hasParent && ecs.HasComponent<Component::ParentComponent>(e))
+		{
+			auto* pc = ecs.GetComponent<Component::ParentComponent>(e);
+			if (pc)
+			{
+				pc->parent = s.parent;
+				pc->localPos = s.localPos;
+				pc->localRot = s.localRot;
+				pc->localScale = s.localScale;
+			}
+		}
+
+		
+		t->position = s.position;
+		t->rotation = s.rotation;
+		t->size = s.scale;
+	}
 	class TransformEntityCommand : public EditorCommand
 	{
 		Entity mEntity;
@@ -35,23 +63,13 @@ namespace CrashoutsEngine
 		void Execute() override
 		{
 			auto* ecs = ECS::getInstance();
-			if (auto* t = ecs->GetComponent<Component::TransformComponent>(mEntity))
-			{
-				t->position = mNew.position;
-				t->rotation = mNew.rotation;
-				t->size = mNew.scale;
-			}
+			ApplyTransformState(*ecs, mEntity, mNew);
 		}
 
 		void Undo() override
 		{
 			auto* ecs = ECS::getInstance();
-			if (auto* t = ecs->GetComponent<Component::TransformComponent>(mEntity))
-			{
-				t->position = mOld.position;
-				t->rotation = mOld.rotation;
-				t->size = mOld.scale;
-			}
+			ApplyTransformState(*ecs, mEntity, mOld);
 		}
 	};
 
@@ -75,12 +93,7 @@ namespace CrashoutsEngine
 			auto* ecs = ECS::getInstance();
 			for (size_t i = 0; i < mEntities.size(); ++i)
 			{
-				if (auto* t = ecs->GetComponent<Component::TransformComponent>(mEntities[i]))
-				{
-					t->position = mNew[i].position;
-					t->rotation = mNew[i].rotation;
-					t->size = mNew[i].scale;
-				}
+				ApplyTransformState(*ecs, mEntities[i], mNew[i]);
 			}
 		}
 
@@ -89,12 +102,7 @@ namespace CrashoutsEngine
 			auto* ecs = ECS::getInstance();
 			for (size_t i = 0; i < mEntities.size(); ++i)
 			{
-				if (auto* t = ecs->GetComponent<Component::TransformComponent>(mEntities[i]))
-				{
-					t->position = mOld[i].position;
-					t->rotation = mOld[i].rotation;
-					t->size = mOld[i].scale;
-				}
+				ApplyTransformState(*ecs, mEntities[i], mOld[i]);
 			}
 		}
 	};

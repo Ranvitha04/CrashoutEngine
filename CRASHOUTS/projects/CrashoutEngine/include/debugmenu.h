@@ -65,6 +65,7 @@ namespace UI {
     {
         int fromNode = 0;
         int toNode = 0;
+        int fromPin = 0; // 0 = normal/only output, 1 = True, 2 = False
     };
 
     struct VisualScriptingGraph

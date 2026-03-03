@@ -451,6 +451,20 @@ namespace UI {
                                     s.position = t->position;
                                     s.rotation = t->rotation;
                                     s.scale = t->size;
+
+                                    if (ecs.HasComponent<Component::ParentComponent>(e))
+                                    {
+                                        auto* pc = ecs.GetComponent<Component::ParentComponent>(e);
+                                        if (pc && pc->parent != 0)
+                                        {
+                                            s.hasParent = true;
+                                            s.parent = pc->parent;
+                                            s.localPos = pc->localPos;
+                                            s.localRot = pc->localRot;
+                                            s.localScale = pc->localScale;
+                                        }
+                                    }
+
                                     startStates.push_back(s);
                                 }
                             }
@@ -529,6 +543,20 @@ namespace UI {
                                 s.position = t->position;
                                 s.rotation = t->rotation;
                                 s.scale = t->size;
+
+                                if (ecs.HasComponent<Component::ParentComponent>(e))
+                                {
+                                    auto* pc = ecs.GetComponent<Component::ParentComponent>(e);
+                                    if (pc && pc->parent != 0)
+                                    {
+                                        s.hasParent = true;
+                                        s.parent = pc->parent;
+                                        s.localPos = pc->localPos;
+                                        s.localRot = pc->localRot;
+                                        s.localScale = pc->localScale;
+                                    }
+                                }
+
                                 endStates.push_back(s);
                             }
                         }

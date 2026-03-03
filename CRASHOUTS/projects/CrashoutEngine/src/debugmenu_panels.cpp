@@ -1671,8 +1671,8 @@ namespace UI {
 			nodes.push_back({ 2, VSNodeType::Move,   "Move",   ImVec2(320.0f, 80.0f), ImVec2(140.0f, 70.0f) });
 			nodes.push_back({ 3, VSNodeType::Attack, "Attack", ImVec2(580.0f, 80.0f), ImVec2(140.0f, 70.0f) });
 
-			links.push_back({ 1, 2 });
-			links.push_back({ 2, 3 });
+			links.push_back({ 1, 2, 0 });
+			links.push_back({ 2, 3, 0 });
 
 			nextNodeId = 4;
 		}
@@ -1682,6 +1682,7 @@ namespace UI {
 		static ImVec2 dragOffset(0, 0);
 		static bool showGrid = true;
 		static bool creatingLink = false;
+		static int linkStartPin = 0;
 		static int linkStartNode = -1;
 		static int inspectorNodeId = -1;
 		static char nodeTitleBuffer[128] = "";
@@ -1757,9 +1758,19 @@ namespace UI {
 				return ImVec2(minP.x, minP.y + node.size.y * 0.5f);
 			};
 
-		auto getOutputPinPos = [&](const VSNode& node)
+		auto getOutputPinPos = [&](const VSNode& node, int pinIndex)
 			{
 				ImVec2 minP = getNodeRectMin(node);
+
+				if (node.type == VSNodeType::Branch)
+				{
+					if (pinIndex == 1) // True
+						return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.30f);
+					if (pinIndex == 2) // False
+						return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.70f);
+				}
+
+				
 				return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.5f);
 			};
 
@@ -1907,11 +1918,36 @@ namespace UI {
 			bool pinHandled = false;
 			for (int i = (int)nodes.size() - 1; i >= 0; --i)
 			{
-				ImVec2 outPin = getOutputPinPos(nodes[i]);
+				if (nodes[i].type == VSNodeType::Branch)
+				{
+					ImVec2 truePin = getOutputPinPos(nodes[i], 1);
+					ImVec2 falsePin = getOutputPinPos(nodes[i], 2);
+
+					if (isMouseNearPoint(truePin, 8.0f))
+					{
+						creatingLink = true;
+						linkStartNode = nodes[i].id;
+						linkStartPin = 1;
+						pinHandled = true;
+						break;
+					}
+
+					if (isMouseNearPoint(falsePin, 8.0f))
+					{
+						creatingLink = true;
+						linkStartNode = nodes[i].id;
+						linkStartPin = 2;
+						pinHandled = true;
+						break;
+					}
+				}
+
+				ImVec2 outPin = getOutputPinPos(nodes[i], 0);
 				if (isMouseNearPoint(outPin, 8.0f))
 				{
 					creatingLink = true;
 					linkStartNode = nodes[i].id;
+					linkStartPin = 0;
 					pinHandled = true;
 					break;
 				}
@@ -1974,13 +2010,13 @@ namespace UI {
 
 						if (!alreadyExists)
 						{
-							links.push_back({ linkStartNode, node.id });
+							links.push_back({ linkStartNode, node.id, linkStartPin });
 						}
 						break;
 					}
 				}
 			}
-
+			linkStartPin = 0;
 			draggingNode = -1;
 			creatingLink = false;
 			linkStartNode = -1;
@@ -2007,7 +2043,7 @@ namespace UI {
 			VSNode* to = findNodeById(link.toNode);
 			if (!from || !to) continue;
 
-			ImVec2 p1 = getOutputPinPos(*from);
+			ImVec2 p1 = getOutputPinPos(*from, link.fromPin);
 			ImVec2 p2 = getInputPinPos(*to);
 
 			draw->AddBezierCubic(
@@ -2026,7 +2062,7 @@ namespace UI {
 			VSNode* from = findNodeById(linkStartNode);
 			if (from)
 			{
-				ImVec2 p1 = getOutputPinPos(*from);
+				ImVec2 p1 = getOutputPinPos(*from, linkStartPin);
 				ImVec2 p2 = mousePos;
 
 				draw->AddBezierCubic(
@@ -2055,12 +2091,47 @@ namespace UI {
 			draw->AddRectFilled(minP, maxP, fillColor, 8.0f);
 			draw->AddRect(minP, maxP, IM_COL32(255, 255, 255, 180), 8.0f);
 			draw->AddText(ImVec2(minP.x + 16.0f, minP.y + 24.0f), IM_COL32(255, 255, 255, 255), node.title.c_str());
-			draw->AddText(ImVec2(minP.x + 16.0f, minP.y + 44.0f), IM_COL32(200, 200, 220, 255), getTypeName(node.type));
-			ImVec2 inPin = getInputPinPos(node);
-			ImVec2 outPin = getOutputPinPos(node);
 
+			ImVec2 inPin = getInputPinPos(node);
 			draw->AddCircleFilled(inPin, 6.0f, IM_COL32(180, 220, 255, 255));
-			draw->AddCircleFilled(outPin, 6.0f, IM_COL32(255, 210, 100, 255));
+
+			if (node.type == VSNodeType::Branch)
+			{
+				draw->AddText(
+					ImVec2(minP.x + 16.0f, minP.y + 44.0f),
+					IM_COL32(200, 255, 200, 255),
+					"Condition"
+				);
+
+				ImVec2 truePin = getOutputPinPos(node, 1);
+				ImVec2 falsePin = getOutputPinPos(node, 2);
+
+				draw->AddCircleFilled(truePin, 6.0f, IM_COL32(120, 255, 120, 255));
+				draw->AddCircleFilled(falsePin, 6.0f, IM_COL32(255, 120, 120, 255));
+
+				draw->AddText(
+					ImVec2(truePin.x - 42.0f, truePin.y - 8.0f),
+					IM_COL32(220, 255, 220, 255),
+					"True"
+				);
+
+				draw->AddText(
+					ImVec2(falsePin.x - 45.0f, falsePin.y - 8.0f),
+					IM_COL32(255, 220, 220, 255),
+					"False"
+				);
+			}
+			else
+			{
+				draw->AddText(
+					ImVec2(minP.x + 16.0f, minP.y + 44.0f),
+					IM_COL32(200, 200, 220, 255),
+					getTypeName(node.type)
+				);
+
+				ImVec2 outPin = getOutputPinPos(node, 0);
+				draw->AddCircleFilled(outPin, 6.0f, IM_COL32(255, 210, 100, 255));
+			}
 		}
 
 		if (selectedNode != -1)
@@ -2097,35 +2168,37 @@ namespace UI {
 				{
 					selected->type = static_cast<VSNodeType>(nodeType);
 
-					// Optional: auto-rename title to match type
 					if (selected->title.empty() ||
 						selected->title == "Start" ||
 						selected->title == "Move" ||
 						selected->title == "Attack" ||
 						selected->title == "Wait" ||
-						selected->title == "Branch")
+						selected->title == "Branch" ||
+						selected->title == "ScriptCall")
 					{
 						selected->title = getTypeName(selected->type);
 						std::snprintf(nodeTitleBuffer, sizeof(nodeTitleBuffer), "%s", selected->title.c_str());
 					}
-					if (selected->type == VSNodeType::ScriptCall)
+				}
+
+				if (selected->type == VSNodeType::ScriptCall)
+				{
+					static char scriptBuffer[128] = "";
+					static char functionBuffer[128] = "";
+
+					std::snprintf(scriptBuffer, sizeof(scriptBuffer), "%s", selected->scriptName.c_str());
+					std::snprintf(functionBuffer, sizeof(functionBuffer), "%s", selected->functionName.c_str());
+
+					if (ImGui::InputText("Script Name", scriptBuffer, sizeof(scriptBuffer)))
 					{
-						static char scriptBuffer[128] = "";
-						static char functionBuffer[128] = "";
-
-						std::snprintf(scriptBuffer, sizeof(scriptBuffer), "%s", selected->scriptName.c_str());
-						std::snprintf(functionBuffer, sizeof(functionBuffer), "%s", selected->functionName.c_str());
-
-						if (ImGui::InputText("Script Name", scriptBuffer, sizeof(scriptBuffer)))
-						{
-							selected->scriptName = scriptBuffer;
-						}
-
-						if (ImGui::InputText("Function Name", functionBuffer, sizeof(functionBuffer)))
-						{
-							selected->functionName = functionBuffer;
-						}
+						selected->scriptName = scriptBuffer;
 					}
+
+					if (ImGui::InputText("Function Name", functionBuffer, sizeof(functionBuffer)))
+					{
+						selected->functionName = functionBuffer;
+					}
+				
 
 
 				}
