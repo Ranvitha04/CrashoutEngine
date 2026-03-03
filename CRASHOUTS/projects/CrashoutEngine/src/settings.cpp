@@ -6,7 +6,7 @@
 
 Stores and manages screen resolution settings
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -106,13 +106,36 @@ void Settings::LoadFromFile(const char* path) {
 /**
  * @brief Save settings to a file
  * @param path Path to the settings file
- *
- * For future implementation to save JSON configuration
  */
-void Settings::SaveToFile([[maybe_unused]] const char* path) {
-    //for future me to write to JSON
+void Settings::SaveToFile(const char* path) {
+    rapidjson::Document json;
+    json.SetObject();
+    rapidjson::Document::AllocatorType& allocator = json.GetAllocator();
 
-    // Use GetLocalAppData() to save in the appdata, else crash when running from program files
+    json.AddMember("width", screenWidth, allocator);
+    json.AddMember("height", screenHeight, allocator);
+
+    float musicVol = 1.0f;
+    float sfxVol = 1.0f;
+    auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+    if (audio.isInitialized()) {
+        musicVol = audio.GetMusicVolume();
+        sfxVol = audio.GetSFXVolume();
+    }
+    json.AddMember("musicVolume", musicVol, allocator);
+    json.AddMember("sfxVolume", sfxVol, allocator);
+
+    std::ofstream ofs(path);
+    if (!ofs.is_open()) return;
+
+    rapidjson::OStreamWrapper osw(ofs);
+    rapidjson::Writer<rapidjson::OStreamWrapper> writer(osw);
+    json.Accept(writer);
+}
+
+void Settings::Save() {
+    std::string path = GetGameRoot() + "/assets/settings.json";
+    SaveToFile(path.c_str());
 }
 
 void Settings::SaveEditorSettings(const UI::UIState& uiState) {

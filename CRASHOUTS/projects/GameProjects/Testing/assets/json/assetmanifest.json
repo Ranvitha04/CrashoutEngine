@@ -35,6 +35,10 @@
         {
             "name": "StartScene",
             "path": "StartScene"
+        },
+        {
+            "name": "Test",
+            "path": "Test"
         }
     ]
 }

@@ -47,34 +47,6 @@ namespace CrashoutsEngine::Audio
         return a + sep + b;
     }
 
-    /*!
-    @brief Returns the FMOD_MODE flags used for music sounds based on loop state.
-    */
-//    static FMOD_MODE MusicMode(bool loop)
-//    {
-//        FMOD_MODE m = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_2D;
-//        if (loop)
-//            m |= FMOD_LOOP_NORMAL;
-//        else
-//            m |= FMOD_LOOP_OFF;
-//        return m;
-//    }
-//
-//    static void ShowAudioErrorPopup(const std::string& msg)
-//    {
-//#ifdef _WIN32
-//        MessageBoxA(
-//            nullptr,
-//            msg.c_str(),
-//            "Audio Error",
-//            MB_OK | MB_ICONERROR | MB_TOPMOST
-//        );
-//#endif
-//
-//        // Also log to console/log window
-//        LOGE(Audio, msg);
-//    }
-
     static bool IsSupportedAudioFile(const std::string& path)
     {
         static const std::vector<std::string> allowed = {
@@ -102,7 +74,7 @@ namespace CrashoutsEngine::Audio
     /*
         @brief Resolves an audio file path by checking its existence directly and relative to a root directory.
     */
-    static std::string SanitizeKey(const std::string& path)
+    std::string AudioSystem::SanitizeKey(const std::string& path)
     {
         std::string clean = path;
 
@@ -265,10 +237,7 @@ namespace CrashoutsEngine::Audio
         return true;
     }
 
-    /*!
-    @brief Updates the FMOD Studio system; must be called once per frame.
-    */
-    void AudioSystem::Update()
+    void AudioSystem::Update(float dt)
     {
         if (mStudio)
             mStudio->update();
@@ -285,8 +254,6 @@ namespace CrashoutsEngine::Audio
                 continue;
             }
 
-            float dt = 1.0f / 60.0f;
-
             fit->currentVol -= fit->fadeRate * dt;
 
             if (fit->currentVol <= 0.0f)
@@ -301,6 +268,42 @@ namespace CrashoutsEngine::Audio
             }
         }
 
+        // --- Update DSP Parameter Fades ---
+        auto dspFit = mParameterFades.begin();
+        while (dspFit != mParameterFades.end())
+        {
+            dspFit->currentTime += dt;
+            float t = dspFit->currentTime / dspFit->totalTime;
+            if (t >= 1.0f) t = 1.0f;
+
+            float currentValue = dspFit->startValue + (dspFit->endValue - dspFit->startValue) * t;
+            dspFit->dsp->setParameterFloat(dspFit->index, currentValue);
+
+            if (t >= 1.0f) {
+                dspFit = mParameterFades.erase(dspFit);
+            } else {
+                ++dspFit;
+            }
+        }
+
+        // --- Update Group Volume Fades ---
+        auto groupVolFit = mGroupVolumeFades.begin();
+        while (groupVolFit != mGroupVolumeFades.end())
+        {
+            groupVolFit->currentTime += dt;
+            float t = groupVolFit->currentTime / groupVolFit->totalTime;
+            if (t >= 1.0f) t = 1.0f;
+
+            float currentVol = groupVolFit->startVolume + (groupVolFit->endVolume - groupVolFit->startVolume) * t;
+            groupVolFit->group->setVolume(currentVol);
+
+            if (t >= 1.0f) {
+                groupVolFit = mGroupVolumeFades.erase(groupVolFit);
+            } else {
+                ++groupVolFit;
+            }
+        }
+
         auto it = mActiveSounds.begin();
         while (it != mActiveSounds.end())
         {
@@ -312,6 +315,7 @@ namespace CrashoutsEngine::Audio
 
             if (!isPlaying)
             {
+                // Remove this channel from mTaggedChannels if it exists
                 for (auto mapIt = mTaggedChannels.begin(); mapIt != mTaggedChannels.end(); )
                 {
                     if (mapIt->second == ch) {
@@ -359,6 +363,14 @@ namespace CrashoutsEngine::Audio
 
         mRawAudioFiles.clear();
         std::vector<std::string>().swap(mRawAudioFiles);
+
+        // Cleanup Group DSPs
+        for (auto& groupPair : mGroupDSPs) {
+            for (auto& dspPair : groupPair.second) {
+                if (dspPair.second) dspPair.second->release();
+            }
+        }
+        mGroupDSPs.clear();
 
         if (mStudio) mStudio->release();
         mStudio.reset();
@@ -1482,6 +1494,146 @@ namespace CrashoutsEngine::Audio
 
         // Pause or resume all audio
         master->setPaused(paused);
+    }
+
+    void AudioSystem::SetChannelDSPParameter(FMOD::Channel* channel, FMOD_DSP_TYPE dspType, int index, float value)
+    {
+        if (!channel) return;
+
+        auto channelIt = mChannelDSPs.find(channel);
+        if (channelIt == mChannelDSPs.end()) return;
+
+        auto dspIt = channelIt->second.find(dspType);
+        if (dspIt == channelIt->second.end()) return;
+
+        FMOD::DSP* dsp = dspIt->second;
+        if (dsp) {
+            dsp->setParameterFloat(index, value);
+        }
+    }
+
+    void AudioSystem::AddGroupDSP(bool isMusic, FMOD_DSP_TYPE dspType)
+    {
+        if (!mCore) return;
+        FMOD::ChannelGroup* group = isMusic ? mMusicGroup : mSFXGroup;
+        if (!group) return;
+
+        if (mGroupDSPs.count(group) && mGroupDSPs[group].count(dspType)) return;
+
+        FMOD::DSP* dsp = nullptr;
+        if (!ok(mCore->createDSPByType(dspType, &dsp), "createDSPByType (Group)")) return;
+
+        if (!ok(group->addDSP(0, dsp), "ChannelGroup::addDSP")) {
+            dsp->release();
+            return;
+        }
+
+        mGroupDSPs[group][dspType] = dsp;
+        LOGI(Audio, "Added DSP to " + std::string(isMusic ? "Music" : "SFX") + " group.");
+    }
+
+    void AudioSystem::RemoveGroupDSP(bool isMusic, FMOD_DSP_TYPE dspType)
+    {
+        FMOD::ChannelGroup* group = isMusic ? mMusicGroup : mSFXGroup;
+        if (!group) return;
+
+        auto groupIt = mGroupDSPs.find(group);
+        if (groupIt == mGroupDSPs.end()) return;
+
+        auto dspIt = groupIt->second.find(dspType);
+        if (dspIt == groupIt->second.end()) return;
+
+        FMOD::DSP* dspToRemove = dspIt->second;
+        if (dspToRemove) {
+            group->removeDSP(dspToRemove);
+            dspToRemove->release();
+        }
+
+        groupIt->second.erase(dspIt);
+        LOGI(Audio, "Removed DSP from " + std::string(isMusic ? "Music" : "SFX") + " group.");
+    }
+
+    void AudioSystem::SetGroupDSPParameter(bool isMusic, FMOD_DSP_TYPE dspType, int index, float value)
+    {
+        FMOD::ChannelGroup* group = isMusic ? mMusicGroup : mSFXGroup;
+        if (!group) return;
+
+        auto groupIt = mGroupDSPs.find(group);
+        if (groupIt == mGroupDSPs.end()) return;
+
+        auto dspIt = groupIt->second.find(dspType);
+        if (dspIt == groupIt->second.end()) return;
+
+        FMOD::DSP* dsp = dspIt->second;
+        if (dsp) {
+            dsp->setParameterFloat(index, value);
+        }
+    }
+
+    void AudioSystem::FadeGroupDSPParameter(bool isMusic, FMOD_DSP_TYPE dspType, int index, float targetValue, float duration)
+    {
+        FMOD::ChannelGroup* group = isMusic ? mMusicGroup : mSFXGroup;
+        if (!group) return;
+
+        auto groupIt = mGroupDSPs.find(group);
+        if (groupIt == mGroupDSPs.end()) return;
+
+        auto dspIt = groupIt->second.find(dspType);
+        if (dspIt == groupIt->second.end()) return;
+
+        FMOD::DSP* dsp = dspIt->second;
+        if (!dsp) return;
+
+        float currentValue = 0.0f;
+        dsp->getParameterFloat(index, &currentValue, nullptr, 0);
+
+        // Remove any existing fade for this specific DSP and index
+        mParameterFades.remove_if([dsp, index](const DSPParameterFade& f) {
+            return f.dsp == dsp && f.index == index;
+        });
+
+        if (duration <= 0.0f) {
+            dsp->setParameterFloat(index, targetValue);
+            return;
+        }
+
+        DSPParameterFade fade;
+        fade.dsp = dsp;
+        fade.index = index;
+        fade.startValue = currentValue;
+        fade.endValue = targetValue;
+        fade.currentTime = 0.0f;
+        fade.totalTime = duration;
+
+        mParameterFades.push_back(fade);
+    }
+
+    void AudioSystem::FadeGroupVolume(bool isMusic, float targetVolume, float duration)
+    {
+        FMOD::ChannelGroup* group = isMusic ? mMusicGroup : mSFXGroup;
+        if (!group) return;
+
+        float currentVolume = 0.0f;
+        group->getVolume(&currentVolume);
+
+        // Remove any existing volume fade for this group
+        mGroupVolumeFades.remove_if([group](const GroupVolumeFade& f) {
+            return f.group == group;
+        });
+
+        if (duration <= 0.0f) {
+            group->setVolume(targetVolume);
+            return;
+        }
+
+        GroupVolumeFade fade;
+        fade.group = group;
+        fade.startVolume = currentVolume;
+        fade.endVolume = targetVolume;
+        fade.currentTime = 0.0f;
+        fade.totalTime = duration;
+
+        mGroupVolumeFades.push_back(fade);
     }
 
 

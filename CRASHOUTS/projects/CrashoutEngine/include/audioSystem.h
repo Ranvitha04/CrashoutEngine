@@ -35,9 +35,8 @@ namespace CrashoutsEngine
 
             // Lifetime
             bool init(const std::string& banksDir);
-            void Update();
+            void Update(float dt);
             void shutdown();
-
             // Bank management
             bool loadBank(const std::string& bankFile);
             void unloadAllBanks();
@@ -97,6 +96,13 @@ namespace CrashoutsEngine
             void SetListenerAttributes(const CEVec3& position, const CEVec3& forward, const CEVec3& up, const CEVec3& velocity = { 0.0f, 0.0f, 0.0f });
             void AddChannelDSP(FMOD::Channel* channel, FMOD_DSP_TYPE dspType);
             void RemoveChannelDSP(FMOD::Channel* channel, FMOD_DSP_TYPE dspType);
+            void SetChannelDSPParameter(FMOD::Channel* channel, FMOD_DSP_TYPE dspType, int index, float value);
+
+            void AddGroupDSP(bool isMusic, FMOD_DSP_TYPE dspType);
+            void RemoveGroupDSP(bool isMusic, FMOD_DSP_TYPE dspType);
+            void SetGroupDSPParameter(bool isMusic, FMOD_DSP_TYPE dspType, int index, float value);
+            void FadeGroupDSPParameter(bool isMusic, FMOD_DSP_TYPE dspType, int index, float targetValue, float duration);
+            void FadeGroupVolume(bool isMusic, float targetVolume, float duration);
 
             // Getters
             float GetMusicVolume() const;
@@ -152,7 +158,28 @@ namespace CrashoutsEngine
                 float fadeRate;
             };
 
+            struct DSPParameterFade
+            {
+                FMOD::DSP* dsp;
+                int index;
+                float startValue;
+                float endValue;
+                float currentTime;
+                float totalTime;
+            };
+
+            struct GroupVolumeFade
+            {
+                FMOD::ChannelGroup* group;
+                float startVolume;
+                float endVolume;
+                float currentTime;
+                float totalTime;
+            };
+
             std::vector<FadingChannel> mFadingChannels;
+            std::list<DSPParameterFade> mParameterFades;
+            std::list<GroupVolumeFade> mGroupVolumeFades;
 
             std::unique_ptr<FMOD::Studio::System, StudioDeleter> mStudio;
             std::unique_ptr<FMOD::System, CoreNoop>              mCore;
@@ -168,8 +195,10 @@ namespace CrashoutsEngine
 
             std::list<std::pair<FMOD::Channel*, FMOD::Sound*>> mActiveSounds;
             std::unordered_map<FMOD::Channel*, std::unordered_map<FMOD_DSP_TYPE, FMOD::DSP*>> mChannelDSPs;
+            std::unordered_map<FMOD::ChannelGroup*, std::unordered_map<FMOD_DSP_TYPE, FMOD::DSP*>> mGroupDSPs;
 
             // Helpers
+            static std::string SanitizeKey(const std::string& path);
             FMOD::Studio::EventDescription* getEventDesc(const std::string& eventPath);
             static bool ok(FMOD_RESULT r, const char* where);
         };

@@ -14,6 +14,7 @@ All content � 2025 Digipen Institute of Technology Singapore.All rights reserv
 #include "entitymanager.h"
 #include "activecomponent.h"
 #include "transformcomponent.h"
+#include "settings.h"
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
@@ -341,10 +342,59 @@ namespace
         }
     }
 
+    static void ICALL_Audio_SetClipDSPParameter(uint32_t entityID, MonoString* clipNameStr, FMOD_DSP_TYPE dspType, int index, float value)
+    {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs->HasComponent<Component::AudioEmitterComponent>(entityID)) return;
+
+        auto* ac = ecs->GetComponent<Component::AudioEmitterComponent>(entityID);
+        auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
+        std::string targetClipName = MonoToStdString(clipNameStr);
+
+        for (auto& clip : ac->clips) {
+            if (clip.name == targetClipName) {
+                if (clip.channel) {
+                    audio.SetChannelDSPParameter(clip.channel, dspType, index, value);
+                }
+                return;
+            }
+        }
+    }
+
+    static void ICALL_Audio_AddGroupDSP(mono_bool isMusic, FMOD_DSP_TYPE dspType)
+    {
+        AudioSystem::instance().AddGroupDSP(isMusic != 0, dspType);
+    }
+
+    static void ICALL_Audio_RemoveGroupDSP(mono_bool isMusic, FMOD_DSP_TYPE dspType)
+    {
+        AudioSystem::instance().RemoveGroupDSP(isMusic != 0, dspType);
+    }
+
+    static void ICALL_Audio_SetGroupDSPParameter(mono_bool isMusic, FMOD_DSP_TYPE dspType, int index, float value)
+    {
+        AudioSystem::instance().SetGroupDSPParameter(isMusic != 0, dspType, index, value);
+    }
+
+    static void ICALL_Audio_FadeGroupDSPParameter(mono_bool isMusic, FMOD_DSP_TYPE dspType, int index, float targetValue, float duration)
+    {
+        AudioSystem::instance().FadeGroupDSPParameter(isMusic != 0, dspType, index, targetValue, duration);
+    }
+
+    static void ICALL_Audio_FadeGroupVolume(mono_bool isMusic, float targetVolume, float duration)
+    {
+        AudioSystem::instance().FadeGroupVolume(isMusic != 0, targetVolume, duration);
+    }
+
     static mono_bool ICALL_Audio_IsTaggedPlaying(MonoString* key)
     {
         auto& audio = AudioSystem::instance();
         return audio.isTaggedPlaying(MonoToStdString(key));
+    }
+
+    static void ICALL_Settings_Save()
+    {
+        Settings::Save();
     }
 
 }
@@ -352,6 +402,8 @@ namespace
 
 void CrashoutsEngine::Bindings::RegisterAudioBindings()
 {
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Settings_Save", (const void*)ICALL_Settings_Save);
+
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlayMusicFileTagged", (const void*)ICALL_Audio_PlayMusicFileTagged);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlaySFXFileTagged", (const void*)ICALL_Audio_PlaySFXFileTagged);
@@ -397,4 +449,16 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_AddClipDSP", (const void*)ICALL_Audio_AddClipDSP);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_RemoveClipDSP", (const void*)ICALL_Audio_RemoveClipDSP);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetClipDSPParameter", (const void*)ICALL_Audio_SetClipDSPParameter);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_AddGroupDSP", (const void*)ICALL_Audio_AddGroupDSP);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_RemoveGroupDSP", (const void*)ICALL_Audio_RemoveGroupDSP);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetGroupDSPParameter", (const void*)ICALL_Audio_SetGroupDSPParameter);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_FadeGroupDSPParameter", (const void*)ICALL_Audio_FadeGroupDSPParameter);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_FadeGroupVolume", (const void*)ICALL_Audio_FadeGroupVolume);
 }
