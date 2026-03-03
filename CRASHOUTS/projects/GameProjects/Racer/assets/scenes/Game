@@ -20,7 +20,7 @@
                 }
             },
             "rigidbody": {
-                "mass": 0.0,
+                "mass": 1.0,
                 "restitutionCoeff": 0.0,
                 "maximumVelocity": {
                     "x": 0.0,
@@ -29,8 +29,8 @@
                 },
                 "staticFriction": 0.5,
                 "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
+                "inertia": 22.83333396911621,
+                "invInertia": 0.043795619159936908
             },
             "collider": {
                 "ColliderType": 2,
@@ -98,7 +98,8 @@
                         "className": "PlayerController",
                         "fields": {
                             "ThrustForce": 500.0,
-                            "RotationSpeed": 150.0
+                            "RotationSpeed": 150.0,
+                            "SpaceDrag": 0.9800000190734863
                         }
                     }
                 ]
@@ -14692,7 +14693,7 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isTrigger": false,
+                "isTrigger": true,
                 "enabled": true,
                 "position": {
                     "x": -11.0,
@@ -14733,9 +14734,9 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
                     "w": 1.0
                 },
                 "p1": {
