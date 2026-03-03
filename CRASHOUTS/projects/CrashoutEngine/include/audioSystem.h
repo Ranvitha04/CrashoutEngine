@@ -35,9 +35,8 @@ namespace CrashoutsEngine
 
             // Lifetime
             bool init(const std::string& banksDir);
-            void Update();
+            void Update(float dt);
             void shutdown();
-
             // Bank management
             bool loadBank(const std::string& bankFile);
             void unloadAllBanks();
@@ -199,6 +198,7 @@ namespace CrashoutsEngine
             std::unordered_map<FMOD::ChannelGroup*, std::unordered_map<FMOD_DSP_TYPE, FMOD::DSP*>> mGroupDSPs;
 
             // Helpers
+            static std::string SanitizeKey(const std::string& path);
             FMOD::Studio::EventDescription* getEventDesc(const std::string& eventPath);
             static bool ok(FMOD_RESULT r, const char* where);
         };

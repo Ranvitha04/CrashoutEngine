@@ -14,6 +14,7 @@ All content � 2025 Digipen Institute of Technology Singapore.All rights reserv
 #include "entitymanager.h"
 #include "activecomponent.h"
 #include "transformcomponent.h"
+#include "settings.h"
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
@@ -391,11 +392,18 @@ namespace
         return audio.isTaggedPlaying(MonoToStdString(key));
     }
 
+    static void ICALL_Settings_Save()
+    {
+        Settings::Save();
+    }
+
 }
 // ---------- REGISTRATION ----------
 
 void CrashoutsEngine::Bindings::RegisterAudioBindings()
 {
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Settings_Save", (const void*)ICALL_Settings_Save);
+
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlayMusicFileTagged", (const void*)ICALL_Audio_PlayMusicFileTagged);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_PlaySFXFileTagged", (const void*)ICALL_Audio_PlaySFXFileTagged);

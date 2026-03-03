@@ -47,34 +47,6 @@ namespace CrashoutsEngine::Audio
         return a + sep + b;
     }
 
-    /*!
-    @brief Returns the FMOD_MODE flags used for music sounds based on loop state.
-    */
-//    static FMOD_MODE MusicMode(bool loop)
-//    {
-//        FMOD_MODE m = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_2D;
-//        if (loop)
-//            m |= FMOD_LOOP_NORMAL;
-//        else
-//            m |= FMOD_LOOP_OFF;
-//        return m;
-//    }
-//
-//    static void ShowAudioErrorPopup(const std::string& msg)
-//    {
-//#ifdef _WIN32
-//        MessageBoxA(
-//            nullptr,
-//            msg.c_str(),
-//            "Audio Error",
-//            MB_OK | MB_ICONERROR | MB_TOPMOST
-//        );
-//#endif
-//
-//        // Also log to console/log window
-//        LOGE(Audio, msg);
-//    }
-
     static bool IsSupportedAudioFile(const std::string& path)
     {
         static const std::vector<std::string> allowed = {
@@ -102,7 +74,7 @@ namespace CrashoutsEngine::Audio
     /*
         @brief Resolves an audio file path by checking its existence directly and relative to a root directory.
     */
-    static std::string SanitizeKey(const std::string& path)
+    std::string AudioSystem::SanitizeKey(const std::string& path)
     {
         std::string clean = path;
 
@@ -265,10 +237,7 @@ namespace CrashoutsEngine::Audio
         return true;
     }
 
-    /*!
-    @brief Updates the FMOD Studio system; must be called once per frame.
-    */
-    void AudioSystem::Update()
+    void AudioSystem::Update(float dt)
     {
         if (mStudio)
             mStudio->update();
@@ -285,8 +254,6 @@ namespace CrashoutsEngine::Audio
                 continue;
             }
 
-            float dt = 1.0f / 60.0f;
-
             fit->currentVol -= fit->fadeRate * dt;
 
             if (fit->currentVol <= 0.0f)
@@ -302,7 +269,6 @@ namespace CrashoutsEngine::Audio
         }
 
         // --- Update DSP Parameter Fades ---
-        float dt = 1.0f / 60.0f;
         auto dspFit = mParameterFades.begin();
         while (dspFit != mParameterFades.end())
         {
@@ -349,6 +315,7 @@ namespace CrashoutsEngine::Audio
 
             if (!isPlaying)
             {
+                // Remove this channel from mTaggedChannels if it exists
                 for (auto mapIt = mTaggedChannels.begin(); mapIt != mTaggedChannels.end(); )
                 {
                     if (mapIt->second == ch) {

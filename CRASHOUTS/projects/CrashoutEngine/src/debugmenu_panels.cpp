@@ -1526,7 +1526,7 @@ namespace UI {
 			hBGM = {}; hSFX1 = {}; hSFX2 = {};
 		}
 
-		audio.Update();
+		audio.Update((float)GLApp::delta_time);
 	}
 
 	/*!
