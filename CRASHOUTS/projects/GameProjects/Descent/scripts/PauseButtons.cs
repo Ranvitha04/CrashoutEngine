@@ -106,16 +106,16 @@ namespace CrashoutsEngine
                 // Music Pause Effects
                 AudioManager.AddGroupDSP(true, AudioManager.FMOD_DSP_TYPE.LOWPASS);
                 AudioManager.SetGroupDSPParameter(true, AudioManager.FMOD_DSP_TYPE.LOWPASS, 0, 22000.0f);
-                AudioManager.FadeGroupDSPParameter(true, AudioManager.FMOD_DSP_TYPE.LOWPASS, 0, 800.0f, 0.5f);
+                AudioManager.FadeGroupDSPParameter(true, AudioManager.FMOD_DSP_TYPE.LOWPASS, 0, 800.0f, 0.2f);
                 // Lower music volume slightly when paused
-                AudioManager.FadeGroupVolume(true, AudioManager.playerMusVol * 0.4f, 0.5f);
+                AudioManager.FadeGroupVolume(true, AudioManager.playerMusVol * 0.4f, 0.2f);
 
                 // SFF Pause Effect
                 AudioManager.AddGroupDSP(false, AudioManager.FMOD_DSP_TYPE.LOWPASS);
                 AudioManager.SetGroupDSPParameter(false, AudioManager.FMOD_DSP_TYPE.LOWPASS, 0, 22000.0f);
-                AudioManager.FadeGroupDSPParameter(false, AudioManager.FMOD_DSP_TYPE.LOWPASS, 0, 600.0f, 0.5f); // SFX even more muffled
+                AudioManager.FadeGroupDSPParameter(false, AudioManager.FMOD_DSP_TYPE.LOWPASS, 0, 600.0f, 0.2f); // SFX even more muffled
                 // Lower SFX volume significantly when paused
-                AudioManager.FadeGroupVolume(false, AudioManager.playerSFXVol * 0.3f, 0.5f);
+                AudioManager.FadeGroupVolume(false, AudioManager.playerSFXVol * 0.3f, 0.2f);
             }
             else
             {
