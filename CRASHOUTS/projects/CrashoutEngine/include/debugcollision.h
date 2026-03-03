@@ -19,6 +19,17 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 namespace CollisionGizmos {
 
+    // Container for line valuess
+    struct DebugLineCmd {
+        CEVec3 p1;
+        CEVec3 p2;
+        float thickness;
+        CEColor color;
+    };
+
+    // Collection of debuglinecmd
+    extern std::vector<DebugLineCmd> g_DebugLineQueue;
+
     // -- Collider Visualization -----------------------------------------------
 
     /*!

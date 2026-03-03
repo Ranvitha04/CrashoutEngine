@@ -27,6 +27,10 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 using namespace CrashoutsEngine;
 using namespace Component;
 
+namespace CollisionGizmos {
+	std::vector<DebugLineCmd> g_DebugLineQueue{};
+}
+
 static RenderCamera::Camera& GetActiveDebugCamera() {
 	return (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
 }
@@ -57,10 +61,10 @@ static void DrawAABBOutline(const CEVec3& minP, const CEVec3& maxP, float thickn
 	CEVec3 p2(maxP.x, maxP.y, z);
 	CEVec3 p3(minP.x, maxP.y, z);
 
-	Shapes::CreateLine(p0, p1, thickness, color);
-	Shapes::CreateLine(p1, p2, thickness, color);
-	Shapes::CreateLine(p2, p3, thickness, color);
-	Shapes::CreateLine(p3, p0, thickness, color);
+	CollisionGizmos::g_DebugLineQueue.push_back({ p0, p1, thickness, color });
+	CollisionGizmos::g_DebugLineQueue.push_back({ p1, p2, thickness, color });
+	CollisionGizmos::g_DebugLineQueue.push_back({ p2, p3, thickness, color });
+	CollisionGizmos::g_DebugLineQueue.push_back({ p3, p0, thickness, color });
 }
 
 /*!
@@ -73,10 +77,11 @@ static void DrawOBBOutline(const Collision::OBBRect* vertices, float thickness, 
 	CEVec3 v2 = { vertices->rotatedVertices[2].x, vertices->rotatedVertices[2].y, z };
 	CEVec3 v3 = { vertices->rotatedVertices[3].x, vertices->rotatedVertices[3].y, z };
 
-	Shapes::CreateLine(v0, v1, thickness, color);
-	Shapes::CreateLine(v1, v2, thickness, color);
-	Shapes::CreateLine(v2, v3, thickness, color);
-	Shapes::CreateLine(v3, v0, thickness, color);
+	CollisionGizmos::g_DebugLineQueue.push_back({ v0, v1, thickness, color });
+	CollisionGizmos::g_DebugLineQueue.push_back({ v1, v2, thickness, color });
+	CollisionGizmos::g_DebugLineQueue.push_back({ v2, v3, thickness, color });
+	CollisionGizmos::g_DebugLineQueue.push_back({ v3, v0, thickness, color });
+
 }
 
 /*!
@@ -87,12 +92,12 @@ static void DrawPolygon(const Collision::Polygon* vertices, float thickness, con
 
 	for (int i = 0; i < vertices->vertexCount; ++i) {
 		int nextIdx = (i + 1) % vertices->vertexCount;
-		Shapes::CreateLine(
+		CollisionGizmos::g_DebugLineQueue.push_back({
 			CEVec3{ vertices->rotatedVertices[i].x, vertices->rotatedVertices[i].y, z },
 			CEVec3{ vertices->rotatedVertices[nextIdx].x, vertices->rotatedVertices[nextIdx].y, z },
 			thickness,
 			color
-		);
+			});
 	}
 }
 
@@ -114,7 +119,7 @@ static void DrawCircleOutline(const CEVec3& c, float r, int segments, float thic
 	for (int i = 1; i <= segments; ++i) {
 		float t = i * step;
 		CEVec3 next(c.x + r * std::cos(t), c.y + r * std::sin(t), z);
-		Shapes::CreateLine(prev, next, thickness, color);
+		CollisionGizmos::g_DebugLineQueue.push_back({ prev, next, thickness, color });
 		prev = next;
 	}
 }
@@ -226,8 +231,8 @@ namespace CollisionGizmos {
 				break;
 			} case Collision::ColliderType::LINE: {
 				auto& line = static_cast<Collision::LineSegment const&>(*pColliderComp->collider);
-				Shapes::CreateLine(line.GetWorldP1(), line.GetWorldP2(), 1.f, color);
-				Shapes::CreateLine(line.GetWorldP1(), line.GetWorldP1() + line.GetNormal(), 1.f, color);
+				g_DebugLineQueue.push_back({ line.GetWorldP1(), line.GetWorldP2(), 1.f, color });
+				g_DebugLineQueue.push_back({ line.GetWorldP1(), line.GetWorldP1() + line.GetNormal(), 1.f, color });
 				break;
 			}
 			case Collision::ColliderType::POLYGON: {
@@ -300,7 +305,7 @@ namespace CollisionGizmos {
 			DrawCircleOutline(contactPt, wireThickness * 3.f, 8, wireThickness, CEColor{ 1.f, 0.f, 0.f }); // slightly larger circle
 
 			// Draw Normal Line scaled by velocity
-			Shapes::CreateLine(contactPt, contactPt + (normal * baseLen), wireThickness);
+			g_DebugLineQueue.push_back({ contactPt, contactPt + (normal * baseLen), wireThickness });
 		}
 	}
 

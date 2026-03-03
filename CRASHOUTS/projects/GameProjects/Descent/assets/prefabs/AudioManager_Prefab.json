@@ -6,7 +6,7 @@
                 {
                     "active": true,
                     "name": "AudioManager",
-                    "uuid": 16914448410700199274,
+                    "uuid": 16531940862621854578,
                     "tag": {
                         "tagMask": 0
                     },
@@ -30,7 +30,7 @@
                 {
                     "active": true,
                     "name": "AmbianceManager",
-                    "uuid": 13512590310489673917,
+                    "uuid": 1940394711227701349,
                     "tag": {
                         "tagMask": 0
                     },
@@ -46,37 +46,12 @@
                             "y": 1.0
                         }
                     },
-                    "collider": {
-                        "ColliderType": 1,
-                        "isTrigger": false,
-                        "enabled": true,
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "offset": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "min": {
-                            "x": -0.5,
-                            "y": -0.5,
-                            "z": 0.0
-                        },
-                        "max": {
-                            "x": 0.5,
-                            "y": 0.5,
-                            "z": 0.0
-                        }
-                    },
                     "audio": {
                         "clips": [
                             {
                                 "name": "Lava_Ambience",
                                 "path": "lava-volcano-wind-environment_loop.wav",
-                                "volume": 0.44999998807907107,
+                                "volume": 0.15000000596046449,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": true,
@@ -89,7 +64,7 @@
                             {
                                 "className": "SceneMusic",
                                 "fields": {
-                                    "layerName": "Music",
+                                    "layerName": "Ambiance",
                                     "fadeTime": 2.0,
                                     "stopLayer": false
                                 }
@@ -141,7 +116,7 @@
                         "pressedScale": 0.949999988079071
                     },
                     "parent": {
-                        "parentUUID": 16914448410700199274,
+                        "parentUUID": 16531940862621854578,
                         "localPos": {
                             "x": 0.0,
                             "y": 0.0,
@@ -168,7 +143,7 @@
                 {
                     "active": true,
                     "name": "BGMManager",
-                    "uuid": 18114748699651674278,
+                    "uuid": 10405190611363813285,
                     "tag": {
                         "tagMask": 0
                     },
@@ -184,37 +159,12 @@
                             "y": 1.0
                         }
                     },
-                    "collider": {
-                        "ColliderType": 1,
-                        "isTrigger": false,
-                        "enabled": true,
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "offset": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "min": {
-                            "x": -0.5,
-                            "y": -0.5,
-                            "z": 0.0
-                        },
-                        "max": {
-                            "x": 0.5,
-                            "y": 0.5,
-                            "z": 0.0
-                        }
-                    },
                     "audio": {
                         "clips": [
                             {
                                 "name": "Level_1",
                                 "path": "level bgm 1 re-mixed.wav",
-                                "volume": 0.6000000238418579,
+                                "volume": 0.5,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": true,
@@ -279,7 +229,7 @@
                         "pressedScale": 0.949999988079071
                     },
                     "parent": {
-                        "parentUUID": 16914448410700199274,
+                        "parentUUID": 16531940862621854578,
                         "localPos": {
                             "x": 0.0,
                             "y": 0.0,

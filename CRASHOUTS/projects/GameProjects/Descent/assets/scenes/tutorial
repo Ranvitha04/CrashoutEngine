@@ -20690,31 +20690,6 @@
                     "y": 1.0
                 }
             },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": -0.5,
-                    "y": -0.5,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 0.5,
-                    "y": 0.5,
-                    "z": 0.0
-                }
-            },
             "audio": {
                 "clips": [
                     {
@@ -20826,31 +20801,6 @@
                 "size": {
                     "x": 1.0,
                     "y": 1.0
-                }
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": -0.5,
-                    "y": -0.5,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 0.5,
-                    "y": 0.5,
-                    "z": 0.0
                 }
             },
             "audio": {
