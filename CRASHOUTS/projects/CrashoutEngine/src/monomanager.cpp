@@ -175,12 +175,7 @@ void MonoManager::LoadAssembly()
 
 	s_AssemblyPath = latestDll.string();
 
-#if !USE_IMGUI_EDITOR
-	// Copy assembly to appdata cache
-	std::string assemblyToLoadPath = CopyAssemblyToTemp(s_AssemblyPath);
-#else
 	std::string assemblyToLoadPath = s_AssemblyPath;
-#endif
 
 	if (!std::filesystem::exists(assemblyToLoadPath))
 	{

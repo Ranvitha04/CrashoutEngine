@@ -770,11 +770,16 @@ namespace Collision {
 		result.normal = bestAxis;
 
 		// 1. SAFE NORMAL FLIPPING
-		// Use closest point on line for stability (fixes flip issues on long lines)
-		CEVec3 closestOnLine = ClosestPointOnSegment(line.GetWorldP1(), line.GetWorldP2(), poly.position);
-		CEVec3 dir = closestOnLine - poly.position;
+		// Find which side of the line the polygon center is on using the line's plane.
+		CEVec3 lineToPoly = poly.position - line.GetWorldP1();
+		float side = CEMath::Dot(lineToPoly, line.GetNormal());
 
-		if (CEMath::Dot(result.normal, dir) < 0.f) {
+		// The physics standard: Collision normal points from A (Poly) to B (Line).
+		// If Poly is on the positive side of the line, the direction to the line is -LineNormal.
+		CEVec3 preferredDir = line.GetNormal() * (side >= 0.0f ? -1.0f : 1.0f);
+
+		// Flip the normal if it doesn't align with our preferred direction
+		if (CEMath::Dot(result.normal, preferredDir) < 0.f) {
 			result.normal = -1.f * result.normal;
 		}
 

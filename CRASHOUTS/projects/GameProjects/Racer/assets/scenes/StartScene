@@ -54,8 +54,8 @@
                 }
             },
             "layer": {
-                "layerName": "",
-                "z": 0
+                "layerName": "Default",
+                "z": -10
             }
         },
         {
@@ -68,8 +68,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": 15.745193481445313,
+                    "x": -33.0,
+                    "y": 24.745193481445314,
                     "z": 0.0
                 },
                 "size": {
@@ -111,19 +111,495 @@
                 "layerName": "",
                 "z": 0
             }
+        },
+        {
+            "active": true,
+            "name": "PlayBtn",
+            "uuid": 11585859915041038554,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -33.0,
+                    "y": 11.56730842590332,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 25.0,
+                    "y": 6.5
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.18232041597366334,
+                    "y": 0.18232041597366334,
+                    "z": 0.18232041597366334,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Start Race",
+                "scale": 18.200000762939454,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.18039216101169587,
+                    "y": 0.18039216101169587,
+                    "z": 0.18039216101169587,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.18039216101169587,
+                    "y": 0.18039216101169587,
+                    "z": 0.18039216101169587,
+                    "w": 1.0
+                },
+                "shapePressedColor": {
+                    "x": 0.18039216101169587,
+                    "y": 0.18039216101169587,
+                    "z": 0.18039216101169587,
+                    "w": 1.0
+                },
+                "textNormalColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "textPressedColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "QuitBtn",
+            "uuid": 5610524216517216682,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -33.0,
+                    "y": 2.4330005645751955,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 25.0,
+                    "y": 6.5
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.18232041597366334,
+                    "y": 0.18232041597366334,
+                    "z": 0.18232041597366334,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Quit Game",
+                "scale": 18.200000762939454,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.18039216101169587,
+                    "y": 0.18039216101169587,
+                    "z": 0.18039216101169587,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.18039216101169587,
+                    "y": 0.18039216101169587,
+                    "z": 0.18039216101169587,
+                    "w": 1.0
+                },
+                "shapePressedColor": {
+                    "x": 0.18039216101169587,
+                    "y": 0.18039216101169587,
+                    "z": 0.18039216101169587,
+                    "w": 1.0
+                },
+                "textNormalColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "textPressedColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Instructions",
+            "uuid": 10797017282758239007,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -33.0,
+                    "y": -21.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 25.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "How-To-Play:\n\nw - boost\na - turn left\nd - turn right\ns - reverse",
+                "scale": 17.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 5.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "dialogue/dialogue.json",
+                "dialogueID": "test"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "LeaderBoard Title",
+            "uuid": 5243449983656791706,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": -3.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 65.0,
+                    "y": 70.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.18039216101169587,
+                    "y": 0.18039216101169587,
+                    "z": 0.18039216101169587,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "LEADERBOARD",
+                "scale": 19.100000381469728,
+                "offset": {
+                    "x": 0.0,
+                    "y": -5.0
+                },
+                "color": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 1
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Menu Script",
+            "uuid": 2380077462874928383,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SimpleMainMenu",
+                        "fields": {
+                            "StartBtn": 3,
+                            "QuitBtn": 4,
+                            "TargetSceneName": "Game"
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
         }
     ],
     "layers": {
-        "Default": 0,
-        "Ground": 2,
-        "Player": 1,
-        "YesNo": 3
+        "Default": 0
     },
     "layer_visibility": {
-        "Default": true,
-        "Ground": true,
-        "Player": true,
-        "YesNo": true
+        "Default": true
     },
     "tag_mapping": {
         "Default": 0,

@@ -811,6 +811,7 @@ namespace Scene {
 		void Clear() {
 			positions.clear(); colors.clear(); rotations.clear();
 			scales.clear(); dim1.clear(); dim2.clear(); uvOffsets.clear();
+			textureHandle = 0;
 		}
 
 		void Add(const CEVec3& pos, const CEColor& col, float rot, float scale, float d1, float d2, const CEVec2& offset) {
@@ -917,6 +918,7 @@ namespace Scene {
 			if (!batch.positions.empty()) {
 				if (sc->enableTexture != batch.enableTexture) textureChanged = true;
 				else if (sc->enableTexture) {
+					if (sc->textureHandle != 0 && sc->textureHandle != batch.textureHandle) textureChanged = true;
 					// ONLY compare the name! The handle is evaluated at Flush() time.
 					if (sc->textureName != batch.textureName) textureChanged = true;
 					else if (sc->uvSize != batch.uvSize) textureChanged = true;
@@ -954,6 +956,7 @@ namespace Scene {
 				currentShapeType = ShapeType::Rectangle;
 				batch.enableTexture = false;
 				batch.textureName = "";
+				batch.textureHandle = 0;
 			}
 
 			// 2. The Math Hack: Turn the line into a centered rectangle

@@ -2792,7 +2792,7 @@ namespace CrashoutsEngine
 					// Button to add a new empty rule
 					if (ImGui::Button("+ Add New Rule")) {
 						RuleTile newTile;
-						newTile.texAssetName = "default.png"; // Placeholder
+						newTile.texAssetName = "missing.png"; // Placeholder
 						asset->GetTilesMutable().push_back(newTile);
 					}
 

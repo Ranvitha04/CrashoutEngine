@@ -10,6 +10,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #pragma once
 #include <chrono>
 #include <thread>
+#include <cstdint>
 
 class FrameRateController
 {
@@ -27,7 +28,6 @@ public:
 	//copy assignment operator is deleted
 	FrameRateController& operator=(const FrameRateController&) = delete;
 
-	
 	void SetTargetFPS(int FPSCap);
 	void SetFixedDT(double step);
 	void Reset();
@@ -47,6 +47,9 @@ public:
 	void SetMaxPhysicsSteps(int max) { mMaxPhysicsSteps = max; }
 	int GetMaxPhysicsSteps() const { return mMaxPhysicsSteps; }
 
+	uint32_t GetFixedTickCount() const { return m_fixedTickCount; }
+	void IncrementFixedTick() { ++m_fixedTickCount; }
+
 private:
 	FrameRateController();
 	ClockTime::time_point mFrameStart{};
@@ -61,4 +64,5 @@ private:
 	///EMA calculate smoothed fps to avoid jumping fps values
 	double mFPS{};
 	double defaultFallBack{ 60.0 };
+	uint32_t m_fixedTickCount{ 0 };
 };

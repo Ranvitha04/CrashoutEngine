@@ -19,20 +19,47 @@
             "path": "Exo2-Regular.ttf"
         }
     ],
+    "json": [
+        {
+            "name": "assetmanifest",
+            "path": "assetmanifest.json"
+        }
+    ],
+    "dialogue": [
+        {
+            "name": "dialogue",
+            "path": "dialogue.json"
+        }
+    ],
     "images": [
         {
             "name": "missing",
             "path": "missing.png"
+        },
+        {
+            "name": "map",
+            "path": "map.png"
         }
     ],
     "scenes": [
+        {
+            "name": "Game",
+            "path": "Game"
+        },
         {
             "name": "StartScene",
             "path": "StartScene.json"
         },
         {
-            "name": "Game",
-            "path": "Game"
+            "name": "GameScene",
+            "path": "GameScene"
         }
-    ]
+    ],
+    "tilemaps": [
+        {
+            "name": "track",
+            "path": "track"
+        }
+    ],
+    "start_scene": "StartScene"
 }

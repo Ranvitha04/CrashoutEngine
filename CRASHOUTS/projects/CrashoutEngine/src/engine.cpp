@@ -43,6 +43,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "activecomponent.h"
 #include "audiocomponent.h"
 #include "videosystem.h"
+#include "replaymanager.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -541,6 +542,13 @@ void Update(double const& dt) {
         int steps = FrameRateController::GetInstance().StepCount();
         for (int i = 0; i < steps; ++i)
         {
+            // 1. INCREMENT AND GET CURRENT TICK
+            FrameRateController::GetInstance().IncrementFixedTick();
+            uint32_t currentFixedTick = FrameRateController::GetInstance().GetFixedTickCount();
+
+            // 2. UPDATE REPLAY SYSTEM (Injects fake inputs if playing)
+            ReplayManager::Replay::GetInstance().UpdateFixedTick(currentFixedTick);
+
             {
                 FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
                 CrashoutsEngine::ScriptSystem::FixedUpdateAll();
@@ -722,6 +730,23 @@ void Update(double const& dt) {
 
     InputManager::Update();
     
+    // ==========================================
+    // REPLAY DEBUG HOTKEYS
+    // ==========================================
+#if !USE_IMGUI_EDITOR && !defined(DEBUG)
+    // You already have F3 here, let's add the replay controls!
+    if (InputManager::IsKeyTriggered(Key::F5)) {
+        ReplayManager::Replay::GetInstance().StartRecording();
+    }
+    if (InputManager::IsKeyTriggered(Key::F6)) {
+        ReplayManager::Replay::GetInstance().StartPlayback();
+    }
+    if (InputManager::IsKeyTriggered(Key::F7)) {
+        ReplayManager::Replay::GetInstance().Stop();
+    }
+#endif
+    // ==========================================
+
     CrashoutsEngine::PostProcessing::UpdatePP();
 
 
