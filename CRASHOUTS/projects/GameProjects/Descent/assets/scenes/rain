@@ -21,6 +21,7 @@
             },
             "tilemap": {
                 "tileSize": 32,
+                "excludeOuterBoundary": false,
                 "activeAsset": "tilemaps/Rock",
                 "tileAssetNames": [
                     "Rock"
@@ -1272,9 +1273,11 @@
                             "jumpPower": 20000.0,
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
+                            "fallGravityMultiplier": 1.5,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
+                            "coyoteFrames": 6,
                             "goalNoOfPlates": 1,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
@@ -1283,12 +1286,16 @@
                             "lightMass": 4.5,
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
+                            "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
                             "isDialogueActive": false,
+                            "facingRight": true,
                             "CurrentEnergy": 0.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
-                            "isPaused": false
+                            "isPaused": false,
+                            "reloadOnDeath": false,
+                            "reloadSceneName": ""
                         }
                     }
                 ]
@@ -1452,10 +1459,12 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
+                            "minAudioDistance": 1.0,
+                            "maxAudioDistance": 50.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
@@ -1464,7 +1473,11 @@
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
                         }
                     }
                 ]
@@ -1617,10 +1630,12 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
+                            "minAudioDistance": 1.0,
+                            "maxAudioDistance": 50.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
@@ -1629,7 +1644,11 @@
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
                         }
                     }
                 ]
@@ -1782,10 +1801,12 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
+                            "minAudioDistance": 1.0,
+                            "maxAudioDistance": 50.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
@@ -1794,7 +1815,11 @@
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
                         }
                     }
                 ]
@@ -2112,10 +2137,12 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
+                            "minAudioDistance": 1.0,
+                            "maxAudioDistance": 50.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
@@ -2124,7 +2151,11 @@
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
                         }
                     }
                 ]

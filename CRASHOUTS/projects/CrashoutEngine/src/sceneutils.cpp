@@ -24,6 +24,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "engine.h"
 #include "instanceSystem.h"
 #include "glapp.h"
+#include "debugcollision.h"
 
 #include "guicomponent.h"
 #include "particlecomponent.h"
@@ -830,7 +831,6 @@ namespace Scene {
 		ShapeType currentShapeType = ShapeType::Rectangle;
 
 		// Cleans the render batch data
-		// Cleans the render batch data
 		void Flush() {
 			if (batch.positions.empty()) return;
 
@@ -950,6 +950,35 @@ namespace Scene {
 			if (sc->type == ShapeType::Circle) { dim1 = tc->size.x * 0.5f; dim2 = 0.0f; }
 
 			batch.Add(tc->position, colorNorm, tc->rotation, 1.0f, dim1, dim2, sc->uvOffset);
+		}
+	
+		// Submit data just for debug lines
+		void SubmitLineAsBatchedRect(const CollisionGizmos::DebugLineCmd& line) {
+			// 1. Ensure we are batching Rectangles and textures are off for debug lines
+			if (currentShapeType != ShapeType::Rectangle || batch.enableTexture) {
+				Flush();
+				currentShapeType = ShapeType::Rectangle;
+				batch.enableTexture = false;
+				batch.textureName = "";
+			}
+
+			// 2. The Math Hack: Turn the line into a centered rectangle
+			CEVec3 diff = line.p2 - line.p1;
+			float length = std::sqrt(diff.x * diff.x + diff.y * diff.y);
+
+			// Ignore zero-length lines
+			if (length <= 0.0001f) return;
+
+			// Calculate angle in Degrees (since your engine seems to use degrees for transforms)
+			float angleDeg = std::atan2(diff.y, diff.x) * (180.0f / CEMath::PI);
+
+			// Center point of the line
+			CEVec3 center = line.p1 + (diff * 0.5f);
+			center.z = line.p1.z; // Maintain your debug Z-depth
+
+			// 3. Add to the standard rectangle batch!
+			// pos, color, rotation, scale, dim1(width), dim2(height), uvOffset
+			batch.Add(center, line.color, angleDeg, 1.0f, length, line.thickness, { 0.0f, 0.0f });
 		}
 	};
 
@@ -1217,6 +1246,24 @@ namespace Scene {
 		if (glIsEnabled(GL_DEPTH_TEST)) glEnable(GL_DEPTH_TEST);
 		if (glIsEnabled(GL_CULL_FACE)) glEnable(GL_CULL_FACE);
 		renderer.shdr_pgm_instanced->Use();
+
+		if (!CollisionGizmos::g_DebugLineQueue.empty()) {
+			// Set world camera matrices for debug lines
+			renderer.shdr_pgm_instanced->SetUniform("uView", renderer.viewMatrix);
+			renderer.shdr_pgm_instanced->SetUniform("uProjection", renderer.projectionMatrix);
+
+			// Disable depth test if you want colliders drawn over everything
+			glDisable(GL_DEPTH_TEST);
+
+			for (const auto& cmd : CollisionGizmos::g_DebugLineQueue) {
+				batcher.SubmitLineAsBatchedRect(cmd);
+			}
+			batcher.Flush(); // Force draw the debug batch
+
+			CollisionGizmos::g_DebugLineQueue.clear(); // Clear for next frame
+
+			if (glIsEnabled(GL_DEPTH_TEST) == GL_FALSE) glEnable(GL_DEPTH_TEST); // Restore
+		}
 
 		Component::RenderSpriteAnimationsECS();
 
