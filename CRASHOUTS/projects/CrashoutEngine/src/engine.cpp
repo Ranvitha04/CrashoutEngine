@@ -644,7 +644,7 @@ void Update(double const& dt) {
             }
         }
 
-        CrashoutsEngine::Audio::AudioSystem::instance().Update();
+        CrashoutsEngine::Audio::AudioSystem::instance().Update((float)GLApp::delta_time);
         }
         // process events if any associated with input devices
         //glfwPollEvents();

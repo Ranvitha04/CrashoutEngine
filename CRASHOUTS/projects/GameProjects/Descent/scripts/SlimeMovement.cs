@@ -22,8 +22,8 @@ namespace CrashoutsEngine
         [SerializeField] private float maxSpeed = 15.0f; 
         [SerializeField] private float moveAudioInterval = 0.4f;
         //[SerializeField] private float stopAudioDistance = 40.0f;
-        [SerializeField] private float minAudioDistance = 1.0f;
-        [SerializeField] private float maxAudioDistance = 50.0f;
+        [SerializeField] private float MaxVolumeMinDistance = 50.0f;
+        [SerializeField] private float MinVolumeMaxDistance = 250.0f;
         [SerializeField] private float detectionRange = 250.0f;
         [SerializeField] private float gravityScale = 2.0f;
         [SerializeField] private float grabRange = 100.0f;
@@ -172,9 +172,9 @@ namespace CrashoutsEngine
             // Set 3D Distances for all slime sounds to handle distance-based attenuation
             for (int i = 1; i <= 5; i++)
             {
-                AudioManager.SetClip3DDistances(Entity.ID, "slimeMove" + i, minAudioDistance, maxAudioDistance);
+                AudioManager.SetClip3DDistances(Entity.ID, "slimeMove" + i, MaxVolumeMinDistance, MinVolumeMaxDistance);
             }
-            AudioManager.SetClip3DDistances(Entity.ID, "slimeImpact", minAudioDistance, maxAudioDistance);
+            AudioManager.SetClip3DDistances(Entity.ID, "slimeImpact", MaxVolumeMinDistance, MinVolumeMaxDistance);
 
             CollisionEvents.RegisterPreSolve(Entity.ID, this.OnPreSolve);
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);

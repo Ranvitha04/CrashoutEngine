@@ -6,7 +6,7 @@
 
 Stores global configuration values like screen width and height
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 
@@ -55,6 +55,11 @@ public:
     Placeholder for future JSON support
     */
     static void SaveToFile(const char* path);
+
+    /*!
+    @brief Save current settings to the default settings file.
+    */
+    static void Save();
 
     // --- EDITOR SETTINGS ---
     /*!

@@ -178,6 +178,27 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_RemoveClipDSP(uint entityID, string clipName, int dspType);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_SetClipDSPParameter(uint entityID, string clipName, int dspType, int index, float value);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_AddGroupDSP(bool isMusic, int dspType);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_RemoveGroupDSP(bool isMusic, int dspType);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_SetGroupDSPParameter(bool isMusic, int dspType, int index, float value);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_FadeGroupDSPParameter(bool isMusic, int dspType, int index, float targetValue, float duration);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_FadeGroupVolume(bool isMusic, float targetVolume, float duration);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Settings_Save();
+
         // --- BUTTON COMPONENT LIFECYCLE ---
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void AddButton(uint entityID);

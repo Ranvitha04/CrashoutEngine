@@ -56,8 +56,7 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "ColorScript",
-                        "fields": {}
+                        "className": "ColorScript"
                     }
                 ]
             },
