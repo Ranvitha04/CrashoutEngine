@@ -2025,7 +2025,7 @@
                 }
             },
             "layer": {
-                "layerName": "",
+                "layerName": "Player",
                 "z": 0
             },
             "video": {

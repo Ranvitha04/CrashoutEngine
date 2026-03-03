@@ -840,17 +840,17 @@ namespace Scene {
 			// We use a separate string for the instancer to prevent caching a broken path
 			std::string finalTexNameForInstancer = "";
 
-			// Bind Texture if needed
-			if (useTextureForThisBatch && !batch.textureName.empty()) {
-
-				// 1. EXTRACT THE SHORT NAME ("images/player.png" -> "player")
+			// --> Check for raw runtime handles first (Videos, Framebuffers) <--
+			if (batch.textureHandle != 0) {
+				currentHandle = batch.textureHandle;
+				finalTexNameForInstancer = batch.textureName; // Pass the dummy name
+			}
+			// Otherwise, do the standard AssetManager lookup
+			else if (!batch.textureName.empty()) {
 				std::string lookupName = batch.textureName;
 				std::filesystem::path p(lookupName);
-				if (p.has_stem()) {
-					lookupName = p.stem().string();
-				}
+				if (p.has_stem()) lookupName = p.stem().string();
 
-				// 2. NOW ASK THE ASSET MANAGER USING THE SHORT NAME
 				auto* tex = Assets::AssetManager::GetInstance().Get<Assets::TextureAsset>(lookupName);
 
 				if (tex) {
@@ -858,22 +858,15 @@ namespace Scene {
 					currentHandle = tex->GetGLHandle();
 
 					if (currentHandle == 0 || !tex->IsUploaded()) {
-						// The texture is in RAM but hasn't reached the GPU yet!
-						// Turn off texturing for this specific frame so it doesn't draw invisible.
 						useTextureForThisBatch = false;
 					}
 					else {
-						// Success! Safe to pass the name to the Instancer cache
 						finalTexNameForInstancer = lookupName;
 					}
 				}
 				else {
-					// Asset not found at all
 					useTextureForThisBatch = false;
 				}
-			}
-			else {
-				useTextureForThisBatch = false;
 			}
 
 			InstancingSystem::InstancedParams params;
@@ -938,6 +931,7 @@ namespace Scene {
 			if (batch.positions.empty()) {
 				currentShapeType = sc->type;
 				batch.textureName = sc->textureName;
+				batch.textureHandle = sc->textureHandle;
 				batch.enableTexture = sc->enableTexture;
 				batch.uvSize = sc->uvSize;
 				batch.wrapU = GetWrapMode(sc->wrapModeU);
