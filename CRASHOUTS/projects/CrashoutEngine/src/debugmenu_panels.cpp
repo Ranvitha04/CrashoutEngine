@@ -716,6 +716,7 @@ namespace UI {
 
 		ImGui::SeparatorText("Components on Selected Entity");
 
+		ImGui::PushID((int)selected); // FIX: Ensure IDs are unique per entity
 		for (auto* ad : DebugReflection::ComponentRegistry::instance().all()) {
 			if (!ad->has(ecs, selected)) continue;
 
@@ -734,7 +735,7 @@ namespace UI {
 			bool isOpen = ImGui::TreeNodeEx((void*)ad, headerFlags, "%s", ad->name());
 
 			// --- 2. RIGHT-ALIGNED REMOVE BUTTON ---
-			// Safety Check: We hide the Remove button for "Core Settings" 
+			// Safety Check: We hide the Remove button for "Core Settings"
 			// so users don't accidentally delete the Name and UUID!
 			bool isCoreSettings = (std::strcmp(ad->name(), "Core Settings") == 0);
 
@@ -771,8 +772,8 @@ namespace UI {
 
 			ImGui::PopID();
 		}
-	}
-
+		ImGui::PopID();
+		}
 	/*!
 	 @brief Renders the performance panel with profiler results.
 	 @param profiler Frame profiler reference.
