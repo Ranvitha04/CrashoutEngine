@@ -33,12 +33,13 @@
     ],
     "scenes": [
         {
-            "name": "StartScene",
-            "path": "StartScene"
-        },
-        {
             "name": "Test",
             "path": "Test"
+        },
+        {
+            "name": "StartScene",
+            "path": "StartScene"
         }
-    ]
+    ],
+    "start_scene": "StartScene"
 }
