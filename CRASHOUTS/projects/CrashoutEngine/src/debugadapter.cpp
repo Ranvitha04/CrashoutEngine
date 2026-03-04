@@ -11,7 +11,7 @@ Declares and registers built-in Debug Menu adapters & providers:
 These adapters make the ECS inspector and physics/game-state panels
 runtime-extensible and project-agnostic.
 
-All content ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -2524,6 +2524,7 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableBool("Affects Bloom", lc->affectBloom);
 			UIHelpers::DrawUndoableBool("Use Transform", lc->useTransform);
 			UIHelpers::DrawUndoableBool("Render Behind Entity", lc->renderBehind);
+			UIHelpers::DrawUndoableBool("Ignore Parent Occluders", lc->ignoreParentOccluders);
 		}
 	};
 

@@ -1194,6 +1194,8 @@
                 "contrast": 0.0,
                 "saturation": 0.0,
                 "ambient": 1.0,
+                "shadowsEnabled": true,
+                "shadowRays": 128,
                 "bloomEnabled": true,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,

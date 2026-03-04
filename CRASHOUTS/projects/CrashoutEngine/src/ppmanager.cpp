@@ -23,6 +23,7 @@ All content ? 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "transformcomponent.h"
 #include "shapescomponent.h"
 #include "collisionmanager.h"
+#include "hierarchycomponent.h"
 #include "jobsystem.h"
 #include <iostream>
 #include <algorithm>
@@ -306,6 +307,7 @@ namespace CrashoutsEngine {
                 bool active{ false };
                 bool affectBloom{ true };
                 bool renderBehind{ false };
+                bool ignoreParentOccluders{ true };
                 glm::vec2 uvCenter{ 0.0f, 0.0f };
                 float radiusUV{ 0.0f };
                 CEVec3 worldPos{ 0.0f, 0.0f, 0.0f };
@@ -373,6 +375,7 @@ namespace CrashoutsEngine {
                         lightDraws[i].active = true;
                         lightDraws[i].affectBloom = lc->affectBloom;
                         lightDraws[i].renderBehind = lc->renderBehind;
+                        lightDraws[i].ignoreParentOccluders = lc->ignoreParentOccluders;
                         lightDraws[i].uvCenter = uvCenter;
                         lightDraws[i].radiusUV = radiusUV;
                         lightDraws[i].worldPos = worldPos;
@@ -449,7 +452,15 @@ namespace CrashoutsEngine {
                                 CEVec3 endPos = startPos + dir * ld.radiusWorld;
                                 CEVec3 hitPoint{};
                                 CrashoutsEngine::Entity hitEnt = 0;
-                                bool hit = Collision::CollisionHandler::GetInstance().RaycastHit(startPos, endPos, hitPoint, hitEnt, ent);
+                                CrashoutsEngine::Entity ignoredParent = 0;
+                                if (ld.ignoreParentOccluders) {
+                                    ignoredParent = ent;
+                                    if (ecs.HasComponent<Component::ParentComponent>(ent)) {
+                                        auto* pc = ecs.GetComponent<Component::ParentComponent>(ent);
+                                        if (pc && pc->parent != 0) ignoredParent = pc->parent;
+                                    }
+                                }
+                                bool hit = Collision::CollisionHandler::GetInstance().RaycastHit(startPos, endPos, hitPoint, hitEnt, ent, ignoredParent);
 
                                 float dist = ld.radiusWorld;
                                 if (hit) {

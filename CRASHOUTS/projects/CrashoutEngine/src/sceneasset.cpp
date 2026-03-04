@@ -8,7 +8,7 @@
 		is designed to be used with the AssetManager and provides a static factory
 		method for safe creation and resource management.
 
-All content ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 //#pragma once
@@ -598,6 +598,7 @@ namespace CrashoutsEngine {
 				val.AddMember("useTransform", c.useTransform, allocator);
 				val.AddMember("renderSelf", c.renderSelf, allocator);
 				val.AddMember("renderBehind", c.renderBehind, allocator);
+				val.AddMember("ignoreParentOccluders", c.ignoreParentOccluders, allocator);
 				WriteVec3(val, "color", c.color, allocator);
 				WriteVec3(val, "position", c.position, allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::LIGHT_COMPONENT), val, allocator);
@@ -1157,6 +1158,7 @@ namespace CrashoutsEngine {
 				l.useTransform = GetBool(v, "useTransform", l.useTransform);
 				l.renderSelf = GetBool(v, "renderSelf", l.renderSelf);
 				l.renderBehind = GetBool(v, "renderBehind", l.renderBehind);
+				l.ignoreParentOccluders = GetBool(v, "ignoreParentOccluders", l.ignoreParentOccluders);
 				if (v.HasMember("color")) l.color = ReadVec3(v["color"], l.color);
 				if (v.HasMember("position")) l.position = ReadVec3(v["position"], l.position);
 			}
