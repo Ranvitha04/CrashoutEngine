@@ -733,7 +733,7 @@ void Update(double const& dt) {
     // ==========================================
     // REPLAY DEBUG HOTKEYS
     // ==========================================
-#if !USE_IMGUI_EDITOR && !defined(DEBUG)
+//#if !USE_IMGUI_EDITOR && !defined(DEBUG)
     // You already have F3 here, let's add the replay controls!
     if (InputManager::IsKeyTriggered(Key::F5)) {
         ReplayManager::Replay::GetInstance().StartRecording();
@@ -744,7 +744,7 @@ void Update(double const& dt) {
     if (InputManager::IsKeyTriggered(Key::F7)) {
         ReplayManager::Replay::GetInstance().Stop();
     }
-#endif
+//#endif
     // ==========================================
 
     CrashoutsEngine::PostProcessing::UpdatePP();

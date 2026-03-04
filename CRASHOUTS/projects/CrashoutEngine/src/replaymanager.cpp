@@ -7,7 +7,9 @@
 */
 
 #include "replaymanager.h"
-#include "iostream"
+#include "log.h"
+#include <string>
+#include <iostream>
 
 namespace ReplayManager {
 
@@ -22,7 +24,7 @@ namespace ReplayManager {
         replayData.clear();
         playbackIndex = 0;
         InputManager::SetReplayMode(false); // Ensure we read real hardware
-        std::cout << "[Replay] Started Recording." << std::endl;
+        LOGI(Core, "[Replay] Started Recording.");
     }
 
     /*
@@ -33,13 +35,13 @@ namespace ReplayManager {
         if (state == ReplayState::RECORDING) Stop(); // Stop recording first
 
         if (replayData.empty()) {
-            std::cout << "[Replay] No data to playback!" << std::endl;
+            LOGI(Core, "[Replay] No data to playback!");
             return;
         }
         state = ReplayState::PLAYING;
         playbackIndex = 0;
         InputManager::SetReplayMode(true); // Lock out real hardware!
-        std::cout << "[Replay] Started Playback." << std::endl;
+        LOGI(Core, "[Replay] Started Playback.");
     }
 
     /*
@@ -50,7 +52,7 @@ namespace ReplayManager {
 
         state = ReplayState::IDLE;
         InputManager::SetReplayMode(false); // Return control to player
-        std::cout << "[Replay] Stopped." << std::endl;
+        LOGI(Core, "[Replay] Stopped.");
     }
 
     /*
@@ -59,6 +61,13 @@ namespace ReplayManager {
     void Replay::RecordEvent(Tick tick, Key key, bool isPressed) {
         if (state == ReplayState::RECORDING) {
             replayData.push_back({ tick, key, isPressed });
+
+            int code = static_cast<int>(key);
+            std::string stateStr = isPressed ? "Pressed" : "Released";
+            std::string logMsg = "[Replay] RECORDED KeyCode: " + std::to_string(code) +
+                " | State: " + stateStr +
+                " | Tick: " + std::to_string(tick);
+            LOGI(Core, logMsg);
         }
     }
 
@@ -75,6 +84,12 @@ namespace ReplayManager {
             InputEvent& ev = replayData[playbackIndex];
             int code = static_cast<int>(ev.key);
 
+            std::string stateStr = ev.isPressed ? "Pressed" : "Released";
+            std::string logMsg = "[Replay] Injecting KeyCode: " + std::to_string(code) +
+                " | State: " + stateStr +
+                " | Tick: " + std::to_string(currentTick);
+            LOGI(Core, logMsg);
+
             // Inject based on whether it's a mouse button (0-7) or keyboard key
             if (code >= 0 && code <= GLFW_MOUSE_BUTTON_LAST) {
                 InputManager::InjectMouseButton(ev.key, ev.isPressed);
@@ -88,6 +103,7 @@ namespace ReplayManager {
 
         // Auto-stop when we reach the end of the recording
         if (playbackIndex >= replayData.size()) {
+            LOGI(Core, "[Replay] Playback finished.");
             Stop();
         }
     }

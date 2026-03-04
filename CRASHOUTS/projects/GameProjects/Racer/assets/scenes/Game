@@ -5,7 +5,7 @@
             "name": "Player",
             "uuid": 17256983447778301834,
             "tag": {
-                "tagMask": 0
+                "tagMask": 1
             },
             "transform": {
                 "rotation": -90.0,
@@ -15,7 +15,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 7.0,
+                    "x": 8.0,
                     "y": 15.0
                 }
             },
@@ -33,7 +33,7 @@
                 "invInertia": 0.043795619159936908
             },
             "collider": {
-                "ColliderType": 2,
+                "ColliderType": 0,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -46,17 +46,12 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "min": {
-                    "x": -48.11061096191406,
-                    "y": 121.42950439453125,
+                "radius": 4.0,
+                "center": {
+                    "x": -44.61061096191406,
+                    "y": 128.92950439453126,
                     "z": 0.0
-                },
-                "max": {
-                    "x": -41.11061096191406,
-                    "y": 136.42950439453126,
-                    "z": 0.0
-                },
-                "rotation": -90.0
+                }
             },
             "shape": {
                 "useTexture": false,
@@ -97,22 +92,32 @@
                     {
                         "className": "PlayerController",
                         "fields": {
-                            "ThrustForce": 500.0,
+                            "ThrustForce": 1000.0,
                             "RotationSpeed": 150.0,
                             "SpaceDrag": 0.9800000190734863
+                        }
+                    },
+                    {
+                        "className": "LapTracker",
+                        "fields": {
+                            "TotalLaps": 3,
+                            "TotalCheckpointsInTrack": 3,
+                            "CurrentLap": 0,
+                            "lapDisplay": 1082130432,
+                            "timerDisplay": 1082130432
                         }
                     }
                 ]
             },
             "camera": {
-                "zoom": 0.30000001192092898,
+                "zoom": 0.5,
                 "xBounds": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": -133.5,
+                    "y": 142.10000610351563
                 },
                 "yBounds": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": -123.69999694824219,
+                    "y": 107.0999984741211
                 }
             },
             "layer": {
@@ -14770,6 +14775,16 @@
                     "z": 0.0
                 }
             },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "RaceCheckpoint",
+                        "fields": {
+                            "CheckpointID": 0
+                        }
+                    }
+                ]
+            },
             "layer": {
                 "layerName": "Default",
                 "z": -20
@@ -14831,6 +14846,517 @@
             "layer": {
                 "layerName": "Default",
                 "z": -50
+            }
+        },
+        {
+            "active": true,
+            "name": "Checkpoint_1",
+            "uuid": 17257414136751643387,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 224.86575317382813,
+                    "y": 27.48365020751953,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 0,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 224.86575317382813,
+                    "y": 27.48365020751953,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 30.0,
+                "center": {
+                    "x": 224.86575317382813,
+                    "y": 27.48365020751953,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "RaceCheckpoint",
+                        "fields": {
+                            "CheckpointID": 1
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 4825381816197777578,
+                "localPos": {
+                    "x": 224.86575317382813,
+                    "y": 27.48365020751953,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Checkpoint_2",
+            "uuid": 9949036927536647616,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 42.005821228027347,
+                    "y": -164.48892211914063,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 0,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 42.005821228027347,
+                    "y": -164.48892211914063,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 30.0,
+                "center": {
+                    "x": 42.005821228027347,
+                    "y": -164.48892211914063,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "RaceCheckpoint",
+                        "fields": {
+                            "CheckpointID": 2
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 4825381816197777578,
+                "localPos": {
+                    "x": 42.005821228027347,
+                    "y": -164.48892211914063,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Checkpoint_3",
+            "uuid": 15888213295333167748,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -206.4654541015625,
+                    "y": -19.902061462402345,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 0,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": -206.4654541015625,
+                    "y": -19.902061462402345,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 30.0,
+                "center": {
+                    "x": -206.4654541015625,
+                    "y": -19.902061462402345,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "RaceCheckpoint",
+                        "fields": {
+                            "CheckpointID": 3
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 4825381816197777578,
+                "localPos": {
+                    "x": -206.4654541015625,
+                    "y": -19.902061462402345,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Checkpoints",
+            "uuid": 4825381816197777578,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "LapDisplay",
+            "uuid": 5337083435776588230,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -75.0,
+                    "y": -43.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "LAP: [0 / 0]",
+                "scale": 33.400001525878909,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "TimeDisplay",
+            "uuid": 6804287278273426273,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -75.0,
+                    "y": -34.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "00:00:00",
+                "scale": 33.400001525878909,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Particle",
+            "uuid": 4598920899908258471,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": -90.0,
+                "position": {
+                    "x": -51.61061096191406,
+                    "y": 128.92950439453126,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 0.0010000000474974514,
+                    "y": 0.0010000000474974514
+                }
+            },
+            "parent": {
+                "parentUUID": 17256983447778301834,
+                "localPos": {
+                    "x": 3.824746386271727e-8,
+                    "y": -0.46666666865348818,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0001250000059371814,
+                    "y": 0.00006666666740784422
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 1.0,
+                "startLifeMax": 1.0,
+                "startSpeedMin": 1.0,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.0,
+                "startSizeXMax": 1.0,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": -1.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
             }
         }
     ],
