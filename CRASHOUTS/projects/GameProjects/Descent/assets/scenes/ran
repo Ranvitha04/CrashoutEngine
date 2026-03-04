@@ -343,6 +343,45 @@
                     "z": 0.0
                 }
             },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SlimeMovement",
+                        "fields": {
+                            "moveSpeed": 600.0,
+                            "maxSpeed": 15.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "minAudioDistance": 1.0,
+                            "maxAudioDistance": 50.0,
+                            "detectionRange": 250.0,
+                            "gravityScale": 2.0,
+                            "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
+                            "minThrowSpeed": 300.0,
+                            "maxThrowSpeed": 2000.0,
+                            "maxMouseDragDist": 400.0,
+                            "airDrag": 1.0,
+                            "stunDuration": 1.0,
+                            "pickAnimDuration": 60.0,
+                            "ledgeBuffer": 40.0,
+                            "ledgeRayCastDistance": 50.0,
+                            "grabEnergyDrainRate": 5.0,
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
+                        }
+                    },
+                    {
+                        "className": "NewScript",
+                        "fields": {
+                            "Entity": 6
+                        }
+                    }
+                ]
+            },
             "layer": {
                 "layerName": "Players",
                 "z": 5
