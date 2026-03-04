@@ -19,6 +19,12 @@
             "path": "Exo2-Regular.ttf"
         }
     ],
+    "replays": [
+        {
+            "name": "Level1_Ghost",
+            "path": "Level1_Ghost.bin"
+        }
+    ],
     "json": [
         {
             "name": "assetmanifest",
@@ -35,10 +41,6 @@
         {
             "name": "missing",
             "path": "missing.png"
-        },
-        {
-            "name": "map",
-            "path": "map.png"
         }
     ],
     "scenes": [
@@ -48,11 +50,11 @@
         },
         {
             "name": "StartScene",
-            "path": "StartScene.json"
+            "path": "StartScene"
         },
         {
-            "name": "GameScene",
-            "path": "GameScene"
+            "name": "descentmenu",
+            "path": "descentmenu"
         }
     ],
     "tilemaps": [

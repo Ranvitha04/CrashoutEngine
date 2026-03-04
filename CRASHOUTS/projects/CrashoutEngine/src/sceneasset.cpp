@@ -1536,6 +1536,8 @@ namespace CrashoutsEngine {
 			if (!sceneAsset) {
 				std::filesystem::path fullPath = std::filesystem::path(GetGameRoot()) / "assets" / "scenes" / sceneName;
 
+				std::filesystem::create_directories(fullPath.parent_path());
+
 				// Handle case where the scene asset doesn't exist (e.g., create a new one)
 				Assets::SceneAsset::Create(fullPath.string());
 
@@ -1555,6 +1557,8 @@ namespace CrashoutsEngine {
 
 				rapidjson::Document manifestDoc;
 				std::filesystem::path manifestPath = std::filesystem::path(GetGameRoot()) / "assets" / "json" / "assetmanifest.json";
+
+				std::filesystem::create_directories(manifestPath.parent_path());
 
 				// Load the existing manifest
 				std::ifstream ifs(manifestPath);

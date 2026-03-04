@@ -15,10 +15,8 @@ namespace CrashoutsEngine::Bindings
         r.StartRecording();
     }
     
-    static void Internal_ReplayStop() {
-        ReplayManager::Replay& r = ReplayManager::Replay::GetInstance();
-        r.Stop();
-    }
+    static void Internal_ReplayStopRecording() { ReplayManager::Replay::GetInstance().StopRecording(); }
+    static void Internal_ReplayStopPlayback() { ReplayManager::Replay::GetInstance().StopPlayback(); }
 
     static void Internal_ReplayStartPlayback() {
         ReplayManager::Replay& r = ReplayManager::Replay::GetInstance();
@@ -32,20 +30,27 @@ namespace CrashoutsEngine::Bindings
         mono_free(cstr); // Free the memory Mono allocated for the string!
     }
 
-    static void Internal_ReplayLoadRecording(MonoString* monoFilename) {
+    static bool Internal_ReplayLoadRecording(MonoString* monoFilename) {
         char* cstr = mono_string_to_utf8(monoFilename);
         ReplayManager::Replay& r = ReplayManager::Replay::GetInstance();
-        r.LoadRecording(cstr);
+        bool success = r.LoadRecording(cstr);
         mono_free(cstr);
+        return success;
+    }
+    
+    static bool Internal_ReplayIsVirtualKeyPressed(int keycode) {
+        return ReplayManager::Replay::GetInstance().IsVirtualKeyPressed(keycode);
     }
 
     // --- REGISTRATION ---
     // Add these to your main bindings registration function
     void RegisterReplayBindings() {
         mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalStartRecording", reinterpret_cast<const void*>(Internal_ReplayStartRecording));
-        mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalStop", reinterpret_cast<const void*>(Internal_ReplayStop));
+        mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalStopRecording", reinterpret_cast<const void*>(Internal_ReplayStopRecording));
+        mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalStopPlayback", reinterpret_cast<const void*>(Internal_ReplayStopPlayback));
         mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalStartPlayback", reinterpret_cast<const void*>(Internal_ReplayStartPlayback));
         mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalSaveRecording", reinterpret_cast<const void*>(Internal_ReplaySaveRecording));
         mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalLoadRecording", reinterpret_cast<const void*>(Internal_ReplayLoadRecording));
+        mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalIsVirtualKeyPressed", reinterpret_cast<const void*>(Internal_ReplayIsVirtualKeyPressed));
     }
 }

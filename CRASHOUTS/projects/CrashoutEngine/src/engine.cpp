@@ -739,10 +739,13 @@ void Update(double const& dt) {
         ReplayManager::Replay::GetInstance().StartRecording();
     }
     if (InputManager::IsKeyTriggered(Key::F6)) {
-        ReplayManager::Replay::GetInstance().StartPlayback();
+        ReplayManager::Replay::GetInstance().StopRecording();
     }
     if (InputManager::IsKeyTriggered(Key::F7)) {
-        ReplayManager::Replay::GetInstance().Stop();
+        ReplayManager::Replay::GetInstance().StartPlayback();
+    }
+    if (InputManager::IsKeyTriggered(Key::F8)) {
+        ReplayManager::Replay::GetInstance().StopPlayback();
     }
 //#endif
     // ==========================================

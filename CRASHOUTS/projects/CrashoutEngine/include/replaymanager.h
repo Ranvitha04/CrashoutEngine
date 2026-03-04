@@ -31,41 +31,37 @@ namespace ReplayManager {
     @brief Store replay function callbacks and track current state
     */
     class Replay {
+    private:
+        // --- THE DOUBLE BUFFERS ---
+        std::vector<InputEvent> recordData;     // Buffer A: The player's current run
+        std::vector<InputEvent> playbackData;   // Buffer B: The loaded ghost's run
+
+        std::unordered_map<int, bool> virtualInputState;
+
+        // Independent state flags! They can both be true at the same time.
+        bool isRecording = false;
+        bool isPlaying = false;
+
+        size_t playbackIndex = 0;
+
+        Replay() = default;
+
     public:
-        // Singleton access
-        static Replay& GetInstance() {
-            static Replay instance;
-            return instance;
-        }
+        static Replay& GetInstance() { static Replay instance; return instance; }
 
-        // Track input events
         void StartRecording();
-        // Play using stored input events
-        void StartPlayback();
-        // Stop all recording / playback
-        void Stop();
+        void StopRecording(); // Replaces generic Stop()
 
-        // Update loop for replay items
+        void StartPlayback();
+        void StopPlayback();  // Replaces generic Stop()
+
+        void RecordEvent(Tick tick, Key key, bool isPressed);
         void UpdateFixedTick(Tick currentTick);
 
-        // Method to capture inputs
-        void RecordEvent(Tick tick, Key key, bool isPressed);
+        bool IsVirtualKeyPressed(int keycode);
 
-        // Getter to check state
-        ReplayState GetState() const { return state; }
-
-        // Save recording
         void SaveRecording(const std::string& filename);
-
-        // Load recording
-        void LoadRecording(const std::string& filename);
-
-    private:
-        ReplayState state = ReplayState::IDLE;
-        // Tracks curernt playback index / tick
-        size_t playbackIndex = 0;
-        // Vector to store event data
-        std::vector<InputEvent> replayData;
+        bool LoadRecording(const std::string& filename); // Still returns bool!
     };
 
 }
