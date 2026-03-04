@@ -54,6 +54,12 @@ namespace ReplayManager {
         // Getter to check state
         ReplayState GetState() const { return state; }
 
+        // Save recording
+        void SaveRecording(const std::string& filename);
+
+        // Load recording
+        void LoadRecording(const std::string& filename);
+
     private:
         ReplayState state = ReplayState::IDLE;
         // Tracks curernt playback index / tick

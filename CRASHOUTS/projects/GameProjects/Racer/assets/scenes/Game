@@ -102,9 +102,9 @@
                         "fields": {
                             "TotalLaps": 3,
                             "TotalCheckpointsInTrack": 3,
-                            "CurrentLap": 0,
-                            "lapDisplay": 1082130432,
-                            "timerDisplay": 1082130432
+                            "lapDisplay": 9,
+                            "timerDisplay": 10,
+                            "TrackName": "Level1"
                         }
                     }
                 ]
@@ -15146,7 +15146,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -75.0,
+                    "x": -61.0,
                     "y": -43.0,
                     "z": 0.0
                 },
@@ -15200,7 +15200,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -75.0,
+                    "x": -65.0,
                     "y": -34.0,
                     "z": 0.0
                 },

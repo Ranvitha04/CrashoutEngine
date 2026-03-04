@@ -38,11 +38,11 @@ namespace CrashoutsEngine
             if (_transform == null || _rigidBody == null) return;
 
             // 1. ROTATION (Using Physics instead of Transform)
-            if (Input.IsKeyHeld(Key.A)) 
+            if (Input.IsKeyHeld(Key.A) || Input.IsKeyHeld(Key.Left)) 
             {
                 _rigidBody.AngularVelocity = RotationSpeed * (1.0f / 60.0f); 
             }
-            else if (Input.IsKeyHeld(Key.D))
+            else if (Input.IsKeyHeld(Key.D) || Input.IsKeyHeld(Key.Right))
             {
                 _rigidBody.AngularVelocity = -RotationSpeed * (1.0f / 60.0f);
             }
@@ -57,12 +57,12 @@ namespace CrashoutsEngine
             float dirY = (float)Math.Cos(rotationRadians);
 
             // 3. MOVEMENT
-            if (Input.IsKeyHeld(Key.W))
+            if (Input.IsKeyHeld(Key.W) || Input.IsKeyHeld(Key.Up))
             {
                 CEVec3 force = new CEVec3(dirX * ThrustForce, dirY * ThrustForce, 0f);
                 _rigidBody.AddForce(force);
             }
-            else if (Input.IsKeyHeld(Key.S))
+            else if (Input.IsKeyHeld(Key.S) || Input.IsKeyHeld(Key.Down))
             {
                 CEVec3 force = new CEVec3(-dirX * ThrustForce, -dirY * ThrustForce, 0f);
                 _rigidBody.AddForce(force);

@@ -78,6 +78,14 @@ namespace CrashoutsEngine
             }
         }
 
+        public float Rotation
+        {
+            set
+            {
+                InternalSetRotation(EntityID, value);
+            }
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void InternalGetAngularVelocity(uint entityID, out float angularVelocity);
 
@@ -107,5 +115,8 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalSetDynamic(uint entityID, bool dynamic);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalSetRotation(uint entityID, float rotation);
     }
 }

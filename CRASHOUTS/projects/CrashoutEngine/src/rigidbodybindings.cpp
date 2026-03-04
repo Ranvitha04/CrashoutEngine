@@ -148,6 +148,16 @@ static void InternalSetDynamic(uint32_t entityID, bool newDynamic)
     }
 }
 
+static void InternalSetRotation(uint32_t entityID, float newRotation)
+{
+    auto& ecs = *ECS::getInstance();
+    if (EntityHasRigidBody(entityID))
+    {
+        auto* rb = ecs.GetComponent<Component::RigidBodyComponent>(entityID);
+        rb->setRotation(newRotation); // Updates the internal physics orientation
+    }
+}
+
 void CrashoutsEngine::Bindings::RegisterRigidBodyBindings()
 {
     mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalGetGravityScale", reinterpret_cast<const void*>(InternalGetGravityScale));
@@ -161,6 +171,7 @@ void CrashoutsEngine::Bindings::RegisterRigidBodyBindings()
     mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalSetDynamic", reinterpret_cast<const void*>(InternalSetDynamic));
     mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalGetAngularVelocity", reinterpret_cast<const void*>(InternalGetAngularVelocity));
     mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalSetAngularVelocity", reinterpret_cast<const void*>(InternalSetAngularVelocity));
+    mono_add_internal_call("CrashoutsEngine.RigidBodyComponent::InternalSetRotation", reinterpret_cast<const void*>(InternalSetRotation));
 
     std::cout << "[Mono] Registered: CrashoutsEngine.RigidBodyComponent::InternalAddForce" << std::endl;
 }
