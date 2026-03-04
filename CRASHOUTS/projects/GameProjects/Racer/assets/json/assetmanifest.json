@@ -5,12 +5,36 @@
             "path": "CrashoutShader"
         },
         {
+            "name": "BrightShader",
+            "path": "BrightShader"
+        },
+        {
             "name": "PPShader",
             "path": "PPShader"
         },
         {
             "name": "TextShader",
             "path": "TextShader"
+        },
+        {
+            "name": "BloomCompositeShader",
+            "path": "BloomCompositeShader"
+        },
+        {
+            "name": "LightShader",
+            "path": "LightShader"
+        },
+        {
+            "name": "BlurShader",
+            "path": "BlurShader"
+        },
+        {
+            "name": "CombineShader",
+            "path": "CombineShader"
+        },
+        {
+            "name": "OccluderMaskShader",
+            "path": "OccluderMaskShader"
         }
     ],
     "fonts": [

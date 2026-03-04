@@ -289,6 +289,26 @@ namespace CrashoutsEngine {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
+        static void RenderFallback(GLuint sceneTextureID) {
+            auto* ppAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("PPShader");
+            if (!ppAsset) {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                return;
+            }
+
+            glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
+            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            GLSLShader& ppShader = ppAsset->shaderObject;
+            ppShader.Use();
+            glUniform1i(glGetUniformLocation(ppShader.GetHandle(), "u_active"), active ? 1 : 0);
+            glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_brightness"), g_brightness);
+            glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_contrast"), g_contrast);
+            glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_saturation"), g_saturation);
+            RenderFullscreen(ppShader, sceneTextureID, "u_sceneTexture");
+        }
+
         void RenderPP(GLuint sceneTextureID) {
             EnsureTargets();
 
@@ -660,7 +680,7 @@ namespace CrashoutsEngine {
 
             auto* combineAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("CombineShader");
             if (!combineAsset) {
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                RenderFallback(sceneTextureID);
                 return;
             }
             GLSLShader& combineShader = combineAsset->shaderObject;
@@ -684,7 +704,7 @@ namespace CrashoutsEngine {
 
             auto* brightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BrightShader");
             if (!brightAsset) {
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                RenderFallback(combineTexture);
                 return;
             }
             GLSLShader& brightShader = brightAsset->shaderObject;
@@ -697,7 +717,7 @@ namespace CrashoutsEngine {
             int iterations = std::max(0, g_bloomIterations);
             auto* blurAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BlurShader");
             if (!blurAsset) {
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                RenderFallback(combineTexture);
                 return;
             }
             GLSLShader& blurShader = blurAsset->shaderObject;
@@ -721,7 +741,7 @@ namespace CrashoutsEngine {
 
             auto* finalAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BloomCompositeShader");
             if (!finalAsset) {
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                RenderFallback(combineTexture);
                 return;
             }
             GLSLShader& finalShader = finalAsset->shaderObject;
