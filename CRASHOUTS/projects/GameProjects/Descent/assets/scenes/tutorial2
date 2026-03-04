@@ -22,8 +22,6 @@
             "tilemap": {
                 "tileSize": 32,
                 "excludeOuterBoundary": true,
-                "lightPerTile": true,
-                "emissiveBoost": 0.0,
                 "activeAsset": "tilemaps/Rock",
                 "tileAssetNames": [
                     "Rock"
@@ -666,16 +664,6 @@
                     },
                     {
                         "x": 0,
-                        "y": -1,
-                        "asset": ""
-                    },
-                    {
-                        "x": 0,
-                        "y": 3,
-                        "asset": ""
-                    },
-                    {
-                        "x": 0,
                         "y": 4,
                         "asset": "tilemaps/Rock"
                     },
@@ -997,7 +985,7 @@
                     {
                         "x": 5,
                         "y": -2,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 5,
@@ -5829,12 +5817,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 147.63755798339845,
-                    "y": -274.557373046875,
+                    "x": 153.8533935546875,
+                    "y": -274.29998779296877,
                     "z": 51.0
                 },
                 "size": {
-                    "x": 53.0,
+                    "x": -53.0,
                     "y": 49.29999923706055
                 }
             },
@@ -5853,12 +5841,11 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 148.33755493164063,
-                    "y": -278.057373046875,
+                    "x": 154.5533905029297,
+                    "y": -277.79998779296877,
                     "z": 51.0
                 },
                 "offset": {
@@ -5867,13 +5854,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 133.43751525878907,
-                    "y": -288.25738525390627,
+                    "x": 139.65335083007813,
+                    "y": -288.0,
                     "z": 51.0
                 },
                 "max": {
-                    "x": 163.2375946044922,
-                    "y": -267.85736083984377,
+                    "x": 169.45343017578126,
+                    "y": -267.5999755859375,
                     "z": 51.0
                 }
             },
@@ -5916,7 +5903,7 @@
                     {
                         "name": "slimeMove1",
                         "path": "slime 1.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -5925,7 +5912,7 @@
                     {
                         "name": "slimeMove2",
                         "path": "slime 2.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -5934,7 +5921,7 @@
                     {
                         "name": "slimeMove3",
                         "path": "slime 3.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -5943,7 +5930,7 @@
                     {
                         "name": "slimeMove4",
                         "path": "slime 4.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -5952,7 +5939,7 @@
                     {
                         "name": "slimeMove5",
                         "path": "slime 5.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -5961,7 +5948,7 @@
                     {
                         "name": "slimeImpact",
                         "path": "slime impact.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -5976,9 +5963,10 @@
                         "fields": {
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.800000011920929,
-                            "MaxVolumeMinDistance": 50.0,
-                            "MinVolumeMaxDistance": 250.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "minAudioDistance": 50.0,
+                            "maxAudioDistance": 100.0,
                             "detectionRange": 137.60000610351563,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
@@ -5988,7 +5976,7 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "pickAnimDuration": 60.0,
+                            "pickAnimDuration": 0.5,
                             "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
@@ -6051,9 +6039,99 @@
             },
             "keyframe_animator": {
                 "current": "slimeWalk",
-                "t": 10.616676330566407,
+                "t": 3.18333101272583,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "slimePick",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 2,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.15000000596046449,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.30000001192092898,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.44999998807907107,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.6000000238418579,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "slimeHold",
                         "wrap": 0,
@@ -6117,37 +6195,6 @@
                         ]
                     },
                     {
-                        "name": "slimeHold",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeIdle",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -6170,44 +6217,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -6291,7 +6300,6 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
@@ -6421,7 +6429,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 620.4171142578125,
-                    "y": -215.00961303710938,
+                    "y": -218.73353576660157,
                     "z": 0.0
                 },
                 "size": {
@@ -6444,12 +6452,11 @@
             },
             "collider": {
                 "ColliderType": 0,
-                "isContinuous": false,
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
                     "x": 620.4171142578125,
-                    "y": -215.00961303710938,
+                    "y": -218.73353576660157,
                     "z": 0.0
                 },
                 "offset": {
@@ -6460,7 +6467,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 620.4171142578125,
-                    "y": -215.00961303710938,
+                    "y": -218.73353576660157,
                     "z": 0.0
                 }
             },
@@ -6572,7 +6579,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 10.633342742919922,
+                "t": 72.80107116699219,
                 "playing": true,
                 "clips": [
                     {
@@ -6716,7 +6723,6 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
@@ -6882,7 +6888,6 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
@@ -7024,7 +7029,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 170.4022674560547,
+                    "x": 1016.2945556640625,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -7062,7 +7067,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 752.1366577148438,
+                    "x": 1598.0289306640626,
                     "y": 7.3304443359375,
                     "z": 0.0
                 },
@@ -7140,7 +7145,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1841.3905029296876,
+                    "x": 2687.28271484375,
                     "y": -253.37962341308595,
                     "z": 0.0
                 },
@@ -7218,7 +7223,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 324.8709411621094,
+                    "x": 1170.76318359375,
                     "y": -165.07293701171876,
                     "z": 0.0
                 },
@@ -7296,7 +7301,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1544.5418701171876,
+                    "x": 2390.43408203125,
                     "y": -153.86849975585938,
                     "z": 0.0
                 },
@@ -7374,7 +7379,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -42.16780090332031,
+                    "x": 578.7645263671875,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -7412,7 +7417,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 116.33987426757813,
+                    "x": 737.272216796875,
                     "y": -160.05599975585938,
                     "z": 0.0
                 },
@@ -7490,7 +7495,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 963.8450927734375,
+                    "x": 1584.77734375,
                     "y": -150.32870483398438,
                     "z": 0.0
                 },
@@ -7568,7 +7573,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1876.2161865234376,
+                    "x": 2497.1484375,
                     "y": -137.36431884765626,
                     "z": 0.0
                 },
@@ -7646,7 +7651,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 298.61639404296877,
+                    "x": 919.5487060546875,
                     "y": -149.532958984375,
                     "z": 0.0
                 },
@@ -7724,7 +7729,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -46.2745361328125,
+                    "x": 574.6577758789063,
                     "y": -234.98837280273438,
                     "z": 0.0
                 },
@@ -7802,7 +7807,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 14.23553466796875,
+                    "x": 635.1678466796875,
                     "y": -47.27287292480469,
                     "z": 0.0
                 },
@@ -7880,7 +7885,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 793.0081176757813,
+                    "x": 1413.9404296875,
                     "y": -73.43397521972656,
                     "z": 0.0
                 },
@@ -7958,7 +7963,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1491.642578125,
+                    "x": 2112.574951171875,
                     "y": -62.828495025634769,
                     "z": 0.0
                 },
@@ -8036,7 +8041,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 27.26104736328125,
+                    "x": -347.25872802734377,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -8074,7 +8079,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -49.10162353515625,
+                    "x": -423.62139892578127,
                     "y": -188.97373962402345,
                     "z": 0.0
                 },
@@ -8152,7 +8157,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 400.01348876953127,
+                    "x": 25.49371337890625,
                     "y": -166.88943481445313,
                     "z": 0.0
                 },
@@ -8230,7 +8235,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 846.5486450195313,
+                    "x": 472.02886962890627,
                     "y": -154.73805236816407,
                     "z": 0.0
                 },
@@ -8308,7 +8313,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1819.550048828125,
+                    "x": 1445.0302734375,
                     "y": -149.14682006835938,
                     "z": 0.0
                 },
@@ -8386,7 +8391,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1240.770751953125,
+                    "x": 866.2510375976563,
                     "y": -352.1566467285156,
                     "z": 0.0
                 },
@@ -8464,7 +8469,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 952.206787109375,
+                    "x": 577.68701171875,
                     "y": -21.102645874023439,
                     "z": 0.0
                 },
@@ -8542,7 +8547,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1701.84912109375,
+                    "x": 1327.329345703125,
                     "y": -19.822601318359376,
                     "z": 0.0
                 },
@@ -8620,7 +8625,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 170.95518493652345,
+                    "x": -203.56459045410157,
                     "y": -28.600387573242189,
                     "z": 0.0
                 },
@@ -9485,8 +9490,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 45.933006286621097,
-                    "y": 13.605012893676758,
+                    "x": 56.614967346191409,
+                    "y": 7.019264221191406,
                     "z": 50.0
                 },
                 "size": {
@@ -9509,12 +9514,11 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 45.933006286621097,
-                    "y": 8.605012893676758,
+                    "x": 56.614967346191409,
+                    "y": 2.0192642211914064,
                     "z": 50.0
                 },
                 "offset": {
@@ -9523,13 +9527,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 36.933006286621097,
-                    "y": -21.894956588745118,
+                    "x": 47.614967346191409,
+                    "y": -28.48070526123047,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 54.933006286621097,
-                    "y": 39.10498046875,
+                    "x": 65.6149673461914,
+                    "y": 32.51923370361328,
                     "z": 50.0
                 }
             },
@@ -9572,7 +9576,7 @@
                     {
                         "name": "footstep1",
                         "path": "footsteps 1.wav",
-                        "volume": 1.5,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -9581,63 +9585,63 @@
                     {
                         "name": "footstep2",
                         "path": "footsteps 2.wav",
-                        "volume": 1.5,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
                     {
                         "name": "footstep3",
                         "path": "footsteps 3.wav",
-                        "volume": 1.5,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
                     {
                         "name": "footstep4",
                         "path": "footsteps 4.wav",
-                        "volume": 1.5,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
                     {
                         "name": "footstep5",
                         "path": "footsteps 5.wav",
-                        "volume": 1.5,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
                     {
                         "name": "footstep6",
                         "path": "footsteps 6.wav",
-                        "volume": 1.5,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
                     {
                         "name": "footstep7",
                         "path": "footsteps 7.wav",
-                        "volume": 1.5,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
                     {
                         "name": "footstep8",
                         "path": "footsteps 8.wav",
-                        "volume": 1.5,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -9646,7 +9650,7 @@
                         "path": "jump landing.wav",
                         "volume": 0.4000000059604645,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -9687,7 +9691,7 @@
                             "footstepInterval": 0.30000001192092898,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "coyoteTime": 0.15000000596046449,
+                            "coyoteFrames": 6,
                             "goalNoOfPlates": 2,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
@@ -9699,7 +9703,6 @@
                             "playDialogueOnStart": false,
                             "dialogueCooldown": 1.0,
                             "isDialogueActive": false,
-                            "facingRight": false,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -9709,6 +9712,17 @@
                         }
                     }
                 ]
+            },
+            "camera": {
+                "zoom": 0.30000001192092898,
+                "xBounds": {
+                    "x": -148.60000610351563,
+                    "y": 2000.0
+                },
+                "yBounds": {
+                    "x": -2000.0,
+                    "y": 2000.0
+                }
             },
             "button": {
                 "buttonState": 0,
@@ -9754,33 +9768,13 @@
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
             },
-            "light": {
-                "active": true,
-                "intensity": 0.25,
-                "radius": 129.0,
-                "affectBloom": true,
-                "useTransform": true,
-                "renderSelf": true,
-                "renderBehind": false,
-                "ignoreParentOccluders": true,
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
             "layer": {
                 "layerName": "Player",
                 "z": 0
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 0.7999998927116394,
+                "t": 1.116666316986084,
                 "playing": true,
                 "clips": [
                     {
@@ -10232,8 +10226,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 45.933006286621097,
-                    "y": 71.97491455078125,
+                    "x": 56.614967346191409,
+                    "y": 65.38916778564453,
                     "z": 50.0
                 },
                 "size": {
@@ -10350,8 +10344,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 45.933006286621097,
-                    "y": 71.97491455078125,
+                    "x": 56.614967346191409,
+                    "y": 65.38916778564453,
                     "z": 50.0
                 },
                 "size": {
@@ -10468,8 +10462,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 45.933006286621097,
-                    "y": 71.97491455078125,
+                    "x": 56.614967346191409,
+                    "y": 65.38916778564453,
                     "z": 50.0
                 },
                 "size": {
@@ -10586,8 +10580,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 45.933006286621097,
-                    "y": 71.97491455078125,
+                    "x": 56.614967346191409,
+                    "y": 65.38916778564453,
                     "z": 50.0
                 },
                 "size": {
@@ -10704,8 +10698,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 331.7272644042969,
-                    "y": -185.75253295898438,
+                    "x": 342.4092102050781,
+                    "y": -192.33828735351563,
                     "z": 50.0
                 },
                 "size": {
@@ -10822,8 +10816,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 294.58447265625,
-                    "y": -254.71803283691407,
+                    "x": 55.354164123535159,
+                    "y": -32.099632263183597,
                     "z": 0.0
                 },
                 "size": {
@@ -14062,7 +14056,8 @@
                         "fields": {
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0
+                            "clickHeight": 3.0,
+                            "drawHitbox": true
                         }
                     }
                 ]
@@ -14230,7 +14225,8 @@
                         "fields": {
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0
+                            "clickHeight": 3.0,
+                            "drawHitbox": true
                         }
                     }
                 ]
@@ -15347,7 +15343,6 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
@@ -15513,7 +15508,6 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -16130,7 +16124,6 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -16747,7 +16740,6 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -17340,12 +17332,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1236.2947998046876,
-                    "y": -114.55738830566406,
+                    "x": 1142.069091796875,
+                    "y": -114.30001068115235,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 53.0,
+                    "x": -53.0,
                     "y": 49.29999923706055
                 }
             },
@@ -17364,12 +17356,11 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1236.9947509765626,
-                    "y": -118.05738830566406,
+                    "x": 1142.76904296875,
+                    "y": -117.80001068115235,
                     "z": 50.0
                 },
                 "offset": {
@@ -17378,13 +17369,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1222.0947265625,
-                    "y": -128.25738525390626,
+                    "x": 1127.8690185546876,
+                    "y": -128.0,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 1251.894775390625,
-                    "y": -107.85739135742188,
+                    "x": 1157.6690673828126,
+                    "y": -107.60002136230469,
                     "z": 50.0
                 }
             },
@@ -17402,7 +17393,7 @@
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.5,
                     "y": 0.3333333432674408
                 },
                 "color": {
@@ -17427,7 +17418,7 @@
                     {
                         "name": "slimeMove1",
                         "path": "slime 1.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -17436,7 +17427,7 @@
                     {
                         "name": "slimeMove2",
                         "path": "slime 2.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -17445,7 +17436,7 @@
                     {
                         "name": "slimeMove3",
                         "path": "slime 3.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -17454,7 +17445,7 @@
                     {
                         "name": "slimeMove4",
                         "path": "slime 4.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -17463,7 +17454,7 @@
                     {
                         "name": "slimeMove5",
                         "path": "slime 5.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.6000000238418579,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -17472,7 +17463,7 @@
                     {
                         "name": "slimeImpact",
                         "path": "slime impact.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.800000011920929,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -17487,9 +17478,10 @@
                         "fields": {
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
-                            "moveAudioInterval": 0.800000011920929,
-                            "MaxVolumeMinDistance": 50.0,
-                            "MinVolumeMaxDistance": 250.0,
+                            "moveAudioInterval": 0.4000000059604645,
+                            "stopAudioDistance": 40.0,
+                            "minAudioDistance": 50.0,
+                            "maxAudioDistance": 100.0,
                             "detectionRange": 137.60000610351563,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
@@ -17499,7 +17491,7 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "pickAnimDuration": 60.0,
+                            "pickAnimDuration": 0.5,
                             "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
@@ -17562,7 +17554,7 @@
             },
             "keyframe_animator": {
                 "current": "slimeWalk",
-                "t": 9.550025939941407,
+                "t": 20.3165283203125,
                 "playing": true,
                 "clips": [
                     {
@@ -17619,37 +17611,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeIdle",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 4.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -17830,7 +17791,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1500.0,
+                    "x": 1881.56787109375,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -17854,11 +17815,10 @@
             },
             "collider": {
                 "ColliderType": 1,
-                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1500.0,
+                    "x": 1881.56787109375,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -17868,12 +17828,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1432.5,
+                    "x": 1814.06787109375,
                     "y": -63.6754150390625,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1567.5,
+                    "x": 1949.06787109375,
                     "y": -47.6754150390625,
                     "z": 0.0
                 }
@@ -17942,7 +17902,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1439.683837890625,
+                    "x": 1821.251708984375,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18020,7 +17980,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1479.6441650390626,
+                    "x": 1861.2120361328126,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18098,7 +18058,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1499.6441650390626,
+                    "x": 1881.2120361328126,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18176,7 +18136,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1519.6441650390626,
+                    "x": 1901.2120361328126,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18254,7 +18214,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1559.6441650390626,
+                    "x": 1941.2120361328126,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18332,7 +18292,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1459.6441650390626,
+                    "x": 1841.2120361328126,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18410,7 +18370,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1539.6441650390626,
+                    "x": 1921.2120361328126,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18512,7 +18472,6 @@
             },
             "collider": {
                 "ColliderType": 3,
-                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18583,7 +18542,6 @@
             },
             "collider": {
                 "ColliderType": 3,
-                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18661,6 +18619,31 @@
                 "size": {
                     "x": 1.0,
                     "y": 1.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -0.5,
+                    "y": -0.5,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 0.5,
+                    "y": 0.5,
+                    "z": 0.0
                 }
             },
             "audio": {
@@ -18774,6 +18757,31 @@
                 "size": {
                     "x": 1.0,
                     "y": 1.0
+                }
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -0.5,
+                    "y": -0.5,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 0.5,
+                    "y": 0.5,
+                    "z": 0.0
                 }
             },
             "audio": {
@@ -18924,7 +18932,7 @@
                 "triangleHeightMultiplier": 1.0,
                 "superheroLandingAngleDeg": 8.0,
                 "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": false,
+                "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1308,
                 "emitRate": 1200.0,
@@ -18983,56 +18991,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            }
-        },
-        {
-            "active": true,
-            "name": "Camera",
-            "uuid": 3550847570154800869,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 237.15586853027345,
-                    "y": -200.24073791503907,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "CameraController",
-                        "fields": {
-                            "playerEntityName": "Player",
-                            "lookAheadDistance": 50.0,
-                            "smoothSpeedX": 4.0,
-                            "smoothSpeedY": 4.0,
-                            "defaultOffsetY": 20.0,
-                            "directionChangeSpeed": 2.0
-                        }
-                    }
-                ]
-            },
-            "camera": {
-                "zoom": 0.30000001192092898,
-                "xBounds": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "yBounds": {
-                    "x": 0.0,
-                    "y": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         }
     ],
