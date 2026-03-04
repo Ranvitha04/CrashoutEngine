@@ -91,11 +91,9 @@ namespace CrashoutsEngine
                     {
                         Debug.Log("RACE FINISHED! OVERWRITING GHOST DATA...");
                         
-                        ReplayManager.Stop(); 
+                        ReplayManager.StopRecording();
 
-                        // --- SIMPLIFIED: JUST SAVE IT ---
                         ReplayManager.SaveRecording($"{TrackName}_Ghost");
-                        // --------------------------------
 
                         _isRacing = false; 
                         

@@ -8,6 +8,7 @@
 
 #include "engine.h"
 #include "replaymanager.h"
+#include "frameratecontroller.h"
 #include "log.h"
 
 #include <string>
@@ -24,9 +25,54 @@ namespace ReplayManager {
     static Tick s_PlaybackStartTick = 0;
     static bool s_FirstPlaybackTick = false;
 
-    bool Replay::IsVirtualKeyPressed(int keycode) {
-        // Return true if the key is pressed in the replay buffer
-        return virtualInputState[keycode];
+    /*
+    @brief Record current pos & rot
+    */
+    void Replay::RecordCurrentTransform(float x, float y, float z, float rot) {
+        if (!isRecording) return;
+
+        Tick currentTick = FrameRateController::GetInstance().GetFixedTickCount();
+
+        if (s_FirstRecordTick) {
+            s_RecordStartTick = currentTick;
+            s_FirstRecordTick = false;
+        }
+
+        Tick relativeTick = currentTick - s_RecordStartTick;
+        recordData.push_back({ relativeTick, x, y, z, rot });
+    }
+
+    /*
+    @brief Retrieve playback pos & rot
+    */
+    bool Replay::GetGhostTransform(float& outX, float& outY, float& outZ, float& outRot) {
+        if (!isPlaying || playbackData.empty()) return false;
+
+        Tick currentTick = FrameRateController::GetInstance().GetFixedTickCount();
+
+        if (s_FirstPlaybackTick) {
+            s_PlaybackStartTick = currentTick;
+            s_FirstPlaybackTick = false;
+            playbackIndex = 0;
+        }
+
+        Tick relativeTick = currentTick - s_PlaybackStartTick;
+
+        // Fast-forward to the correct frame for the current time
+        while (playbackIndex < playbackData.size() - 1 &&
+            playbackData[playbackIndex + 1].relativeTick <= relativeTick)
+        {
+            playbackIndex++;
+        }
+
+        // Return the exact position and rotation the player was at during this tick!
+        const auto& ev = playbackData[playbackIndex];
+        outX = ev.x;
+        outY = ev.y;
+        outZ = ev.z;
+        outRot = ev.rotation;
+
+        return true;
     }
 
     /*
@@ -57,7 +103,6 @@ namespace ReplayManager {
         }
         isPlaying = true;
         playbackIndex = 0;
-        virtualInputState.clear();
         s_FirstPlaybackTick = true;
         LOGI(Debug, "[Replay] Started Ghost Playback.");
     }
@@ -67,76 +112,7 @@ namespace ReplayManager {
     */
     void Replay::StopPlayback() {
         isPlaying = false;
-        virtualInputState.clear(); // Release virtual keys
         LOGI(Debug, "[Replay] Stopped Ghost Playback.");
-    }
-
-    /*
-    @brief Record given event
-    */
-    void Replay::RecordEvent(Tick tick, Key key, bool isPressed) {
-        if (isRecording) {
-            int code = static_cast<int>(key);
-            if (code >= 290 && code <= 314) return; // Ignore F-keys
-
-            if (s_FirstRecordTick) {
-                s_RecordStartTick = tick;
-                s_FirstRecordTick = false;
-            }
-            Tick relativeTick = tick - s_RecordStartTick;
-
-            // Save to RECORD buffer
-            recordData.push_back({ relativeTick, key, isPressed });
-        }
-    }
-
-    /*
-    @brief Updates the state and send input based on current input event and current tick "time"
-    */
-    void Replay::UpdateFixedTick(Tick currentTick) {
-
-        if (!isPlaying) return;
-
-        // --- RELATIVE TIME CONVERSION ---
-        if (s_FirstPlaybackTick) {
-            s_PlaybackStartTick = currentTick;
-            s_FirstPlaybackTick = false;
-        }
-
-        Tick relativeCurrentTick = currentTick - s_PlaybackStartTick;
-
-        // Process all events scheduled for the current tick
-        while (playbackIndex < playbackData.size() &&
-            playbackData[playbackIndex].fixedTick == relativeCurrentTick)
-        {
-            InputEvent& ev = playbackData[playbackIndex];
-            int code = static_cast<int>(ev.key);
-
-            std::string stateStr = ev.isPressed ? "Pressed" : "Released";
-            std::string logMsg = "[Replay] Injecting KeyCode: " + std::to_string(code) +
-                " | State: " + stateStr +
-                " | RelTick: " + std::to_string(relativeCurrentTick);
-            LOGI(Debug, logMsg);
-
-            //// Inject based on whether it's a mouse button (0-7) or keyboard key
-            //if (code >= 0 && code <= GLFW_MOUSE_BUTTON_LAST) {
-            //    InputManager::InjectMouseButton(ev.key, ev.isPressed);
-            //}
-            //else {
-            //    InputManager::InjectKey(ev.key, ev.isPressed);
-            //}
-
-            // --- UPDATE VIRTUAL STATE INSTEAD OF GLOBAL INPUT ---
-            virtualInputState[code] = ev.isPressed;
-
-            playbackIndex++;
-        }
-
-        // Auto-stop when we reach the end of the recording
-        if (playbackIndex >= playbackData.size()) {
-            LOGI(Debug, "[Replay] Playback finished.");
-            StopPlayback();
-        }
     }
 
     /*
@@ -162,7 +138,7 @@ namespace ReplayManager {
         // Save the RECORD data!
         size_t count = recordData.size();
         out.write(reinterpret_cast<const char*>(&count), sizeof(size_t));
-        out.write(reinterpret_cast<const char*>(recordData.data()), count * sizeof(InputEvent));
+        out.write(reinterpret_cast<const char*>(recordData.data()), count * sizeof(TransformEvent));
         out.close();
 
         LOGI(Core, "[Replay] Ghost Saved!");
@@ -187,7 +163,7 @@ namespace ReplayManager {
         size_t count = 0;
         in.read(reinterpret_cast<char*>(&count), sizeof(size_t));
         playbackData.resize(count);
-        in.read(reinterpret_cast<char*>(playbackData.data()), count * sizeof(InputEvent));
+        in.read(reinterpret_cast<char*>(playbackData.data()), count * sizeof(TransformEvent));
         in.close();
 
         return true;

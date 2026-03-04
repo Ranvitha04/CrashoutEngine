@@ -15360,7 +15360,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "Ghost",
             "uuid": 13462638321537552381,
             "tag": {
@@ -15376,40 +15376,6 @@
                 "size": {
                     "x": 8.0,
                     "y": 15.0
-                }
-            },
-            "rigidbody": {
-                "mass": 1.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 22.83333396911621,
-                "invInertia": 0.043795619159936908
-            },
-            "collider": {
-                "ColliderType": 0,
-                "isTrigger": true,
-                "enabled": false,
-                "position": {
-                    "x": -44.61061096191406,
-                    "y": 128.92950439453126,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "radius": 4.0,
-                "center": {
-                    "x": -44.61061096191406,
-                    "y": 128.92950439453126,
-                    "z": 0.0
                 }
             },
             "shape": {
@@ -15451,9 +15417,6 @@
                     {
                         "className": "GhostController",
                         "fields": {
-                            "ThrustForce": 1000.0,
-                            "RotationSpeed": 150.0,
-                            "SpaceDrag": 0.9800000190734863,
                             "TrackName": "Level1"
                         }
                     }
@@ -15461,7 +15424,7 @@
             },
             "layer": {
                 "layerName": "Player",
-                "z": 0
+                "z": -5
             }
         },
         {

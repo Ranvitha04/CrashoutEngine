@@ -542,13 +542,7 @@ void Update(double const& dt) {
         int steps = FrameRateController::GetInstance().StepCount();
         for (int i = 0; i < steps; ++i)
         {
-            // 1. INCREMENT AND GET CURRENT TICK
             FrameRateController::GetInstance().IncrementFixedTick();
-            uint32_t currentFixedTick = FrameRateController::GetInstance().GetFixedTickCount();
-
-            // 2. UPDATE REPLAY SYSTEM (Injects fake inputs if playing)
-            ReplayManager::Replay::GetInstance().UpdateFixedTick(currentFixedTick);
-
             {
                 FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
                 CrashoutsEngine::ScriptSystem::FixedUpdateAll();

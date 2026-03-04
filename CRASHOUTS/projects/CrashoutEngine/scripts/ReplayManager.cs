@@ -10,7 +10,17 @@ namespace CrashoutsEngine
         public static void StartPlayback() => InternalStartPlayback();
         public static void SaveRecording(string filename) => InternalSaveRecording(filename);
         public static bool LoadRecording(string filename) => InternalLoadRecording(filename);
-        public static bool IsVirtualKeyPressed(int keycode) => InternalIsVirtualKeyPressed(keycode);
+        public static void RecordTransform(CEVec3 pos, float rot) => InternalRecordTransform(pos.x, pos.y, pos.z, rot);
+
+        // We wrap the C++ pointers into 'out' parameters for clean C# syntax
+        public static bool GetGhostTransform(out CEVec3 pos, out float rot)
+        {
+            float x = 0, y = 0, z = 0, r = 0;
+            bool success = InternalGetGhostTransform(ref x, ref y, ref z, ref r);
+            pos = new CEVec3(x, y, z);
+            rot = r;
+            return success;
+        }
 
         // --- EXTERNS ---
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -32,6 +42,9 @@ namespace CrashoutsEngine
         private static extern bool InternalLoadRecording(string filename);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern bool InternalIsVirtualKeyPressed(int keycode);
+        private static extern void InternalRecordTransform(float x, float y, float z, float rot);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalGetGhostTransform(ref float x, ref float y, ref float z, ref float rot);
     }
 }

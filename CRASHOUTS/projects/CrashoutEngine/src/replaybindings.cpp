@@ -38,8 +38,13 @@ namespace CrashoutsEngine::Bindings
         return success;
     }
     
-    static bool Internal_ReplayIsVirtualKeyPressed(int keycode) {
-        return ReplayManager::Replay::GetInstance().IsVirtualKeyPressed(keycode);
+    static void Internal_ReplayRecordTransform(float x, float y, float z, float rot) {
+        ReplayManager::Replay::GetInstance().RecordCurrentTransform(x, y, z, rot);
+    }
+
+    // Pointers allow us to return multiple values back to C#
+    static bool Internal_ReplayGetGhostTransform(float* x, float* y, float* z, float* rot) {
+        return ReplayManager::Replay::GetInstance().GetGhostTransform(*x, *y, *z, *rot);
     }
 
     // --- REGISTRATION ---
@@ -51,6 +56,7 @@ namespace CrashoutsEngine::Bindings
         mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalStartPlayback", reinterpret_cast<const void*>(Internal_ReplayStartPlayback));
         mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalSaveRecording", reinterpret_cast<const void*>(Internal_ReplaySaveRecording));
         mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalLoadRecording", reinterpret_cast<const void*>(Internal_ReplayLoadRecording));
-        mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalIsVirtualKeyPressed", reinterpret_cast<const void*>(Internal_ReplayIsVirtualKeyPressed));
+        mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalRecordTransform", reinterpret_cast<const void*>(Internal_ReplayRecordTransform));
+        mono_add_internal_call("CrashoutsEngine.ReplayManager::InternalGetGhostTransform", reinterpret_cast<const void*>(Internal_ReplayGetGhostTransform));
     }
 }

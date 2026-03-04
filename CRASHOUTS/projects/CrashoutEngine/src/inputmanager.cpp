@@ -135,32 +135,15 @@ void InputManager::Update() {
     Keys.clear();
     MouseButtons.clear();
 
-    // Grab current tick for recording purposes
-    uint32_t currentTick = FrameRateController::GetInstance().GetFixedTickCount();
-
     // NORMAL MODE: Poll physical hardware as usual.
     for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
         bool isDown = glfwGetKey(Window, key) == GLFW_PRESS;
         Keys[key] = isDown;
-
-        // --- RECORDING LOGIC ---
-        // Check if the key state CHANGED this frame
-        bool wasDown = s_lastKeys.count(key) ? s_lastKeys[key] : false;
-        if (isDown != wasDown) {
-            // RecordEvent internally checks if recording is active, so we just fire and forget!
-            ReplayManager::Replay::GetInstance().RecordEvent(currentTick, static_cast<Key>(key), isDown);
-        }
     }
 
     for (int button = GLFW_MOUSE_BUTTON_1; button <= GLFW_MOUSE_BUTTON_LAST; ++button) {
         bool isDown = glfwGetMouseButton(Window, button) == GLFW_PRESS;
         MouseButtons[button] = isDown;
-
-        // --- RECORDING LOGIC ---
-        bool wasDown = s_lastMouseButtons.count(button) ? s_lastMouseButtons[button] : false;
-        if (isDown != wasDown) {
-            ReplayManager::Replay::GetInstance().RecordEvent(currentTick, static_cast<Key>(button), isDown);
-        }
     }
 }
 
