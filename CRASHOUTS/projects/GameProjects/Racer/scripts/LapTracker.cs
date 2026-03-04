@@ -34,6 +34,12 @@ namespace CrashoutsEngine
                 transform.Rotation = -90.0f; // Points the ship correctly
             }
 
+            var rb = Entity.GetComponent<RigidBodyComponent>();
+            if (rb != null)
+            {
+                rb.Rotation = -90.0f;
+            }
+
             Debug.Log($"Race Started! Lap {(CurrentLap + 1)} / {TotalLaps}");
 
             if (lapDisplay != null && lapDisplay.ID != 0)
