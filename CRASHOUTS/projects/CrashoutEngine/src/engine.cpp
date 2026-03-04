@@ -44,6 +44,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "audiocomponent.h"
 #include "videosystem.h"
 #include "replaymanager.h"
+#include "leaderboardsystem.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -537,6 +538,7 @@ void Update(double const& dt) {
         KeyframeUnity::UpdateAll(ecs, (float)dt);
         CrashoutsEngine::VideoSystem::Update((float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
+        CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, false);
 
         //fixed Update please work
         int steps = FrameRateController::GetInstance().StepCount();
@@ -679,6 +681,7 @@ void Update(double const& dt) {
 #else
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
+        CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, true);
     }
     else if (engineState == EngineState::PAUSE) {
         // Freeze gameplay, but still allow editor camera to move

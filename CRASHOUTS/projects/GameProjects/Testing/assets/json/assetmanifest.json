@@ -19,6 +19,12 @@
             "path": "Exo2-Regular.ttf"
         }
     ],
+    "json": [
+        {
+            "name": "assetmanifest",
+            "path": "assetmanifest.json"
+        }
+    ],
     "images": [
         {
             "name": "missing",
