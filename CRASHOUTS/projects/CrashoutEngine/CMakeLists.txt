@@ -1,4 +1,4 @@
-﻿# Project name for the Engine.
+# Project name for the Engine.
 project(CrashoutEngine)
 set(project_dir ${CMAKE_CURRENT_LIST_DIR})
 message(STATUS "Configuring project: ${PROJECT_NAME}")
@@ -90,4 +90,5 @@ foreach(TARGET_LIB ${ENGINE_LIBRARIES})
     link_fmod_to(${TARGET_LIB})
     link_mono_to(${TARGET_LIB})
     link_ffmpeg_to(${TARGET_LIB})
+    link_curl_to(${TARGET_LIB})
 endforeach()
