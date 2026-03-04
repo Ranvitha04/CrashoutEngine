@@ -1739,6 +1739,10 @@
             "path": "Moving_Platform.json"
         },
         {
+            "name": "Camera_Prefab",
+            "path": "Camera_Prefab.json"
+        },
+        {
             "name": "Moving_Gate",
             "path": "Moving_Gate.json"
         },
@@ -1751,12 +1755,12 @@
             "path": "FilledAudioManager_Prefab.json"
         },
         {
-            "name": "PlayerUI_Prefab",
-            "path": "PlayerUI_Prefab.json"
-        },
-        {
             "name": "Moving_Platform(Sinking)",
             "path": "Moving_Platform(Sinking).json"
+        },
+        {
+            "name": "PlayerUI_Prefab",
+            "path": "PlayerUI_Prefab.json"
         },
         {
             "name": "Player_Prefab",

@@ -463,7 +463,9 @@ void Update(double const& dt) {
     CrashoutsEngine::UpdateActiveHierarchy(ecs);
     CrashoutsEngine::UpdateHierarchy(ecs);
 
+#if !USE_IMGUI_EDITOR 
     bool releaseCameraUpdated = false;
+#endif
 
     if (engineState == EngineState::PLAY) {
 #if !USE_IMGUI_EDITOR
@@ -546,6 +548,11 @@ void Update(double const& dt) {
             {
                 FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
                 physicsSystem.Update(FrameRateController::GetInstance().FixedDT());
+            }
+            {
+                // ---> LateUpdate locked to the physics tick! <---
+                FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptLateUpdate");
+                CrashoutsEngine::ScriptSystem::LateUpdateAll();
             }
         }
         {
@@ -637,7 +644,7 @@ void Update(double const& dt) {
             }
         }
 
-        CrashoutsEngine::Audio::AudioSystem::instance().Update();
+        CrashoutsEngine::Audio::AudioSystem::instance().Update((float)GLApp::delta_time);
         }
         // process events if any associated with input devices
         //glfwPollEvents();
@@ -745,8 +752,6 @@ Uses GLHelper::GLFWWindow* to get handle to OpenGL context.
 */
 void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     Component::Rendering::Get().drawCalls = 0;
-    const float targetAspectRatio = 16.0f / 9.0f;
-    float currentAspectRatio;
 
 #if !USE_IMGUI_EDITOR 
     (void)globalSelectedEntity;
@@ -760,7 +765,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
 
     // 1. Calculate the 16:9 Aspect Ratio
-    currentAspectRatio = (float)windowW / (float)windowH;
+    const float targetAspectRatio = 16.0f / 9.0f;
+    float currentAspectRatio = (float)windowW / (float)windowH;
 
     int vpX = 0, vpY = 0, vpW = windowW, vpH = windowH;
 
@@ -848,14 +854,6 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     // 1. EDITOR MODE
     // ==========================================
 
-    // Apply Post Processing to the internal FBO first
-    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
-    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDisable(GL_DEPTH_TEST);
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     // Start ImGui Frame
     UI::BeginFrame();
 
@@ -901,6 +899,16 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     }
 
     ImGui::End();
+
+    // Now that UI::Render has drawn the debug colliders into the gameFbo,
+    // we can safely process the image so ImGui can display it!
+    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     UI::EndFrame();
 
 #else

@@ -56,6 +56,22 @@ namespace CrashoutsEngine
             }
         }
 
+        public static void LateUpdateAll()
+        {
+            SyncLists();
+            foreach (var script in _scripts)
+            {
+                // Note: We might need a way to check if the entity is still active
+                // If the engine handles active state by not calling ScriptManager.UpdateAll, 
+                // that's one thing, but here we are in C# loop.
+                try {
+                    script.LateUpdate();
+                } catch (Exception e) {
+                    Console.WriteLine($"[C# Error] Exception in {script.GetType().Name}.LateUpdate: {e.Message}");
+                }
+            }
+        }
+
         public static void FixedUpdateAll()
         {
             SyncLists();

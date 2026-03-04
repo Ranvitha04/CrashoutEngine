@@ -22,6 +22,9 @@ namespace CrashoutsEngine
         // Called once per frame
         public virtual void Update() { }
 
+        // Called just after Update and Physics
+        public virtual void LateUpdate() { }
+
         // Called at a fixed timestep
         public virtual void FixedUpdate() { }
 

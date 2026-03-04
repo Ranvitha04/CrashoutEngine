@@ -51,9 +51,9 @@ namespace CrashoutsEngine
         private float dialogueTimer = 0.0f;
 
         // --- STATE VARIABLES ---
+        public bool facingRight = true;
         private float horizontalInput;
         private bool jumpRequested;
-        private bool facingRight = true;
         public bool IsGrounded { get; private set; } = false;
         public bool OnWall { get; private set; } = false;
 
@@ -140,7 +140,7 @@ namespace CrashoutsEngine
             respawnPos = tf.Position;
 
             // Audio Setup
-            for (int i = 1; i <= 8; i++) AudioManager.SetClip3DDistances(Entity.ID, "footstep" + i, 10.0f, 500.0f);
+            for (int i = 1; i <= 8; i++) AudioManager.SetClip3DDistances(Entity.ID, "footstep" + i, 25.0f, 250.0f);
             AudioManager.SetClip3DDistances(Entity.ID, "jumpLand", 20.0f, 600.0f);
             AudioManager.SetClip3DDistances(Entity.ID, "JumpUp", 20.0f, 600.0f);
             AudioManager.SetClip3DDistances(Entity.ID, "switchMassSound", 20.0f, 600.0f);

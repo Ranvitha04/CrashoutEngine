@@ -19,9 +19,10 @@ namespace CrashoutsEngine
         // Try setting this to something like 30.0f or 40.0f in the Inspector.
         [SerializeField] private float clickWidth = 30.0f;
         [SerializeField] private float clickHeight = 10.0f;
-        [SerializeField] private bool drawHitbox = true;
+        //[SerializeField] private bool drawHitbox = true;
 
         private bool _isDragging = false;
+        private bool wasDraggingLastFrame = false;
         private float _currentT = 1.0f;
         private float _targetT = 1.0f;
         private TransformComponent _tf;
@@ -81,11 +82,18 @@ namespace CrashoutsEngine
             if (Math.Abs(_currentT - _targetT) > 0.001f)
             {
                 _currentT = _currentT + (_targetT - _currentT) * Math.Min(dt * smoothingSpeed, 1.0f);
-                if (_isMusic) InternalCalls.Audio_SetMusicVolume(_currentT);
-                else InternalCalls.Audio_SetSFXVolume(_currentT);
+                if (_isMusic) AudioManager.Instance.MusicVolume(_currentT);
+                else AudioManager.Instance.SFXVolume(_currentT);
             }
 
-            // 5. Apply local scale instead of absolute size
+            // 5. Trigger a settings save when the user stops dragging
+            if (!_isDragging && wasDraggingLastFrame)
+            {
+                InternalCalls.Settings_Save();
+            }
+            wasDraggingLastFrame = _isDragging;
+
+            // 6. Apply local scale instead of absolute size
             // This allows the hierarchy to calculate the visual width correctly
             CEVec2 newLocalScale = new CEVec2(_currentT, 1.0f);
             InternalCalls.TransformSetLocalScale(Entity.ID, ref newLocalScale);
