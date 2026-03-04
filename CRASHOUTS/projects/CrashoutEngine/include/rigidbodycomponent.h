@@ -34,7 +34,7 @@ namespace Component {
 		f32 angularVelocity{};
 		f32 orientation{};
 		f32 torque{};
-
+		f32 gravityScale = 1.0f;
 
 		struct ReflectionType {
 			CEVec3 velocity{};

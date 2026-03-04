@@ -34,6 +34,8 @@ namespace Component {
 		int tileSize = 32;										// Size of one tile in world units
 		bool pOpen = false;										// Toggle editor window
 		bool excludeOuterBoundary = false;						// Skip collider generation on outer boundary edges
+		bool lightPerTile = true;// Apply tilemap light to each tile
+		float emissiveBoost = 0.0f;// Boost tile brightness without lights
 
 		// --- DATA (THE SPARSE GRID) ---
 		// Key:   Pair of (GridX, GridY)

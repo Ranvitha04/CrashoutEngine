@@ -172,7 +172,7 @@ namespace UI {
 
                     // Resize Texture
                     glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gameTextureWidth, gameTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
                     // Resize RenderBuffer
                     glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
@@ -180,7 +180,7 @@ namespace UI {
 
                     // Resize Texture 2
                     glBindTexture(GL_TEXTURE_2D, CrashoutsEngine::PostProcessing::ppTextureID);
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gameTextureWidth, gameTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
                     char logBuffer[256];
                     std::snprintf(logBuffer, sizeof(logBuffer), "Resized Game Viewport Texture to %d x %d", gameTextureWidth, gameTextureHeight);

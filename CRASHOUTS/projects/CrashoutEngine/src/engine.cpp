@@ -43,6 +43,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "activecomponent.h"
 #include "audiocomponent.h"
 #include "videosystem.h"
+#include "replaymanager.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -395,7 +396,7 @@ void Init() {
     // --- Color Texture ---
     glGenTextures(1, &gameTextureColorBuffer);
     glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gameTextureWidth, gameTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gameTextureColorBuffer, 0);
@@ -541,6 +542,13 @@ void Update(double const& dt) {
         int steps = FrameRateController::GetInstance().StepCount();
         for (int i = 0; i < steps; ++i)
         {
+            // 1. INCREMENT AND GET CURRENT TICK
+            FrameRateController::GetInstance().IncrementFixedTick();
+            uint32_t currentFixedTick = FrameRateController::GetInstance().GetFixedTickCount();
+
+            // 2. UPDATE REPLAY SYSTEM (Injects fake inputs if playing)
+            ReplayManager::Replay::GetInstance().UpdateFixedTick(currentFixedTick);
+
             {
                 FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
                 CrashoutsEngine::ScriptSystem::FixedUpdateAll();
@@ -722,6 +730,23 @@ void Update(double const& dt) {
 
     InputManager::Update();
     
+    // ==========================================
+    // REPLAY DEBUG HOTKEYS
+    // ==========================================
+#if !USE_IMGUI_EDITOR && !defined(DEBUG)
+    // You already have F3 here, let's add the replay controls!
+    if (InputManager::IsKeyTriggered(Key::F5)) {
+        ReplayManager::Replay::GetInstance().StartRecording();
+    }
+    if (InputManager::IsKeyTriggered(Key::F6)) {
+        ReplayManager::Replay::GetInstance().StartPlayback();
+    }
+    if (InputManager::IsKeyTriggered(Key::F7)) {
+        ReplayManager::Replay::GetInstance().Stop();
+    }
+#endif
+    // ==========================================
+
     CrashoutsEngine::PostProcessing::UpdatePP();
 
 
@@ -792,7 +817,8 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         gameTextureHeight = vpH;
 
         glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gameTextureWidth, gameTextureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gameTextureWidth, gameTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
         if (gameRboDepthStencil != 0) {
             glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);

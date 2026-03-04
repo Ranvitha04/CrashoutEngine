@@ -1,0 +1,24 @@
+{
+    "entities": [],
+    "layers": {
+        "Default": 0
+    },
+    "layer_visibility": {
+        "Default": true
+    },
+    "tag_mapping": {
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1
+    },
+    "quadtree": {
+        "min": {
+            "x": -2000.0,
+            "y": -2000.0
+        },
+        "max": {
+            "x": 2000.0,
+            "y": 2000.0
+        }
+    }
+}

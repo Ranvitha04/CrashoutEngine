@@ -1,0 +1,10 @@
+{
+    "layerMask": 2,
+    "tilemap": [
+        {
+            "texAssetName": "missing.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 0
+        }
+    ]
+}

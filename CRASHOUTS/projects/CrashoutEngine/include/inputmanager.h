@@ -16,6 +16,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "key.h"
 #include "CEVec2.h"
 #include <string>
+
 /*!
 @class InputManager
 @brief Handles input state management for keys mouse buttons and scroll wheel
@@ -118,6 +119,12 @@ public:
     // Returns the size of the Game View (Editor Panel or Full Window)
     static CEVec2 GetGameWindowSize();
 
+    // --- REPLAY SYSTEM HOOKS ---
+    static bool s_isReplayMode;
+    static void SetReplayMode(bool enabled);
+    static void InjectKey(Key key, bool isPressed);
+    static void InjectMouseButton(Key button, bool isPressed);
+
 private:
     /// Pointer to the GLFW window
     static GLFWwindow* Window;
@@ -156,4 +163,8 @@ private:
     @param yoffset The vertical scroll offset
     */
     static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+
+    // This holds the "Ghost's" currently held buttons across multiple frames
+    static std::unordered_map<int, bool> s_replayKeys;
+    static std::unordered_map<int, bool> s_replayMouseButtons;
 };
