@@ -141,7 +141,7 @@
             },
             "tilemap": {
                 "tileSize": 8,
-                "excludeOuterBoundary": false,
+                "excludeOuterBoundary": true,
                 "activeAsset": "tilemaps/track",
                 "tileAssetNames": [
                     "track"
@@ -8804,6 +8804,11 @@
                     },
                     {
                         "x": 8,
+                        "y": -1,
+                        "asset": "tilemaps/track"
+                    },
+                    {
+                        "x": 8,
                         "y": 4,
                         "asset": "tilemaps/track"
                     },
@@ -9730,7 +9735,12 @@
                     {
                         "x": 16,
                         "y": -1,
-                        "asset": "tilemaps/track"
+                        "asset": ""
+                    },
+                    {
+                        "x": 16,
+                        "y": 0,
+                        "asset": ""
                     },
                     {
                         "x": 16,
@@ -9855,7 +9865,7 @@
                     {
                         "x": 17,
                         "y": -1,
-                        "asset": "tilemaps/track"
+                        "asset": ""
                     },
                     {
                         "x": 17,
@@ -10001,6 +10011,11 @@
                         "x": 18,
                         "y": -2,
                         "asset": "tilemaps/track"
+                    },
+                    {
+                        "x": 18,
+                        "y": -1,
+                        "asset": ""
                     },
                     {
                         "x": 18,
@@ -10170,7 +10185,12 @@
                     {
                         "x": 19,
                         "y": -2,
-                        "asset": "tilemaps/track"
+                        "asset": ""
+                    },
+                    {
+                        "x": 19,
+                        "y": -1,
+                        "asset": ""
                     },
                     {
                         "x": 19,
@@ -10370,7 +10390,7 @@
                     {
                         "x": 20,
                         "y": -2,
-                        "asset": "tilemaps/track"
+                        "asset": ""
                     },
                     {
                         "x": 20,
@@ -14734,6 +14754,64 @@
                     "y": 0.0
                 },
                 "color": {
+                    "x": 0.4125104248523712,
+                    "y": 0.21000580489635468,
+                    "z": 0.4419889450073242,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": -20
+            }
+        },
+        {
+            "active": true,
+            "name": "BG",
+            "uuid": 16288681135806180764,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 700.0,
+                    "y": 500.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0,
@@ -14752,7 +14830,7 @@
             },
             "layer": {
                 "layerName": "Default",
-                "z": -20
+                "z": -50
             }
         }
     ],

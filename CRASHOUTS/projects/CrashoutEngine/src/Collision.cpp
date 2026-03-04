@@ -355,13 +355,13 @@ namespace Collision {
 			finalManifold = CollisionManifold{ -1.f * contactB->normal, contactB->contactPoints, contactB->depth, true, contactB->numOfContacts };
 		}
 
-		// Calculate vector from A to B
-		CEVec3 centerVec = coll2.position - coll1.position;
+		//// Calculate vector from A to B
+		//CEVec3 centerVec = coll2.position - coll1.position;
 
-		// If the normal points in the opposite direction of the center vector, flip it.
-		if (CEMath::Dot(finalManifold.normal, centerVec) < 0.0f) {
-			finalManifold.normal = -1.f * finalManifold.normal;
-		}
+		//// If the normal points in the opposite direction of the center vector, flip it.
+		//if (CEMath::Dot(finalManifold.normal, centerVec) < 0.0f) {
+		//	finalManifold.normal = -1.f * finalManifold.normal;
+		//}
 
 		return finalManifold;
 	}
@@ -453,14 +453,11 @@ namespace Collision {
 		result.normal = bestAxis;
 		result.numOfContacts = 1;
 
-		// Ensure normal points Circle -> Polygon (Standard: Normal points FROM A TO B)
-		// Here A=Circle, B=Polygon.
-		// If normal points towards Circle, flip it.
-		// Vector from Circle to Poly Center:
-		CEVec3 dir = polygon.position - circle.position;
-		if (CEMath::Dot(result.normal, dir) < 0.f) {
-			result.normal = -1.f * result.normal;
-		}
+		// SAFE NORMAL DIRECTION
+		// SAT found the axis pointing OUT of the Polygon.
+		// We want the normal pointing FROM Circle (A) TO Polygon (B). 
+		// Therefore, we just strictly invert the SAT axis. No center guessing needed!
+		result.normal = -1.f * bestAxis;
 
 		// Calculate Contact Point
 		result.contactPoints[0] = circle.position + result.normal * circle.radius;
@@ -879,14 +876,17 @@ namespace Collision {
 			}
 		}
 
-		// 3. Ensure Normal Direction
-		// We want the normal to point from Box -> Segment.
-		// We check the vector from Box Center to Segment Center (approx midpoint)
-		CEVec3 segMid = (p1 + p2) * 0.5f;
-		CEVec3 direction = segMid - aabbCenter;
+		// 3. SAFE NORMAL FLIPPING (Infinite Plane)
+		// Find which side of the line the AABB center is on using the line's plane.
+		CEVec3 lineToAABB = aabbCenter - p1;
+		float side = CEMath::Dot(lineToAABB, segNormal);
 
-		if (CEMath::Dot(direction, result.normal) < 0) {
-			result.normal = result.normal * -1.0f;
+		// Standard: Collision normal points from A (AABB) to B (Line).
+		CEVec3 preferredDir = segNormal * (side >= 0.0f ? -1.0f : 1.0f);
+
+		// Flip the normal if it doesn't align with our preferred direction
+		if (CEMath::Dot(result.normal, preferredDir) < 0.f) {
+			result.normal = -1.f * result.normal;
 		}
 
 		result.collisionOccured = true;
