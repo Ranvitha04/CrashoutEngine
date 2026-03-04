@@ -479,7 +479,12 @@ namespace CrashoutsEngine {
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_ONE, GL_ONE);
 
-                GLSLShader& lightShader = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("LightShader")->shaderObject;
+                auto* lightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("LightShader");
+                if (!lightAsset) {
+                    glDisable(GL_BLEND);
+                    return;
+                }
+                GLSLShader& lightShader = lightAsset->shaderObject;
                 lightShader.Use();
                 float camWidth = currentCamera.GetVisibleWorldWidth();
                 float camHeight = currentCamera.GetVisibleWorldHeight();
@@ -539,7 +544,12 @@ namespace CrashoutsEngine {
 
             {
                 struct OccVertex { float x, y, u, v; };
-                GLSLShader& occShader = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("OccluderMaskShader")->shaderObject;
+                auto* occAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("OccluderMaskShader");
+                if (!occAsset) {
+                    // Skip occluder pass if shader is missing
+                }
+                else {
+                    GLSLShader& occShader = occAsset->shaderObject;
                 occShader.Use();
                 glEnable(GL_BLEND);
                 glBlendEquation(GL_MAX);
@@ -628,6 +638,7 @@ namespace CrashoutsEngine {
                 glBlendEquation(GL_FUNC_ADD);
                 glDisable(GL_BLEND);
                 glEnable(GL_CULL_FACE);
+                }
             }
 
             // --- Combine Pass ---
@@ -636,7 +647,12 @@ namespace CrashoutsEngine {
             glClearColor(0.f, 0.f, 0.f, 1.f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            GLSLShader& combineShader = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("CombineShader")->shaderObject;
+            auto* combineAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("CombineShader");
+            if (!combineAsset) {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                return;
+            }
+            GLSLShader& combineShader = combineAsset->shaderObject;
             combineShader.Use();
             glUniform1f(glGetUniformLocation(combineShader.GetHandle(), "uAmbient"), g_ambient);
             glUniform1i(glGetUniformLocation(combineShader.GetHandle(), "uLightBehind"), 2);
@@ -655,7 +671,12 @@ namespace CrashoutsEngine {
             glViewport(0, 0, halfW, halfH);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            GLSLShader& brightShader = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BrightShader")->shaderObject;
+            auto* brightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BrightShader");
+            if (!brightAsset) {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                return;
+            }
+            GLSLShader& brightShader = brightAsset->shaderObject;
             brightShader.Use();
             glUniform1f(glGetUniformLocation(brightShader.GetHandle(), "uThreshold"), g_bloomThreshold);
             RenderFullscreen(brightShader, combineTexture, "uScene");
@@ -663,7 +684,12 @@ namespace CrashoutsEngine {
             // --- Blur Pass ---
             GLuint blurInput = brightTexture;
             int iterations = std::max(0, g_bloomIterations);
-            GLSLShader& blurShader = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BlurShader")->shaderObject;
+            auto* blurAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BlurShader");
+            if (!blurAsset) {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                return;
+            }
+            GLSLShader& blurShader = blurAsset->shaderObject;
             for (int i = 0; i < iterations; ++i) {
                 bool horizontal = (i % 2 == 0);
                 glBindFramebuffer(GL_FRAMEBUFFER, pingpongFbo[horizontal ? 0 : 1]);
@@ -682,7 +708,12 @@ namespace CrashoutsEngine {
             glViewport(0, 0, gameTextureWidth, gameTextureHeight);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            GLSLShader& finalShader = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BloomCompositeShader")->shaderObject;
+            auto* finalAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BloomCompositeShader");
+            if (!finalAsset) {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                return;
+            }
+            GLSLShader& finalShader = finalAsset->shaderObject;
             finalShader.Use();
             glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uUseBloom"), g_bloomEnabled ? 1 : 0);
             glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uBloomIntensity"), g_bloomIntensity);

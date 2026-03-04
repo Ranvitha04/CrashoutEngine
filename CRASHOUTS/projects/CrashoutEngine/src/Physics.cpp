@@ -497,198 +497,194 @@ namespace Physics {
 
 		bool isSimulating = !sPaused;// || sStepOnce;
 
+		double simDt = isSimulating ? fixedDT : 0.0;
+
 		int step = FrameRateController::GetInstance().StepCount();
 		
-		const int SUB_STEPS = 4; 
-		double subDt = (isSimulating ? fixedDT : 0.0) / SUB_STEPS;
 
 		/*Fixed step, accumulator will reach the target fixed dt and then execute physics simulation*/
 		for (int i{}; i < step; ++i) {
 
-			// Run the physics pipeline multiple times per frame in tiny increments
-			for (int sub = 0; sub < SUB_STEPS; ++sub) {
+			CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
+				for (unsigned int j = start; j < end; ++j) {
+					const CrashoutsEngine::Entity& entity = globalEntities[j];
+					if (!IsEntityActive(globalECS, entity)) continue;
 
-				CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
-					for (unsigned int j = start; j < end; ++j) {
-						const CrashoutsEngine::Entity& entity = globalEntities[j];
-						if (!IsEntityActive(globalECS, entity)) continue;
+					Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
+					//if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
+					if (!rigidBody || !rigidBody->getMass()) continue;
 
-						Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
-						//if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
-						if (!rigidBody || !rigidBody->getMass()) continue;
+					// Compute Inertia
+					if (rigidBody->invInertia == 0.0f) {
+						if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+							auto* colComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
 
-						// Compute Inertia
-						if (rigidBody->invInertia == 0.0f) {
-							if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-								auto* colComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
+							// Safety Check
+							if (colComp && colComp->collider) {
+								float inertia = colComp->collider->CalculateInertia(rigidBody->getMass());
 
-								// Safety Check
-								if (colComp && colComp->collider) {
-									float inertia = colComp->collider->CalculateInertia(rigidBody->getMass());
+								rigidBody->setInertia(inertia);
+							}
+						}
+					}
 
-									rigidBody->setInertia(inertia);
-								}
+					if (isSimulating) {
+
+						/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
+						ForceManager& fm{ rigidBody->getForceManager() };
+						CEVec3 forces = fm.ResolveForces((f32)simDt, rigidBody->getMass());
+
+						// 2. Apply Gravity Manually
+						CEVec3 gravityAccel = (rigidBody->getMass() < 0.f) ? -sGravity : sGravity;
+
+						// F = m * a
+						CEVec3 gravityForce = rigidBody->getMass() * gravityAccel;
+
+						// 3. Combine
+						rigidBody->addForce(forces + gravityForce);
+						rigidBody->UpdatePhysics(simDt);
+					}
+				}
+			});
+
+			/*PHYSICS SIM, UPDATE POSITION*/
+			CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
+				for (unsigned int j = start; j < end; ++j) {
+					const CrashoutsEngine::Entity& entity = globalEntities[j];
+					if (!IsEntityActive(globalECS, entity)) continue;
+
+					if (!globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
+					Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
+					Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
+
+					// -------------------------------------------------------
+					// CASE A: DYNAMIC (Physics Drives Transform)
+					// -------------------------------------------------------
+					//if (rigidBody->getFlags().test(SIMULATE_DYNAMICS)) {
+					if (rigidBody->getMass()) {
+
+						// Apply position change
+						f32 newDelta{ static_cast<float>(simDt) }; // 0.0 if paused
+						CEVec3 currentVel{ rigidBody->GetVelocity() };
+						if (isSimulating) {
+							// Apply Velocity to Position
+							currentVel = rigidBody->GetVelocity();
+							transform->position += currentVel * newDelta;
+						}
+
+						// Rotate Orientation
+						// orientation (Degrees) += AngularVel (Radians/s) * conversion * dt
+						if (rigidBody->invInertia > 0.0f) {
+							if (isSimulating) {
+								// PHYSICS DRIVES TRANSFORM
+								float angularChange = rigidBody->angularVelocity * (180.f / CEMath::PI) * newDelta;
+								rigidBody->orientation += angularChange;
+								transform->rotation = rigidBody->orientation;
+							}
+							else {
+								// STOPPED: TRANSFORM (UI) DRIVES PHYSICS
+								rigidBody->orientation = transform->rotation;
+								rigidBody->angularVelocity = 0.0f; 
 							}
 						}
 
 						if (isSimulating) {
+							rigidBody->setVelocity(rigidBody->GetVelocity() * 0.999f);
+							rigidBody->angularVelocity *= 0.98f;	// Angular Drag
 
-							/*APPLY ANY FORCE GENERATOR HERE, EVERY ENTITY IS AFFECTED*/
-							ForceManager& fm{ rigidBody->getForceManager() };
-							CEVec3 forces = fm.ResolveForces((f32)subDt, rigidBody->getMass());
+							// Clamp Angular Velocity to prevent "Explosive Spinning"
+							if (rigidBody->angularVelocity > 15.0f) rigidBody->angularVelocity = 15.0f;
+							if (rigidBody->angularVelocity < -15.0f) rigidBody->angularVelocity = -15.0f;
 
-							// 2. Apply Gravity Manually
-							CEVec3 gravityAccel = (rigidBody->getMass() < 0.f) ? -sGravity : sGravity;
-
-							// ---> FIX: Multiply by gravityScale! <---
-							CEVec3 gravityForce = rigidBody->getMass() * gravityAccel * rigidBody->gravityScale;
-
-							// 3. Combine
-							rigidBody->addForce(forces + gravityForce);
-							rigidBody->UpdatePhysics(subDt);
+							// Kill tiny wobble
+							if (std::abs(rigidBody->angularVelocity) < 0.1f) {
+								rigidBody->angularVelocity = 0.0f;
+							}
 						}
+
+						if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+							Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
+							if (c->collider == nullptr) continue;
+							// Sync BOTH position and rotation
+							c->collider->UpdateCollider(transform->position);
+							c->collider->UpdateRotation(transform->rotation);
+						}
+
+						// Sync children so they "ride" the dynamic parent
+						SyncHierarchyPhysics(entity, globalECS);
 					}
-					});
+					// -------------------------------------------------------
+					// CASE B: KINEMATIC / STATIC (Transform Drives Physics)
+					// -------------------------------------------------------
+					else {
+						// The Hierarchy System or Scripts moved the Transform. 
+						// We just need to ensure the Collider follows.
+						if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+							auto* c = globalECS.GetComponent<Component::ColliderComponent>(entity);
 
-				/*PHYSICS SIM, UPDATE POSITION*/
-				CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
-					for (unsigned int j = start; j < end; ++j) {
-						const CrashoutsEngine::Entity& entity = globalEntities[j];
-						if (!IsEntityActive(globalECS, entity)) continue;
+							// Sync Collider Rotation to Transform Rotation
+							// (Your RigidBody orientation might be stale if you rotated Transform via script)
+							rigidBody->setRotation(transform->rotation);
 
-						if (!globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
-						Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
-						Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
-
-						// -------------------------------------------------------
-						// CASE A: DYNAMIC (Physics Drives Transform)
-						// -------------------------------------------------------
-						//if (rigidBody->getFlags().test(SIMULATE_DYNAMICS)) {
-						if (rigidBody->getMass()) {
-
-							// Apply position change
-							f32 newDelta{ static_cast<float>(subDt) }; // 0.0 if paused
-							CEVec3 currentVel{ rigidBody->GetVelocity() };
-							if (isSimulating) {
-								// Apply Velocity to Position
-								currentVel = rigidBody->GetVelocity();
-								transform->position += currentVel * newDelta;
-							}
-
-							// Rotate Orientation
-							// orientation (Degrees) += AngularVel (Radians/s) * conversion * dt
-							if (rigidBody->invInertia > 0.0f) {
-								if (isSimulating) {
-									// PHYSICS DRIVES TRANSFORM
-									float angularChange = rigidBody->angularVelocity * (180.f / CEMath::PI) * newDelta;
-									rigidBody->orientation += angularChange;
-									transform->rotation = rigidBody->orientation;
-								}
-								else {
-									// STOPPED: TRANSFORM (UI) DRIVES PHYSICS
-									rigidBody->orientation = transform->rotation;
-									rigidBody->angularVelocity = 0.0f;
-								}
-							}
-
-							if (isSimulating) {
-								rigidBody->setVelocity(rigidBody->GetVelocity() * 0.999f);
-								rigidBody->angularVelocity *= 0.98f;	// Angular Drag
-
-								// Clamp Angular Velocity to prevent "Explosive Spinning"
-								if (rigidBody->angularVelocity > 15.0f) rigidBody->angularVelocity = 15.0f;
-								if (rigidBody->angularVelocity < -15.0f) rigidBody->angularVelocity = -15.0f;
-
-								// Kill tiny wobble
-								if (std::abs(rigidBody->angularVelocity) < 0.1f) {
-									rigidBody->angularVelocity = 0.0f;
-								}
-							}
-
-							if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-								Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
-								if (c->collider == nullptr) continue;
-								// Sync BOTH position and rotation
-								c->collider->UpdateCollider(transform->position);
+							if (c && c->collider) {
 								c->collider->UpdateRotation(transform->rotation);
+
+								// Sync Collider Position
+								c->collider->UpdateCollider(transform->position);
 							}
-
-							// Sync children so they "ride" the dynamic parent
-							SyncHierarchyPhysics(entity, globalECS);
 						}
-						// -------------------------------------------------------
-						// CASE B: KINEMATIC / STATIC (Transform Drives Physics)
-						// -------------------------------------------------------
-						else {
-							// The Hierarchy System or Scripts moved the Transform. 
-							// We just need to ensure the Collider follows.
-							if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-								auto* c = globalECS.GetComponent<Component::ColliderComponent>(entity);
 
-								// Sync Collider Rotation to Transform Rotation
-								// (Your RigidBody orientation might be stale if you rotated Transform via script)
-								rigidBody->setRotation(transform->rotation);
-
-								if (c && c->collider) {
-									c->collider->UpdateRotation(transform->rotation);
-
-									// Sync Collider Position
-									c->collider->UpdateCollider(transform->position);
-								}
-							}
-
-							// --- ADD THIS ---
-							// Ensure children (like Spikes on a Platform) Update their colliders too!
-							SyncHierarchyPhysics(entity, globalECS);
-						}
+						// --- ADD THIS ---
+						// Ensure children (like Spikes on a Platform) Update their colliders too!
+						SyncHierarchyPhysics(entity, globalECS);
 					}
-					});
+				}
+			});
 
-				// Detect collisions
-				{
-					auto& colSys = Collision::CollisionHandler::GetInstance();
+			// Detect collisions
+			{
+				auto& colSys = Collision::CollisionHandler::GetInstance();
 
-					// Determine state for collision (simplification)
-					Collision::EngineState state = isSimulating ? Collision::EngineState::PLAY : Collision::EngineState::STOP;
+				// Determine state for collision (simplification)
+				Collision::EngineState state = isSimulating ? Collision::EngineState::PLAY : Collision::EngineState::STOP;
 
-					colSys.Update(subDt, state);
+				colSys.Update(simDt, state);
+			}
+
+			// Get collision data from handler
+			const auto& events = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
+
+			/*IMPULSE RESOLUTION*/
+			for (Collision::CollisionEvent const& evnt : events) {
+
+				// Check C# logic via the manager
+				bool allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity1, evnt.entity2);
+
+				// Check the other way too
+				if (allowCollision) {
+					allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity2, evnt.entity1);
 				}
 
-				// Get collision data from handler
-				const auto& events = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
+				if (!allowCollision) continue; 
 
-				/*IMPULSE RESOLUTION*/
-				for (Collision::CollisionEvent const& evnt : events) {
+				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
+				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
 
-					// Check C# logic via the manager
-					bool allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity1, evnt.entity2);
+				Component::ColliderComponent* col1 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1);
+				Component::ColliderComponent* col2 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2);
+				
+				if ((col1 && col1->collider->isTrigger) || (col2 && col2->collider->isTrigger)) {
+					continue;
+				}
 
-					// Check the other way too
-					if (allowCollision) {
-						allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity2, evnt.entity1);
-					}
+				bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
+				bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
 
-					if (!allowCollision) continue;
+				if (!isDynamic1 && !isDynamic2) continue;
 
-					Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
-					Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
-
-					Component::ColliderComponent* col1 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1);
-					Component::ColliderComponent* col2 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2);
-
-					if ((col1 && col1->collider->isTrigger) || (col2 && col2->collider->isTrigger)) {
-						continue;
-					}
-
-					bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
-					bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
-
-					if (!isDynamic1 && !isDynamic2) continue;
-
-					if (isSimulating) {
-						PositionCorrection(evnt, globalECS);
-						ApplyRotationalImpulse(evnt, globalECS, (float)subDt);
-					}
+				if (isSimulating) {
+					PositionCorrection(evnt, globalECS);
+					ApplyRotationalImpulse(evnt, globalECS, (float)simDt);
 				}
 			}
 		}
