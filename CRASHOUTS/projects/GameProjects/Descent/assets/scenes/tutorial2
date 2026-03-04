@@ -22,6 +22,8 @@
             "tilemap": {
                 "tileSize": 32,
                 "excludeOuterBoundary": true,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
                 "activeAsset": "tilemaps/Rock",
                 "tileAssetNames": [
                     "Rock"
@@ -5975,6 +5977,7 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
+                            "pickAnimDuration": 0.5,
                             "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
@@ -6040,6 +6043,127 @@
                 "t": 10.616676330566407,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "slimePick",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 2,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.15000000596046449,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.30000001192092898,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.44999998807907107,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.6000000238418579,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeHold",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "slimeStunned",
                         "wrap": 0,
@@ -6125,44 +6249,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -9703,6 +9789,25 @@
                 "texturePressed": "",
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.25,
+                "radius": 129.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": false,
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Player",
@@ -17424,6 +17529,7 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
+                            "pickAnimDuration": 0.5,
                             "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
@@ -17621,6 +17727,89 @@
                         ]
                     },
                     {
+                        "name": "slimePick",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 2,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.15000000596046449,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.30000001192092898,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.44999998807907107,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.6000000238418579,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeIdle",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -17671,7 +17860,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1988.24658203125,
+                    "x": 1500.0,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -17698,7 +17887,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1988.24658203125,
+                    "x": 1500.0,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -17708,12 +17897,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1920.74658203125,
+                    "x": 1432.5,
                     "y": -63.6754150390625,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 2055.74658203125,
+                    "x": 1567.5,
                     "y": -47.6754150390625,
                     "z": 0.0
                 }
@@ -17782,7 +17971,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1927.930419921875,
+                    "x": 1439.683837890625,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -17860,7 +18049,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1967.8907470703126,
+                    "x": 1479.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -17938,7 +18127,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1987.8907470703126,
+                    "x": 1499.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18016,7 +18205,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2007.8907470703126,
+                    "x": 1519.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18094,7 +18283,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2047.8907470703126,
+                    "x": 1559.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18172,7 +18361,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1947.8907470703126,
+                    "x": 1459.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },
@@ -18250,7 +18439,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2027.8907470703126,
+                    "x": 1539.6441650390626,
                     "y": -55.6754150390625,
                     "z": 0.0
                 },

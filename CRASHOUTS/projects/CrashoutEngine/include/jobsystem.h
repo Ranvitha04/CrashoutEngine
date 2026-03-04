@@ -13,6 +13,7 @@
 #include <functional>
 #include <atomic>
 #include <future>
+#include <type_traits>
 
 namespace CrashoutsEngine {
 
@@ -50,6 +51,9 @@ namespace CrashoutsEngine {
 
         // Parallel for: splits a range [0, count) into chunks and executes in parallel
         void ParallelFor(unsigned int count, std::function<void(unsigned int start, unsigned int end)> func);
+        // Parallel for with minimum chunk size to reduce overhead on small workloads
+        void ParallelFor(unsigned int count, unsigned int minChunkSize,
+            std::function<void(unsigned int start, unsigned int end)> func);
 
         unsigned int GetThreadCount() const { return static_cast<unsigned int>(workers.size()); }
 

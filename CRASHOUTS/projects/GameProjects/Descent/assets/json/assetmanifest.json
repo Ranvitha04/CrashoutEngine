@@ -159,12 +159,36 @@
             "path": "CrashoutShader"
         },
         {
+            "name": "BrightShader",
+            "path": "BrightShader"
+        },
+        {
             "name": "PPShader",
             "path": "PPShader"
         },
         {
             "name": "TextShader",
             "path": "TextShader"
+        },
+        {
+            "name": "BloomCompositeShader",
+            "path": "BloomCompositeShader"
+        },
+        {
+            "name": "LightShader",
+            "path": "LightShader"
+        },
+        {
+            "name": "BlurShader",
+            "path": "BlurShader"
+        },
+        {
+            "name": "CombineShader",
+            "path": "CombineShader"
+        },
+        {
+            "name": "OccluderMaskShader",
+            "path": "OccluderMaskShader"
         }
     ],
     "fonts": [
@@ -701,6 +725,30 @@
         {
             "name": "Monsters_9",
             "path": "Monsters/Monsters_9.png"
+        },
+        {
+            "name": "Pick1",
+            "path": "Monsters/Pick1.png"
+        },
+        {
+            "name": "Pick2",
+            "path": "Monsters/Pick2.png"
+        },
+        {
+            "name": "Pick3",
+            "path": "Monsters/Pick3.png"
+        },
+        {
+            "name": "Pick4",
+            "path": "Monsters/Pick4.png"
+        },
+        {
+            "name": "Switch-State-SpriteSheet_04",
+            "path": "spritesheet/Switch-State-SpriteSheet/Switch-State-SpriteSheet_04.png"
+        },
+        {
+            "name": "PickUp Spritesheet",
+            "path": "Monsters/PickUp Spritesheet.png"
         },
         {
             "name": "Darker Platform_14",
@@ -1469,10 +1517,6 @@
         {
             "name": "Switch-State-SpriteSheet_03",
             "path": "spritesheet/Switch-State-SpriteSheet/Switch-State-SpriteSheet_03.png"
-        },
-        {
-            "name": "Switch-State-SpriteSheet_04",
-            "path": "spritesheet/Switch-State-SpriteSheet/Switch-State-SpriteSheet_04.png"
         },
         {
             "name": "Switch-State-SpriteSheet_05",

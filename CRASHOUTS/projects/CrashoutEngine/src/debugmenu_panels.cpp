@@ -178,6 +178,19 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -186,7 +199,6 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="obj\**;bin\**" />
-    
     <Compile Include="..\..\..\CrashoutEngine\scripts\**\*.cs" />
   </ItemGroup>
 
@@ -1567,10 +1579,10 @@ namespace UI {
 			ImGui::SameLine();
 
 			// ==================== PAUSE BUTTON ====================
-			// Disable the pause button if we are in STOP mode.
-			if (engineState == EngineState::STOP) {
-				ImGui::BeginDisabled();
-			}
+			// 1. Capture the state to ensure Begin/End match perfectly
+			bool disablePause = (engineState == EngineState::STOP);
+
+			if (disablePause) ImGui::BeginDisabled();
 
 			if (ImGui::Button("PAUSE", ImVec2(70, 25))) {
 				// Just change state and pause systems. NO SAVING HERE.
@@ -1579,13 +1591,16 @@ namespace UI {
 				CrashoutsEngine::Audio::AudioSystem::instance().setPaused(true);
 			}
 
-			if (engineState == EngineState::STOP) {
-				ImGui::EndDisabled();
-			}
+			if (disablePause) ImGui::EndDisabled();
 
 			ImGui::SameLine();
 
 			// ==================== STOP BUTTON ====================
+			// 1. Capture the state to ensure Begin/End match perfectly
+			bool disableStop = (engineState == EngineState::STOP);
+
+			if (disableStop) ImGui::BeginDisabled();
+
 			if (ImGui::Button("STOP", ImVec2(70, 25))) {
 				// NEVER SAVE THE SCENE HERE! 
 				// We want to discard everything that happened during Play/Pause.
@@ -1610,6 +1625,9 @@ namespace UI {
 				CrashoutsEngine::RenderCamera::engineCamera.SetZoom(s_SavedEditorCamZoom);
 				CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(Settings::GetScreenWidth(), Settings::GetScreenHeight());
 			}
+
+			if (disableStop) ImGui::EndDisabled();
+
 			ImGui::SameLine();
 			// --- ADD THE RECOMPILE BUTTON ---
 			// We highlight it in a slightly different color so it stands out
@@ -1620,9 +1638,14 @@ namespace UI {
 				std::string gameName = std::filesystem::path(GetGameRoot()).filename().string();
 				std::filesystem::path csprojPath = std::filesystem::path(GetGameRoot()) / "scripts" / (gameName + ".csproj");
 
+				std::string config = "Release";
+#ifdef _DEBUG
+				config = "Debug";
+#endif
+
 				// 2. Command Windows to compile it
-				std::string buildCmd = "dotnet build \"" + csprojPath.generic_string() + "\"";
-				std::cout << "[Editor] Recompiling scripts for " << gameName << "...\n";
+				std::string buildCmd = "dotnet build \"" + csprojPath.generic_string() + "\" -c " + config;
+				std::cout << "[Editor] Recompiling scripts for " << gameName << " in " << config << " mode...\n";
 
 				int result = std::system(buildCmd.c_str());
 
@@ -2248,9 +2271,15 @@ namespace UI {
 
 			// 2. Refresh Mono Scripts for the new project
 			fs::path csprojPath = fs::path(projPath) / "scripts" / (projName + ".csproj");
-			std::string buildCommand = "dotnet build \"" + csprojPath.generic_string() + "\"";
 
-			std::cout << "[Editor] Compiling scripts for " << projName << "...\n";
+			std::string config = "Release";
+#ifdef _DEBUG
+			config = "Debug";
+#endif
+
+			std::string buildCommand = "dotnet build \"" + csprojPath.generic_string() + "\" -c " + config;
+
+			std::cout << "[Editor] Compiling scripts for " << projName << " in " << config << " mode...\n";
 			int buildResult = std::system(buildCommand.c_str());
 
 			if (buildResult == 0) {

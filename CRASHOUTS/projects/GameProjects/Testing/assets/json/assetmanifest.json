@@ -19,26 +19,10 @@
             "path": "Exo2-Regular.ttf"
         }
     ],
-    "json": [
-        {
-            "name": "assetmanifest",
-            "path": "assetmanifest.json"
-        }
-    ],
     "images": [
         {
             "name": "missing",
             "path": "missing.png"
-        }
-    ],
-    "scenes": [
-        {
-            "name": "StartScene",
-            "path": "StartScene"
-        },
-        {
-            "name": "Test",
-            "path": "Test"
         }
     ]
 }
