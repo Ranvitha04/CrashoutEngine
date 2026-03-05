@@ -27816,6 +27816,141 @@
                 "layerName": "",
                 "z": 0
             }
+        },
+        {
+            "active": false,
+            "name": "Book_Particles",
+            "uuid": 610112534705000572,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -133.3464813232422,
+                    "y": -21.060001373291017,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            },
+            "light": {
+                "active": false,
+                "intensity": 0.15000000596046449,
+                "radius": 39.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "color": {
+                    "x": 0.7941176891326904,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 17142618762681968282,
+                "localPos": {
+                    "x": 0.24020200967788697,
+                    "y": -0.08047807961702347,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": -100
+            },
+            "particle": {
+                "preset": 1,
+                "burstCount": 0,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 1200,
+                "emitRate": 220.0,
+                "playOnStop": true,
+                "emissionShape": 1,
+                "radiusMin": 0.0,
+                "radiusMax": 0.699999988079071,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 1.399999976158142,
+                "startLifeMax": 2.5999999046325685,
+                "startSpeedMin": 38.79999923706055,
+                "startSpeedMax": 24.200000762939454,
+                "uniformSize": true,
+                "startSizeXMin": 7.650000095367432,
+                "startSizeXMax": 0.75,
+                "startSizeYMin": 0.3499999940395355,
+                "startSizeYMax": 0.75,
+                "sizeOverTime": -0.8999999761581421,
+                "rotationOverTime": 10.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 0.6961326003074646,
+                    "z": 0.0,
+                    "w": 0.28729283809661868
+                },
+                "endColor": {
+                    "x": 0.6547418832778931,
+                    "y": 0.6604183316230774,
+                    "z": 0.9116021990776062,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.8999999761581421,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 13.100000381469727,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
         }
     ],
     "layers": {
