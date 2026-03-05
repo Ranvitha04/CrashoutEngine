@@ -2,7 +2,7 @@
 @file       PlayerMovement.cs
 @author     lee.r@digipen.edu
 @date       23/02/2026
-@brief      Handles player movement, jumping, mass-switching, and animations with deferred state toggling.
+@brief      Handles player movement, jumping, mass-switching, and animations.
 */
 using System;
 
@@ -87,14 +87,11 @@ namespace CrashoutsEngine
         private float jumpCooldown = 0.0f;
         private float coyoteTimeTimer = 0.0f;
         
-        // --- NEW: JUMP LOCK ---
         private bool jumpReady = true;
 
-        // --- PASSTHROUGH LOGIC ---
+        // --- NEW PASSTHROUGH LOGIC (HEARTBEAT TIMER) ---
         private bool isPhasing = false;
-        private int passthroughContactCount = 0;
-        private float passthroughBufferTimer = 0.0f;
-        private float dropThroughTimer = 0.0f;
+        private float passthroughOverlapTimer = 0.0f;
 
         private Entity pauseScreenEntity;
         private CEVec3 storedVelocity;
@@ -143,13 +140,12 @@ namespace CrashoutsEngine
             }
 
             rb.Mass = normalMass;
-            //rb.Restitution = 0.0f; // Kill micro-bouncing
+            //rb.Restitution = 0.0f;
             IsGrounded = false;
             CurrentEnergy = MaxEnergy;
             respawnPos = tf.Position;
             jumpReady = true;
 
-            // Audio Setup
             for (int i = 1; i <= 8; i++) AudioManager.SetClip3DDistances(Entity.ID, "footstep" + i, 25.0f, 250.0f);
             AudioManager.SetClip3DDistances(Entity.ID, "jumpLand", 20.0f, 600.0f);
             AudioManager.SetClip3DDistances(Entity.ID, "JumpUp", 20.0f, 600.0f);
@@ -176,12 +172,10 @@ namespace CrashoutsEngine
 
             if (isPaused || !alive) return;
 
-            // 1. Facing/Flipping
             if (Input.IsKeyPressed(Key.A)) facingRight = false;
             else if (Input.IsKeyPressed(Key.D)) facingRight = true;
             ApplyFlipping();
 
-            // 2. Dialogue Block
             if (playDialogueOnStart && isDialogueActive)
             {
                 if (!hasDialogueStarted && !SceneManager.IsTransitioning())
@@ -195,7 +189,6 @@ namespace CrashoutsEngine
                 return;
             }
 
-            // 3. State Switch Check
             if (Input.IsKeyTriggered(Key.E) && IsGrounded && CurrentEnergy >= energyConsumption && swapPauseTimer <= 0.0f)
             {
                 RemoveEnergy(energyConsumption);
@@ -212,51 +205,50 @@ namespace CrashoutsEngine
                 return;
             }
 
-            // 4. Movement Input
             horizontalInput = 0f;
             if (Input.IsKeyPressed(Key.A)) horizontalInput = -1f;
             else if (Input.IsKeyPressed(Key.D)) horizontalInput = 1f;
 
-            // 5. FRAME-PERFECT GROUND & COYOTE CHECK
             bool wasGroundedThisFrame = IsGrounded;
             CheckGround();
 
             if (IsGrounded) coyoteTimeTimer = coyoteTime;
             else if (coyoteTimeTimer > 0.0f) coyoteTimeTimer -= (float)Time.DT;
 
-            // 6. PASSTHROUGH LOGIC
-            if (isPhasing)
+            // ---------------------------------------------------------
+            // 6. PASSTHROUGH LOGIC (HEARTBEAT)
+            // ---------------------------------------------------------
+            // If the heartbeat timer runs out, we have physically separated from the platform.
+            if (passthroughOverlapTimer > 0.0f)
             {
-                if (passthroughContactCount == 0) {
-                    passthroughBufferTimer -= (float)Time.DT;
-                    if (passthroughBufferTimer <= 0.0f) {
-                        isPhasing = false; // Fully cleared platform!
-                    }
-                } else {
-                    passthroughBufferTimer = 0.01f; // Reset buffer while inside
+                passthroughOverlapTimer -= (float)Time.DT;
+                if (passthroughOverlapTimer <= 0.0f)
+                {
+                    isPhasing = false; 
                 }
             }
 
+            // Drop down trigger (S Key)
             if (Input.IsKeyHeld(Key.S) && IsGrounded && !isPhasing)
             {
                 isPhasing = true;
-                passthroughBufferTimer = 0.01f; 
-                dropThroughTimer = 0.25f; 
+                passthroughOverlapTimer = 0.1f; // Kickstart the heartbeat so we don't immediately un-phase
             }
-            if (dropThroughTimer > 0.0f) dropThroughTimer -= (float)Time.DT;
 
-            // 7. NEW JUMP LOGIC (Requires jumpReady)
-            if (Input.IsKeyTriggered(Key.Space) && (IsGrounded || coyoteTimeTimer > 0.0f) && !isPhasing && jumpReady) 
+            // ---------------------------------------------------------
+            // 7. JUMP LOGIC
+            // ---------------------------------------------------------
+            if (Input.IsKeyTriggered(Key.Space) && (IsGrounded || coyoteTimeTimer > 0.0f) && jumpReady && !isPhasing) 
             {
                 jumpRequested = true;
-                jumpReady = false;      // LOCK jump until we start falling
-                coyoteTimeTimer = 0.0f; // Consume coyote time
+                jumpReady = false; 
+                coyoteTimeTimer = 0.0f;
             }
 
             // 8. LANDING LOGIC
             if (!IsGrounded && rb.LinearVelocity.y < -1.0f) landingDustArmed = true;
 
-            if (!wasGroundedThisFrame && IsGrounded && landingDustArmed && !isPhasing)
+            if (!wasGroundedThisFrame && IsGrounded && landingDustArmed)
             {
                 TriggerLandingDust();
                 HandleLanding();
@@ -290,15 +282,11 @@ namespace CrashoutsEngine
 
             if (jumpCooldown > 0.0f) jumpCooldown -= FIXED_TIMESTEP;
 
-            // --- UNLOCK JUMP ---
-            // If our Y velocity is pointing down (or standing still) and our jump cooldown has ended,
-            // we have reached the apex of our jump and are allowed to jump again next time we touch the ground.
-            if (rb.LinearVelocity.y <= 0.1f && jumpCooldown <= 0.0f && !jumpRequested)
+            if (rb.LinearVelocity.y <= 15.0f && jumpCooldown <= 0.0f && !jumpRequested)
             {
                 jumpReady = true;
             }
 
-            // Execute jump physics
             if (jumpRequested && !isDialogueActive)
             {
                 AudioManager.GetInstance().PlayAttached("JumpUp", Entity.ID);
@@ -343,8 +331,6 @@ namespace CrashoutsEngine
 
             if (targetState != currentAnimState) { anim.Play(targetState, true); currentAnimState = targetState; }
         }
-
-        // --- PHYSICS HELPERS ---
 
         private void ApplyMovementPhysics()
         {
@@ -396,7 +382,8 @@ namespace CrashoutsEngine
             if (tag.HasTag("Ground") || tag.HasTag("Platform")) return true;
             if (tag.HasTag("Passthrough"))
             {
-                if (rb.LinearVelocity.y > 0.1f || isPhasing || dropThroughTimer > 0.0f) return false;
+                // Ignore grounding if we are in the middle of phasing
+                if (isPhasing) return false;
                 return true;
             }
             return false;
@@ -409,8 +396,20 @@ namespace CrashoutsEngine
             var tag = new Entity(otherID).GetComponent<TagComponent>();
             if (tag != null && tag.HasTag("Passthrough"))
             {
-                if (rb.LinearVelocity.y > 0.1f || isPhasing || dropThroughTimer > 0.0f) return false;
-                return true; 
+                // THE HEARTBEAT: As long as we are physically inside the platform, 
+                // refresh the timer. This stops the state from turning off prematurely!
+                passthroughOverlapTimer = 0.1f;
+
+                // STATE TRIGGER: If we hit a platform while moving up, activate the phasing state!
+                if (rb.LinearVelocity.y > 0.1f) 
+                {
+                    isPhasing = true;
+                }
+
+                // If the state is active, IGNORE collision math.
+                if (isPhasing) return false;
+                
+                return true; // Safe to land!
             }
             return true;
         }
@@ -421,7 +420,8 @@ namespace CrashoutsEngine
             if (tag == null) return;
             if (tag.HasTag("Wall")) { OnWall = true; rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0); }
             if (tag.HasTag("Lava") || tag.HasTag("Enemy")) HandleDeath();
-            if (tag.HasTag("Passthrough")) passthroughContactCount++;
+            
+            // Cleaned out the ContactCount hacks entirely!
         }
 
         public void OnCollideExit(uint otherID)
@@ -429,11 +429,6 @@ namespace CrashoutsEngine
             var tag = new Entity(otherID).GetComponent<TagComponent>();
             if (tag == null) return;
             if (tag.HasTag("Wall")) OnWall = false;
-            if (tag.HasTag("Passthrough")) 
-            { 
-                passthroughContactCount--; 
-                if (passthroughContactCount < 0) passthroughContactCount = 0; 
-            }
         }
 
         // --- UTILS ---
@@ -489,8 +484,10 @@ namespace CrashoutsEngine
         public void Respawn() 
         { 
             alive = true; tf.Position = respawnPos; rb.LinearVelocity = new CEVec3(0, 0, 0); 
-            CurrentEnergy = MaxEnergy; isPhasing = false; passthroughContactCount = 0; passthroughBufferTimer = 0.0f; 
-            dropThroughTimer = 0.0f; jumpReady = true;
+            CurrentEnergy = MaxEnergy; 
+            isPhasing = false; 
+            passthroughOverlapTimer = 0.0f;
+            jumpReady = true;
         }
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
         public void RemoveEnergy(float amount) { CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f); }
