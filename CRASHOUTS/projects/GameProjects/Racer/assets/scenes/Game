@@ -148,6 +148,8 @@
             "tilemap": {
                 "tileSize": 8,
                 "excludeOuterBoundary": true,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
                 "activeAsset": "tilemaps/track",
                 "tileAssetNames": [
                     "track"
