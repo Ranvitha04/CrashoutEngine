@@ -11185,153 +11185,6 @@
         },
         {
             "active": true,
-            "name": "tutorial1door",
-            "uuid": 4576864458208606520,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1807.9522705078126,
-                    "y": -782.8986206054688,
-                    "z": -10.0
-                },
-                "size": {
-                    "x": 64.0,
-                    "y": 100.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 0,
-                "isContinuous": false,
-                "isTrigger": true,
-                "enabled": true,
-                "position": {
-                    "x": 1807.9522705078126,
-                    "y": -782.8986206054688,
-                    "z": -10.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "radius": 31.149999618530275,
-                "center": {
-                    "x": 1807.9522705078126,
-                    "y": -782.8986206054688,
-                    "z": -10.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.8127490282058716
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "tutorial1door",
-                        "fields": {
-                            "doorParticleName": "Door Particles"
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
             "name": "wall",
             "uuid": 3684520867669057414,
             "tag": {
@@ -20207,8 +20060,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1726.8021240234376,
-                    "y": -782.7605590820313,
+                    "x": -186.80577087402345,
+                    "y": -22.564861297607423,
                     "z": 0.0
                 },
                 "size": {
@@ -20235,8 +20088,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1726.8021240234376,
-                    "y": -784.9605712890625,
+                    "x": -186.80577087402345,
+                    "y": -24.764862060546876,
                     "z": 0.0
                 },
                 "offset": {
@@ -20245,13 +20098,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1718.3021240234376,
-                    "y": -814.060546875,
+                    "x": -195.30577087402345,
+                    "y": -53.864837646484378,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1735.3021240234376,
-                    "y": -755.860595703125,
+                    "x": -178.30577087402345,
+                    "y": 4.335113525390625,
                     "z": 0.0
                 }
             },
@@ -20506,37 +20359,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -20589,7 +20411,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -20603,14 +20425,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20663,6 +20485,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20954,8 +20807,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1726.8021240234376,
-                    "y": -724.390625,
+                    "x": -186.80577087402345,
+                    "y": 35.805049896240237,
                     "z": 0.0
                 },
                 "size": {
@@ -21072,8 +20925,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1726.8021240234376,
-                    "y": -724.390625,
+                    "x": -186.80577087402345,
+                    "y": 35.805049896240237,
                     "z": 0.0
                 },
                 "size": {
@@ -21190,8 +21043,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1726.8021240234376,
-                    "y": -724.390625,
+                    "x": -186.80577087402345,
+                    "y": 35.805049896240237,
                     "z": 0.0
                 },
                 "size": {
@@ -21308,8 +21161,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1726.8021240234376,
-                    "y": -724.390625,
+                    "x": -186.80577087402345,
+                    "y": 35.805049896240237,
                     "z": 0.0
                 },
                 "size": {
@@ -21426,8 +21279,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1441.0078125,
-                    "y": -982.1181030273438,
+                    "x": -472.60003662109377,
+                    "y": -221.9224090576172,
                     "z": 0.0
                 },
                 "size": {
@@ -25028,121 +24881,6 @@
         },
         {
             "active": true,
-            "name": "Door Particles",
-            "uuid": 9478966523423520205,
-            "tag": {
-                "tagMask": 1
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1808.301513671875,
-                    "y": -786.4923095703125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "parent": {
-                "parentUUID": 4576864458208606520,
-                "localPos": {
-                    "x": 0.0054569244384765629,
-                    "y": -0.03593688830733299,
-                    "z": 10.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.015625,
-                    "y": 0.009999999776482582
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 0
-            },
-            "particle": {
-                "preset": 3,
-                "burstCount": 1400,
-                "renderShape": 1,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 6.230000019073486,
-                "circleSegments": 76,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": false,
-                "useWorldSpace": true,
-                "maxParticles": 1308,
-                "emitRate": 1200.0,
-                "playOnStop": true,
-                "emissionShape": 1,
-                "radiusMin": 4.800000190734863,
-                "radiusMax": 52.70000076293945,
-                "lengthMin": 0.0,
-                "lengthMax": 5.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 5.0,
-                    "y": 5.0
-                },
-                "startLifeMin": 0.25,
-                "startLifeMax": 0.6000000238418579,
-                "startSpeedMin": 8.0,
-                "startSpeedMax": 20.0,
-                "uniformSize": true,
-                "startSizeXMin": -0.41999998688697817,
-                "startSizeXMax": 0.75,
-                "startSizeYMin": 0.18000000715255738,
-                "startSizeYMax": 0.550000011920929,
-                "sizeOverTime": -0.3799999952316284,
-                "rotationOverTime": 80.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 360.0,
-                "startColor": {
-                    "x": 0.7672864198684692,
-                    "y": 0.8917748928070068,
-                    "z": 0.1544199138879776,
-                    "w": 0.949999988079071
-                },
-                "endColor": {
-                    "x": 0.25,
-                    "y": 0.05000000074505806,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -3.0,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            }
-        },
-        {
-            "active": true,
             "name": "Camera",
             "uuid": 10095249895054869713,
             "tag": {
@@ -25679,8 +25417,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1760.430419921875,
-                    "y": -790.808349609375,
+                    "x": -153.177490234375,
+                    "y": -30.612668991088868,
                     "z": 0.0
                 },
                 "size": {
@@ -27849,6 +27587,268 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "tutorial1door",
+            "uuid": 402810734385389546,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1807.9522705078126,
+                    "y": -782.8986206054688,
+                    "z": -10.0
+                },
+                "size": {
+                    "x": 64.0,
+                    "y": 100.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 0,
+                "isContinuous": false,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 1807.9522705078126,
+                    "y": -782.8986206054688,
+                    "z": -10.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 31.149999618530275,
+                "center": {
+                    "x": 1807.9522705078126,
+                    "y": -782.8986206054688,
+                    "z": -10.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.8127490282058716
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "tutorial1door",
+                        "fields": {
+                            "doorParticleName": "Door Particles"
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Door Particles",
+            "uuid": 12517860404033836194,
+            "tag": {
+                "tagMask": 1
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1808.301513671875,
+                    "y": -786.4923095703125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 402810734385389546,
+                "localPos": {
+                    "x": 0.0054569244384765629,
+                    "y": -0.03593688830733299,
+                    "z": 10.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015625,
+                    "y": 0.009999999776482582
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            },
+            "particle": {
+                "preset": 3,
+                "burstCount": 1400,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 6.230000019073486,
+                "circleSegments": 76,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 1308,
+                "emitRate": 1200.0,
+                "playOnStop": true,
+                "emissionShape": 1,
+                "radiusMin": 4.800000190734863,
+                "radiusMax": 52.70000076293945,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.25,
+                "startLifeMax": 0.6000000238418579,
+                "startSpeedMin": 8.0,
+                "startSpeedMax": 20.0,
+                "uniformSize": true,
+                "startSizeXMin": -0.41999998688697817,
+                "startSizeXMax": 0.75,
+                "startSizeYMin": 0.18000000715255738,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.3799999952316284,
+                "rotationOverTime": 80.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.7672864198684692,
+                    "y": 0.8917748928070068,
+                    "z": 0.1544199138879776,
+                    "w": 0.949999988079071
+                },
+                "endColor": {
+                    "x": 0.25,
+                    "y": 0.05000000074505806,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -3.0,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
             }
         }
     ],
