@@ -67,7 +67,7 @@ namespace CrashoutsEngine
         private Animator anim;
 
         private float footstepTimer = 0.0f;
-        private bool wasGroundedLastFrame = true;
+        //private bool wasGroundedLastFrame = true;
         private Random rng = new Random();
         private const float FIXED_TIMESTEP = 0.02f;
 

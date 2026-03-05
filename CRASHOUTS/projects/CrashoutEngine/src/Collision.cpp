@@ -814,106 +814,76 @@ namespace Collision {
 
 	CollisionManifold CollisionHandler::AABBToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
-		result.depth = std::numeric_limits<float>::max();
 
-		// 1. Sort Inputs (AABB vs Line)
-		CollisionProps const* aabbPtr = (coll1.collider->type == ColliderType::AABB) ? &coll1 : &coll2;
-		CollisionProps const* linePtr = (coll1.collider->type == ColliderType::LINE) ? &coll1 : &coll2;
-
-		// Detect if we swapped (so we can flip the normal later)
+		// 1. Sort Inputs (Ensure A is AABB, B is Line)
 		bool swapped = (coll1.collider->type == ColliderType::LINE);
+		CollisionProps const* aabbPtr = swapped ? &coll2 : &coll1;
+		CollisionProps const* linePtr = swapped ? &coll1 : &coll2;
 
-		// 2. Cast to specific types
 		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
 		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
 
-		// 3. Get World Space Data
-		// AABB Center & Extents
+		// 2. Extract Data
 		CEVec3 aabbCenter = aabbPtr->position + aabb.offset;
-		CEVec3 extents = aabb.extents;
-
-		// Line Points (World Space)
 		CEVec3 p1 = line.GetWorldP1();
 		CEVec3 p2 = line.GetWorldP2();
 
-		// 1. Define the 3 axes to test
-		// Axis 1 & 2: AABB local axes (Global X and Y)
-		// Axis 3: Segment normal
-		CEVec3 segDir = p2 - p1;
-		CEVec3 segNormal = line.GetNormal();
-
+		// 3. Define the 3 SAT Axes
 		CEVec3 axes[3] = {
-			{1.0f, 0.0f, 0.f}, // AABB X
-			{0.0f, 1.0f, 0.f}, // AABB Y
-			segNormal     // Segment Normal
+			{1.0f, 0.0f, 0.0f}, // AABB X
+			{0.0f, 1.0f, 0.0f}, // AABB Y
+			line.GetNormal()    // Line Normal
 		};
 
-		// 2. Loop through axes and find overlap
-		for (int i = 0; i < 3; i++) {
-			CEVec3 axis = axes[i];
+		float minOverlap = std::numeric_limits<float>::max();
+		float minScore = std::numeric_limits<float>::max();
+		CEVec3 bestAxis = { 0.0f, 0.0f, 0.0f };
 
-			// Project both shapes
+		// 4. Test each axis
+		for (int i = 0; i < 3; ++i) {
 			float minA, maxA, minB, maxB;
-			ProjectAABB(aabb, axis, minA, maxA);
-			ProjectSegment(line, axis, minB, maxB);
+			ProjectAABB(aabb, axes[i], minA, maxA);
+			ProjectSegment(line, axes[i], minB, maxB);
 
-			// Check for separation
+			// If there is a gap on ANY axis, there is absolutely no collision.
 			if (maxA < minB || maxB < minA) {
-				return result; // No collision found, return empty
+				return result;
 			}
 
-			// Calculate overlap
-			float axisDepth = std::min(maxA - minB, maxB - minA);
+			float overlap = std::min(maxA - minB, maxB - minA);
 
-			// Keep the smallest overlap (this is the penetration depth)
-			if (axisDepth < result.depth) {
-				result.depth = axisDepth;
-				result.normal = axis;
+			// Give the line's normal a slight priority to prevent horizontal snagging on floor edges.
+			// This does not change the actual physical depth calculated.
+			float score = overlap * ((i == 2) ? 0.95f : 1.0f);
+
+			if (score < minScore) {
+				minScore = score;
+				minOverlap = overlap; // Keep the true physical depth
+				bestAxis = axes[i];
 			}
 		}
 
-		// 3. SAFE NORMAL FLIPPING (Infinite Plane)
-		// Find which side of the line the AABB center is on using the line's plane.
-		CEVec3 lineToAABB = aabbCenter - p1;
-		float side = CEMath::Dot(lineToAABB, segNormal);
-
-		// Standard: Collision normal points from A (AABB) to B (Line).
-		CEVec3 preferredDir = segNormal * (side >= 0.0f ? -1.0f : 1.0f);
-
-		// Flip the normal if it doesn't align with our preferred direction
-		if (CEMath::Dot(result.normal, preferredDir) < 0.f) {
-			result.normal = -1.f * result.normal;
-		}
-
+		// 5. Collision Confirmed
 		result.collisionOccured = true;
+		result.depth = minOverlap;
+		result.numOfContacts = 1;
 
-		// 4. Calculate Contact Point
-		// Case A: The collision axis is the Segment Normal. 
-		// This means a corner of the AABB is hitting the flat side of the line.
-		// We find the AABB corner closest to the segment.
-		if (std::abs(CEMath::Dot(result.normal, segNormal)) > 0.99f) {
-			// Find the support point on the box in the direction of the normal (towards segment)
-			result.contactPoints[0] = GetAABBSupport(aabb, result.normal);
-		}
-		// Case B: The collision axis is one of the AABB axes (X or Y).
-		// This means the tip of the line segment is hitting a flat face of the box.
-		// We find which segment endpoint is inside the box.
-		else {
+		// 6. Ensure the normal always points FROM the AABB TO the Line
+		// This is crucial for your specific position correction solver: `pos -= vec`
+		CEVec3 closestLinePt = ClosestPointOnSegment(p1, p2, aabbCenter);
+		CEVec3 aabbToLine = closestLinePt - aabbCenter;
 
-			// Since normal points Box -> Segment, the point closer to the box has a *smaller* dot product along that normal?
-			// Actually, simpler logic: The point overlapping the box is the contact.
-			// We pick the point closest to the box center.
-			if (CEMath::LengthSq(p1 - aabbCenter) < CEMath::LengthSq(p2 - aabbCenter)) {
-				result.contactPoints[0] = p1;
-			}
-			else {
-				result.contactPoints[0] = p2;
-			}
+		// If the axis points away from the line, flip it to point towards the line.
+		if (CEMath::Dot(bestAxis, aabbToLine) < 0.0f) {
+			bestAxis = -1.0f * bestAxis;
 		}
 
-		// 7. Handle Swapping (If input was Line vs AABB, flip normal)
+		result.normal = bestAxis;
+		result.contactPoints[0] = closestLinePt;
+
+		// 7. Handle component swapping
 		if (swapped) {
-			result.normal = -1.f * result.normal;
+			result.normal = -1.0f * result.normal;
 		}
 
 		return result;
