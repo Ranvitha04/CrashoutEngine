@@ -21,6 +21,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <string>
 #include <algorithm>
 #include <cstdio>
+#include "createentitycommand.h"
+#include "createprefabcommand.h"
 using namespace CrashoutsEngine;
 using namespace Serialization;
 using namespace KeyframeUnity;
@@ -343,26 +345,9 @@ namespace UI {
 
 		// Create entity in the REAL ECS
 		if (ImGui::Button("Create Entity")) {
-			Entity e = ecs.CreateEntity();
-			entities.push_back(e);
-			if (!ecs.HasComponent<Component::NameComponent>(e)) {
-				ecs.AddComponent<Component::NameComponent>(e, "Entity " + std::to_string(e));
-			}
-			if (!ecs.HasComponent<Component::ActiveComponent>(e)) {
-				ecs.AddComponent<Component::ActiveComponent>(e, true);
-			}
-			if (!ecs.HasComponent<Component::TransformComponent>(e)) {
-				ecs.AddComponent<Component::TransformComponent>(e);
-			}
-			if (!ecs.HasComponent<Component::UUIDComponent>(e)) {
-				ecs.AddComponent<Component::UUIDComponent>(e);
-			}
-			if (!ecs.HasComponent<Component::LayerComponent>(e)) {
-				ecs.AddComponent<Component::LayerComponent>(e);
-			}
-			if (!ecs.HasComponent<Component::TagComponent>(e)) {
-				ecs.AddComponent<Component::TagComponent>(e);
-			}
+			UndoManager::GetInstance().AddCommand(
+				std::make_unique<CreateEntityCommand>()
+			);
 		}
 		ImGui::SeparatorText("Prefab Creator");
 		ImGui::Text("Entity Counter: %d", ecs.GetComponentArray<Component::NameComponent>().dense.size());
@@ -380,9 +365,10 @@ namespace UI {
 					}
 					ImGui::EndCombo();
 				}
-
 				if (ImGui::Button("Create Prefab##Prefab")) {
-					Prefab::Create(ecs, names[sel]);
+					UndoManager::GetInstance().AddCommand(
+						std::make_unique<CreatePrefabCommand>(names[sel])
+					);
 				}
 			}
 		}
@@ -422,9 +408,9 @@ namespace UI {
 				if (selected)
 				{
 					// Use undoable delete command
-					auto cmd = std::make_unique<DeleteEntityCommand>(selected);
-					cmd->Execute(); // Perform delete
-					UndoManager::GetInstance().AddCommand(std::move(cmd));
+					UndoManager::GetInstance().AddCommand(
+						std::make_unique<DeleteEntityCommand>(selected)
+					);
 
 					// Update local entities list if necessary (remove invalid IDs)
 					entities.erase(std::remove_if(entities.begin(), entities.end(),

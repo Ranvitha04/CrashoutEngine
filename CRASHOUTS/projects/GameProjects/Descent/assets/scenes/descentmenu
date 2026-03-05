@@ -1189,11 +1189,43 @@
                     "y": 1.0
                 }
             },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "TEST",
+                "scale": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
             "postprocessing": {
                 "brightness": 0.0,
                 "contrast": 0.0,
                 "saturation": 0.0,
                 "ambient": 1.0,
+                "shadowsEnabled": true,
+                "shadowRays": 128,
                 "bloomEnabled": true,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,
@@ -1258,8 +1290,8 @@
                 "id": 3,
                 "type": 2,
                 "title": "Attack",
-                "x": 580.0,
-                "y": 80.0,
+                "x": 560.0,
+                "y": 217.0,
                 "w": 140.0,
                 "h": 70.0
             },
@@ -1267,8 +1299,8 @@
                 "id": 4,
                 "type": 1,
                 "title": "Move",
-                "x": 840.0,
-                "y": 323.0,
+                "x": 781.0,
+                "y": 82.0,
                 "w": 140.0,
                 "h": 70.0
             }

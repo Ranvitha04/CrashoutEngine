@@ -25,7 +25,7 @@ namespace CrashoutsEngine {
 
     private:
         Entity m_targetEntity;
-        Entity m_originalParentId = 0;
+        uint64_t m_originalParentUUID{};
         std::string m_jsonHierarchy; // Stores the serialized hierarchy as a JSON array string
     };
 

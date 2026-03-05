@@ -23,7 +23,11 @@ namespace CrashoutsEngine {
 
         // Store Parent ID to re-attach later
         if (ecs.HasComponent<Component::ParentComponent>(entityId)) {
-            m_originalParentId = ecs.GetComponent<Component::ParentComponent>(entityId)->parent;
+            Entity parent = ecs.GetComponent<Component::ParentComponent>(entityId)->parent;
+
+            if (parent != 0 && ecs.HasComponent<Component::UUIDComponent>(parent)) {
+                m_originalParentUUID = ecs.GetComponent<Component::UUIDComponent>(parent)->id;
+            }
         }
 
         // Serialize Hierarchy (Root + Descendants)
@@ -130,26 +134,33 @@ namespace CrashoutsEngine {
         }
 
         // Force re-attach root to original parent ID if valid
-        if (m_originalParentId != 0) {
-            // Check if parent still exists has UUIDComponent is a good proxy for 'alive'
-            if (ecs.HasComponent<Component::UUIDComponent>(m_originalParentId)) {
-                
-                // Fix ParentComponent on Child
+        if (m_originalParentUUID != 0) {
+            Entity parent = ecs.FindEntityByUUID(m_originalParentUUID);
+
+            if (parent != 0) {
                 if (!ecs.HasComponent<Component::ParentComponent>(newRootId)) {
                     ecs.AddComponent<Component::ParentComponent>(newRootId);
                 }
-                ecs.GetComponent<Component::ParentComponent>(newRootId)->parent = m_originalParentId;
 
-                // Fix ChildrenComponent on Parent
-                if (!ecs.HasComponent<Component::ChildrenComponent>(m_originalParentId)) {
-                    ecs.AddComponent<Component::ChildrenComponent>(m_originalParentId);
+                ecs.GetComponent<Component::ParentComponent>(newRootId)->parent = parent;
+
+                if (!ecs.HasComponent<Component::ChildrenComponent>(parent)) {
+                    ecs.AddComponent<Component::ChildrenComponent>(parent);
                 }
-                auto* children = ecs.GetComponent<Component::ChildrenComponent>(m_originalParentId);
-                
-                // Avoid duplicates just in case
+
+                auto* children = ecs.GetComponent<Component::ChildrenComponent>(parent);
+
                 bool exists = false;
-                for (Entity c : children->children) { if (c == newRootId) exists = true; }
-                if (!exists) children->children.push_back(newRootId);
+                for (Entity child : children->children) {
+                    if (child == newRootId) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists) {
+                    children->children.push_back(newRootId);
+                }
             }
         }
     }

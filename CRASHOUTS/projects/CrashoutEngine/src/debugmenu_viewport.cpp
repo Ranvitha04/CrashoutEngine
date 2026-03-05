@@ -9,7 +9,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 //__________________________________________________________________________*/
 #include "debugmenu_internals.h"
 #include "deleteentitycommand.h"
-
+#include "createprefabcommand.h"
 #include "particlecomponent.h"
 #include "textcomponent.h"
 
@@ -698,9 +698,9 @@ namespace UI {
 
 				// Undoable delete entity
                 if (selected && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGuizmo::IsUsing() && ImGui::IsKeyPressed(ImGuiKey_Delete) && !ImGui::GetIO().WantTextInput && !ImGui::IsAnyItemActive()) {
-                    auto cmd = std::make_unique<DeleteEntityCommand>(selected);
-                    cmd->Execute(); // Perform delete
-                    UndoManager::GetInstance().AddCommand(std::move(cmd));
+                    UndoManager::GetInstance().AddCommand(
+                        std::make_unique<DeleteEntityCommand>(selected)
+                    );
                     selected = 0;
                 }
             }
@@ -762,35 +762,14 @@ namespace UI {
                             size_t initialSize = tArr.indexToEntity.size();
 
                             // 2. Create the Prefab
-                            bool success = Prefab::Create(ecs, std::string(p->name));
+                            UndoManager::GetInstance().AddCommand(
+                                std::make_unique<CreatePrefabCommand>(
+                                    std::string(p->name),
+                                    dropWorld.x, dropWorld.y, dropWorld.z
+                                )
+                            );
 
-                            // 3. Find and Move the new entity
-                            if (success && tArr.indexToEntity.size() > initialSize) {
-
-                                // Get the last entity created
-                                Entity newEntity = tArr.indexToEntity.back();
-
-                                // [IMPORTANT] Handle Hierarchies
-                                // If the prefab has children, 'newEntity' might be a child piece (e.g., the gun of a soldier).
-                                // We must walk up the tree to find the ROOT so we move the whole object.
-                                while (ecs.HasComponent<Component::ParentComponent>(newEntity)) {
-                                    Entity parentEnt = ecs.GetComponent<Component::ParentComponent>(newEntity)->parent;
-                                    if (parentEnt == 0) break; // Reached null parent
-                                    newEntity = parentEnt;
-                                }
-
-                                // 4. Move the Root
-                                if (auto* t = ecs.GetComponent<Component::TransformComponent>(newEntity)) {
-                                    // Preserve the Prefab's Z-layer (often critical for 2D sorting)
-                                    // or use dropWorld.z if you want to force it to the drag plane.
-                                    float originalZ = t->position.z;
-
-                                    t->position = dropWorld;
-                                    t->position.z = originalZ; // Restore Z so it doesn't clip behind background
-                                }
-
-                                selected = newEntity;
-                            }
+                      
                         }
                         else if (p->kind == AssetKind::Audio) {
                             // Audio spawn logic

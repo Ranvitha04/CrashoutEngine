@@ -33,7 +33,7 @@ All content ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢�
 #include "undomanager.h"
 #include "hierarchy.h"
 #include "engine.h"
-
+#include "componentcommands.h"
 /*                                                         component includes
 ----------------------------------------------------------------------------- */
 #include "namecomponent.h"
@@ -59,7 +59,7 @@ All content ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢�
 #include "videoloader.h"
 #include "checkpointcomponent.h"
 #include "triggercomponent.h"
-
+#include "transformentitycommand.h"
 // FOR GAME GUI
 #include "buttoncomponent.h"
 #include "guicomponent.h"
@@ -231,7 +231,32 @@ namespace {
 	f32 max(f32 x1, f32 y2, f32 z3) {
 		return std::max(std::max(x1, y2), z3);
 	}
+	static CrashoutsEngine::TransformState MakeTransformState(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity e)
+	{
+		CrashoutsEngine::TransformState s{};
 
+		auto* t = ecs.GetComponent<Component::TransformComponent>(e);
+		if (!t) return s;
+
+		s.position = t->position;
+		s.rotation = t->rotation;
+		s.scale = t->size;
+
+		if (ecs.HasComponent<Component::ParentComponent>(e))
+		{
+			auto* pc = ecs.GetComponent<Component::ParentComponent>(e);
+			if (pc)
+			{
+				s.hasParent = true;
+				s.parent = pc->parent;
+				s.localPos = pc->localPos;
+				s.localRot = pc->localRot;
+				s.localScale = pc->localScale;
+			}
+		}
+
+		return s;
+	}
 	/*!
 	@brief Shared helper to draw a multi-select tag dropdown.
 	@param ecs Reference to ECS (needed to clean up components if a tag is deleted).
@@ -361,7 +386,11 @@ namespace {
 		void add(ECS& ecs, Entity e) override {
 			auto& D = GetDebugDefaults();
 			if (!ecs.HasComponent<Component::NameComponent>(e)) ecs.AddComponent<Component::NameComponent>(e, D.name_default);
-			if (!ecs.HasComponent<Component::TagComponent>(e)) ecs.AddComponent<Component::TagComponent>(e);
+			if (!ecs.HasComponent<Component::TagComponent>(e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<CrashoutsEngine::AddComponentCommand<Component::TagComponent>>(e)
+				);
+			}
 			if (!ecs.HasComponent<Component::LayerComponent>(e)) ecs.AddComponent<Component::LayerComponent>(e);
 			if (!ecs.HasComponent<Component::ActiveComponent>(e)) ecs.AddComponent<Component::ActiveComponent>(e, true);
 			if (!ecs.HasComponent<Component::UUIDComponent>(e)) ecs.AddComponent<Component::UUIDComponent>(e);
@@ -371,7 +400,11 @@ namespace {
 			// We usually don't want users to remove the core settings, 
 			// but if they do, we strip these core components.
 			if (ecs.HasComponent<Component::NameComponent>(e)) ecs.RemoveComponent<Component::NameComponent>(e);
-			if (ecs.HasComponent<Component::TagComponent>(e)) ecs.RemoveComponent<Component::TagComponent>(e);
+			if (ecs.HasComponent<Component::TagComponent>(e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<CrashoutsEngine::RemoveComponentCommand<Component::TagComponent>>(e)
+				);
+			}
 			if (ecs.HasComponent<Component::LayerComponent>(e)) ecs.RemoveComponent<Component::LayerComponent>(e);
 		}
 
@@ -633,10 +666,19 @@ namespace {
 			return ecs.HasComponent<Component::TransformComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::TransformComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::TransformComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::TransformComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::TransformComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			using CrashoutsEngine::TransformState;
@@ -994,10 +1036,19 @@ namespace {
 			return ecs.HasComponent<Component::ShapeComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::ShapeComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::ShapeComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::ShapeComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::ShapeComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* sc = ecs.GetComponent<ShapeComponent>(e);
@@ -1148,10 +1199,19 @@ namespace {
 			return ecs.HasComponent<Component::TextComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::TextComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::TextComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::TextComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::TextComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* fc = ecs.GetComponent<TextComponent>(e);
@@ -1474,7 +1534,9 @@ namespace {
 
 		void remove(ECS& ecs, Entity e) override {
 			if (has(ecs, e)) {
-				ecs.RemoveComponent<ScriptComponent>(e);
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::TransformComponent>>(e)
+				);
 			}
 		}
 
@@ -2134,10 +2196,19 @@ namespace CrashoutsEngine
 			return ecs.HasComponent<Component::CameraComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::CameraComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::CameraComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::CameraComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::CameraComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* cc = ecs.GetComponent<CameraComponent>(e);
@@ -2160,10 +2231,19 @@ namespace CrashoutsEngine
 			return ecs.HasComponent<Component::ButtonComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::ButtonComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::ButtonComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::ButtonComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::ButtonComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* bc = ecs.GetComponent<ButtonComponent>(e);
@@ -2221,10 +2301,19 @@ namespace CrashoutsEngine
 			return ecs.HasComponent<Component::UILayoutComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::UILayoutComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::UILayoutComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::UILayoutComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::UILayoutComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			using namespace Component;
@@ -2309,10 +2398,19 @@ namespace CrashoutsEngine
 			return ecs.HasComponent<Component::TextInputComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::TextInputComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::TextInputComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::TextInputComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::TextInputComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			using namespace Component;
@@ -2462,10 +2560,19 @@ namespace CrashoutsEngine
 			return ecs.HasComponent<Component::PPComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::PPComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::PPComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::PPComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::PPComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* ppc = ecs.GetComponent<PPComponent>(e);
@@ -2505,10 +2612,19 @@ namespace CrashoutsEngine
 			return ecs.HasComponent<Component::LightComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::LightComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::LightComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::LightComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::LightComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* lc = ecs.GetComponent<Component::LightComponent>(e);
@@ -2589,15 +2705,20 @@ namespace CrashoutsEngine
 		bool has(ECS& ecs, Entity e) const override {
 			return ecs.HasComponent<Component::TileMapComponent>(e);
 		}
-
-		// 3. Update 'Add' Logic
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::TileMapComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::TileMapComponent>>(e)
+				);
+			}
 		}
 
-		// 4. Update 'Remove' Logic
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::TileMapComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::TileMapComponent>>(e)
+				);
+			}
 		}
 
 		// 5. The Main Inspector UI
@@ -3493,10 +3614,19 @@ namespace CrashoutsEngine
 			return ecs.HasComponent<Component::VideoComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::VideoComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::VideoComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::VideoComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::VideoComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* vc = ecs.GetComponent<Component::VideoComponent>(e);
@@ -3652,10 +3782,19 @@ namespace CrashoutsEngine
 			return ecs.HasComponent<Component::CheckpointComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::CheckpointComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::CheckpointComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::CheckpointComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::CheckpointComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* cp = ecs.GetComponent<Component::CheckpointComponent>(e);
@@ -3748,10 +3887,19 @@ namespace CrashoutsEngine
 			return ecs.HasComponent<Component::TriggerComponent>(e);
 		}
 		void add(ECS& ecs, Entity e) override {
-			if (!has(ecs, e)) ecs.AddComponent<Component::TriggerComponent>(e);
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::TriggerComponent>>(e)
+				);
+			}
 		}
+
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::TriggerComponent>(e);
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::TriggerComponent>>(e)
+				);
+			}
 		}
 		void drawInspector(ECS& ecs, Entity e) override {
 			auto* tc = ecs.GetComponent<Component::TriggerComponent>(e);
