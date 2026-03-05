@@ -632,7 +632,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 48.147403717041019,
+                    "x": 23.78116798400879,
                     "y": -11.905862808227539,
                     "z": 0.0
                 },
@@ -684,7 +684,7 @@
             "parent": {
                 "parentUUID": 16805797322157221579,
                 "localPos": {
-                    "x": 28.348705291748048,
+                    "x": 3.9824695587158205,
                     "y": -31.41304588317871,
                     "z": 0.0
                 },
@@ -820,8 +820,7 @@
                         "fields": {
                             "smoothingSpeed": 15.0,
                             "clickWidth": 37.0,
-                            "clickHeight": 5.0,
-                            "drawHitbox": true
+                            "clickHeight": 5.0
                         }
                     }
                 ]
@@ -1175,8 +1174,7 @@
                         "fields": {
                             "smoothingSpeed": 15.0,
                             "clickWidth": 37.0,
-                            "clickHeight": 5.0,
-                            "drawHitbox": true
+                            "clickHeight": 5.0
                         }
                     }
                 ]
@@ -1227,6 +1225,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -1365,6 +1364,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {

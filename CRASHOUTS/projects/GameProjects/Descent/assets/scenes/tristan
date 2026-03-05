@@ -92,6 +92,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -184,6 +185,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -276,6 +278,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {

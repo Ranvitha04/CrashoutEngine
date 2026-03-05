@@ -172,8 +172,8 @@ namespace CrashoutsEngine
 
             if (isPaused || !alive) return;
 
-            if (Input.IsKeyPressed(Key.A)) facingRight = false;
-            else if (Input.IsKeyPressed(Key.D)) facingRight = true;
+            if (Input.IsKeyPressed(Key.A) && !isDialogueActive) facingRight = false;
+            else if (Input.IsKeyPressed(Key.D) && !isDialogueActive) facingRight = true;
             ApplyFlipping();
 
             if (playDialogueOnStart && isDialogueActive)
