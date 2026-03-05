@@ -26,7 +26,8 @@ namespace CrashoutsEngine
         public float footstepInterval = 0.3f;
         public float swapPause = 1.0f;
         public float energyConsumption = 12.5f;
-        [SerializeField] private int coyoteFrames = 6;
+        
+        [SerializeField] private float coyoteTime = 0.15f; 
 
         public int goalNoOfPlates = 1;
         public int currentGoalPlates = 0;
@@ -77,16 +78,23 @@ namespace CrashoutsEngine
         private string currentAnimState = "";
         private bool isLight = false;
         private float swapPauseTimer = 0.0f;
-        private bool stateChangedThisSwap = false; // Prevents double-toggling
+        private bool stateChangedThisSwap = false;
 
         private uint landingDustID = 0;
         private float landingDustTimer = 0.0f;
         private bool landingDustArmed = false;
 
         private float jumpCooldown = 0.0f;
+        private float coyoteTimeTimer = 0.0f;
+        
+        // --- NEW: JUMP LOCK ---
+        private bool jumpReady = true;
+
+        // --- PASSTHROUGH LOGIC ---
         private bool isPhasing = false;
         private int passthroughContactCount = 0;
-        private int coyoteFramesRemaining = 0;
+        private float passthroughBufferTimer = 0.0f;
+        private float dropThroughTimer = 0.0f;
 
         private Entity pauseScreenEntity;
         private CEVec3 storedVelocity;
@@ -135,17 +143,17 @@ namespace CrashoutsEngine
             }
 
             rb.Mass = normalMass;
+            //rb.Restitution = 0.0f; // Kill micro-bouncing
             IsGrounded = false;
             CurrentEnergy = MaxEnergy;
             respawnPos = tf.Position;
+            jumpReady = true;
 
             // Audio Setup
             for (int i = 1; i <= 8; i++) AudioManager.SetClip3DDistances(Entity.ID, "footstep" + i, 25.0f, 250.0f);
             AudioManager.SetClip3DDistances(Entity.ID, "jumpLand", 20.0f, 600.0f);
             AudioManager.SetClip3DDistances(Entity.ID, "JumpUp", 20.0f, 600.0f);
             AudioManager.SetClip3DDistances(Entity.ID, "switchMassSound", 20.0f, 600.0f);
-
-            // Add an effect to the mass switching to make it sound "muffled" or "heavy"
             AudioManager.AddClipDSP(Entity.ID, "switchMassSound", AudioManager.FMOD_DSP_TYPE.LOWPASS);
 
             dialogueEntities = new Entity[5];
@@ -164,12 +172,11 @@ namespace CrashoutsEngine
         {
             if (tf == null || rb == null) return;
 
-            // Update Audio Listener to follow the player
             AudioManager.SetListenerPosition(tf.Position);
 
             if (isPaused || !alive) return;
 
-            // 1. Facing/Flipping (Always runs)
+            // 1. Facing/Flipping
             if (Input.IsKeyPressed(Key.A)) facingRight = false;
             else if (Input.IsKeyPressed(Key.D)) facingRight = true;
             ApplyFlipping();
@@ -188,7 +195,7 @@ namespace CrashoutsEngine
                 return;
             }
 
-            // 3. State Switch Check (Input E)
+            // 3. State Switch Check
             if (Input.IsKeyTriggered(Key.E) && IsGrounded && CurrentEnergy >= energyConsumption && swapPauseTimer <= 0.0f)
             {
                 RemoveEnergy(energyConsumption);
@@ -198,22 +205,64 @@ namespace CrashoutsEngine
                 AudioManager.GetInstance().PlayAttached("switchMassSound", Entity.ID);
             }
 
-            // 4. Block Movement Input if Switching
             if (swapPauseTimer > 0.0f)
             {
                 horizontalInput = 0f;
-                UpdateAnimationState(true); // Signal switching state
+                UpdateAnimationState(true); 
                 return;
             }
 
-            // 5. Movement Input
+            // 4. Movement Input
             horizontalInput = 0f;
             if (Input.IsKeyPressed(Key.A)) horizontalInput = -1f;
             else if (Input.IsKeyPressed(Key.D)) horizontalInput = 1f;
 
-            if (Input.IsKeyTriggered(Key.Space) && (IsGrounded || coyoteFramesRemaining > 0) && !isPhasing) jumpRequested = true;
+            // 5. FRAME-PERFECT GROUND & COYOTE CHECK
+            bool wasGroundedThisFrame = IsGrounded;
+            CheckGround();
 
-            // 6. Visual Logic
+            if (IsGrounded) coyoteTimeTimer = coyoteTime;
+            else if (coyoteTimeTimer > 0.0f) coyoteTimeTimer -= (float)Time.DT;
+
+            // 6. PASSTHROUGH LOGIC
+            if (isPhasing)
+            {
+                if (passthroughContactCount == 0) {
+                    passthroughBufferTimer -= (float)Time.DT;
+                    if (passthroughBufferTimer <= 0.0f) {
+                        isPhasing = false; // Fully cleared platform!
+                    }
+                } else {
+                    passthroughBufferTimer = 0.01f; // Reset buffer while inside
+                }
+            }
+
+            if (Input.IsKeyHeld(Key.S) && IsGrounded && !isPhasing)
+            {
+                isPhasing = true;
+                passthroughBufferTimer = 0.01f; 
+                dropThroughTimer = 0.25f; 
+            }
+            if (dropThroughTimer > 0.0f) dropThroughTimer -= (float)Time.DT;
+
+            // 7. NEW JUMP LOGIC (Requires jumpReady)
+            if (Input.IsKeyTriggered(Key.Space) && (IsGrounded || coyoteTimeTimer > 0.0f) && !isPhasing && jumpReady) 
+            {
+                jumpRequested = true;
+                jumpReady = false;      // LOCK jump until we start falling
+                coyoteTimeTimer = 0.0f; // Consume coyote time
+            }
+
+            // 8. LANDING LOGIC
+            if (!IsGrounded && rb.LinearVelocity.y < -1.0f) landingDustArmed = true;
+
+            if (!wasGroundedThisFrame && IsGrounded && landingDustArmed && !isPhasing)
+            {
+                TriggerLandingDust();
+                HandleLanding();
+                landingDustArmed = false;
+            }
+
             if (landingDustTimer > 0.0f)
             {
                 landingDustTimer -= (float)Time.DT;
@@ -228,12 +277,9 @@ namespace CrashoutsEngine
         {
             if (tf == null || rb == null || !alive || isPaused) return;
 
-            // Handle Switch Timer and Deferred State Toggle
             if (swapPauseTimer > 0.0f)
             {
                 swapPauseTimer -= FIXED_TIMESTEP;
-                
-                // Toggle mode halfway through the timer (0.5s of a 1.0s pause)
                 if (swapPauseTimer < (swapPause * 0.5f) && !stateChangedThisSwap)
                 {
                     isLight = !isLight;
@@ -244,25 +290,24 @@ namespace CrashoutsEngine
 
             if (jumpCooldown > 0.0f) jumpCooldown -= FIXED_TIMESTEP;
 
-            bool wasGrounded = IsGrounded;
-            CheckGround();
-            if (IsGrounded) coyoteFramesRemaining = coyoteFrames;
-            else if (coyoteFramesRemaining > 0) coyoteFramesRemaining--;
-
-            if (!wasGrounded && IsGrounded && landingDustArmed && !isPhasing)
+            // --- UNLOCK JUMP ---
+            // If our Y velocity is pointing down (or standing still) and our jump cooldown has ended,
+            // we have reached the apex of our jump and are allowed to jump again next time we touch the ground.
+            if (rb.LinearVelocity.y <= 0.1f && jumpCooldown <= 0.0f && !jumpRequested)
             {
-                TriggerLandingDust();
-                landingDustArmed = false;
+                jumpReady = true;
             }
 
-            HandleLanding();
-
+            // Execute jump physics
             if (jumpRequested && !isDialogueActive)
             {
                 AudioManager.GetInstance().PlayAttached("JumpUp", Entity.ID);
                 rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
-                IsGrounded = false; jumpRequested = false; jumpCooldown = 0.1f; landingDustArmed = true; coyoteFramesRemaining = 0;
+                
+                IsGrounded = false; 
+                jumpRequested = false; 
+                jumpCooldown = 0.1f; 
             }
 
             ApplyMovementPhysics();
@@ -284,19 +329,8 @@ namespace CrashoutsEngine
 
             if (isSwitching)
             {
-                // CRITICAL: We choose the animation based on what we are BECOMING.
-                // If state has NOT changed yet, we play the "out" animation for current mode.
-                // If it HAS changed, we play the same animation to finish the transition.
-                if (!stateChangedThisSwap)
-                {
-                    targetState = isLight ? "playerSwitch" : "playerSwitchLight";
-                }
-                else
-                {
-                    // After the toggle, we are now technically in the target mode
-                    // so we keep playing the transition that matches our new mode's "entry".
-                    targetState = isLight ? "playerSwitchLight" : "playerSwitch";
-                }
+                if (!stateChangedThisSwap) targetState = isLight ? "playerSwitch" : "playerSwitchLight";
+                else targetState = isLight ? "playerSwitchLight" : "playerSwitch";
             }
             else
             {
@@ -338,7 +372,8 @@ namespace CrashoutsEngine
         {
             if (jumpCooldown > 0.0f) { IsGrounded = false; return; }
             float halfH = Math.Abs(tf.Size.y) * 0.5f;
-            float buffer = 5.0f;
+            float buffer = 10.0f; 
+            
             float xOff = groundCheckWidth * 0.5f;
             CEVec3 origin = tf.Position;
             CEVec3 startL = new CEVec3(origin.x - xOff, origin.y, origin.z);
@@ -350,7 +385,8 @@ namespace CrashoutsEngine
             bool leftG = hitL && hitID != 0 && IsGroundOrPlatform(hitID);
             bool hitR = InternalCalls.Raycast(ref startR, ref endR, out hitID, Entity.ID);
             bool rightG = hitR && hitID != 0 && IsGroundOrPlatform(hitID);
-            IsGrounded = (leftG || rightG) && rb.LinearVelocity.y <= 0.1f;
+            
+            IsGrounded = (leftG || rightG) && rb.LinearVelocity.y <= 15.0f; 
         }
 
         private bool IsGroundOrPlatform(uint id)
@@ -358,7 +394,11 @@ namespace CrashoutsEngine
             var tag = new Entity(id).GetComponent<TagComponent>();
             if (tag == null) return false;
             if (tag.HasTag("Ground") || tag.HasTag("Platform")) return true;
-            if (tag.HasTag("Passthrough") && !isPhasing) return true;
+            if (tag.HasTag("Passthrough"))
+            {
+                if (rb.LinearVelocity.y > 0.1f || isPhasing || dropThroughTimer > 0.0f) return false;
+                return true;
+            }
             return false;
         }
 
@@ -369,8 +409,8 @@ namespace CrashoutsEngine
             var tag = new Entity(otherID).GetComponent<TagComponent>();
             if (tag != null && tag.HasTag("Passthrough"))
             {
-                if (rb.LinearVelocity.y > 0.1f || Input.IsKeyHeld(Key.S)) isPhasing = true;
-                return !isPhasing;
+                if (rb.LinearVelocity.y > 0.1f || isPhasing || dropThroughTimer > 0.0f) return false;
+                return true; 
             }
             return true;
         }
@@ -389,7 +429,11 @@ namespace CrashoutsEngine
             var tag = new Entity(otherID).GetComponent<TagComponent>();
             if (tag == null) return;
             if (tag.HasTag("Wall")) OnWall = false;
-            if (tag.HasTag("Passthrough")) { passthroughContactCount--; if (passthroughContactCount <= 0) { passthroughContactCount = 0; isPhasing = false; } }
+            if (tag.HasTag("Passthrough")) 
+            { 
+                passthroughContactCount--; 
+                if (passthroughContactCount < 0) passthroughContactCount = 0; 
+            }
         }
 
         // --- UTILS ---
@@ -420,24 +464,34 @@ namespace CrashoutsEngine
             } else footstepTimer = 0.0f;
         }
 
-        private void HandleLanding() { if (IsGrounded && !wasGroundedLastFrame && !isPhasing) AudioManager.GetInstance().PlayAttached("jumpLand", Entity.ID); wasGroundedLastFrame = IsGrounded; }
-        private void TriggerLandingDust() { if (landingDustID == 0 || tf == null) return; var dustTf = new Entity(landingDustID).GetComponent<TransformComponent>(); if (dustTf != null) dustTf.Position = new CEVec3(tf.Position.x, tf.Position.y - Math.Abs(tf.Size.y) * 0.5f, dustTf.Position.z); InternalCalls.Particle_SetEmitting(landingDustID, true); landingDustTimer = dustBurstDuration; }
+        private void HandleLanding() { AudioManager.GetInstance().PlayAttached("jumpLand", Entity.ID); }
+        
+        private void TriggerLandingDust() 
+        { 
+            if (landingDustID == 0 || tf == null) return; 
+            var dustTf = new Entity(landingDustID).GetComponent<TransformComponent>(); 
+            if (dustTf != null) dustTf.Position = new CEVec3(tf.Position.x, tf.Position.y - Math.Abs(tf.Size.y) * 0.5f, dustTf.Position.z); 
+            InternalCalls.Particle_SetEmitting(landingDustID, true); 
+            landingDustTimer = dustBurstDuration; 
+        }
+
         private void HandleDeath()
         {
             alive = false;
-            if (!reloadOnDeath)
-            {
-                Respawn();
-                return;
-            }
-
+            if (!reloadOnDeath) { Respawn(); return; }
             if (!SceneManager.IsTransitioning())
             {
                 string target = string.IsNullOrEmpty(reloadSceneName) ? "tutorial2" : reloadSceneName;
                 SceneManager.LoadScene(target, 1.0f);
             }
         }
-        public void Respawn() { alive = true; tf.Position = respawnPos; rb.LinearVelocity = new CEVec3(0, 0, 0); CurrentEnergy = MaxEnergy; isPhasing = false; passthroughContactCount = 0; }
+
+        public void Respawn() 
+        { 
+            alive = true; tf.Position = respawnPos; rb.LinearVelocity = new CEVec3(0, 0, 0); 
+            CurrentEnergy = MaxEnergy; isPhasing = false; passthroughContactCount = 0; passthroughBufferTimer = 0.0f; 
+            dropThroughTimer = 0.0f; jumpReady = true;
+        }
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
         public void RemoveEnergy(float amount) { CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f); }
         public void UpdateCheckpoint(CEVec3 newPos) { respawnPos = newPos; }

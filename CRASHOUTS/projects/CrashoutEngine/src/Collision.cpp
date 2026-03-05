@@ -1080,9 +1080,11 @@ namespace Collision {
 		std::vector<CrashoutsEngine::Entity> colliderEntities =
 			globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
 
-		if (state == EngineState::STOP) {
-			lastFrameCollision.clear();
-			currentFrameCollision.clear();
+		if (subStepIndex == 0) {
+			if (state == EngineState::STOP) {
+				lastFrameCollision.clear();
+			}
+			currentFrameCollision.clear(); // Fresh start for this frame's accumulation
 		}
 
 		// --- SPLIT STATIC AND DYNAMIC LISTS ---
@@ -1237,45 +1239,68 @@ namespace Collision {
 
 		// Merge results back to main thread
 		for (auto& res : threadResults) {
+			// Physics needs these immediately
 			m_FrameCollisions.insert(m_FrameCollisions.end(), res.events.begin(), res.events.end());
-			currentFrameCollision.insert(currentFrameCollision.end(), res.contacts.begin(), res.contacts.end());
 
-			for (auto& msg : res.messages) {
-				CollisionMessage cmsg{ msg.type, msg.manifold, msg.e1, msg.e2 };
-				sendMessage(cmsg);
+			if (state == EngineState::PLAY) {
+				// Accumulate contacts, ensuring we only fire Enter/Stay ONCE per macro-frame!
+				for (size_t i = 0; i < res.contacts.size(); ++i) {
+					ContactPair pair = res.contacts[i].contacts;
+
+					if (!isPairInCollection(pair, currentFrameCollision)) {
+						currentFrameCollision.push_back(res.contacts[i]);
+
+						auto& msg = res.messages[i];
+						CollisionMessage cmsg{ msg.type, msg.manifold, msg.e1, msg.e2 };
+						sendMessage(cmsg);
+					}
+				}
 			}
 		}
 
 		if (state == EngineState::PLAY) {
-			// --- EXIT EVENT LOOP ---
-			for (ContactInformation const& contactInfo : lastFrameCollision) {
-				if (!isPairInCollection(contactInfo.contacts, currentFrameCollision)) {
+			// --- DEFER EXITS ---
+			// ONLY evaluate Exits on the FINAL sub-step (index 3). 
+			// This prevents non-CCD objects from instantly "exiting" on sub-step 1!
+			if (subStepIndex == 3) {
+				for (ContactInformation const& contactInfo : lastFrameCollision) {
+					if (!isPairInCollection(contactInfo.contacts, currentFrameCollision)) {
 
-					using namespace Messaging;
-					EventType exitType = EventType::CollisionExit;
+						using namespace Messaging;
+						EventType exitType = EventType::CollisionExit;
 
-					if (globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.first) &&
-						globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.second))
-					{
-						auto* c1 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.first);
-						auto* c2 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.second);
+						if (globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.first) &&
+							globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.second))
+						{
+							auto* c1 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.first);
+							auto* c2 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.second);
 
-						if (c1->collider->isTrigger || c2->collider->isTrigger) {
-							exitType = EventType::TriggerExit;
+							if (c1->collider->isTrigger || c2->collider->isTrigger) {
+								exitType = EventType::TriggerExit;
+							}
 						}
-					}
 
-					CollisionMessage exitMessage{ exitType, contactInfo.colManifold, contactInfo.contacts.first, contactInfo.contacts.second };
-					sendMessage(exitMessage);
+						CollisionMessage exitMessage{ exitType, contactInfo.colManifold, contactInfo.contacts.first, contactInfo.contacts.second };
+						sendMessage(exitMessage);
+					}
 				}
+				std::swap(currentFrameCollision, lastFrameCollision);
 			}
-			std::swap(currentFrameCollision, lastFrameCollision);
-			currentFrameCollision.clear();
 		}
 
-		if (state == EngineState::STOP) {
+		if (state == EngineState::STOP && subStepIndex == 0) {
 			currentFrameCollision.clear();
 			lastFrameCollision.clear();
+		}
+
+		// --- RESTORE DEBUG RENDERING ---
+		// If this is the final sub-step, repopulate m_FrameCollisions with the ENTIRE macro-frame's 
+		// accumulation so the Debug Renderer correctly colors all hits red!
+		if (subStepIndex == 3) {
+			m_FrameCollisions.clear();
+			for (auto& info : currentFrameCollision) {
+				m_FrameCollisions.push_back(CollisionEvent{ info.colManifold, info.contacts.first, info.contacts.second });
+			}
 		}
 	}
 

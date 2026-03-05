@@ -9766,7 +9766,7 @@
             "name": "Passthrough_Tiles",
             "uuid": 9909013401528399608,
             "tag": {
-                "tagMask": 18
+                "tagMask": 10
             },
             "transform": {
                 "rotation": 0.0,
@@ -19292,13 +19292,13 @@
                     {
                         "className": "MenuButtons",
                         "fields": {
-                            "StartBtn": 0,
-                            "SettingsBtn": 0,
-                            "CloseBtn": 0,
-                            "QuitBtn": 0,
-                            "QuitCheckPanel": 0,
-                            "YesBtn": 0,
-                            "NoBtn": 0
+                            "StartBtn": 2241071384,
+                            "SettingsBtn": 2241071384,
+                            "CloseBtn": 2241071384,
+                            "QuitBtn": 2241071384,
+                            "QuitCheckPanel": 2241071384,
+                            "YesBtn": 2241071384,
+                            "NoBtn": 2241071384
                         }
                     }
                 ]
@@ -21777,7 +21777,7 @@
                             "footstepInterval": 0.30000001192092898,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "coyoteFrames": 6,
+                            "coyoteTime": 0.15000000596046449,
                             "goalNoOfPlates": 2,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
@@ -27426,7 +27426,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 181,
+                            "lookAtEntity": 2241071384,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -27565,7 +27565,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 183,
+                            "lookAtEntity": 2241071384,
                             "resetOnExit": true,
                             "zoneDampingY": 1.7000000476837159
                         }
@@ -27704,7 +27704,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 185,
+                            "lookAtEntity": 2241071384,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
