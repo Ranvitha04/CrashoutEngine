@@ -10843,12 +10843,13 @@
             },
             "light": {
                 "active": true,
-                "intensity": 1.600000023841858,
-                "radius": 32.0,
+                "intensity": 1.5,
+                "radius": 39.0,
                 "affectBloom": true,
                 "useTransform": false,
                 "renderSelf": false,
                 "renderBehind": false,
+                "ignoreParentOccluders": true,
                 "color": {
                     "x": 0.5607843399047852,
                     "y": 0.19607843458652497,
@@ -21851,6 +21852,7 @@
                 "useTransform": true,
                 "renderSelf": true,
                 "renderBehind": true,
+                "ignoreParentOccluders": true,
                 "color": {
                     "x": 1.0,
                     "y": 1.0,

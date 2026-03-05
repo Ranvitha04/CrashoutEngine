@@ -11,7 +11,7 @@ Declares and registers built-in Debug Menu adapters & providers:
 These adapters make the ECS inspector and physics/game-state panels
 runtime-extensible and project-agnostic.
 
-All content ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -52,6 +52,7 @@ All content ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢�
 #include "keyframe.h" 
 #include "hierarchycomponent.h"
 #include "particlecomponent.h"
+#include "leaderboardcomponent.h"
 #include "activecomponent.h"
 #include "tagcomponent.h"
 #include "spritecomponent.h"
@@ -2525,6 +2526,7 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableBool("Affects Bloom", lc->affectBloom);
 			UIHelpers::DrawUndoableBool("Use Transform", lc->useTransform);
 			UIHelpers::DrawUndoableBool("Render Behind Entity", lc->renderBehind);
+			UIHelpers::DrawUndoableBool("Ignore Parent Occluders", lc->ignoreParentOccluders);
 		}
 	};
 
@@ -3642,6 +3644,105 @@ namespace CrashoutsEngine
 		}
 	};
 
+	struct LeaderboardAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "Leaderboard"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::LeaderboardComponent>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			if (!has(ecs, e)) ecs.AddComponent<Component::LeaderboardComponent>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::LeaderboardComponent>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			auto* lc = ecs.GetComponent<Component::LeaderboardComponent>(e);
+			if (!lc) return;
+
+			ImGui::SeparatorText("Connection");
+			UIHelpers::DrawUndoableString("Base URL", lc->baseUrl);
+			UIHelpers::DrawUndoableInt("Limit", lc->limit, 1.0f, 1, 100);
+
+			ImGui::SeparatorText("Refresh");
+			UIHelpers::DrawUndoableBool("Auto Refresh", lc->autoRefresh);
+			UIHelpers::DrawUndoableBool("Fetch On Start", lc->fetchOnStart);
+			UIHelpers::DrawUndoableBool("Update In Editor", lc->updateInEditor);
+			UIHelpers::DrawUndoableFloat("Refresh Interval (s)", lc->refreshIntervalSec, 0.1f, 0.0f, 3600.0f);
+
+			if (ImGui::Button("Fetch Now")) {
+				lc->requestNow = true;
+			}
+
+			ImGui::SeparatorText("UI Binding");
+			UIHelpers::DrawUndoableString("Root Entity Name", lc->rootEntityName);
+			UIHelpers::DrawUndoableString("Entry Prefix", lc->entryNamePrefix);
+			UIHelpers::DrawUndoableInt("Entry Index Base", lc->entryIndexBase, 1.0f, 0, 1000);
+			UIHelpers::DrawUndoableString("Line Format", lc->lineFormat);
+			UIHelpers::DrawUndoableString("Empty Line Text", lc->emptyLineText);
+
+			ImGui::SeparatorText("Column Mode");
+			UIHelpers::DrawUndoableBool("Use Columns", lc->useColumns);
+			UIHelpers::DrawUndoableString("Rank Prefix", lc->rankNamePrefix);
+			UIHelpers::DrawUndoableString("Name Prefix", lc->playerNamePrefix);
+			UIHelpers::DrawUndoableString("Score Prefix", lc->scoreNamePrefix);
+			UIHelpers::DrawUndoableString("Date Prefix", lc->dateNamePrefix);
+			
+			// Column key/prefix lists (comma-separated)
+			{
+				auto join = [](const std::vector<std::string>& v) {
+					std::string out;
+					for (size_t i = 0; i < v.size(); ++i) {
+						if (i > 0) out += ",";
+						out += v[i];
+					}
+					return out;
+				};
+				auto split = [](const std::string& s) {
+					std::vector<std::string> out;
+					std::string cur;
+					for (char c : s) {
+						if (c == ',') {
+							if (!cur.empty()) out.push_back(cur);
+							cur.clear();
+						} else if (c != ' ' && c != '\t') {
+							cur += c;
+						}
+					}
+					if (!cur.empty()) out.push_back(cur);
+					return out;
+				};
+
+				std::string keys = join(lc->columnKeys);
+				std::string prefixes = join(lc->columnPrefixes);
+				UIHelpers::DrawUndoableString("Column Keys (CSV)", keys);
+				UIHelpers::DrawUndoableString("Column Prefixes (CSV)", prefixes);
+				lc->columnKeys = split(keys);
+				lc->columnPrefixes = split(prefixes);
+			}
+
+			ImGui::SeparatorText("Header / Status");
+			UIHelpers::DrawUndoableString("Header Entity Name", lc->headerEntityName);
+			UIHelpers::DrawUndoableString("Header Text", lc->headerText);
+			UIHelpers::DrawUndoableString("Status Entity Name", lc->statusEntityName);
+			UIHelpers::DrawUndoableString("Loading Text", lc->loadingText);
+			UIHelpers::DrawUndoableString("Error Text", lc->errorText);
+			UIHelpers::DrawUndoableString("Empty Status Text", lc->emptyStatusText);
+
+			ImGui::SeparatorText("Self Text");
+			UIHelpers::DrawUndoableBool("Render To Self Text", lc->renderToSelfText);
+			UIHelpers::DrawUndoableBool("Include Header", lc->selfTextIncludeHeader);
+			UIHelpers::DrawUndoableBool("Include Status", lc->selfTextIncludeStatus);
+			UIHelpers::DrawUndoableString("Self Separator", lc->selfTextSeparator);
+
+			ImGui::SeparatorText("Preview");
+			ImGui::Text("Entries: %zu", lc->entries.size());
+			for (size_t i = 0; i < lc->entries.size() && i < 5; ++i) {
+				const auto& ent = lc->entries[i];
+				ImGui::Text("%d. %s - %d", ent.rank, ent.name.c_str(), ent.score);
+			}
+		}
+	};
+
 
 	/*!
 	@brief Physics debug provider (global forces / integrators).
@@ -3813,6 +3914,7 @@ namespace CrashoutsEngine
 	static KeyframeAnimatorAdapter gKeyframeAdapter;
 	static ParticleSystemAdapter gParticleAdapter;
 	static VideoAdapter gVideoAdapter;
+	static LeaderboardAdapter gLeaderboardAdapter;
 	static CheckpointAdapter gCheckpointAdapter;
 	static TriggerMetadataAdapter gTriggerMetadataAdapter;
 }
@@ -3846,6 +3948,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
 	ComponentRegistry::instance().registerAdapter(&gKeyframeAdapter);
 	ComponentRegistry::instance().registerAdapter(&gParticleAdapter);
 	ComponentRegistry::instance().registerAdapter(&gVideoAdapter);
+	ComponentRegistry::instance().registerAdapter(&gLeaderboardAdapter);
 	ComponentRegistry::instance().registerAdapter(&gCheckpointAdapter);
 	ComponentRegistry::instance().registerAdapter(&gTriggerMetadataAdapter);
 	DebugReflection::SetGameStateProvider(&gProvider);
