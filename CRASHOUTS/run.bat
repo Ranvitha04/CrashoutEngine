@@ -2,6 +2,12 @@
 setlocal enabledelayedexpansion
 pushd "%~dp0"
 
+:: ======================================================
+:: Initialize Visual Studio MSVC environment tools
+:: This is required for building the cURL networking library!
+:: ======================================================
+call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+
 set "start=%time%"
 
 :: ======================================================

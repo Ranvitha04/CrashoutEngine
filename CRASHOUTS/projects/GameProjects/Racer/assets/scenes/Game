@@ -72,7 +72,7 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.1764705926179886,
+                    "x": 0.17647051811218263,
                     "y": 1.0,
                     "z": 0.0,
                     "w": 1.0
@@ -95,6 +95,8 @@
                         "fields": {
                             "ThrustForce": 1000.0,
                             "RotationSpeed": 150.0,
+                            "CurrentSceneName": "Game",
+                            "MenuSceneName": "StartScene",
                             "SpaceDrag": 0.9800000190734863
                         }
                     },
@@ -119,6 +121,26 @@
                 "yBounds": {
                     "x": -123.69999694824219,
                     "y": 107.0999984741211
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.10000000149011612,
+                "radius": 100.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": false,
+                "ignoreParentOccluders": false,
+                "color": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "layer": {
@@ -15406,7 +15428,7 @@
                     "x": 1.0,
                     "y": 0.0,
                     "z": 0.0,
-                    "w": 0.7237569093704224
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -15428,6 +15450,26 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.25,
+                "radius": 100.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": false,
+                "ignoreParentOccluders": true,
+                "color": {
+                    "x": 1.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Player",

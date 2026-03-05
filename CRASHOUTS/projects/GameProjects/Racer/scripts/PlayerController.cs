@@ -8,6 +8,8 @@ namespace CrashoutsEngine
     {
         public float ThrustForce = 500.0f;
         public float RotationSpeed = 150.0f; 
+        public string CurrentSceneName = "Game";
+        public string MenuSceneName = "StartScene";
         
         // Add a drag variable so they don't glide forever
         public float SpaceDrag = 0.98f; 
@@ -28,7 +30,22 @@ namespace CrashoutsEngine
             }
         }
 
-        public override void Update() { }
+        public override void Update()
+        {
+            // Restart Current Scene
+            if (Input.IsKeyPressed(Key.R))
+            {
+                Debug.Log($"[C#] Restarting Game. Loading Scene: {CurrentSceneName}");
+                SceneManager.LoadScene(CurrentSceneName, 0.5f);
+            }
+
+            // Return to Menu Scene
+            if (Input.IsKeyPressed(Key.Escape))
+            {
+                Debug.Log($"[C#] Returning to Menu. Loading Scene: {MenuSceneName}");
+                SceneManager.LoadScene(MenuSceneName, 0.5f);
+            }
+        }
 
         public override void FixedUpdate()
         {

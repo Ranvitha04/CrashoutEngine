@@ -155,22 +155,6 @@
     ],
     "shaders": [
         {
-            "name": "CrashoutShader",
-            "path": "CrashoutShader"
-        },
-        {
-            "name": "BrightShader",
-            "path": "BrightShader"
-        },
-        {
-            "name": "PPShader",
-            "path": "PPShader"
-        },
-        {
-            "name": "TextShader",
-            "path": "TextShader"
-        },
-        {
             "name": "BloomCompositeShader",
             "path": "BloomCompositeShader"
         },
@@ -183,12 +167,28 @@
             "path": "BlurShader"
         },
         {
-            "name": "CombineShader",
-            "path": "CombineShader"
+            "name": "PPShader",
+            "path": "PPShader"
+        },
+        {
+            "name": "BrightShader",
+            "path": "BrightShader"
         },
         {
             "name": "OccluderMaskShader",
             "path": "OccluderMaskShader"
+        },
+        {
+            "name": "CombineShader",
+            "path": "CombineShader"
+        },
+        {
+            "name": "CrashoutShader",
+            "path": "CrashoutShader"
+        },
+        {
+            "name": "TextShader",
+            "path": "TextShader"
         }
     ],
     "fonts": [

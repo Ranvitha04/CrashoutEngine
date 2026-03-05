@@ -1156,9 +1156,13 @@ namespace Collision {
 				AABBRect region = GetAABB(*(collider1->collider), transform1->position);
 				quadTree.Query(region, localCollidableObjects);
 
-				// Also add ALL OTHER Dynamic objects to the check list
+				// Also add ALL OTHER Dynamic objects to the check list.
+				// We do the ID check HERE to prevent double-checking Dynamic vs Dynamic,
+				// while ensuring Static objects from the QuadTree are never dropped!
 				for (CrashoutsEngine::Entity& dEnt : dynamicEntities) {
-					if (entity1 != dEnt) localCollidableObjects.push_back(dEnt);
+					if (entity1 < dEnt) {
+						localCollidableObjects.push_back(dEnt);
+					}
 				}
 
 				// NARROW PHASE COLLISION CHECK
