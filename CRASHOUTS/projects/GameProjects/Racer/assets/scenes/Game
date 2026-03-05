@@ -126,7 +126,7 @@
             "light": {
                 "active": true,
                 "intensity": 0.10000000149011612,
-                "radius": 100.0,
+                "radius": 50.0,
                 "affectBloom": true,
                 "useTransform": true,
                 "renderSelf": true,
@@ -15454,7 +15454,7 @@
             "light": {
                 "active": true,
                 "intensity": 0.25,
-                "radius": 100.0,
+                "radius": 50.0,
                 "affectBloom": true,
                 "useTransform": true,
                 "renderSelf": true,
