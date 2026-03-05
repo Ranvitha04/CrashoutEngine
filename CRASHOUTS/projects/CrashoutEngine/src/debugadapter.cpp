@@ -11,7 +11,7 @@ Declares and registers built-in Debug Menu adapters & providers:
 These adapters make the ECS inspector and physics/game-state panels
 runtime-extensible and project-agnostic.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -22,6 +22,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "rendering.h"
 #include <imgui.h>
 #include <algorithm>
+#include <cmath>
 #include <filesystem>
 //#include <numeric>
 #include <fstream>
@@ -2475,10 +2476,55 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableFloat("Brightness", ppc->brightness, 0.01f, -1.0f, 1.0f);
 			UIHelpers::DrawUndoableFloat("Contrast", ppc->contrast, 0.01f, -1.0f, 1.0f);
 			UIHelpers::DrawUndoableFloat("Saturation", ppc->saturation, 0.01f, -1.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Ambient", ppc->ambient, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableBool("Shadows Enabled", ppc->shadowsEnabled);
+			ImGui::SliderInt("Shadow Rays", &ppc->shadowRays, 8, 512);
+			UIHelpers::DrawUndoableBool("Bloom Enabled", ppc->bloomEnabled);
+			UIHelpers::DrawUndoableFloat("Bloom Threshold", ppc->bloomThreshold, 0.01f, 0.0f, 5.0f);
+			UIHelpers::DrawUndoableFloat("Bloom Intensity", ppc->bloomIntensity, 0.01f, 0.0f, 5.0f);
+			ImGui::SliderInt("Bloom Iterations", &ppc->bloomIterations, 0, 12);
 
 			if (ImGui::Button("Reset")) {
 				ppc->brightness = 0.0f; ppc->contrast = 0.0f; ppc->saturation = 0.0f;
+				ppc->ambient = 0.15f;
+				ppc->shadowsEnabled = true;
+				ppc->shadowRays = 128;
+				ppc->bloomEnabled = true;
+				ppc->bloomThreshold = 1.0f;
+				ppc->bloomIntensity = 0.8f;
+				ppc->bloomIterations = 6;
 			}
+		}
+	};
+
+	/*!
+	 @brief Adapter for editing Component::LightComponent.
+	 */
+	struct LightAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "Light"; }
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::LightComponent>(e);
+		}
+		void add(ECS& ecs, Entity e) override {
+			if (!has(ecs, e)) ecs.AddComponent<Component::LightComponent>(e);
+		}
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) ecs.RemoveComponent<Component::LightComponent>(e);
+		}
+		void drawInspector(ECS& ecs, Entity e) override {
+			auto* lc = ecs.GetComponent<Component::LightComponent>(e);
+			if (!lc) return;
+
+			UIHelpers::DrawUndoableBool("Active", lc->active);
+			float color[3] = { lc->color.x, lc->color.y, lc->color.z };
+			if (ImGui::ColorEdit3("Color", color)) {
+				lc->color = { color[0], color[1], color[2] };
+			}
+			UIHelpers::DrawUndoableFloat("Intensity", lc->intensity, 0.05f, 0.0f, 10.0f);
+			UIHelpers::DrawUndoableFloat("Radius", lc->radius, 1.0f, 0.0f, 5000.0f);
+			UIHelpers::DrawUndoableBool("Affects Bloom", lc->affectBloom);
+			UIHelpers::DrawUndoableBool("Use Transform", lc->useTransform);
+			UIHelpers::DrawUndoableBool("Render Behind Entity", lc->renderBehind);
 		}
 	};
 
@@ -2577,6 +2623,88 @@ namespace CrashoutsEngine
 				tm->isCacheDirty = true; // Redraw grid lines if size changes
 			}
 			if (ImGui::Checkbox("Exclude Outer Boundary Colliders", &tm->excludeOuterBoundary)) {
+				tm->isCacheDirty = true;
+			}
+
+			ImGui::SeparatorText("Tile Map Light");
+			bool hasLight = ecs.HasComponent<Component::LightComponent>(e);
+			bool enableLight = hasLight;
+			if (ImGui::Checkbox("Enable Tile Map Light", &enableLight)) {
+				if (enableLight && !hasLight) {
+					auto& lc = ecs.AddComponent<Component::LightComponent>(e);
+					lc.useTransform = false;
+					lc.renderSelf = false;
+				}
+				else if (!enableLight && hasLight) {
+					ecs.RemoveComponent<Component::LightComponent>(e);
+				}
+			}
+
+			if (enableLight && ecs.HasComponent<Component::LightComponent>(e)) {
+				auto* lc = ecs.GetComponent<Component::LightComponent>(e);
+				if (lc) {
+					if (ImGui::Checkbox("Apply Light To Each Tile", &tm->lightPerTile)) {
+						tm->isCacheDirty = true;
+					}
+					float prevIntensity = lc->intensity;
+					float prevRadius = lc->radius;
+					bool prevAffectBloom = lc->affectBloom;
+					bool prevUseTransform = lc->useTransform;
+					bool prevRenderBehind = lc->renderBehind;
+					CEVec3 prevColor = lc->color;
+
+					float color[3] = { lc->color.x, lc->color.y, lc->color.z };
+					if (ImGui::ColorEdit3("Light Color", color)) {
+						lc->color = { color[0], color[1], color[2] };
+					}
+					UIHelpers::DrawUndoableFloat("Light Intensity", lc->intensity, 0.05f, 0.0f, 10.0f);
+					UIHelpers::DrawUndoableFloat("Light Radius", lc->radius, 1.0f, 0.0f, 100000.0f);
+					UIHelpers::DrawUndoableBool("Affects Bloom", lc->affectBloom);
+					UIHelpers::DrawUndoableBool("Use Transform", lc->useTransform);
+					UIHelpers::DrawUndoableBool("Render Parent Light", lc->renderSelf);
+					UIHelpers::DrawUndoableBool("Render Behind Entity", lc->renderBehind);
+
+					if (lc->intensity != prevIntensity || lc->radius != prevRadius ||
+						lc->affectBloom != prevAffectBloom || lc->useTransform != prevUseTransform ||
+						lc->renderBehind != prevRenderBehind ||
+						lc->color.x != prevColor.x || lc->color.y != prevColor.y || lc->color.z != prevColor.z) {
+						tm->isCacheDirty = true;
+					}
+
+					if (ImGui::Button("Apply Settings To All Tile Lights")) {
+						bool applied = false;
+						if (ecs.HasComponent<Component::ChildrenComponent>(e)) {
+							const auto* children = ecs.GetComponent<Component::ChildrenComponent>(e);
+							if (children) {
+								for (Entity child : children->children) {
+									if (!ecs.HasComponent<Component::LightComponent>(child)) continue;
+									auto* childLight = ecs.GetComponent<Component::LightComponent>(child);
+									if (!childLight) continue;
+									childLight->color = lc->color;
+									childLight->intensity = lc->intensity;
+									childLight->radius = lc->radius;
+									childLight->affectBloom = lc->affectBloom;
+									childLight->active = lc->active;
+									childLight->useTransform = true;
+									childLight->renderSelf = true;
+									childLight->renderBehind = lc->renderBehind;
+									applied = true;
+								}
+							}
+						}
+						if (!applied) {
+							tm->isCacheDirty = true;
+						}
+					}
+				}
+			}
+
+			ImGui::SeparatorText("Tile Map Emissive");
+			float prevBoost = tm->emissiveBoost;
+			if (ImGui::SliderFloat("Emissive Boost", &tm->emissiveBoost, 0.0f, 5.0f)) {
+				if (tm->emissiveBoost < 0.0f) tm->emissiveBoost = 0.0f;
+			}
+			if (tm->emissiveBoost != prevBoost) {
 				tm->isCacheDirty = true;
 			}
 
@@ -3678,6 +3806,7 @@ namespace CrashoutsEngine
 	static CameraAdapter gCameraAdapter;
 	static GuiAdapter gGuiAdapter;
 	static PPAdapter gPPAdapter;
+	static LightAdapter gLightAdapter;
 	static TileMapAdapter gTileMapAdapter;
 	static GameStateProvider gProvider;
 	static BuiltinPhysicsProvider gBuiltinPhys;
@@ -3712,6 +3841,7 @@ extern "C" void RegisterBuiltinComponentAdapters() {
 	ComponentRegistry::instance().registerAdapter(&gCameraAdapter);
 	ComponentRegistry::instance().registerAdapter(&gGuiAdapter);
 	ComponentRegistry::instance().registerAdapter(&gPPAdapter);
+	ComponentRegistry::instance().registerAdapter(&gLightAdapter);
 	ComponentRegistry::instance().registerAdapter(&gTileMapAdapter);
 	ComponentRegistry::instance().registerAdapter(&gKeyframeAdapter);
 	ComponentRegistry::instance().registerAdapter(&gParticleAdapter);

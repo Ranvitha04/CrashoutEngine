@@ -58,6 +58,7 @@ public class AudioManager
     public enum FMOD_DSP_TYPE
     {
         UNKNOWN,
+        MIXER,
         OSCILLATOR,
         LOWPASS,
         ITLOWPASS,
@@ -213,6 +214,36 @@ public class AudioManager
     public static void RemoveClipDSP(uint entityID, string clipName, FMOD_DSP_TYPE dspType)
     {
         InternalCalls.Audio_RemoveClipDSP(entityID, clipName, (int)dspType);
+    }
+
+    public static void SetClipDSPParameter(uint entityID, string clipName, FMOD_DSP_TYPE dspType, int index, float value)
+    {
+        InternalCalls.Audio_SetClipDSPParameter(entityID, clipName, (int)dspType, index, value);
+    }
+
+    public static void AddGroupDSP(bool isMusic, FMOD_DSP_TYPE dspType)
+    {
+        InternalCalls.Audio_AddGroupDSP(isMusic, (int)dspType);
+    }
+
+    public static void RemoveGroupDSP(bool isMusic, FMOD_DSP_TYPE dspType)
+    {
+        InternalCalls.Audio_RemoveGroupDSP(isMusic, (int)dspType);
+    }
+
+    public static void SetGroupDSPParameter(bool isMusic, FMOD_DSP_TYPE dspType, int index, float value)
+    {
+        InternalCalls.Audio_SetGroupDSPParameter(isMusic, (int)dspType, index, value);
+    }
+
+    public static void FadeGroupDSPParameter(bool isMusic, FMOD_DSP_TYPE dspType, int index, float targetValue, float duration)
+    {
+        InternalCalls.Audio_FadeGroupDSPParameter(isMusic, (int)dspType, index, targetValue, duration);
+    }
+
+    public static void FadeGroupVolume(bool isMusic, float targetVolume, float duration)
+    {
+        InternalCalls.Audio_FadeGroupVolume(isMusic, targetVolume, duration);
     }
 
     // === Stop sound attached to an entity ===

@@ -4,7 +4,7 @@
 @date       08/09/2025
 @brief      Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ÃƒÂ¯Ã‚Â¿Ã‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 
 //__________________________________________________________________________*/
@@ -162,6 +162,17 @@ namespace Collision {
 			@return True if something was hit
 			*/
 			bool Raycast(CEVec3 start, CEVec3 end, CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity = 999999);
+
+			/*!
+			@brief Cast a ray and return the first object hit with contact point
+			@param start Start position
+			@param end End position
+			@param outPoint Reference to store hit position
+			@param outEntity Reference to store the entity ID that was hit
+			@param ignoredEntity Entity ID to ignore (e.g. self)
+			@return True if something was hit
+			*/
+			bool RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity = 999999);
 	};
 }
 

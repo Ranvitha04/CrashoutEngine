@@ -22,8 +22,8 @@ namespace CrashoutsEngine
         [SerializeField] private float maxSpeed = 15.0f; 
         [SerializeField] private float moveAudioInterval = 0.4f;
         //[SerializeField] private float stopAudioDistance = 40.0f;
-        [SerializeField] private float minAudioDistance = 1.0f;
-        [SerializeField] private float maxAudioDistance = 50.0f;
+        [SerializeField] private float MaxVolumeMinDistance = 50.0f;
+        [SerializeField] private float MinVolumeMaxDistance = 250.0f;
         [SerializeField] private float detectionRange = 250.0f;
         [SerializeField] private float gravityScale = 2.0f;
         [SerializeField] private float grabRange = 100.0f;
@@ -35,6 +35,7 @@ namespace CrashoutsEngine
         [SerializeField] private float maxMouseDragDist = 400.0f;
         [SerializeField] private float airDrag = 1.0f; 
         [SerializeField] private float stunDuration = 1.0f;
+        [SerializeField] private float pickAnimDuration = 60.0f;
 
         // Patrol Zone
         [SerializeField] private float ledgeBuffer = 40.0f; 
@@ -66,6 +67,10 @@ namespace CrashoutsEngine
         private bool wasThrown = false;
         private bool isStunned = false;
         private float currentStunTime = 0.0f;
+        private bool isPicking = false;
+        private float pickAnimTimer = 0.0f;
+        private CEVec3 pickStartPos;
+        private bool pickStartPosValid = false;
         private float flipCooldown = 0.0f;
         private float ignoreHomeTimer = 0.0f;
         private float patrolTurnTimer = 0.0f;
@@ -172,9 +177,9 @@ namespace CrashoutsEngine
             // Set 3D Distances for all slime sounds to handle distance-based attenuation
             for (int i = 1; i <= 5; i++)
             {
-                AudioManager.SetClip3DDistances(Entity.ID, "slimeMove" + i, minAudioDistance, maxAudioDistance);
+                AudioManager.SetClip3DDistances(Entity.ID, "slimeMove" + i, MaxVolumeMinDistance, MinVolumeMaxDistance);
             }
-            AudioManager.SetClip3DDistances(Entity.ID, "slimeImpact", minAudioDistance, maxAudioDistance);
+            AudioManager.SetClip3DDistances(Entity.ID, "slimeImpact", MaxVolumeMinDistance, MinVolumeMaxDistance);
 
             CollisionEvents.RegisterPreSolve(Entity.ID, this.OnPreSolve);
             CollisionEvents.RegisterCollideEnter(Entity.ID, this.OnCollideEnter);
@@ -208,6 +213,9 @@ namespace CrashoutsEngine
                 isGrabbed = false;
                 wasThrown = false;
                 isStunned = false;
+                isPicking = false;
+                pickAnimTimer = 0.0f;
+                pickStartPosValid = false;
                 isChasing = false;
                 returningHome = false;
                 STOP = false;
@@ -233,15 +241,12 @@ namespace CrashoutsEngine
             if (playerScript != null)
             {
                 HandleGrabInput();
-               
-                if (isGrabbed)
+
+                if (!isGrabbed)
                 {
-                    ClearStopState();
-                    UpdateAnimationState(); 
-                    return;
+                    UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
+                    UpdateHoldColliders(false);
                 }
-                UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
-                UpdateHoldColliders(false);
             }
 
             if (STOP)
@@ -256,6 +261,23 @@ namespace CrashoutsEngine
             }
 
             float dt = (float)Time.DT;
+
+            if (isPicking)
+            {
+                pickAnimTimer -= dt;
+                if (pickAnimTimer <= 0.0f || !isGrabbed)
+                {
+                    isPicking = false;
+                    pickAnimTimer = 0.0f;
+                }
+            }
+
+            if (isGrabbed)
+            {
+                ClearStopState();
+                UpdateAnimationState();
+                return;
+            }
 
             if (isStunned)
             {
@@ -385,7 +407,7 @@ namespace CrashoutsEngine
 
             string targetState = "slimeIdle";
 
-            if (isGrabbed) targetState = "slimeHold";
+            if (isGrabbed) targetState = "slimePick";
             else if (isStunned) targetState = "slimeStunned";
             else if (Math.Abs(rb.LinearVelocity.x) > 1.0f)
             {
@@ -410,7 +432,25 @@ namespace CrashoutsEngine
                 if (playerTf != null)
                 {
                     float offsetX = playerTf.Size.x < 0 ? -30.0f : 30.0f;
-                    tf.Position = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z + 1f);
+                    CEVec3 targetPos = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z + 1f);
+
+                    if (isPicking && pickStartPosValid)
+                    {
+                        float total = Math.Max(pickAnimDuration, 0.0001f);
+                        float progress = 1.0f - (pickAnimTimer / total);
+                        progress = Math.Min(1.0f, Math.Max(0.0f, progress));
+
+                        tf.Position = new CEVec3(
+                            pickStartPos.x + (targetPos.x - pickStartPos.x) * progress,
+                            pickStartPos.y + (targetPos.y - pickStartPos.y) * progress,
+                            pickStartPos.z + (targetPos.z - pickStartPos.z) * progress
+                        );
+                    }
+                    else
+                    {
+                        tf.Position = targetPos;
+                    }
+
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
                     UpdatePlayerAabb(true, playerTf);
                     UpdateHoldColliders(true);
@@ -542,11 +582,20 @@ namespace CrashoutsEngine
                         
                         if (distToPlayer <= grabRange + 50.0f && playerScript.CurrentEnergy > 0) {
                             isGrabbed = true;
+                            isPicking = true;
+                            pickAnimTimer = pickAnimDuration;
+                            pickStartPos = tf.Position;
+                            pickStartPosValid = true;
                             isFollowingPath = false;
                             activePath.Clear();
                             rb.SetDynamic(false);
                             var Tag = Entity.GetComponent<TagComponent>();
                             if (Tag != null) Tag.RemoveTag("Enemy");
+                            if (anim != null)
+                            {
+                                anim.Play("slimePick", true);
+                                currentAnimState = "slimePick";
+                            }
                             Console.WriteLine("[Slime] Grabbed!");
                         }
                     }
@@ -579,6 +628,9 @@ namespace CrashoutsEngine
         {
             isGrabbed = false;
             wasThrown = applyThrow;
+            isPicking = false;
+            pickAnimTimer = 0.0f;
+            pickStartPosValid = false;
             UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
             UpdateHoldColliders(false);
 

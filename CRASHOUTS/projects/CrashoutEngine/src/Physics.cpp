@@ -498,6 +498,8 @@ namespace Physics {
 
 		bool isSimulating = !sPaused;// || sStepOnce;
 
+		double simDt = isSimulating ? fixedDT : 0.0;
+
 		int step = FrameRateController::GetInstance().StepCount();
 
 		// =======================================================
@@ -530,13 +532,10 @@ namespace Physics {
 		/*Fixed step, accumulator will reach the target fixed dt and then execute physics simulation*/
 		for (int i{}; i < step; ++i) {
 
-			// Run the physics pipeline multiple times per frame in tiny increments
-			for (int sub = 0; sub < SUB_STEPS; ++sub) {
-
-				CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
-					for (unsigned int j = start; j < end; ++j) {
-						const CrashoutsEngine::Entity& entity = globalEntities[j];
-						if (!IsEntityActive(globalECS, entity)) continue;
+			CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
+				for (unsigned int j = start; j < end; ++j) {
+					const CrashoutsEngine::Entity& entity = globalEntities[j];
+					if (!IsEntityActive(globalECS, entity)) continue;
 
 						Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
 						//if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
@@ -570,28 +569,28 @@ namespace Physics {
 							}
 						}
 
-						// Compute Inertia
-						if (rigidBody->invInertia == 0.0f) {
-							if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-								auto* colComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
+					// Compute Inertia
+					if (rigidBody->invInertia == 0.0f) {
+						if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+							auto* colComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
 
-								// Safety Check
-								if (colComp && colComp->collider) {
-									float inertia = colComp->collider->CalculateInertia(rigidBody->getMass());
+							// Safety Check
+							if (colComp && colComp->collider) {
+								float inertia = colComp->collider->CalculateInertia(rigidBody->getMass());
 
-									rigidBody->setInertia(inertia);
-								}
+								rigidBody->setInertia(inertia);
 							}
 						}
+					}
 
 					}
 					});
 
-				/*PHYSICS SIM, UPDATE POSITION*/
-				CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
-					for (unsigned int j = start; j < end; ++j) {
-						const CrashoutsEngine::Entity& entity = globalEntities[j];
-						if (!IsEntityActive(globalECS, entity)) continue;
+			/*PHYSICS SIM, UPDATE POSITION*/
+			CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
+				for (unsigned int j = start; j < end; ++j) {
+					const CrashoutsEngine::Entity& entity = globalEntities[j];
+					if (!IsEntityActive(globalECS, entity)) continue;
 
 						if (!globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
 						Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
@@ -663,24 +662,24 @@ namespace Physics {
 					colSys.Update(subDt, physState, sub);
 				}
 
-				// Get collision data from handler
-				const auto& events = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
+			// Get collision data from handler
+			const auto& events = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
 
-				/*IMPULSE RESOLUTION*/
-				for (Collision::CollisionEvent const& evnt : events) {
+			/*IMPULSE RESOLUTION*/
+			for (Collision::CollisionEvent const& evnt : events) {
 
-					// Check C# logic via the manager
-					bool allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity1, evnt.entity2);
+				// Check C# logic via the manager
+				bool allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity1, evnt.entity2);
 
-					// Check the other way too
-					if (allowCollision) {
-						allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity2, evnt.entity1);
-					}
+				// Check the other way too
+				if (allowCollision) {
+					allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity2, evnt.entity1);
+				}
 
-					if (!allowCollision) continue;
+				if (!allowCollision) continue; 
 
-					Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
-					Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
+				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
+				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
 
 					Component::ColliderComponent* col1 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1);
 					Component::ColliderComponent* col2 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2);
@@ -698,15 +697,14 @@ namespace Physics {
 						continue;
 					}
 
-					bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
-					bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
+				bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
+				bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
 
-					if (!isDynamic1 && !isDynamic2) continue;
+				if (!isDynamic1 && !isDynamic2) continue;
 
-					if (isSimulating) {
-						PositionCorrection(evnt, globalECS);
-						ApplyRotationalImpulse(evnt, globalECS, (float)subDt);
-					}
+				if (isSimulating) {
+					PositionCorrection(evnt, globalECS);
+					ApplyRotationalImpulse(evnt, globalECS, (float)simDt);
 				}
 			}
 		}
