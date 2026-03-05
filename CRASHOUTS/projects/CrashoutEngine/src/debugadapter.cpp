@@ -792,6 +792,7 @@ namespace {
 			if (cc->collider != nullptr) {
 				UIHelpers::DrawUndoableBool("Enabled", cc->collider->enabled);
 				UIHelpers::DrawUndoableBool("Is Trigger", cc->collider->isTrigger);
+				UIHelpers::DrawUndoableBool("Is Continuous", cc->collider->isContinuous);
 			}
 
 			// Type Switching

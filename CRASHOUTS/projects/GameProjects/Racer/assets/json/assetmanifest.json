@@ -19,6 +19,12 @@
             "path": "Exo2-Regular.ttf"
         }
     ],
+    "replays": [
+        {
+            "name": "Level1_Ghost",
+            "path": "Level1_Ghost.bin"
+        }
+    ],
     "json": [
         {
             "name": "assetmanifest",

@@ -113,7 +113,7 @@ set /a elapsed=!endms!-!startms!
 set /a minutes=!elapsed!/60000
 set /a seconds=(!elapsed!%%60000)/1000
 echo.
-echo Started : %start% | Finished: %end% | Total: !minutes! min !seconds! sec
+echo Started : %start% ^| Finished: %end% ^| Total: !minutes! min !seconds! sec
 echo.
 
 :FAIL

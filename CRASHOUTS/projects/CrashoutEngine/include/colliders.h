@@ -83,6 +83,7 @@ namespace Collision {
 		CEVec3 offset{};
 		CEVec3 position{};
 		ColliderType ColliderType; /*HELPER FOR UI DROPDOWN*/
+		bool isContinuous = false;
 		bool isTrigger = false;
 		bool enabled = true;
 

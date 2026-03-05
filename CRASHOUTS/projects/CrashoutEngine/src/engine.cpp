@@ -540,6 +540,7 @@ void Update(double const& dt) {
 
         //fixed Update please work
         int steps = FrameRateController::GetInstance().StepCount();
+
         for (int i = 0; i < steps; ++i)
         {
             FrameRateController::GetInstance().IncrementFixedTick();

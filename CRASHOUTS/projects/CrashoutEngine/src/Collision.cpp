@@ -995,6 +995,16 @@ namespace Collision {
 
 /*MAIN UPDATE STUFF!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 namespace Collision {
+	struct ThreadResult {
+		std::vector<CollisionEvent> events;
+		std::vector<ContactInformation> contacts;
+		struct Msg {
+			Messaging::EventType type;
+			CollisionManifold manifold;
+			CrashoutsEngine::Entity e1, e2;
+		};
+		std::vector<Msg> messages;
+	};
 
 	/*--------------------------------------COLLISION MESSAGE DEFINITION---------------------------------------*/
 
@@ -1063,13 +1073,14 @@ namespace Collision {
 
 	}
 
-	void CollisionHandler::Update([[maybe_unused]] double deltaTime, EngineState state) {
+	void CollisionHandler::Update([[maybe_unused]] double deltaTime, EngineState state, int subStepIndex) {
+
 		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "CollisionDetection");
 		m_FrameCollisions.clear();
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
-		// 1. Get ALL entities with Colliders (not just RigidBodies)
+		// 1. Get ALL entities with Colliders
 		std::vector<CrashoutsEngine::Entity> colliderEntities =
 			globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
 
@@ -1078,87 +1089,89 @@ namespace Collision {
 			currentFrameCollision.clear();
 		}
 
-		// Force all colliders to match their Transform position BEFORE we calculate collisions.
-		// ONLY for entities without RigidBodyComponent (Physics system handles the rest)
+		// --- SPLIT STATIC AND DYNAMIC LISTS ---
+		std::vector<CrashoutsEngine::Entity> dynamicEntities;
+		std::vector<CrashoutsEngine::Entity> staticEntities;
+
 		for (CrashoutsEngine::Entity& entity : colliderEntities) {
 			if (!IsEntityActive(globalECS, entity)) continue;
 
-			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
+			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
+			if (!collider || !collider->collider || !collider->collider->enabled) continue;
+
+			// Check if it has mass (is moving)
+			bool isDynamic = false;
+			if (globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
+				auto* rb = globalECS.GetComponent<Component::RigidBodyComponent>(entity);
+				if (rb->getMass() != 0.0f) isDynamic = true;
+			}
+
+			if (isDynamic) {
+				dynamicEntities.push_back(entity);
+			}
+			else {
+				staticEntities.push_back(entity);
+
+				// Since it's static, force its collider to match its transform!
 				if (globalECS.HasComponent<Component::TransformComponent>(entity)) {
 					auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
-					auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
-
-					// Sync Position & Rotation
-					if (collider && collider->collider) {
-						collider->collider->UpdateCollider(transform->position);
-						collider->collider->UpdateRotation(transform->rotation);
-					}
+					collider->collider->UpdateCollider(transform->position);
+					collider->collider->UpdateRotation(transform->rotation);
 				}
 			}
 		}
 
 		/*BROADPHASE*/
-		// 2. Insert into QuadTree
-		quadTree.Clear();
-		for (CrashoutsEngine::Entity& entity1 : colliderEntities) { // Changed from globalEntities
-			if (!IsEntityActive(globalECS, entity1)) continue;
-
-			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
-			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
-			if (!collider || !collider->collider) continue;
-			if (!collider->collider->enabled) continue;
-			quadTree.Insert(entity1);
+		// 2. Only rebuild the QuadTree on the FIRST sub-step, and ONLY with static objects!
+		if (subStepIndex == 0) {
+			quadTree.Clear();
+			for (CrashoutsEngine::Entity& staticEnt : staticEntities) {
+				quadTree.Insert(staticEnt);
+			}
 		}
 
-		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
-		struct ThreadResult {
-			std::vector<CollisionEvent> events;
-			std::vector<ContactInformation> contacts;
-			struct Msg {
-				Messaging::EventType type;
-				CollisionManifold manifold;
-				CrashoutsEngine::Entity e1, e2;
-			};
-			std::vector<Msg> messages;
-		};
-
+		/*DETECT COLLISION*/
 		unsigned int numThreads = CrashoutsEngine::JobSystem::Get().GetThreadCount();
 		if (numThreads == 0) numThreads = 1;
 		std::vector<ThreadResult> threadResults(numThreads);
 
-		CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)colliderEntities.size(), [&](unsigned int start, unsigned int end) {
-			// Get thread index (simplified, but works for ParallelFor if we use i / chunkSize)
-			unsigned int threadIdx = start / (std::max(1u, (unsigned int)colliderEntities.size() / numThreads));
+		// 3. ONLY LOOP OVER DYNAMIC ENTITIES!
+		CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)dynamicEntities.size(), [&](unsigned int start, unsigned int end) {
+			unsigned int threadIdx = start / (std::max(1u, (unsigned int)dynamicEntities.size() / numThreads));
 			if (threadIdx >= numThreads) threadIdx = numThreads - 1;
 			auto& result = threadResults[threadIdx];
 
 			std::vector<CrashoutsEngine::Entity> localCollidableObjects;
 
 			for (unsigned int i = start; i < end; ++i) {
-				CrashoutsEngine::Entity entity1 = colliderEntities[i];
+				CrashoutsEngine::Entity entity1 = dynamicEntities[i];
 
-				if (!IsEntityActive(globalECS, entity1)) continue;
+				Component::ColliderComponent* collider1 = globalECS.GetComponent<Component::ColliderComponent>(entity1);
+				Component::TransformComponent* transform1 = globalECS.GetComponent<Component::TransformComponent>(entity1);
 
-				if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
-				auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
-				if (!collider || !collider->collider) continue;
-				if (!collider->collider->enabled) continue;
+				// --- SKIP LOGIC FOR CCD ---
+				// If we are on sub-step 1, 2, or 3, AND this dynamic object is NOT continuous, skip it!
+				if (subStepIndex > 0 && !collider1->collider->isContinuous) {
+					continue;
+				}
 
+				// Query the QuadTree for Static objects near this Dynamic object
 				localCollidableObjects.clear();
-
-				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
-				Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
-
-				AABBRect region{ GetAABB(*(collider1->collider), transform1->position) };
+				AABBRect region = GetAABB(*(collider1->collider), transform1->position);
 				quadTree.Query(region, localCollidableObjects);
 
-				for (CrashoutsEngine::Entity const& entity2 : localCollidableObjects) {
-					if (!IsEntityActive(globalECS, entity2)) continue;
+				// Also add ALL OTHER Dynamic objects to the check list
+				for (CrashoutsEngine::Entity& dEnt : dynamicEntities) {
+					if (entity1 != dEnt) localCollidableObjects.push_back(dEnt);
+				}
 
+				// NARROW PHASE COLLISION CHECK
+				for (CrashoutsEngine::Entity const& entity2 : localCollidableObjects) {
+
+					if (!IsEntityActive(globalECS, entity2)) continue;
 					if (entity1 == entity2) continue;
 
 					// Prevents double checks, only process if ID1 < ID2
-					// Ensures pair (A,B) is processed, and skip (B,A)
 					if (entity1 > entity2) continue;
 
 					if (CrashoutsEngine::IsAlreadyChildOf(globalECS, entity1, entity2) ||
@@ -1169,7 +1182,7 @@ namespace Collision {
 
 					Collision::CollisionManifold collisionManifold;
 
-					// Optimization: Skip two static rigidbodies
+					// Optimization: Skip two static rigidbodies (This shouldn't happen anyway with our new logic, but good safety)
 					if (globalECS.HasComponent<Component::RigidBodyComponent>(entity1) &&
 						globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) {
 						auto* rb1 = globalECS.GetComponent<Component::RigidBodyComponent>(entity1);
@@ -1182,20 +1195,24 @@ namespace Collision {
 							Collision::CollisionProps{ collider1->collider, rb1->GetVelocity(), transform1->position },
 							Collision::CollisionProps{ collider2->collider, rb2->GetVelocity(), transform2->position }
 							);
+					}
+					else {
+						// One object doesn't have a rigid body (it's static)
+						CEVec3 vel1 = globalECS.HasComponent<Component::RigidBodyComponent>(entity1) ? globalECS.GetComponent<Component::RigidBodyComponent>(entity1)->GetVelocity() : CEVec3{ 0,0,0 };
+						CEVec3 vel2 = globalECS.HasComponent<Component::RigidBodyComponent>(entity2) ? globalECS.GetComponent<Component::RigidBodyComponent>(entity2)->GetVelocity() : CEVec3{ 0,0,0 };
 
+						collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
+							Collision::CollisionProps{ collider1->collider, vel1, transform1->position },
+							Collision::CollisionProps{ collider2->collider, vel2, transform2->position }
+							);
 					}
 
 					if (collisionManifold.collisionOccured) {
 						// Populate master list
-						result.events.push_back(
-							CollisionEvent{ collisionManifold, entity1, entity2 }
-						);
+						result.events.push_back(CollisionEvent{ collisionManifold, entity1, entity2 });
 
 						// Gameplay messaging only when in play mode
-
 						if (state == EngineState::PLAY) {
-							// If EITHER collider is a trigger, it is a Trigger Event.
-							// Otherwise, it is a Collision Event.
 							bool isTriggerInteraction = collider1->collider->isTrigger || collider2->collider->isTrigger;
 
 							using namespace Messaging;
@@ -1204,29 +1221,25 @@ namespace Collision {
 
 							ContactPair pair{ entity1, entity2 };
 
-							// Check if this pair existed Last Frame
 							if (isPairInCollection(pair, lastFrameCollision)) {
-								// STAY
 								result.messages.push_back({ stayType, collisionManifold, entity1, entity2 });
 							}
 							else {
-								// ENTER
 								result.messages.push_back({ enterType, collisionManifold, entity1, entity2 });
 							}
 
-							// Save contact
 							result.contacts.push_back({ pair, collisionManifold });
 						}
 					}
 				}
 			}
-		});
+			});
 
 		// Merge results back to main thread
 		for (auto& res : threadResults) {
 			m_FrameCollisions.insert(m_FrameCollisions.end(), res.events.begin(), res.events.end());
 			currentFrameCollision.insert(currentFrameCollision.end(), res.contacts.begin(), res.contacts.end());
-			
+
 			for (auto& msg : res.messages) {
 				CollisionMessage cmsg{ msg.type, msg.manifold, msg.e1, msg.e2 };
 				sendMessage(cmsg);
@@ -1236,14 +1249,11 @@ namespace Collision {
 		if (state == EngineState::PLAY) {
 			// --- EXIT EVENT LOOP ---
 			for (ContactInformation const& contactInfo : lastFrameCollision) {
-				// If contact existed last frame but NOT this frame -> EXIT
 				if (!isPairInCollection(contactInfo.contacts, currentFrameCollision)) {
 
 					using namespace Messaging;
-					EventType exitType = EventType::CollisionExit; // Default to Collision
+					EventType exitType = EventType::CollisionExit;
 
-					// Re-check if it was a trigger to send the right Exit message.
-					// Safely get components (entities might have been destroyed)
 					if (globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.first) &&
 						globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.second))
 					{
@@ -1259,17 +1269,14 @@ namespace Collision {
 					sendMessage(exitMessage);
 				}
 			}
-			// Swap Buffers
 			std::swap(currentFrameCollision, lastFrameCollision);
 			currentFrameCollision.clear();
 		}
 
 		if (state == EngineState::STOP) {
-			// Refresh collision data for the next play
 			currentFrameCollision.clear();
 			lastFrameCollision.clear();
 		}
-
 	}
 
 	FunctionDispatchType CollisionHandler::callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2) {

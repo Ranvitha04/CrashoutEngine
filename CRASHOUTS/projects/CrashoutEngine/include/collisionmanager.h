@@ -126,7 +126,7 @@ namespace Collision {
 
 			CollisionHandler();
 
-			void Update(double deltaTime, EngineState engineState);
+			void Update(double deltaTime, EngineState engineState, int subStepIndex);
 
 			/*!
 			@brief Return a function pointer to call the appropriate collision function

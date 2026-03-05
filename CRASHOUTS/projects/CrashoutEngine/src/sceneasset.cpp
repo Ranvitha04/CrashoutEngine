@@ -329,6 +329,7 @@ namespace CrashoutsEngine {
 				if (c.collider) {
 					rapidjson::Value val(rapidjson::kObjectType);
 					val.AddMember("ColliderType", (int)c.collider->ColliderType, allocator);
+					val.AddMember("isContinuous", c.collider->isContinuous, allocator);
 					val.AddMember("isTrigger", c.collider->isTrigger, allocator);
 					val.AddMember("enabled", c.collider->enabled, allocator);
 					WriteVec3(val, "position", c.collider->position, allocator);
@@ -956,6 +957,7 @@ namespace CrashoutsEngine {
 				if (newCol) {
 					if (v.HasMember("offset")) newCol->offset = ReadVec3(v["offset"]);
 					if (v.HasMember("position")) newCol->position = ReadVec3(v["position"]);
+					newCol->isContinuous = GetBool(v, "isContinuous");
 					newCol->isTrigger = GetBool(v, "isTrigger");
 					newCol->enabled = GetBool(v, "enabled");
 					c.collider = std::move(newCol);
