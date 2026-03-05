@@ -237,50 +237,6 @@
                             }
                         ]
                     },
-                    "button": {
-                        "buttonState": 0,
-                        "shapeNormalColor": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0,
-                            "w": 1.0
-                        },
-                        "shapeHoveredColor": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0,
-                            "w": 0.5
-                        },
-                        "shapePressedColor": {
-                            "x": 0.699999988079071,
-                            "y": 0.699999988079071,
-                            "z": 0.699999988079071,
-                            "w": 0.699999988079071
-                        },
-                        "textNormalColor": {
-                            "x": 0.30000001192092898,
-                            "y": 0.30000001192092898,
-                            "z": 0.30000001192092898,
-                            "w": 0.699999988079071
-                        },
-                        "textHoveredColor": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0,
-                            "w": 0.0
-                        },
-                        "textPressedColor": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0,
-                            "w": 0.5
-                        },
-                        "textureNormal": "",
-                        "textureHovered": "",
-                        "texturePressed": "",
-                        "hoverScale": 1.100000023841858,
-                        "pressedScale": 0.949999988079071
-                    },
                     "layer": {
                         "layerName": "Player",
                         "z": 0
