@@ -1,5 +1,5 @@
 {
-    "layerMask": 26,
+    "layerMask": 10,
     "tilemap": [
         {
             "texAssetName": "spritesheet\\Rock\\Rock_09.png",

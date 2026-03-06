@@ -8,7 +8,7 @@
 		is designed to be used with the AssetManager and provides a static factory
 		method for safe creation and resource management.
 
-All content ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 //#pragma once
@@ -56,6 +56,7 @@ All content ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ã
 #include "particlecomponent.h"
 #include "activecomponent.h"
 #include "tagcomponent.h"
+#include "leaderboardcomponent.h"
 
 // FOR GAME GUI
 #include "buttoncomponent.h"
@@ -202,6 +203,7 @@ namespace CrashoutsEngine {
 			// POST PROCESSING ITEMS
 			const char* const PP_COMPONENT = "postprocessing";
 			const char* const LIGHT_COMPONENT = "light";
+			const char* const LEADERBOARD_COMPONENT = "leaderboard";
 			// HIERACHY ITEMS
 			const char* const PARENT_COMPONENT = "parent";
 			const char* const Z_ORDER_COMPONENT = "zorder";
@@ -330,6 +332,7 @@ namespace CrashoutsEngine {
 				if (c.collider) {
 					rapidjson::Value val(rapidjson::kObjectType);
 					val.AddMember("ColliderType", (int)c.collider->ColliderType, allocator);
+					val.AddMember("isContinuous", c.collider->isContinuous, allocator);
 					val.AddMember("isTrigger", c.collider->isTrigger, allocator);
 					val.AddMember("enabled", c.collider->enabled, allocator);
 					WriteVec3(val, "position", c.collider->position, allocator);
@@ -424,6 +427,51 @@ namespace CrashoutsEngine {
 				val.AddMember("dialogueFilePath", rapidjson::Value(c.dialogueFilePath.c_str(), allocator), allocator);
 				val.AddMember("dialogueID", rapidjson::Value(c.dialogueID.c_str(), allocator), allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::TEXT_COMPONENT), val, allocator);
+			}
+
+			if (gECS.HasComponent<Component::LeaderboardComponent>(id)) {
+				const auto& c = *gECS.GetComponent<Component::LeaderboardComponent>(id);
+				rapidjson::Value val(rapidjson::kObjectType);
+				val.AddMember("baseUrl", rapidjson::Value(c.baseUrl.c_str(), allocator), allocator);
+				val.AddMember("limit", c.limit, allocator);
+				val.AddMember("autoRefresh", c.autoRefresh, allocator);
+				val.AddMember("fetchOnStart", c.fetchOnStart, allocator);
+				val.AddMember("updateInEditor", c.updateInEditor, allocator);
+				val.AddMember("refreshIntervalSec", c.refreshIntervalSec, allocator);
+
+				val.AddMember("rootEntityName", rapidjson::Value(c.rootEntityName.c_str(), allocator), allocator);
+				val.AddMember("entryNamePrefix", rapidjson::Value(c.entryNamePrefix.c_str(), allocator), allocator);
+				val.AddMember("entryIndexBase", c.entryIndexBase, allocator);
+				val.AddMember("lineFormat", rapidjson::Value(c.lineFormat.c_str(), allocator), allocator);
+				val.AddMember("emptyLineText", rapidjson::Value(c.emptyLineText.c_str(), allocator), allocator);
+
+				val.AddMember("useColumns", c.useColumns, allocator);
+				val.AddMember("rankNamePrefix", rapidjson::Value(c.rankNamePrefix.c_str(), allocator), allocator);
+				val.AddMember("playerNamePrefix", rapidjson::Value(c.playerNamePrefix.c_str(), allocator), allocator);
+				val.AddMember("scoreNamePrefix", rapidjson::Value(c.scoreNamePrefix.c_str(), allocator), allocator);
+				val.AddMember("dateNamePrefix", rapidjson::Value(c.dateNamePrefix.c_str(), allocator), allocator);
+
+				rapidjson::Value keysArr(rapidjson::kArrayType);
+				for (const auto& k : c.columnKeys) keysArr.PushBack(rapidjson::Value(k.c_str(), allocator), allocator);
+				val.AddMember("columnKeys", keysArr, allocator);
+
+				rapidjson::Value prefixesArr(rapidjson::kArrayType);
+				for (const auto& p : c.columnPrefixes) prefixesArr.PushBack(rapidjson::Value(p.c_str(), allocator), allocator);
+				val.AddMember("columnPrefixes", prefixesArr, allocator);
+
+				val.AddMember("renderToSelfText", c.renderToSelfText, allocator);
+				val.AddMember("selfTextIncludeHeader", c.selfTextIncludeHeader, allocator);
+				val.AddMember("selfTextIncludeStatus", c.selfTextIncludeStatus, allocator);
+				val.AddMember("selfTextSeparator", rapidjson::Value(c.selfTextSeparator.c_str(), allocator), allocator);
+
+				val.AddMember("headerEntityName", rapidjson::Value(c.headerEntityName.c_str(), allocator), allocator);
+				val.AddMember("headerText", rapidjson::Value(c.headerText.c_str(), allocator), allocator);
+				val.AddMember("statusEntityName", rapidjson::Value(c.statusEntityName.c_str(), allocator), allocator);
+				val.AddMember("loadingText", rapidjson::Value(c.loadingText.c_str(), allocator), allocator);
+				val.AddMember("errorText", rapidjson::Value(c.errorText.c_str(), allocator), allocator);
+				val.AddMember("emptyStatusText", rapidjson::Value(c.emptyStatusText.c_str(), allocator), allocator);
+
+				entityValue.AddMember(rapidjson::StringRef(Keys::LEADERBOARD_COMPONENT), val, allocator);
 			}
 
 			if (gECS.HasComponent<AudioEmitterComponent>(id)) {
@@ -598,6 +646,7 @@ namespace CrashoutsEngine {
 				val.AddMember("useTransform", c.useTransform, allocator);
 				val.AddMember("renderSelf", c.renderSelf, allocator);
 				val.AddMember("renderBehind", c.renderBehind, allocator);
+				val.AddMember("ignoreParentOccluders", c.ignoreParentOccluders, allocator);
 				WriteVec3(val, "color", c.color, allocator);
 				WriteVec3(val, "position", c.position, allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::LIGHT_COMPONENT), val, allocator);
@@ -981,6 +1030,7 @@ namespace CrashoutsEngine {
 				if (newCol) {
 					if (v.HasMember("offset")) newCol->offset = ReadVec3(v["offset"]);
 					if (v.HasMember("position")) newCol->position = ReadVec3(v["position"]);
+					newCol->isContinuous = GetBool(v, "isContinuous");
 					newCol->isTrigger = GetBool(v, "isTrigger");
 					newCol->enabled = GetBool(v, "enabled");
 					c.collider = std::move(newCol);
@@ -1028,6 +1078,55 @@ namespace CrashoutsEngine {
 				t.revealSpeed = GetFloat(v, "revealSpeed", 10.0f);
 				t.dialogueFilePath = GetString(v, "dialogueFilePath", "");
 				t.dialogueID = GetString(v, "dialogueID", "");
+			}
+
+			// Leaderboard
+			if (entityValue.HasMember(Keys::LEADERBOARD_COMPONENT)) {
+				const auto& v = entityValue[Keys::LEADERBOARD_COMPONENT];
+				auto& c = gECS.AddComponent<Component::LeaderboardComponent>(newEntity);
+				c.baseUrl = GetString(v, "baseUrl", c.baseUrl.c_str());
+				c.limit = GetInt(v, "limit", c.limit);
+				c.autoRefresh = GetBool(v, "autoRefresh", c.autoRefresh);
+				c.fetchOnStart = GetBool(v, "fetchOnStart", c.fetchOnStart);
+				c.updateInEditor = GetBool(v, "updateInEditor", c.updateInEditor);
+				c.refreshIntervalSec = GetFloat(v, "refreshIntervalSec", c.refreshIntervalSec);
+
+				c.rootEntityName = GetString(v, "rootEntityName", c.rootEntityName.c_str());
+				c.entryNamePrefix = GetString(v, "entryNamePrefix", c.entryNamePrefix.c_str());
+				c.entryIndexBase = GetInt(v, "entryIndexBase", c.entryIndexBase);
+				c.lineFormat = GetString(v, "lineFormat", c.lineFormat.c_str());
+				c.emptyLineText = GetString(v, "emptyLineText", c.emptyLineText.c_str());
+
+				c.useColumns = GetBool(v, "useColumns", c.useColumns);
+				c.rankNamePrefix = GetString(v, "rankNamePrefix", c.rankNamePrefix.c_str());
+				c.playerNamePrefix = GetString(v, "playerNamePrefix", c.playerNamePrefix.c_str());
+				c.scoreNamePrefix = GetString(v, "scoreNamePrefix", c.scoreNamePrefix.c_str());
+				c.dateNamePrefix = GetString(v, "dateNamePrefix", c.dateNamePrefix.c_str());
+
+				if (v.HasMember("columnKeys") && v["columnKeys"].IsArray()) {
+					c.columnKeys.clear();
+					for (const auto& kv : v["columnKeys"].GetArray()) {
+						if (kv.IsString()) c.columnKeys.push_back(kv.GetString());
+					}
+				}
+				if (v.HasMember("columnPrefixes") && v["columnPrefixes"].IsArray()) {
+					c.columnPrefixes.clear();
+					for (const auto& pv : v["columnPrefixes"].GetArray()) {
+						if (pv.IsString()) c.columnPrefixes.push_back(pv.GetString());
+					}
+				}
+
+				c.renderToSelfText = GetBool(v, "renderToSelfText", c.renderToSelfText);
+				c.selfTextIncludeHeader = GetBool(v, "selfTextIncludeHeader", c.selfTextIncludeHeader);
+				c.selfTextIncludeStatus = GetBool(v, "selfTextIncludeStatus", c.selfTextIncludeStatus);
+				c.selfTextSeparator = GetString(v, "selfTextSeparator", c.selfTextSeparator.c_str());
+
+				c.headerEntityName = GetString(v, "headerEntityName", c.headerEntityName.c_str());
+				c.headerText = GetString(v, "headerText", c.headerText.c_str());
+				c.statusEntityName = GetString(v, "statusEntityName", c.statusEntityName.c_str());
+				c.loadingText = GetString(v, "loadingText", c.loadingText.c_str());
+				c.errorText = GetString(v, "errorText", c.errorText.c_str());
+				c.emptyStatusText = GetString(v, "emptyStatusText", c.emptyStatusText.c_str());
 			}
 
 			// Audio
@@ -1157,6 +1256,7 @@ namespace CrashoutsEngine {
 				l.useTransform = GetBool(v, "useTransform", l.useTransform);
 				l.renderSelf = GetBool(v, "renderSelf", l.renderSelf);
 				l.renderBehind = GetBool(v, "renderBehind", l.renderBehind);
+				l.ignoreParentOccluders = GetBool(v, "ignoreParentOccluders", l.ignoreParentOccluders);
 				if (v.HasMember("color")) l.color = ReadVec3(v["color"], l.color);
 				if (v.HasMember("position")) l.position = ReadVec3(v["position"], l.position);
 			}
@@ -1634,6 +1734,8 @@ namespace CrashoutsEngine {
 			if (!sceneAsset) {
 				std::filesystem::path fullPath = std::filesystem::path(GetGameRoot()) / "assets" / "scenes" / sceneName;
 
+				std::filesystem::create_directories(fullPath.parent_path());
+
 				// Handle case where the scene asset doesn't exist (e.g., create a new one)
 				Assets::SceneAsset::Create(fullPath.string());
 
@@ -1653,6 +1755,8 @@ namespace CrashoutsEngine {
 
 				rapidjson::Document manifestDoc;
 				std::filesystem::path manifestPath = std::filesystem::path(GetGameRoot()) / "assets" / "json" / "assetmanifest.json";
+
+				std::filesystem::create_directories(manifestPath.parent_path());
 
 				// Load the existing manifest
 				std::ifstream ifs(manifestPath);

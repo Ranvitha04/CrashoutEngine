@@ -44,6 +44,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "audiocomponent.h"
 #include "videosystem.h"
 #include "replaymanager.h"
+#include "leaderboardsystem.h"
 
 #include "glapp.h"
 #include "log.h"
@@ -537,18 +538,14 @@ void Update(double const& dt) {
         KeyframeUnity::UpdateAll(ecs, (float)dt);
         CrashoutsEngine::VideoSystem::Update((float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
+        CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, false);
 
         //fixed Update please work
         int steps = FrameRateController::GetInstance().StepCount();
+
         for (int i = 0; i < steps; ++i)
         {
-            // 1. INCREMENT AND GET CURRENT TICK
             FrameRateController::GetInstance().IncrementFixedTick();
-            uint32_t currentFixedTick = FrameRateController::GetInstance().GetFixedTickCount();
-
-            // 2. UPDATE REPLAY SYSTEM (Injects fake inputs if playing)
-            ReplayManager::Replay::GetInstance().UpdateFixedTick(currentFixedTick);
-
             {
                 FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptFixedUpdate");
                 CrashoutsEngine::ScriptSystem::FixedUpdateAll();
@@ -679,6 +676,7 @@ void Update(double const& dt) {
 #else
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
+        CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, true);
     }
     else if (engineState == EngineState::PAUSE) {
         // Freeze gameplay, but still allow editor camera to move
@@ -733,18 +731,21 @@ void Update(double const& dt) {
     // ==========================================
     // REPLAY DEBUG HOTKEYS
     // ==========================================
-#if !USE_IMGUI_EDITOR && !defined(DEBUG)
+//#if !USE_IMGUI_EDITOR && !defined(DEBUG)
     // You already have F3 here, let's add the replay controls!
     if (InputManager::IsKeyTriggered(Key::F5)) {
         ReplayManager::Replay::GetInstance().StartRecording();
     }
     if (InputManager::IsKeyTriggered(Key::F6)) {
-        ReplayManager::Replay::GetInstance().StartPlayback();
+        ReplayManager::Replay::GetInstance().StopRecording();
     }
     if (InputManager::IsKeyTriggered(Key::F7)) {
-        ReplayManager::Replay::GetInstance().Stop();
+        ReplayManager::Replay::GetInstance().StartPlayback();
     }
-#endif
+    if (InputManager::IsKeyTriggered(Key::F8)) {
+        ReplayManager::Replay::GetInstance().StopPlayback();
+    }
+//#endif
     // ==========================================
 
     CrashoutsEngine::PostProcessing::UpdatePP();

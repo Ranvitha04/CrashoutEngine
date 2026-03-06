@@ -2,6 +2,12 @@
 setlocal enabledelayedexpansion
 pushd "%~dp0"
 
+:: ======================================================
+:: Initialize Visual Studio MSVC environment tools
+:: This is required for building the cURL networking library!
+:: ======================================================
+call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+
 set "start=%time%"
 
 :: ======================================================
@@ -113,7 +119,7 @@ set /a elapsed=!endms!-!startms!
 set /a minutes=!elapsed!/60000
 set /a seconds=(!elapsed!%%60000)/1000
 echo.
-echo Started : %start% | Finished: %end% | Total: !minutes! min !seconds! sec
+echo Started : %start% ^| Finished: %end% ^| Total: !minutes! min !seconds! sec
 echo.
 
 :FAIL

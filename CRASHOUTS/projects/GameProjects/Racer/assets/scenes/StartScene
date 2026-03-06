@@ -149,9 +149,9 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.18232041597366334,
-                    "y": 0.18232041597366334,
-                    "z": 0.18232041597366334,
+                    "x": 0.18039216101169587,
+                    "y": 0.18039216101169587,
+                    "z": 0.18039216101169587,
                     "w": 1.0
                 },
                 "p1": {
@@ -291,9 +291,9 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.18232041597366334,
-                    "y": 0.18232041597366334,
-                    "z": 0.18232041597366334,
+                    "x": 0.18039216101169587,
+                    "y": 0.18039216101169587,
+                    "z": 0.18039216101169587,
                     "w": 1.0
                 },
                 "p1": {
@@ -471,7 +471,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 33.0,
-                    "y": -3.0,
+                    "y": -2.0,
                     "z": 0.0
                 },
                 "size": {
@@ -543,6 +543,36 @@
                 "dialogueFilePath": "",
                 "dialogueID": ""
             },
+            "leaderboard": {
+                "baseUrl": "http://104.214.187.128",
+                "limit": 10,
+                "autoRefresh": true,
+                "fetchOnStart": true,
+                "updateInEditor": true,
+                "refreshIntervalSec": 10.0,
+                "rootEntityName": "",
+                "entryNamePrefix": "LB_Entry_",
+                "entryIndexBase": 1,
+                "lineFormat": "{rank}.  {name}  -  {score}",
+                "emptyLineText": "",
+                "useColumns": false,
+                "rankNamePrefix": "LB_Rank_",
+                "playerNamePrefix": "LB_Name_",
+                "scoreNamePrefix": "LB_Score_",
+                "dateNamePrefix": "",
+                "columnKeys": [],
+                "columnPrefixes": [],
+                "renderToSelfText": false,
+                "selfTextIncludeHeader": true,
+                "selfTextIncludeStatus": true,
+                "selfTextSeparator": " | ",
+                "headerEntityName": "",
+                "headerText": "",
+                "statusEntityName": "",
+                "loadingText": "Loading...",
+                "errorText": "Failed to load",
+                "emptyStatusText": ""
+            },
             "gui": {
                 "uiType": 3
             },
@@ -592,6 +622,746 @@
             "layer": {
                 "layerName": "",
                 "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "LB_Entry_1",
+            "uuid": 12234036386308522321,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": 20.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "1.  AAA  -  1000",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 5.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5243449983656791706,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.3142857253551483,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015384615398943425,
+                    "y": 0.014285714365541935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "LB_Entry_2",
+            "uuid": 5897737328007081172,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": 15.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 5.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5243449983656791706,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.24285714328289033,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015384615398943425,
+                    "y": 0.014285714365541935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "LB_Entry_3",
+            "uuid": 3877126057420019908,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": 10.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 5.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5243449983656791706,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.17142857611179353,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015384615398943425,
+                    "y": 0.014285714365541935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "LB_Entry_4",
+            "uuid": 16980068707805512139,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": 5.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 5.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5243449983656791706,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.10000000149011612,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015384615398943425,
+                    "y": 0.014285714365541935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "LB_Entry_5",
+            "uuid": 13351579513408854774,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 5.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5243449983656791706,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.02857142873108387,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015384615398943425,
+                    "y": 0.014285714365541935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "LB_Entry_6",
+            "uuid": 17141180483777130316,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": -5.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 5.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5243449983656791706,
+                "localPos": {
+                    "x": 0.0,
+                    "y": -0.04285714402794838,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015384615398943425,
+                    "y": 0.014285714365541935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "LB_Entry_7",
+            "uuid": 717713439740122490,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": -10.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 5.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5243449983656791706,
+                "localPos": {
+                    "x": 0.0,
+                    "y": -0.11428571492433548,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015384615398943425,
+                    "y": 0.014285714365541935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "LB_Entry_8",
+            "uuid": 9635313271380116216,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": -15.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 5.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5243449983656791706,
+                "localPos": {
+                    "x": 0.0,
+                    "y": -0.18571428954601289,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015384615398943425,
+                    "y": 0.014285714365541935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "LB_Entry_9",
+            "uuid": 8864564409376459360,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": -20.000001907348634,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 5.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5243449983656791706,
+                "localPos": {
+                    "x": 0.0,
+                    "y": -0.2571428716182709,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015384615398943425,
+                    "y": 0.014285714365541935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "LB_Entry_10",
+            "uuid": 7256675614141649121,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 33.0,
+                    "y": -25.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 5.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5243449983656791706,
+                "localPos": {
+                    "x": 0.0,
+                    "y": -0.3285714387893677,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.015384615398943425,
+                    "y": 0.014285714365541935
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 1
             }
         }
     ],

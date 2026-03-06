@@ -7,59 +7,53 @@
 */
 #pragma once
 
-#include "inputmanager.h"
+#pragma once
+#include <vector>
+#include <string>
 
 namespace ReplayManager {
 
-    using Tick = uint32_t;
+    typedef uint32_t Tick;
 
-    /*
-    @struct InputEvent
-    @brief Handles simple data like time, key, and pressed state
-    */
-    struct InputEvent {
-        Tick fixedTick; // The exact physics frame this happened
-        Key key;            // Key Code
-        bool isPressed;     // true = pressed, false = released
+    // --- Records physical location instead of keys ---
+    struct TransformEvent {
+        Tick relativeTick;
+        float x, y, z;
+        float rotation;
     };
-
-    // Replay states
-    enum class ReplayState { IDLE, RECORDING, PLAYING };
 
     /*
     @class Replay
-    @brief Store replay function callbacks and track current state
+    @brief Store replay function callbacks for record and playback
     */
     class Replay {
-    public:
-        // Singleton access
-        static Replay& GetInstance() {
-            static Replay instance;
-            return instance;
-        }
-
-        // Track input events
-        void StartRecording();
-        // Play using stored input events
-        void StartPlayback();
-        // Stop all recording / playback
-        void Stop();
-
-        // Update loop for replay items
-        void UpdateFixedTick(Tick currentTick);
-
-        // Method to capture inputs
-        void RecordEvent(Tick tick, Key key, bool isPressed);
-
-        // Getter to check state
-        ReplayState GetState() const { return state; }
-
     private:
-        ReplayState state = ReplayState::IDLE;
-        // Tracks curernt playback index / tick
+        std::vector<TransformEvent> recordData;     // Buffer A
+        std::vector<TransformEvent> playbackData;   // Buffer B
+
+        bool isRecording = false;
+        bool isPlaying = false;
         size_t playbackIndex = 0;
-        // Vector to store event data
-        std::vector<InputEvent> replayData;
+
+        Replay() = default;
+
+    public:
+        bool isRecordingState() const { return isRecording; } // Helpful getter
+
+        static Replay& GetInstance() { static Replay instance; return instance; }
+
+        void StartRecording();
+        void StopRecording();
+
+        void StartPlayback();
+        void StopPlayback();
+
+        // --- NEW TRANSFORM METHODS ---
+        void RecordCurrentTransform(float x, float y, float z, float rot);
+        bool GetGhostTransform(float& outX, float& outY, float& outZ, float& outRot);
+
+        void SaveRecording(const std::string& filename);
+        bool LoadRecording(const std::string& filename);
     };
 
 }

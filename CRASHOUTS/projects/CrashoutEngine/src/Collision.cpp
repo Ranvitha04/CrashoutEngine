@@ -4,7 +4,7 @@
 @date       08/09/2025
 @brief      Function definitions for Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
 
-All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 
 //__________________________________________________________________________*/
@@ -14,6 +14,7 @@ All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â�
 #include "activecomponent.h"
 #include "glapp.h"
 #include "collidercomponent.h"
+#include "hierarchycomponent.h"
 #include "CEMath.h"
 #include "CEMtx33.h"
 #include "hierarchy.h"
@@ -355,13 +356,13 @@ namespace Collision {
 			finalManifold = CollisionManifold{ -1.f * contactB->normal, contactB->contactPoints, contactB->depth, true, contactB->numOfContacts };
 		}
 
-		// Calculate vector from A to B
-		CEVec3 centerVec = coll2.position - coll1.position;
+		//// Calculate vector from A to B
+		//CEVec3 centerVec = coll2.position - coll1.position;
 
-		// If the normal points in the opposite direction of the center vector, flip it.
-		if (CEMath::Dot(finalManifold.normal, centerVec) < 0.0f) {
-			finalManifold.normal = -1.f * finalManifold.normal;
-		}
+		//// If the normal points in the opposite direction of the center vector, flip it.
+		//if (CEMath::Dot(finalManifold.normal, centerVec) < 0.0f) {
+		//	finalManifold.normal = -1.f * finalManifold.normal;
+		//}
 
 		return finalManifold;
 	}
@@ -453,14 +454,11 @@ namespace Collision {
 		result.normal = bestAxis;
 		result.numOfContacts = 1;
 
-		// Ensure normal points Circle -> Polygon (Standard: Normal points FROM A TO B)
-		// Here A=Circle, B=Polygon.
-		// If normal points towards Circle, flip it.
-		// Vector from Circle to Poly Center:
-		CEVec3 dir = polygon.position - circle.position;
-		if (CEMath::Dot(result.normal, dir) < 0.f) {
-			result.normal = -1.f * result.normal;
-		}
+		// SAFE NORMAL DIRECTION
+		// SAT found the axis pointing OUT of the Polygon.
+		// We want the normal pointing FROM Circle (A) TO Polygon (B). 
+		// Therefore, we just strictly invert the SAT axis. No center guessing needed!
+		result.normal = -1.f * bestAxis;
 
 		// Calculate Contact Point
 		result.contactPoints[0] = circle.position + result.normal * circle.radius;
@@ -816,103 +814,76 @@ namespace Collision {
 
 	CollisionManifold CollisionHandler::AABBToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
-		result.depth = std::numeric_limits<float>::max();
 
-		// 1. Sort Inputs (AABB vs Line)
-		CollisionProps const* aabbPtr = (coll1.collider->type == ColliderType::AABB) ? &coll1 : &coll2;
-		CollisionProps const* linePtr = (coll1.collider->type == ColliderType::LINE) ? &coll1 : &coll2;
-
-		// Detect if we swapped (so we can flip the normal later)
+		// 1. Sort Inputs (Ensure A is AABB, B is Line)
 		bool swapped = (coll1.collider->type == ColliderType::LINE);
+		CollisionProps const* aabbPtr = swapped ? &coll2 : &coll1;
+		CollisionProps const* linePtr = swapped ? &coll1 : &coll2;
 
-		// 2. Cast to specific types
 		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
 		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
 
-		// 3. Get World Space Data
-		// AABB Center & Extents
+		// 2. Extract Data
 		CEVec3 aabbCenter = aabbPtr->position + aabb.offset;
-		CEVec3 extents = aabb.extents;
-
-		// Line Points (World Space)
 		CEVec3 p1 = line.GetWorldP1();
 		CEVec3 p2 = line.GetWorldP2();
 
-		// 1. Define the 3 axes to test
-		// Axis 1 & 2: AABB local axes (Global X and Y)
-		// Axis 3: Segment normal
-		CEVec3 segDir = p2 - p1;
-		CEVec3 segNormal = line.GetNormal();
-
+		// 3. Define the 3 SAT Axes
 		CEVec3 axes[3] = {
-			{1.0f, 0.0f, 0.f}, // AABB X
-			{0.0f, 1.0f, 0.f}, // AABB Y
-			segNormal     // Segment Normal
+			{1.0f, 0.0f, 0.0f}, // AABB X
+			{0.0f, 1.0f, 0.0f}, // AABB Y
+			line.GetNormal()    // Line Normal
 		};
 
-		// 2. Loop through axes and find overlap
-		for (int i = 0; i < 3; i++) {
-			CEVec3 axis = axes[i];
+		float minOverlap = std::numeric_limits<float>::max();
+		float minScore = std::numeric_limits<float>::max();
+		CEVec3 bestAxis = { 0.0f, 0.0f, 0.0f };
 
-			// Project both shapes
+		// 4. Test each axis
+		for (int i = 0; i < 3; ++i) {
 			float minA, maxA, minB, maxB;
-			ProjectAABB(aabb, axis, minA, maxA);
-			ProjectSegment(line, axis, minB, maxB);
+			ProjectAABB(aabb, axes[i], minA, maxA);
+			ProjectSegment(line, axes[i], minB, maxB);
 
-			// Check for separation
+			// If there is a gap on ANY axis, there is absolutely no collision.
 			if (maxA < minB || maxB < minA) {
-				return result; // No collision found, return empty
+				return result;
 			}
 
-			// Calculate overlap
-			float axisDepth = std::min(maxA - minB, maxB - minA);
+			float overlap = std::min(maxA - minB, maxB - minA);
 
-			// Keep the smallest overlap (this is the penetration depth)
-			if (axisDepth < result.depth) {
-				result.depth = axisDepth;
-				result.normal = axis;
+			// Give the line's normal a slight priority to prevent horizontal snagging on floor edges.
+			// This does not change the actual physical depth calculated.
+			float score = overlap * ((i == 2) ? 0.95f : 1.0f);
+
+			if (score < minScore) {
+				minScore = score;
+				minOverlap = overlap; // Keep the true physical depth
+				bestAxis = axes[i];
 			}
 		}
 
-		// 3. Ensure Normal Direction
-		// We want the normal to point from Box -> Segment.
-		// We check the vector from Box Center to Segment Center (approx midpoint)
-		CEVec3 segMid = (p1 + p2) * 0.5f;
-		CEVec3 direction = segMid - aabbCenter;
-
-		if (CEMath::Dot(direction, result.normal) < 0) {
-			result.normal = result.normal * -1.0f;
-		}
-
+		// 5. Collision Confirmed
 		result.collisionOccured = true;
+		result.depth = minOverlap;
+		result.numOfContacts = 1;
 
-		// 4. Calculate Contact Point
-		// Case A: The collision axis is the Segment Normal. 
-		// This means a corner of the AABB is hitting the flat side of the line.
-		// We find the AABB corner closest to the segment.
-		if (std::abs(CEMath::Dot(result.normal, segNormal)) > 0.99f) {
-			// Find the support point on the box in the direction of the normal (towards segment)
-			result.contactPoints[0] = GetAABBSupport(aabb, result.normal);
-		}
-		// Case B: The collision axis is one of the AABB axes (X or Y).
-		// This means the tip of the line segment is hitting a flat face of the box.
-		// We find which segment endpoint is inside the box.
-		else {
+		// 6. Ensure the normal always points FROM the AABB TO the Line
+		// This is crucial for your specific position correction solver: `pos -= vec`
+		CEVec3 closestLinePt = ClosestPointOnSegment(p1, p2, aabbCenter);
+		CEVec3 aabbToLine = closestLinePt - aabbCenter;
 
-			// Since normal points Box -> Segment, the point closer to the box has a *smaller* dot product along that normal?
-			// Actually, simpler logic: The point overlapping the box is the contact.
-			// We pick the point closest to the box center.
-			if (CEMath::LengthSq(p1 - aabbCenter) < CEMath::LengthSq(p2 - aabbCenter)) {
-				result.contactPoints[0] = p1;
-			}
-			else {
-				result.contactPoints[0] = p2;
-			}
+		// If the axis points away from the line, flip it to point towards the line.
+		if (CEMath::Dot(bestAxis, aabbToLine) < 0.0f) {
+			bestAxis = -1.0f * bestAxis;
 		}
 
-		// 7. Handle Swapping (If input was Line vs AABB, flip normal)
+		result.normal = bestAxis;
+		result.contactPoints[0] = closestLinePt;
+
+		// 7. Handle component swapping
 		if (swapped) {
-			result.normal = -1.f * result.normal;
+			result.normal = -1.0f * result.normal;
 		}
 
 		return result;
@@ -990,6 +961,16 @@ namespace Collision {
 
 /*MAIN UPDATE STUFF!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 namespace Collision {
+	struct ThreadResult {
+		std::vector<CollisionEvent> events;
+		std::vector<ContactInformation> contacts;
+		struct Msg {
+			Messaging::EventType type;
+			CollisionManifold manifold;
+			CrashoutsEngine::Entity e1, e2;
+		};
+		std::vector<Msg> messages;
+	};
 
 	/*--------------------------------------COLLISION MESSAGE DEFINITION---------------------------------------*/
 
@@ -1058,102 +1039,111 @@ namespace Collision {
 
 	}
 
-	void CollisionHandler::Update([[maybe_unused]] double deltaTime, EngineState state) {
+	void CollisionHandler::Update([[maybe_unused]] double deltaTime, EngineState state, int subStepIndex) {
+
 		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "CollisionDetection");
 		m_FrameCollisions.clear();
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
-		// 1. Get ALL entities with Colliders (not just RigidBodies)
+		// 1. Get ALL entities with Colliders
 		std::vector<CrashoutsEngine::Entity> colliderEntities =
 			globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
 
-		if (state == EngineState::STOP) {
-			lastFrameCollision.clear();
-			currentFrameCollision.clear();
+		if (subStepIndex == 0) {
+			if (state == EngineState::STOP) {
+				lastFrameCollision.clear();
+			}
+			currentFrameCollision.clear(); // Fresh start for this frame's accumulation
 		}
 
-		// Force all colliders to match their Transform position BEFORE we calculate collisions.
-		// ONLY for entities without RigidBodyComponent (Physics system handles the rest)
+		// --- SPLIT STATIC AND DYNAMIC LISTS ---
+		std::vector<CrashoutsEngine::Entity> dynamicEntities;
+		std::vector<CrashoutsEngine::Entity> staticEntities;
+
 		for (CrashoutsEngine::Entity& entity : colliderEntities) {
 			if (!IsEntityActive(globalECS, entity)) continue;
 
-			if (!globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
+			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
+			if (!collider || !collider->collider || !collider->collider->enabled) continue;
+
+			// Check if it has mass (is moving)
+			bool isDynamic = false;
+			if (globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
+				auto* rb = globalECS.GetComponent<Component::RigidBodyComponent>(entity);
+				if (rb->getMass() != 0.0f) isDynamic = true;
+			}
+
+			if (isDynamic) {
+				dynamicEntities.push_back(entity);
+			}
+			else {
+				staticEntities.push_back(entity);
+
+				// Since it's static, force its collider to match its transform!
 				if (globalECS.HasComponent<Component::TransformComponent>(entity)) {
 					auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
-					auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
-
-					// Sync Position & Rotation
-					if (collider && collider->collider) {
-						collider->collider->UpdateCollider(transform->position);
-						collider->collider->UpdateRotation(transform->rotation);
-					}
+					collider->collider->UpdateCollider(transform->position);
+					collider->collider->UpdateRotation(transform->rotation);
 				}
 			}
 		}
 
 		/*BROADPHASE*/
-		// 2. Insert into QuadTree
-		quadTree.Clear();
-		for (CrashoutsEngine::Entity& entity1 : colliderEntities) { // Changed from globalEntities
-			if (!IsEntityActive(globalECS, entity1)) continue;
-
-			if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
-			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
-			if (!collider || !collider->collider) continue;
-			if (!collider->collider->enabled) continue;
-			quadTree.Insert(entity1);
+		// 2. Only rebuild the QuadTree on the FIRST sub-step, and ONLY with static objects!
+		if (subStepIndex == 0) {
+			quadTree.Clear();
+			for (CrashoutsEngine::Entity& staticEnt : staticEntities) {
+				quadTree.Insert(staticEnt);
+			}
 		}
 
-		/*DETECT COLLISION AND UPDATE COLLISION EVENTS MEMBER*/
-		struct ThreadResult {
-			std::vector<CollisionEvent> events;
-			std::vector<ContactInformation> contacts;
-			struct Msg {
-				Messaging::EventType type;
-				CollisionManifold manifold;
-				CrashoutsEngine::Entity e1, e2;
-			};
-			std::vector<Msg> messages;
-		};
-
+		/*DETECT COLLISION*/
 		unsigned int numThreads = CrashoutsEngine::JobSystem::Get().GetThreadCount();
 		if (numThreads == 0) numThreads = 1;
 		std::vector<ThreadResult> threadResults(numThreads);
 
-		CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)colliderEntities.size(), [&](unsigned int start, unsigned int end) {
-			// Get thread index (simplified, but works for ParallelFor if we use i / chunkSize)
-			unsigned int threadIdx = start / (std::max(1u, (unsigned int)colliderEntities.size() / numThreads));
+		// 3. ONLY LOOP OVER DYNAMIC ENTITIES!
+		CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)dynamicEntities.size(), [&](unsigned int start, unsigned int end) {
+			unsigned int threadIdx = start / (std::max(1u, (unsigned int)dynamicEntities.size() / numThreads));
 			if (threadIdx >= numThreads) threadIdx = numThreads - 1;
 			auto& result = threadResults[threadIdx];
 
 			std::vector<CrashoutsEngine::Entity> localCollidableObjects;
 
 			for (unsigned int i = start; i < end; ++i) {
-				CrashoutsEngine::Entity entity1 = colliderEntities[i];
+				CrashoutsEngine::Entity entity1 = dynamicEntities[i];
 
-				if (!IsEntityActive(globalECS, entity1)) continue;
+				Component::ColliderComponent* collider1 = globalECS.GetComponent<Component::ColliderComponent>(entity1);
+				Component::TransformComponent* transform1 = globalECS.GetComponent<Component::TransformComponent>(entity1);
 
-				if (!globalECS.HasComponent<Component::TransformComponent>(entity1)) continue;
-				auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity1);
-				if (!collider || !collider->collider) continue;
-				if (!collider->collider->enabled) continue;
+				// --- SKIP LOGIC FOR CCD ---
+				// If we are on sub-step 1, 2, or 3, AND this dynamic object is NOT continuous, skip it!
+				if (subStepIndex > 0 && !collider1->collider->isContinuous) {
+					continue;
+				}
 
+				// Query the QuadTree for Static objects near this Dynamic object
 				localCollidableObjects.clear();
-
-				Component::ColliderComponent* collider1{ globalECS.GetComponent<Component::ColliderComponent>(entity1) };
-				Component::TransformComponent* transform1{ globalECS.GetComponent<Component::TransformComponent>(entity1) };
-
-				AABBRect region{ GetAABB(*(collider1->collider), transform1->position) };
+				AABBRect region = GetAABB(*(collider1->collider), transform1->position);
 				quadTree.Query(region, localCollidableObjects);
 
-				for (CrashoutsEngine::Entity const& entity2 : localCollidableObjects) {
-					if (!IsEntityActive(globalECS, entity2)) continue;
+				// Also add ALL OTHER Dynamic objects to the check list.
+				// We do the ID check HERE to prevent double-checking Dynamic vs Dynamic,
+				// while ensuring Static objects from the QuadTree are never dropped!
+				for (CrashoutsEngine::Entity& dEnt : dynamicEntities) {
+					if (entity1 < dEnt) {
+						localCollidableObjects.push_back(dEnt);
+					}
+				}
 
+				// NARROW PHASE COLLISION CHECK
+				for (CrashoutsEngine::Entity const& entity2 : localCollidableObjects) {
+
+					if (!IsEntityActive(globalECS, entity2)) continue;
 					if (entity1 == entity2) continue;
 
 					// Prevents double checks, only process if ID1 < ID2
-					// Ensures pair (A,B) is processed, and skip (B,A)
 					if (entity1 > entity2) continue;
 
 					if (CrashoutsEngine::IsAlreadyChildOf(globalECS, entity1, entity2) ||
@@ -1164,7 +1154,7 @@ namespace Collision {
 
 					Collision::CollisionManifold collisionManifold;
 
-					// Optimization: Skip two static rigidbodies
+					// Optimization: Skip two static rigidbodies (This shouldn't happen anyway with our new logic, but good safety)
 					if (globalECS.HasComponent<Component::RigidBodyComponent>(entity1) &&
 						globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) {
 						auto* rb1 = globalECS.GetComponent<Component::RigidBodyComponent>(entity1);
@@ -1177,20 +1167,24 @@ namespace Collision {
 							Collision::CollisionProps{ collider1->collider, rb1->GetVelocity(), transform1->position },
 							Collision::CollisionProps{ collider2->collider, rb2->GetVelocity(), transform2->position }
 							);
+					}
+					else {
+						// One object doesn't have a rigid body (it's static)
+						CEVec3 vel1 = globalECS.HasComponent<Component::RigidBodyComponent>(entity1) ? globalECS.GetComponent<Component::RigidBodyComponent>(entity1)->GetVelocity() : CEVec3{ 0,0,0 };
+						CEVec3 vel2 = globalECS.HasComponent<Component::RigidBodyComponent>(entity2) ? globalECS.GetComponent<Component::RigidBodyComponent>(entity2)->GetVelocity() : CEVec3{ 0,0,0 };
 
+						collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
+							Collision::CollisionProps{ collider1->collider, vel1, transform1->position },
+							Collision::CollisionProps{ collider2->collider, vel2, transform2->position }
+							);
 					}
 
 					if (collisionManifold.collisionOccured) {
 						// Populate master list
-						result.events.push_back(
-							CollisionEvent{ collisionManifold, entity1, entity2 }
-						);
+						result.events.push_back(CollisionEvent{ collisionManifold, entity1, entity2 });
 
 						// Gameplay messaging only when in play mode
-
 						if (state == EngineState::PLAY) {
-							// If EITHER collider is a trigger, it is a Trigger Event.
-							// Otherwise, it is a Collision Event.
 							bool isTriggerInteraction = collider1->collider->isTrigger || collider2->collider->isTrigger;
 
 							using namespace Messaging;
@@ -1199,72 +1193,85 @@ namespace Collision {
 
 							ContactPair pair{ entity1, entity2 };
 
-							// Check if this pair existed Last Frame
 							if (isPairInCollection(pair, lastFrameCollision)) {
-								// STAY
 								result.messages.push_back({ stayType, collisionManifold, entity1, entity2 });
 							}
 							else {
-								// ENTER
 								result.messages.push_back({ enterType, collisionManifold, entity1, entity2 });
 							}
 
-							// Save contact
 							result.contacts.push_back({ pair, collisionManifold });
 						}
 					}
 				}
 			}
-		});
+			});
 
 		// Merge results back to main thread
 		for (auto& res : threadResults) {
+			// Physics needs these immediately
 			m_FrameCollisions.insert(m_FrameCollisions.end(), res.events.begin(), res.events.end());
-			currentFrameCollision.insert(currentFrameCollision.end(), res.contacts.begin(), res.contacts.end());
-			
-			for (auto& msg : res.messages) {
-				CollisionMessage cmsg{ msg.type, msg.manifold, msg.e1, msg.e2 };
-				sendMessage(cmsg);
+
+			if (state == EngineState::PLAY) {
+				// Accumulate contacts, ensuring we only fire Enter/Stay ONCE per macro-frame!
+				for (size_t i = 0; i < res.contacts.size(); ++i) {
+					ContactPair pair = res.contacts[i].contacts;
+
+					if (!isPairInCollection(pair, currentFrameCollision)) {
+						currentFrameCollision.push_back(res.contacts[i]);
+
+						auto& msg = res.messages[i];
+						CollisionMessage cmsg{ msg.type, msg.manifold, msg.e1, msg.e2 };
+						sendMessage(cmsg);
+					}
+				}
 			}
 		}
 
 		if (state == EngineState::PLAY) {
-			// --- EXIT EVENT LOOP ---
-			for (ContactInformation const& contactInfo : lastFrameCollision) {
-				// If contact existed last frame but NOT this frame -> EXIT
-				if (!isPairInCollection(contactInfo.contacts, currentFrameCollision)) {
+			// --- DEFER EXITS ---
+			// ONLY evaluate Exits on the FINAL sub-step (index 3). 
+			// This prevents non-CCD objects from instantly "exiting" on sub-step 1!
+			if (subStepIndex == 3) {
+				for (ContactInformation const& contactInfo : lastFrameCollision) {
+					if (!isPairInCollection(contactInfo.contacts, currentFrameCollision)) {
 
-					using namespace Messaging;
-					EventType exitType = EventType::CollisionExit; // Default to Collision
+						using namespace Messaging;
+						EventType exitType = EventType::CollisionExit;
 
-					// Re-check if it was a trigger to send the right Exit message.
-					// Safely get components (entities might have been destroyed)
-					if (globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.first) &&
-						globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.second))
-					{
-						auto* c1 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.first);
-						auto* c2 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.second);
+						if (globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.first) &&
+							globalECS.HasComponent<Component::ColliderComponent>(contactInfo.contacts.second))
+						{
+							auto* c1 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.first);
+							auto* c2 = globalECS.GetComponent<Component::ColliderComponent>(contactInfo.contacts.second);
 
-						if (c1->collider->isTrigger || c2->collider->isTrigger) {
-							exitType = EventType::TriggerExit;
+							if (c1->collider->isTrigger || c2->collider->isTrigger) {
+								exitType = EventType::TriggerExit;
+							}
 						}
-					}
 
-					CollisionMessage exitMessage{ exitType, contactInfo.colManifold, contactInfo.contacts.first, contactInfo.contacts.second };
-					sendMessage(exitMessage);
+						CollisionMessage exitMessage{ exitType, contactInfo.colManifold, contactInfo.contacts.first, contactInfo.contacts.second };
+						sendMessage(exitMessage);
+					}
 				}
+				std::swap(currentFrameCollision, lastFrameCollision);
 			}
-			// Swap Buffers
-			std::swap(currentFrameCollision, lastFrameCollision);
-			currentFrameCollision.clear();
 		}
 
-		if (state == EngineState::STOP) {
-			// Refresh collision data for the next play
+		if (state == EngineState::STOP && subStepIndex == 0) {
 			currentFrameCollision.clear();
 			lastFrameCollision.clear();
 		}
 
+		// --- RESTORE DEBUG RENDERING ---
+		// If this is the final sub-step, repopulate m_FrameCollisions with the ENTIRE macro-frame's 
+		// accumulation so the Debug Renderer correctly colors all hits red!
+		if (subStepIndex == 3) {
+			m_FrameCollisions.clear();
+			for (auto& info : currentFrameCollision) {
+				m_FrameCollisions.push_back(CollisionEvent{ info.colManifold, info.contacts.first, info.contacts.second });
+			}
+		}
 	}
 
 	FunctionDispatchType CollisionHandler::callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2) {
@@ -1377,7 +1384,8 @@ namespace Collision {
 		return hitFound;
 	}
 
-bool CollisionHandler::RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity) {
+bool CollisionHandler::RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, CrashoutsEngine::Entity& outEntity,
+	CrashoutsEngine::Entity ignoredEntity, CrashoutsEngine::Entity ignoredParent) {
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
 		LineSegment rayLine(start, end);
@@ -1410,6 +1418,13 @@ bool CollisionHandler::RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, Cr
 		for (CrashoutsEngine::Entity const& entity : candidates) {
 			if (!IsEntityActive(globalECS, entity)) continue;
 			if (entity == ignoredEntity) continue;
+			if (ignoredParent != 0) {
+				if (entity == ignoredParent) continue;
+				if (globalECS.HasComponent<Component::ParentComponent>(entity)) {
+					auto* parentComp = globalECS.GetComponent<Component::ParentComponent>(entity);
+					if (parentComp && parentComp->parent == ignoredParent) continue;
+				}
+			}
 
 			auto* colliderComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
 			if (!colliderComp || !colliderComp->collider) continue;
@@ -1446,6 +1461,49 @@ bool CollisionHandler::RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, Cr
 			}
 
 			CollisionProps targetProps{ colliderComp->collider, vel, transformComp->position };
+
+			if (colliderComp->collider->type == ColliderType::AABB) {
+				auto& aabb = static_cast<AABBRect&>(*colliderComp->collider);
+				CEVec3 dir = end - start;
+
+				float tmin = 0.0f;
+				float tmax = 1.0f;
+
+				if (std::abs(dir.x) > 1e-6f) {
+					float inv = 1.0f / dir.x;
+					float t1 = (aabb.min.x - start.x) * inv;
+					float t2 = (aabb.max.x - start.x) * inv;
+					if (t1 > t2) std::swap(t1, t2);
+					tmin = std::max(tmin, t1);
+					tmax = std::min(tmax, t2);
+					if (tmin > tmax) continue;
+				}
+				else if (start.x < aabb.min.x || start.x > aabb.max.x) {
+					continue;
+				}
+
+				if (std::abs(dir.y) > 1e-6f) {
+					float inv = 1.0f / dir.y;
+					float t1 = (aabb.min.y - start.y) * inv;
+					float t2 = (aabb.max.y - start.y) * inv;
+					if (t1 > t2) std::swap(t1, t2);
+					tmin = std::max(tmin, t1);
+					tmax = std::min(tmax, t2);
+					if (tmin > tmax) continue;
+				}
+				else if (start.y < aabb.min.y || start.y > aabb.max.y) {
+					continue;
+				}
+
+				float distSq = CEMath::LengthSq(dir) * (tmin * tmin);
+				if (distSq < closestDistSq) {
+					closestDistSq = distSq;
+					outEntity = entity;
+					outPoint = start + dir * tmin;
+					hitFound = true;
+				}
+				continue;
+			}
 
 			auto colFunc = callCollFunct(ColliderType::LINE, colliderComp->collider->type);
 			if (!colFunc) continue;
