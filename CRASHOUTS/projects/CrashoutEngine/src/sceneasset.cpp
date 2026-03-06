@@ -594,6 +594,8 @@ namespace CrashoutsEngine {
 				val.AddMember("active", c.active, allocator);
 				val.AddMember("intensity", c.intensity, allocator);
 				val.AddMember("radius", c.radius, allocator);
+				val.AddMember("shape", c.shape, allocator);
+				val.AddMember("blendMode", c.blendMode, allocator);
 				val.AddMember("affectBloom", c.affectBloom, allocator);
 				val.AddMember("useTransform", c.useTransform, allocator);
 				val.AddMember("renderSelf", c.renderSelf, allocator);
@@ -1153,6 +1155,8 @@ namespace CrashoutsEngine {
 				l.active = GetBool(v, "active", l.active);
 				l.intensity = GetFloat(v, "intensity", l.intensity);
 				l.radius = GetFloat(v, "radius", l.radius);
+				l.shape = GetInt(v, "shape", l.shape);
+				l.blendMode = GetInt(v, "blendMode", l.blendMode);
 				l.affectBloom = GetBool(v, "affectBloom", l.affectBloom);
 				l.useTransform = GetBool(v, "useTransform", l.useTransform);
 				l.renderSelf = GetBool(v, "renderSelf", l.renderSelf);
