@@ -5,7 +5,7 @@ function(disable_warnings_for target)
         get_target_property(existing_compile_options ${target} COMPILE_OPTIONS)
 
         if (existing_compile_options)
-            # Remove any /W0�/W4 already present
+            # Remove any /W0Ã¯Â¿Â½/W4 already present
             string(REGEX REPLACE "/W[0-4]" "" existing_compile_options "${existing_compile_options}")
             
             # FIX: Use semicolon to separate the flags in the list
@@ -454,4 +454,81 @@ function(link_ffmpeg_to target)
             COMMENT "Copying FFmpeg DLL: ${DLL} to output directory"
         )
     endforeach()
+endfunction()
+
+# -------------------- cURL (prebuilt) --------------------
+set(_CURL "${CMAKE_SOURCE_DIR}/third_party/Curl")
+set(_CURL_INC "${_CURL}/include")
+set(_CURL_LIBDIR "${_CURL}/lib")
+set(_CURL_BINDIR "${_CURL}/bin")
+
+function(_curl_ensure_import_lib out_var)
+  set(def_file "${_CURL_BINDIR}/libcurl-x64.def")
+  set(dll_file "${_CURL_BINDIR}/libcurl-x64.dll")
+  set(gen_lib "${CMAKE_BINARY_DIR}/third_party/curl/libcurl-x64.lib")
+
+  if(EXISTS "${_CURL_LIBDIR}/libcurl.lib")
+    set(${out_var} "${_CURL_LIBDIR}/libcurl.lib" PARENT_SCOPE)
+    return()
+  endif()
+
+  if(MSVC)
+    find_program(LIB_EXE lib)
+    if(NOT LIB_EXE)
+      message(FATAL_ERROR "[cURL] MSVC lib.exe not found. Open a VS Developer Command Prompt or set PATH.")
+    endif()
+    if(NOT EXISTS "${def_file}" OR NOT EXISTS "${dll_file}")
+      message(FATAL_ERROR "[cURL] Missing ${def_file} or ${dll_file}")
+    endif()
+    add_custom_command(
+      OUTPUT "${gen_lib}"
+      COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/third_party/curl"
+      COMMAND "${LIB_EXE}" /DEF:"${def_file}" /OUT:"${gen_lib}" /MACHINE:X64
+      DEPENDS "${def_file}"
+      COMMENT "Generating libcurl import library"
+    )
+    if(NOT TARGET curl_import_lib)
+      add_custom_target(curl_import_lib DEPENDS "${gen_lib}")
+    endif()
+    set(${out_var} "${gen_lib}" PARENT_SCOPE)
+  else()
+    if(EXISTS "${_CURL_LIBDIR}/libcurl.a")
+      set(${out_var} "${_CURL_LIBDIR}/libcurl.a" PARENT_SCOPE)
+    elseif(EXISTS "${_CURL_LIBDIR}/libcurl.dll.a")
+      set(${out_var} "${_CURL_LIBDIR}/libcurl.dll.a" PARENT_SCOPE)
+    else()
+      message(FATAL_ERROR "[cURL] No suitable libcurl library found in ${_CURL_LIBDIR}")
+    endif()
+  endif()
+endfunction()
+
+function(link_curl_to target)
+  if(NOT EXISTS "${_CURL_INC}/curl/curl.h")
+    message(FATAL_ERROR "[cURL] Missing headers at ${_CURL_INC}")
+  endif()
+  if(NOT EXISTS "${_CURL_BINDIR}/libcurl-x64.dll")
+    message(FATAL_ERROR "[cURL] Missing DLL at ${_CURL_BINDIR}")
+  endif()
+
+  _curl_ensure_import_lib(CURL_IMPLIB)
+
+  if(NOT TARGET CURL::libcurl)
+    add_library(CURL::libcurl SHARED IMPORTED)
+    set_target_properties(CURL::libcurl PROPERTIES
+      IMPORTED_IMPLIB "${CURL_IMPLIB}"
+      IMPORTED_LOCATION "${_CURL_BINDIR}/libcurl-x64.dll"
+      INTERFACE_INCLUDE_DIRECTORIES "${_CURL_INC}"
+    )
+    if(TARGET curl_import_lib)
+      add_dependencies(CURL::libcurl curl_import_lib)
+    endif()
+  endif()
+
+  target_link_libraries(${target} PRIVATE CURL::libcurl)
+  target_include_directories(${target} PRIVATE "${_CURL_INC}")
+
+  add_custom_command(TARGET ${target} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_CURL_BINDIR}/libcurl-x64.dll" "$<TARGET_FILE_DIR:${target}>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_CURL_BINDIR}/curl-ca-bundle.crt" "$<TARGET_FILE_DIR:${target}>"
+  )
 endfunction()

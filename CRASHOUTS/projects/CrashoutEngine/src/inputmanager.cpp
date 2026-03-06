@@ -122,9 +122,6 @@ void InputManager::Init(GLFWwindow* ptr_window) {
 Snapshots scroll delta resets accumulator and refreshes key and mouse button states
 */
 void InputManager::Update() {
-    // Reset game view state at start of frame. 
-    // The Editor must call SetGameViewMouse EVERY frame to keep it active.
-    // This handles the case where the user closes the viewport or minimizes it.
     s_usingGameView = false;
 
     // Clear typed chars and store last frame's key state
@@ -132,56 +129,21 @@ void InputManager::Update() {
     s_lastKeys = Keys;
     s_lastMouseButtons = MouseButtons;
 
-    // Snapshot scroll delta for this frame and reset accumulator
     ScrollYFrame = ScrollYAccum;
     ScrollYAccum = 0.0f;
 
     Keys.clear();
     MouseButtons.clear();
 
-    if (s_isReplayMode) {
-        // 1. REPLAY MODE: Copy the injected ghost state. Do not poll GLFW.
-        Keys = s_replayKeys;
-        MouseButtons = s_replayMouseButtons;
-
-        // ---> Keep system/debug keys alive so we don't get trapped! <---
-        Keys[GLFW_KEY_F5] = glfwGetKey(Window, GLFW_KEY_F5) == GLFW_PRESS;
-        Keys[GLFW_KEY_F6] = glfwGetKey(Window, GLFW_KEY_F6) == GLFW_PRESS;
-        Keys[GLFW_KEY_F7] = glfwGetKey(Window, GLFW_KEY_F7) == GLFW_PRESS;
-        Keys[GLFW_KEY_ESCAPE] = glfwGetKey(Window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
+    // NORMAL MODE: Poll physical hardware as usual.
+    for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
+        bool isDown = glfwGetKey(Window, key) == GLFW_PRESS;
+        Keys[key] = isDown;
     }
-    else {
-        // Grab the current tick for recording purposes
-        // Replace this with your engine's actual fixed tick getter!
-        uint32_t currentTick = FrameRateController::GetInstance().GetFixedTickCount();
-        bool isRecording = ReplayManager::Replay::GetInstance().GetState() == ReplayManager::ReplayState::RECORDING;
 
-        // 2. NORMAL MODE: Poll physical hardware as usual.
-        for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
-            bool isDown = glfwGetKey(Window, key) == GLFW_PRESS;
-            Keys[key] = isDown;
-
-            // --- RECORDING LOGIC ---
-            if (isRecording) {
-                bool wasDown = s_lastKeys.count(key) ? s_lastKeys[key] : false;
-                if (isDown != wasDown) {
-                    ReplayManager::Replay::GetInstance().RecordEvent(currentTick, static_cast<Key>(key), isDown);
-                }
-            }
-        }
-
-        for (int button = GLFW_MOUSE_BUTTON_1; button <= GLFW_MOUSE_BUTTON_LAST; ++button) {
-            bool isDown = glfwGetMouseButton(Window, button) == GLFW_PRESS;
-            MouseButtons[button] = isDown;
-
-            // --- RECORDING LOGIC ---
-            if (isRecording) {
-                bool wasDown = s_lastMouseButtons.count(button) ? s_lastMouseButtons[button] : false;
-                if (isDown != wasDown) {
-                    ReplayManager::Replay::GetInstance().RecordEvent(currentTick, static_cast<Key>(button), isDown);
-                }
-            }
-        }
+    for (int button = GLFW_MOUSE_BUTTON_1; button <= GLFW_MOUSE_BUTTON_LAST; ++button) {
+        bool isDown = glfwGetMouseButton(Window, button) == GLFW_PRESS;
+        MouseButtons[button] = isDown;
     }
 }
 

@@ -4,7 +4,7 @@
 @date       29/11/2025
 @brief      rigidbody component for physics interactions
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 using System.Runtime.CompilerServices;
@@ -52,6 +52,51 @@ namespace CrashoutsEngine
             }
         }
 
+        public float GravityScale
+        {
+            get
+            {
+                InternalGetGravityScale(EntityID, out float scale);
+                return scale;
+            }
+            set
+            {
+                InternalSetGravityScale(EntityID, ref value);
+            }
+        }
+
+        public float AngularVelocity
+        {
+            get
+            {
+                InternalGetAngularVelocity(EntityID, out float angVel);
+                return angVel;
+            }
+            set
+            {
+                InternalSetAngularVelocity(EntityID, ref value);
+            }
+        }
+
+        public float Rotation
+        {
+            set
+            {
+                InternalSetRotation(EntityID, value);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void InternalGetAngularVelocity(uint entityID, out float angularVelocity);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalSetAngularVelocity(uint entityID, ref float angularVelocity);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalGetGravityScale(uint entityID, out float scale);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalSetGravityScale(uint entityID, ref float scale);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalAddForce(uint entityID, float x, float y, float z);
@@ -70,5 +115,8 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void InternalSetDynamic(uint entityID, bool dynamic);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalSetRotation(uint entityID, float rotation);
     }
 }

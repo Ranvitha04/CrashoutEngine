@@ -1,12 +1,36 @@
 {
     "shaders": [
         {
-            "name": "CrashoutShader",
-            "path": "CrashoutShader"
+            "name": "BloomCompositeShader",
+            "path": "BloomCompositeShader"
+        },
+        {
+            "name": "LightShader",
+            "path": "LightShader"
+        },
+        {
+            "name": "BlurShader",
+            "path": "BlurShader"
         },
         {
             "name": "PPShader",
             "path": "PPShader"
+        },
+        {
+            "name": "BrightShader",
+            "path": "BrightShader"
+        },
+        {
+            "name": "OccluderMaskShader",
+            "path": "OccluderMaskShader"
+        },
+        {
+            "name": "CombineShader",
+            "path": "CombineShader"
+        },
+        {
+            "name": "CrashoutShader",
+            "path": "CrashoutShader"
         },
         {
             "name": "TextShader",
@@ -17,6 +41,12 @@
         {
             "name": "Exo2-Regular",
             "path": "Exo2-Regular.ttf"
+        }
+    ],
+    "replays": [
+        {
+            "name": "Level1_Ghost",
+            "path": "Level1_Ghost.bin"
         }
     ],
     "json": [
@@ -35,10 +65,6 @@
         {
             "name": "missing",
             "path": "missing.png"
-        },
-        {
-            "name": "map",
-            "path": "map.png"
         }
     ],
     "scenes": [
@@ -48,7 +74,7 @@
         },
         {
             "name": "StartScene",
-            "path": "StartScene.json"
+            "path": "StartScene"
         },
         {
             "name": "GameScene",

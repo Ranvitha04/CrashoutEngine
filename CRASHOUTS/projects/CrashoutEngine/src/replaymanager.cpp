@@ -6,89 +6,167 @@
             of past gameplay funtionalities.
 */
 
+#include "engine.h"
 #include "replaymanager.h"
-#include "iostream"
+#include "frameratecontroller.h"
+#include "log.h"
+
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
 
 namespace ReplayManager {
+
+    // We use these to reset the "Replay Clock" to 0 every time we start.
+    static Tick s_RecordStartTick = 0;
+    static bool s_FirstRecordTick = false;
+
+    static Tick s_PlaybackStartTick = 0;
+    static bool s_FirstPlaybackTick = false;
+
+    /*
+    @brief Record current pos & rot
+    */
+    void Replay::RecordCurrentTransform(float x, float y, float z, float rot) {
+        if (!isRecording) return;
+
+        Tick currentTick = FrameRateController::GetInstance().GetFixedTickCount();
+
+        if (s_FirstRecordTick) {
+            s_RecordStartTick = currentTick;
+            s_FirstRecordTick = false;
+        }
+
+        Tick relativeTick = currentTick - s_RecordStartTick;
+        recordData.push_back({ relativeTick, x, y, z, rot });
+    }
+
+    /*
+    @brief Retrieve playback pos & rot
+    */
+    bool Replay::GetGhostTransform(float& outX, float& outY, float& outZ, float& outRot) {
+        if (!isPlaying || playbackData.empty()) return false;
+
+        Tick currentTick = FrameRateController::GetInstance().GetFixedTickCount();
+
+        if (s_FirstPlaybackTick) {
+            s_PlaybackStartTick = currentTick;
+            s_FirstPlaybackTick = false;
+            playbackIndex = 0;
+        }
+
+        Tick relativeTick = currentTick - s_PlaybackStartTick;
+
+        // Fast-forward to the correct frame for the current time
+        while (playbackIndex < playbackData.size() - 1 &&
+            playbackData[playbackIndex + 1].relativeTick <= relativeTick)
+        {
+            playbackIndex++;
+        }
+
+        // Return the exact position and rotation the player was at during this tick!
+        const auto& ev = playbackData[playbackIndex];
+        outX = ev.x;
+        outY = ev.y;
+        outZ = ev.z;
+        outRot = ev.rotation;
+
+        return true;
+    }
 
     /*
     @brief Declare start of recording
     */
     void Replay::StartRecording() {
-        if (state == ReplayState::RECORDING) return; // Already recording
-        if (state == ReplayState::PLAYING) Stop();   // Stop playing before recording
+        recordData.clear(); // Only clear the RECORD buffer!
+        isRecording = true;
+        s_FirstRecordTick = true;
+        LOGI(Debug, "[Replay] Started Recording.");
+    }
 
-        state = ReplayState::RECORDING;
-        replayData.clear();
-        playbackIndex = 0;
-        InputManager::SetReplayMode(false); // Ensure we read real hardware
-        std::cout << "[Replay] Started Recording." << std::endl;
+    /*
+    @brief Stop recording
+    */
+    void Replay::StopRecording() {
+        isRecording = false;
+        LOGI(Debug, "[Replay] Stopped Recording.");
     }
 
     /*
     @brief "Replay" the events by sending recorded input events
     */
     void Replay::StartPlayback() {
-        if (state == ReplayState::PLAYING) return;   // Already playing
-        if (state == ReplayState::RECORDING) Stop(); // Stop recording first
-
-        if (replayData.empty()) {
-            std::cout << "[Replay] No data to playback!" << std::endl;
+        if (playbackData.empty()) {
+            LOGI(Debug, "[Replay] No ghost data to playback!");
             return;
         }
-        state = ReplayState::PLAYING;
+        isPlaying = true;
         playbackIndex = 0;
-        InputManager::SetReplayMode(true); // Lock out real hardware!
-        std::cout << "[Replay] Started Playback." << std::endl;
+        s_FirstPlaybackTick = true;
+        LOGI(Debug, "[Replay] Started Ghost Playback.");
     }
 
     /*
-    @brief Reset the state and stop all playback / recording
+    @brief Stop playback
     */
-    void Replay::Stop() {
-        if (state == ReplayState::IDLE) return; // Already stopped
-
-        state = ReplayState::IDLE;
-        InputManager::SetReplayMode(false); // Return control to player
-        std::cout << "[Replay] Stopped." << std::endl;
+    void Replay::StopPlayback() {
+        isPlaying = false;
+        LOGI(Debug, "[Replay] Stopped Ghost Playback.");
     }
 
     /*
-    @brief Record given event
+    @brief Save the current replay buffer to a binary file
     */
-    void Replay::RecordEvent(Tick tick, Key key, bool isPressed) {
-        if (state == ReplayState::RECORDING) {
-            replayData.push_back({ tick, key, isPressed });
-        }
+    void Replay::SaveRecording(const std::string& filename) {
+        // --- SAFE PATH RESOLUTION ---
+#if USE_IMGUI_EDITOR
+        // Editor Mode: Save right into the project assets folder
+        std::filesystem::path dirPath = std::filesystem::path(GetGameRoot()) / "assets" / "replays";
+#else
+        // Standalone Game: Save to the user's Windows AppData folder!
+        std::filesystem::path dirPath = std::filesystem::path(GetLocalAppData()) / "replays";
+#endif
+
+        // Ensure the directory exists
+        std::filesystem::create_directories(dirPath);
+        std::filesystem::path fullPath = dirPath / (filename + ".bin");
+
+        std::ofstream out(fullPath, std::ios::binary);
+        if (!out.is_open()) return;
+
+        // Save the RECORD data!
+        size_t count = recordData.size();
+        out.write(reinterpret_cast<const char*>(&count), sizeof(size_t));
+        out.write(reinterpret_cast<const char*>(recordData.data()), count * sizeof(TransformEvent));
+        out.close();
+
+        LOGI(Core, "[Replay] Ghost Saved!");
     }
 
     /*
-    @brief Updates the state and send input based on current input event and current tick "time"
+    @brief Load a replay buffer from a binary file
     */
-    void Replay::UpdateFixedTick(Tick currentTick) {
-        if (state != ReplayState::PLAYING) return;
+    bool Replay::LoadRecording(const std::string& filename) {
+        // --- SAFE PATH RESOLUTION ---
+#if USE_IMGUI_EDITOR
+        std::filesystem::path dirPath = std::filesystem::path(GetGameRoot()) / "assets" / "replays";
+#else
+        std::filesystem::path dirPath = std::filesystem::path(GetLocalAppData()) / "replays";
+#endif
 
-        // Process all events scheduled for the current tick
-        while (playbackIndex < replayData.size() &&
-            replayData[playbackIndex].fixedTick == currentTick)
-        {
-            InputEvent& ev = replayData[playbackIndex];
-            int code = static_cast<int>(ev.key);
+        std::filesystem::path fullPath = dirPath / (filename + ".bin");
+        std::ifstream in(fullPath, std::ios::binary);
+        if (!in.is_open()) return false;
 
-            // Inject based on whether it's a mouse button (0-7) or keyboard key
-            if (code >= 0 && code <= GLFW_MOUSE_BUTTON_LAST) {
-                InputManager::InjectMouseButton(ev.key, ev.isPressed);
-            }
-            else {
-                InputManager::InjectKey(ev.key, ev.isPressed);
-            }
+        // Load into the PLAYBACK data!
+        size_t count = 0;
+        in.read(reinterpret_cast<char*>(&count), sizeof(size_t));
+        playbackData.resize(count);
+        in.read(reinterpret_cast<char*>(playbackData.data()), count * sizeof(TransformEvent));
+        in.close();
 
-            playbackIndex++;
-        }
-
-        // Auto-stop when we reach the end of the recording
-        if (playbackIndex >= replayData.size()) {
-            Stop();
-        }
+        return true;
     }
+
 }

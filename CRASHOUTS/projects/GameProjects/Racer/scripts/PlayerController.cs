@@ -1,74 +1,87 @@
 using System;
-using CrashoutsEngine; // Adjust to match your C# namespace
+using CrashoutsEngine;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
     public class PlayerController : ScriptBase
     {
-        // Tweak these in the Editor Inspector
         public float ThrustForce = 500.0f;
-        public float RotationSpeed = 150.0f; // Degrees per second
-
-        private TransformComponent _transform;
+        public float RotationSpeed = 150.0f; 
+        public string CurrentSceneName = "Game";
+        public string MenuSceneName = "StartScene";
+        
+        // Add a drag variable so they don't glide forever
+        public float SpaceDrag = 0.98f; 
         private RigidBodyComponent _rigidBody;
 
         public override void Start()
         {
-            // Cache the components so we don't have to search for them every frame
-            _transform = Entity.GetComponent<TransformComponent>();
             _rigidBody = Entity.GetComponent<RigidBodyComponent>();
+
+            if (_rigidBody != null)
+            {
+                // Make sure the player has mass to move!
+                if (_rigidBody.Mass <= 0.0f) _rigidBody.Mass = 1.0f;
+                
+                // Turn off gravity for the top-down Asteroids feel
+                // (Assuming you added the C# binding for GravityScale)
+                _rigidBody.GravityScale = 0.0f; 
+            }
         }
 
-        public override void Update() { }
+        public override void Update()
+        {
+            // Restart Current Scene
+            if (Input.IsKeyPressed(Key.R))
+            {
+                Debug.Log($"[C#] Restarting Game. Loading Scene: {CurrentSceneName}");
+                SceneManager.LoadScene(CurrentSceneName, 0.5f);
+            }
+
+            // Return to Menu Scene
+            if (Input.IsKeyPressed(Key.Escape))
+            {
+                Debug.Log($"[C#] Returning to Menu. Loading Scene: {MenuSceneName}");
+                SceneManager.LoadScene(MenuSceneName, 0.5f);
+            }
+        }
 
         public override void FixedUpdate()
         {
-            if (_transform == null || _rigidBody == null) return;
+            if (_rigidBody == null) return;
 
-            // ==========================================
-            // 1. ROTATION LOGIC (A and D)
-            // ==========================================
-            // Removed the (int) cast since your Input system handles the Key enum natively!
-            if (Input.IsKeyHeld(Key.A)) 
-            {
-                // Assuming standard timestep of 1/60th of a second for FixedUpdate
-                _transform.Rotation += RotationSpeed * (1.0f / 60.0f); 
-            }
-            else if (Input.IsKeyHeld(Key.D))
-            {
-                _transform.Rotation -= RotationSpeed * (1.0f / 60.0f);
-            }
+            // GET THE LIVE TRANSFORM EVERY FRAME!
+            var liveTransform = Entity.GetComponent<TransformComponent>();
 
-            // ==========================================
-            // 2. DIRECTION MATH (Trigonometry)
-            // ==========================================
-            // C#'s Math.Sin and Cos expect Radians, so we convert your degrees
-            float rotationRadians = _transform.Rotation * (float)(Math.PI / 180.0);
+            // 1. ROTATION (Using Physics)
+            if (Input.IsKeyHeld(Key.A) || Input.IsKeyHeld(Key.Left)) 
+                _rigidBody.AngularVelocity = RotationSpeed * (1.0f / 60.0f); 
+            else if (Input.IsKeyHeld(Key.D) || Input.IsKeyHeld(Key.Right))
+                _rigidBody.AngularVelocity = -RotationSpeed * (1.0f / 60.0f);
+            else
+                _rigidBody.AngularVelocity = 0f; 
 
-            // CALCULATE DIRECTION VECTOR:
-            // * NOTE: This assumes your sprite points RIGHT (1, 0) at 0 degrees.
-            // * If your sprite points UP (0, 1) at 0 degrees, swap these to:
-            // * dirX = (float)-Math.Sin(rotationRadians);
-            // * dirY = (float)Math.Cos(rotationRadians);
-            float dirX = (float)Math.Cos(rotationRadians);
-            float dirY = (float)Math.Sin(rotationRadians);
+            // 2. DIRECTION MATH (Using live rotation!)
+            float rotationRadians = liveTransform.Rotation * (float)(Math.PI / 180.0);
+            float dirX = -(float)Math.Sin(rotationRadians);
+            float dirY = (float)Math.Cos(rotationRadians);
 
-            // ==========================================
-            // 3. MOVEMENT LOGIC (W and S)
-            // ==========================================
-            if (Input.IsKeyHeld(Key.W))
-            {
-                // Push Forward (Using CEVec3 with Z = 0f to match your physics engine)
-                CEVec3 force = new CEVec3(dirX * ThrustForce, dirY * ThrustForce, 0f);
-                _rigidBody.AddForce(force);
-            }
-            else if (Input.IsKeyHeld(Key.S))
-            {
-                // Push Backward (Reverse the vector)
-                CEVec3 force = new CEVec3(-dirX * ThrustForce, -dirY * ThrustForce, 0f);
-                _rigidBody.AddForce(force);
-            }
+            // 3. MOVEMENT
+            if (Input.IsKeyHeld(Key.W) || Input.IsKeyHeld(Key.Up))
+                _rigidBody.AddForce(new CEVec3(dirX * ThrustForce, dirY * ThrustForce, 0f));
+            else if (Input.IsKeyHeld(Key.S) || Input.IsKeyHeld(Key.Down))
+                _rigidBody.AddForce(new CEVec3(-dirX * ThrustForce, -dirY * ThrustForce, 0f));
+            
+            // 4. APPLY SPACE DRAG
+            _rigidBody.LinearVelocity = new CEVec3(
+                _rigidBody.LinearVelocity.x * SpaceDrag, 
+                _rigidBody.LinearVelocity.y * SpaceDrag, 
+                0f
+            );
+
+            // 5. RECORD THE LIVE DATA
+            ReplayManager.RecordTransform(liveTransform.Position, liveTransform.Rotation);
         }
         
         public override void OnDestroy() { }

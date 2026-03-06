@@ -666,6 +666,16 @@
                     },
                     {
                         "x": 0,
+                        "y": -1,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": 3,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
                         "y": 4,
                         "asset": "tilemaps/Rock"
                     },
@@ -987,7 +997,7 @@
                     {
                         "x": 5,
                         "y": -2,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 5,
@@ -5843,6 +5853,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -5977,7 +5988,7 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "pickAnimDuration": 0.5,
+                            "pickAnimDuration": 60.0,
                             "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
@@ -6043,96 +6054,6 @@
                 "t": 369.52056884765627,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "slimePick",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 2,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.15000000596046449,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.30000001192092898,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.44999998807907107,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.6000000238418579,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "slimeHold",
                         "wrap": 0,
@@ -6227,6 +6148,44 @@
                         ]
                     },
                     {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -6301,6 +6260,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
@@ -6453,6 +6413,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
@@ -6724,6 +6685,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
@@ -6889,6 +6851,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
@@ -9515,6 +9478,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -9692,7 +9656,7 @@
                             "footstepInterval": 0.30000001192092898,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
-                            "coyoteFrames": 6,
+                            "coyoteTime": 0.15000000596046449,
                             "goalNoOfPlates": 2,
                             "currentGoalPlates": 1,
                             "landingDustName": "LandingDust",
@@ -9770,6 +9734,7 @@
                 "useTransform": true,
                 "renderSelf": true,
                 "renderBehind": false,
+                "ignoreParentOccluders": true,
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -9790,6 +9755,37 @@
                 "t": 217.4910125732422,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -9843,7 +9839,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -9857,14 +9853,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -9917,37 +9913,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -15432,6 +15397,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
@@ -15597,6 +15563,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -16213,6 +16180,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -16829,6 +16797,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -17445,6 +17414,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -17579,7 +17549,7 @@
                             "maxMouseDragDist": 400.0,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
-                            "pickAnimDuration": 0.5,
+                            "pickAnimDuration": 60.0,
                             "ledgeBuffer": -7.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
@@ -17646,37 +17616,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeHold",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -17699,6 +17638,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeHold",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 3.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -17903,6 +17873,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18560,6 +18531,7 @@
             },
             "collider": {
                 "ColliderType": 3,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18630,6 +18602,7 @@
             },
             "collider": {
                 "ColliderType": 3,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
