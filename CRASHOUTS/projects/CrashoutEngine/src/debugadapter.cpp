@@ -622,50 +622,6 @@ namespace {
 		childT->position.x = parentT->position.x + rotatedX;
 		childT->position.y = parentT->position.y + rotatedY;
 		childT->position.z = parentT->position.z + pc->localPos.z;
-
-		if (ecs.HasComponent<Component::ColliderComponent>(child)) {
-			auto* cc = ecs.GetComponent<Component::ColliderComponent>(child);
-			if (cc && cc->collider) {
-				cc->collider->UpdateCollider(childT->position);
-				cc->collider->UpdateRotation(childT->rotation);
-			}
-		}
-	}
-
-	static void ApplyWorldToLocalNow(ECS& ecs, Entity child, const CEVec3& worldPos, float worldRot, const CEVec2& worldScale)
-	{
-		if (!ecs.HasComponent<Component::ParentComponent>(child)) return;
-		auto* pc = ecs.GetComponent<Component::ParentComponent>(child);
-		if (!pc || pc->parent == 0) return;
-
-		if (!ecs.HasComponent<Component::TransformComponent>(pc->parent)) return;
-		auto* parentT = ecs.GetComponent<Component::TransformComponent>(pc->parent);
-		if (!parentT) return;
-
-		float pX = (parentT->size.x == 0.f) ? 1.f : parentT->size.x;
-		float pY = (parentT->size.y == 0.f) ? 1.f : parentT->size.y;
-
-		pc->localScale.x = worldScale.x / pX;
-		pc->localScale.y = worldScale.y / pY;
-
-		pc->localRot = worldRot - parentT->rotation;
-
-		float dx = worldPos.x - parentT->position.x;
-		float dy = worldPos.y - parentT->position.y;
-
-		const float DEG_TO_RAD = 0.0174532925f;
-		float angleRad = -parentT->rotation * DEG_TO_RAD;
-		float s = std::sin(angleRad);
-		float c = std::cos(angleRad);
-
-		float unRotX = (c * dx) - (s * dy);
-		float unRotY = (s * dx) + (c * dy);
-
-		pc->localPos.x = unRotX / pX;
-		pc->localPos.y = unRotY / pY;
-		pc->localPos.z = worldPos.z - parentT->position.z;
-
-		ApplyLocalToWorldNow(ecs, child);
 	}
 
 	/*!
@@ -708,82 +664,6 @@ namespace {
 				UIHelpers::DrawUndoableVec2("Local Scale", parentComp->localScale);
 				ApplyLocalToWorldNow(ecs, e);
 
-				static std::unordered_map<Entity, bool> sEditWorld;
-				bool& editWorld = sEditWorld[e];
-				ImGui::Checkbox("Edit World Transform", &editWorld);
-
-				if (editWorld) {
-					CEVec3 worldPos = t->position;
-					float worldRot = t->rotation;
-					CEVec2 worldScale = t->size;
-
-					static std::unordered_map<ImGuiID, CEVec3> startPos;
-					static std::unordered_map<ImGuiID, float> startRot;
-					static std::unordered_map<ImGuiID, CEVec2> startScale;
-
-					ImGuiID posId = ImGui::GetID("World Position");
-					if (ImGui::DragFloat3("World Position", &worldPos.x, 1.0f)) {
-						ApplyWorldToLocalNow(ecs, e, worldPos, worldRot, worldScale);
-					}
-					if (ImGui::IsItemActivated()) startPos[posId] = t->position;
-					if (ImGui::IsItemDeactivatedAfterEdit() && startPos.count(posId)) {
-						CEVec3 start = startPos[posId];
-						CEVec3 end = t->position;
-						if (start != end) {
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<ChangeValueCommand<CEVec3>>(start, end, [&ecs, e](const CEVec3& v) {
-									auto* ct = ecs.GetComponent<Component::TransformComponent>(e);
-									float rot = ct ? ct->rotation : 0.0f;
-									CEVec2 sca = ct ? ct->size : CEVec2{ 1.0f, 1.0f };
-									ApplyWorldToLocalNow(ecs, e, v, rot, sca);
-								})
-							);
-						}
-						startPos.erase(posId);
-					}
-
-					ImGuiID rotId = ImGui::GetID("World Rotation");
-					if (ImGui::DragFloat("World Rotation", &worldRot, 0.1f)) {
-						ApplyWorldToLocalNow(ecs, e, worldPos, worldRot, worldScale);
-					}
-					if (ImGui::IsItemActivated()) startRot[rotId] = t->rotation;
-					if (ImGui::IsItemDeactivatedAfterEdit() && startRot.count(rotId)) {
-						float start = startRot[rotId];
-						float end = t->rotation;
-						if (start != end) {
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<ChangeValueCommand<float>>(start, end, [&ecs, e](const float& v) {
-									auto* ct = ecs.GetComponent<Component::TransformComponent>(e);
-									CEVec3 pos = ct ? ct->position : CEVec3{ 0.0f, 0.0f, 0.0f };
-									CEVec2 sca = ct ? ct->size : CEVec2{ 1.0f, 1.0f };
-									ApplyWorldToLocalNow(ecs, e, pos, v, sca);
-								})
-							);
-						}
-						startRot.erase(rotId);
-					}
-
-					ImGuiID scaleId = ImGui::GetID("World Scale");
-					if (ImGui::DragFloat2("World Scale", &worldScale.x, 0.1f)) {
-						ApplyWorldToLocalNow(ecs, e, worldPos, worldRot, worldScale);
-					}
-					if (ImGui::IsItemActivated()) startScale[scaleId] = t->size;
-					if (ImGui::IsItemDeactivatedAfterEdit() && startScale.count(scaleId)) {
-						CEVec2 start = startScale[scaleId];
-						CEVec2 end = t->size;
-						if (start != end) {
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<ChangeValueCommand<CEVec2>>(start, end, [&ecs, e](const CEVec2& v) {
-									auto* ct = ecs.GetComponent<Component::TransformComponent>(e);
-									CEVec3 pos = ct ? ct->position : CEVec3{ 0.0f, 0.0f, 0.0f };
-									float rot = ct ? ct->rotation : 0.0f;
-									ApplyWorldToLocalNow(ecs, e, pos, rot, v);
-								})
-							);
-						}
-						startScale.erase(scaleId);
-					}
-				}
 			}
 			else {
 				//draw_reflected(*t, "Transform");	// <--- how?
@@ -2637,51 +2517,14 @@ namespace CrashoutsEngine
 			if (!lc) return;
 
 			UIHelpers::DrawUndoableBool("Active", lc->active);
-			UIHelpers::DrawUndoableGeneric<CEVec3>("Color", lc->color, [&]() {
-				float color[3] = { lc->color.x, lc->color.y, lc->color.z };
-				if (!ImGui::ColorEdit3("Color", color)) return false;
+			float color[3] = { lc->color.x, lc->color.y, lc->color.z };
+			if (ImGui::ColorEdit3("Color", color)) {
 				lc->color = { color[0], color[1], color[2] };
-				return true;
-			});
+			}
 			UIHelpers::DrawUndoableFloat("Intensity", lc->intensity, 0.05f, 0.0f, 10.0f);
 			UIHelpers::DrawUndoableFloat("Radius", lc->radius, 1.0f, 0.0f, 5000.0f);
-			const char* lightShapes[] = { "Circle", "Rectangle" };
-			UIHelpers::DrawUndoableGeneric<int>("Shape", lc->shape, [&]() {
-				return ImGui::Combo("Shape", &lc->shape, lightShapes, IM_ARRAYSIZE(lightShapes));
-			});
-			const char* lightBlendModes[] = { "Additive", "Max" };
-			UIHelpers::DrawUndoableGeneric<int>("Blend", lc->blendMode, [&]() {
-				return ImGui::Combo("Blend", &lc->blendMode, lightBlendModes, IM_ARRAYSIZE(lightBlendModes));
-			});
-
-			int target = lc->renderBehind ? (lc->affectBloom ? 2 : 3) : (lc->affectBloom ? 0 : 1);
-			const char* lightTargets[] = { "Front (Bloom)", "Front (No Bloom)", "Behind (Bloom)", "Behind (No Bloom)" };
-			if (ImGui::Combo("Light Target", &target, lightTargets, IM_ARRAYSIZE(lightTargets))) {
-				bool newAffectBloom = (target == 0 || target == 2);
-				bool newRenderBehind = (target == 2 || target == 3);
-
-				if (newAffectBloom != lc->affectBloom) {
-					bool oldVal = lc->affectBloom;
-					lc->affectBloom = newAffectBloom;
-					UndoManager::GetInstance().AddCommand(
-						std::make_unique<ChangeValueCommand<bool>>(oldVal, lc->affectBloom, [lc](const bool& v) { lc->affectBloom = v; })
-					);
-				}
-				if (newRenderBehind != lc->renderBehind) {
-					bool oldVal = lc->renderBehind;
-					lc->renderBehind = newRenderBehind;
-					UndoManager::GetInstance().AddCommand(
-						std::make_unique<ChangeValueCommand<bool>>(oldVal, lc->renderBehind, [lc](const bool& v) { lc->renderBehind = v; })
-					);
-				}
-			}
-
 			UIHelpers::DrawUndoableBool("Affects Bloom", lc->affectBloom);
 			UIHelpers::DrawUndoableBool("Use Transform", lc->useTransform);
-			if (!lc->useTransform) {
-				UIHelpers::DrawUndoableVec3("Position", lc->position, 1.0f);
-			}
-			UIHelpers::DrawUndoableBool("Render Light", lc->renderSelf);
 			UIHelpers::DrawUndoableBool("Render Behind Entity", lc->renderBehind);
 			UIHelpers::DrawUndoableBool("Ignore Parent Occluders", lc->ignoreParentOccluders);
 		}

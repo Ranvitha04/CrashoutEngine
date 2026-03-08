@@ -53,8 +53,6 @@ namespace Component {
         CEVec3 color{ 1.0f, 1.0f, 1.0f };
         float intensity{ 1.0f };
         float radius{ 200.0f }; // In world units
-        int shape{ 0 }; // 0: Circle, 1: Rectangle
-        int blendMode{ 0 };
         bool affectBloom{ true };
         bool useTransform{ true };
         bool renderSelf{ true };

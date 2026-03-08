@@ -10845,8 +10845,6 @@
                 "active": true,
                 "intensity": 1.600000023841858,
                 "radius": 32.0,
-                "shape": 0,
-                "blendMode": 0,
                 "affectBloom": true,
                 "useTransform": false,
                 "renderSelf": false,
@@ -11196,7 +11194,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1440.900146484375,
-                    "y": -404.1247253417969,
+                    "y": -421.8497314453125,
                     "z": 0.0
                 },
                 "size": {
@@ -11223,7 +11221,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1440.900146484375,
-                    "y": -404.1247253417969,
+                    "y": -421.8497314453125,
                     "z": 0.0
                 },
                 "offset": {
@@ -11234,7 +11232,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 1440.900146484375,
-                    "y": -404.1247253417969,
+                    "y": -421.8497314453125,
                     "z": 0.0
                 }
             },
@@ -11252,7 +11250,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.125,
+                    "x": 0.0,
                     "y": 0.0
                 },
                 "color": {
@@ -11333,7 +11331,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 10.816673278808594,
+                "t": 17.299907684326173,
                 "playing": true,
                 "clips": [
                     {
@@ -11454,7 +11452,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 95.82136535644531,
-                    "y": -679.3451538085938,
+                    "y": -697.0682373046875,
                     "z": 0.0
                 },
                 "size": {
@@ -11481,7 +11479,7 @@
                 "enabled": true,
                 "position": {
                     "x": 95.82136535644531,
-                    "y": -679.3451538085938,
+                    "y": -697.0682373046875,
                     "z": 0.0
                 },
                 "offset": {
@@ -11492,7 +11490,7 @@
                 "radius": 1.0,
                 "center": {
                     "x": 95.82136535644531,
-                    "y": -679.3451538085938,
+                    "y": -697.0682373046875,
                     "z": 0.0
                 }
             },
@@ -11510,7 +11508,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.125,
+                    "x": 0.0,
                     "y": 0.0
                 },
                 "color": {
@@ -11591,7 +11589,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 10.816673278808594,
+                "t": 17.299907684326173,
                 "playing": true,
                 "clips": [
                     {
@@ -12228,6 +12226,346 @@
         },
         {
             "active": true,
+<<<<<<< HEAD
+=======
+            "name": "wall2",
+            "uuid": 4848372916241238130,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1681.8983154296876,
+                    "y": -711.6759643554688,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 250.0,
+                    "y": 24.999998092651368
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1681.8983154296876,
+                    "y": -711.6759643554688,
+                    "z": -5.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1669.3983154296876,
+                    "y": -836.6759643554688,
+                    "z": -5.0
+                },
+                "max": {
+                    "x": 1694.3983154296876,
+                    "y": -586.6759643554688,
+                    "z": -5.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MovingWall",
+                        "fields": {
+                            "PlatesActive": 0,
+                            "PlatesRequired": 1,
+                            "MoveRight": false,
+                            "MoveDist": 200.0,
+                            "MoveSpeed": 40.0,
+                            "dustBurstDuration": 1.0
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.5
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.699999988079071
+                },
+                "textNormalColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.30000001192092898,
+                    "z": 0.30000001192092898,
+                    "w": 0.699999988079071
+                },
+                "textHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "textPressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.5
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 100
+            },
+            "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 100.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": -0.10000000149011612,
+                "radiusMax": 1.0,
+                "lengthMin": 0.0,
+                "lengthMax": 1.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "startLifeMin": 0.5,
+                "startLifeMax": 5.0,
+                "startSpeedMin": 0.0,
+                "startSpeedMax": 0.0,
+                "uniformSize": true,
+                "startSizeXMin": 1.25,
+                "startSizeXMax": 3.25,
+                "startSizeYMin": 1.25,
+                "startSizeYMax": 3.25,
+                "sizeOverTime": 0.0,
+                "rotationOverTime": 0.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.7900552749633789,
+                    "y": 0.4297234117984772,
+                    "z": 0.19205762445926667,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.14364641904830934,
+                    "y": 0.11262043565511704,
+                    "z": 0.05158573016524315,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": -20.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "Moving_Platform_2",
+            "uuid": 3041436294531806333,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 833.2706909179688,
+                    "y": -383.3429870605469,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 100.0,
+                    "y": 16.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 833.2706909179688,
+                    "y": -383.3429870605469,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 785.2706909179688,
+                    "y": -391.3429870605469,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 881.2706909179688,
+                    "y": -375.3429870605469,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Character/Light Mode/Left/Falling.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WeightedPlatform",
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 200.0,
+                            "MoveSpeed": 40.0,
+                            "VerticalSpeed": 0.0,
+                            "maxDrop": 0.0
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+>>>>>>> parent of 183dfd4a (draft lighting)
             "name": "Platform",
             "uuid": 7261408752062828203,
             "tag": {
@@ -12236,7 +12574,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1122.72998046875,
+                    "x": 856.0811767578125,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -12889,7 +13227,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1042.72998046875,
+                    "x": 776.0811767578125,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -14693,7 +15031,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2363.802001953125,
+                    "x": 2433.119384765625,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -14803,7 +15141,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 4410.13037109375,
+                    "x": 4479.44775390625,
                     "y": -567.8425903320313,
                     "z": 0.0
                 },
@@ -14881,7 +15219,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 4034.790283203125,
+                    "x": 4104.107421875,
                     "y": -361.7455749511719,
                     "z": 0.0
                 },
@@ -14959,7 +15297,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2813.1962890625,
+                    "x": 2882.513671875,
                     "y": -337.42987060546877,
                     "z": 0.0
                 },
@@ -15037,7 +15375,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1800.8162841796876,
+                    "x": 1870.1336669921876,
                     "y": -108.80595397949219,
                     "z": 0.0
                 },
@@ -15115,7 +15453,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2965.66064453125,
+                    "x": 3034.97802734375,
                     "y": -91.34979248046875,
                     "z": 0.0
                 },
@@ -15193,7 +15531,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1471.6680908203126,
+                    "x": 1517.879638671875,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -15231,7 +15569,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1312.6685791015626,
+                    "x": 1358.880126953125,
                     "y": -726.8931274414063,
                     "z": 0.0
                 },
@@ -15309,7 +15647,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2027.470947265625,
+                    "x": 2073.6826171875,
                     "y": -704.6620483398438,
                     "z": 0.0
                 },
@@ -15387,7 +15725,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2930.366455078125,
+                    "x": 2976.578125,
                     "y": -689.61376953125,
                     "z": 0.0
                 },
@@ -15465,7 +15803,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1812.4522705078126,
+                    "x": 1858.663818359375,
                     "y": -272.486572265625,
                     "z": 0.0
                 },
@@ -15543,7 +15881,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1650.9498291015626,
+                    "x": 1697.161376953125,
                     "y": -310.01092529296877,
                     "z": 0.0
                 },
@@ -15621,7 +15959,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1196.348876953125,
+                    "x": 1242.560546875,
                     "y": 50.673248291015628,
                     "z": 0.0
                 },
@@ -15699,7 +16037,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1922.984375,
+                    "x": 1969.196044921875,
                     "y": 24.51214599609375,
                     "z": 0.0
                 },
@@ -15777,7 +16115,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2778.005126953125,
+                    "x": 2824.216796875,
                     "y": 33.03370666503906,
                     "z": 0.0
                 },
@@ -15855,7 +16193,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 766.9835815429688,
+                    "x": 790.08935546875,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -15893,7 +16231,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 273.5955810546875,
+                    "x": 296.70135498046877,
                     "y": -768.4155883789063,
                     "z": 0.0
                 },
@@ -15971,7 +16309,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 727.4381713867188,
+                    "x": 750.5439453125,
                     "y": -746.8555908203125,
                     "z": 0.0
                 },
@@ -16049,7 +16387,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1178.716796875,
+                    "x": 1201.822509765625,
                     "y": -746.3095703125,
                     "z": 0.0
                 },
@@ -16127,7 +16465,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1748.5361328125,
+                    "x": 1771.641845703125,
                     "y": -733.845703125,
                     "z": 0.0
                 },
@@ -16205,7 +16543,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 736.1448974609375,
+                    "x": 759.2506103515625,
                     "y": -239.60116577148438,
                     "z": 0.0
                 },
@@ -16283,7 +16621,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1995.886474609375,
+                    "x": 2018.9923095703126,
                     "y": -262.73773193359377,
                     "z": 0.0
                 },
@@ -16361,7 +16699,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1805.745849609375,
+                    "x": 1828.8516845703126,
                     "y": -352.1566467285156,
                     "z": 0.0
                 },
@@ -16439,7 +16777,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1123.2464599609376,
+                    "x": 1146.352294921875,
                     "y": 159.19122314453126,
                     "z": 0.0
                 },
@@ -16517,7 +16855,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1790.4761962890626,
+                    "x": 1813.58203125,
                     "y": 160.47113037109376,
                     "z": 0.0
                 },
@@ -16595,7 +16933,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 327.7839050292969,
+                    "x": 350.8896789550781,
                     "y": 137.82464599609376,
                     "z": 0.0
                 },
@@ -17579,84 +17917,6 @@
             "layer": {
                 "layerName": "UI",
                 "z": 5
-            }
-        },
-        {
-            "active": true,
-            "name": "OpenedBookGlow",
-            "uuid": 11223344556677890001,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -26.3282470703125,
-                    "y": -4.770022869110107,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 203.51998901367188,
-                    "y": 114.4800033569336
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI/Pause Menu Open.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.6499999761581421
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 4082988418873241213,
-                "localPos": {
-                    "x": -0.13712628185749055,
-                    "y": -0.04416687414050102,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.059999942779541,
-                    "y": 1.059999942779541
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 4
             }
         },
         {
@@ -19807,8 +20067,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -128.85205078125,
-                    "y": -21.386219024658204,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
@@ -19819,8 +20079,8 @@
             "parent": {
                 "parentUUID": 14220587951616437137,
                 "localPos": {
-                    "x": -0.6711044311523438,
-                    "y": -0.1980205476284027,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -19851,8 +20111,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -156.73605346679688,
-                    "y": -34.48622131347656,
+                    "x": -27.884002685546876,
+                    "y": -13.100000381469727,
                     "z": 0.0
                 },
                 "size": {
@@ -19983,8 +20243,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -139.31304931640626,
-                    "y": -34.48622131347656,
+                    "x": -10.461000442504883,
+                    "y": -13.100000381469727,
                     "z": 0.0
                 },
                 "size": {
@@ -20967,8 +21227,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -148.54318237304688,
-                    "y": -28.5,
+                    "x": -166.97476196289063,
+                    "y": -13.01219367980957,
                     "z": 0.0
                 },
                 "size": {
@@ -20995,8 +21255,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -148.54318237304688,
-                    "y": -33.5,
+                    "x": -166.97476196289063,
+                    "y": -18.01219367980957,
                     "z": 0.0
                 },
                 "offset": {
@@ -21005,13 +21265,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -157.54318237304688,
-                    "y": -64.0,
+                    "x": -175.97476196289063,
+                    "y": -48.51219177246094,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -139.54318237304688,
-                    "y": -3.0,
+                    "x": -157.97476196289063,
+                    "y": 12.48780632019043,
                     "z": 0.0
                 }
             },
@@ -21180,15 +21440,14 @@
                             "groundCheckWidth": 10.0,
                             "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
-                            "isDialogueActive": false,
+                            "isDialogueActive": true,
                             "facingRight": true,
                             "CurrentEnergy": 87.5,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false,
                             "reloadOnDeath": false,
-                            "reloadSceneName": "",
-                            "lockBookGlowToPlayer": true
+                            "reloadSceneName": ""
                         }
                     }
                 ]
@@ -21241,8 +21500,6 @@
                 "active": true,
                 "intensity": 0.25,
                 "radius": 129.0,
-                "shape": 0,
-                "blendMode": 0,
                 "affectBloom": false,
                 "useTransform": true,
                 "renderSelf": true,
@@ -21265,40 +21522,9 @@
             },
             "keyframe_animator": {
                 "current": "playerIdleLight",
-                "t": 8.416709899902344,
+                "t": 0.28333336114883425,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -21352,7 +21578,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21366,14 +21592,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21426,6 +21652,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21717,8 +21974,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -148.54318237304688,
-                    "y": 29.869911193847658,
+                    "x": -166.97476196289063,
+                    "y": 45.35771942138672,
                     "z": 0.0
                 },
                 "size": {
@@ -21835,8 +22092,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -148.54318237304688,
-                    "y": 29.869911193847658,
+                    "x": -166.97476196289063,
+                    "y": 45.35771942138672,
                     "z": 0.0
                 },
                 "size": {
@@ -21953,8 +22210,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -148.54318237304688,
-                    "y": 29.869911193847658,
+                    "x": -166.97476196289063,
+                    "y": 45.35771942138672,
                     "z": 0.0
                 },
                 "size": {
@@ -22071,8 +22328,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -148.54318237304688,
-                    "y": 29.869911193847658,
+                    "x": -166.97476196289063,
+                    "y": 45.35771942138672,
                     "z": 0.0
                 },
                 "size": {
@@ -22189,8 +22446,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -434.3374328613281,
-                    "y": -227.8575439453125,
+                    "x": -452.7690124511719,
+                    "y": -212.36973571777345,
                     "z": 0.0
                 },
                 "size": {
@@ -22307,8 +22564,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -158.52076721191407,
-                    "y": -63.387474060058597,
+                    "x": -166.45523071289063,
+                    "y": -50.3756103515625,
                     "z": -50.0
                 },
                 "size": {
@@ -22402,7 +22659,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2129.214111328125,
+                    "x": 2198.531494140625,
                     "y": -567.8425903320313,
                     "z": 0.0
                 },
@@ -22480,7 +22737,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 3334.00048828125,
+                    "x": 3403.31787109375,
                     "y": -567.8425903320313,
                     "z": 0.0
                 },
@@ -22558,7 +22815,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 4836.146484375,
+                    "x": 4905.4638671875,
                     "y": -108.80595397949219,
                     "z": 0.0
                 },
@@ -22636,7 +22893,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 4119.4091796875,
+                    "x": 4188.7265625,
                     "y": -108.80595397949219,
                     "z": 0.0
                 },
@@ -22714,7 +22971,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 3835.5029296875,
+                    "x": 3881.714599609375,
                     "y": -689.61376953125,
                     "z": 0.0
                 },
@@ -22792,7 +23049,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 3678.40625,
+                    "x": 3724.617919921875,
                     "y": 33.03370666503906,
                     "z": 0.0
                 },
@@ -22870,7 +23127,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2426.22607421875,
+                    "x": 2449.331787109375,
                     "y": -733.845703125,
                     "z": 0.0
                 },
@@ -22948,7 +23205,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 3061.239013671875,
+                    "x": 3084.3447265625,
                     "y": -733.845703125,
                     "z": 0.0
                 },
@@ -23026,7 +23283,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2439.72998046875,
+                    "x": 2462.835693359375,
                     "y": 160.47113037109376,
                     "z": 0.0
                 },
@@ -23104,7 +23361,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 3070.007080078125,
+                    "x": 3093.11279296875,
                     "y": 160.47113037109376,
                     "z": 0.0
                 },
@@ -23182,7 +23439,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1111.614013671875,
+                    "x": 792.9545288085938,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23260,7 +23517,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1131.5743408203126,
+                    "x": 812.9148559570313,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23338,7 +23595,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1151.43017578125,
+                    "x": 832.7706909179688,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23416,7 +23673,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1171.3302001953126,
+                    "x": 852.6707153320313,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23494,7 +23751,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1191.230224609375,
+                    "x": 872.5706787109375,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23572,7 +23829,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 992.9601440429688,
+                    "x": 1313.622314453125,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23600,7 +23857,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 992.9601440429688,
+                    "x": 1313.622314453125,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23610,12 +23867,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 944.9600830078125,
+                    "x": 1265.622314453125,
                     "y": -391.3429870605469,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1040.960205078125,
+                    "x": 1361.622314453125,
                     "y": -375.3429870605469,
                     "z": 0.0
                 }
@@ -23684,7 +23941,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 952.6439819335938,
+                    "x": 1273.30615234375,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23762,7 +24019,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 972.6043090820313,
+                    "x": 1293.2664794921876,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23840,7 +24097,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 992.6043090820313,
+                    "x": 1313.2664794921876,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23918,7 +24175,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1012.6043090820313,
+                    "x": 1333.2664794921876,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -23996,7 +24253,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1032.604248046875,
+                    "x": 1353.2664794921876,
                     "y": -383.3429870605469,
                     "z": 0.0
                 },
@@ -24074,7 +24331,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 775.93115234375,
+                    "x": 375.10101318359377,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24102,7 +24359,11 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
+<<<<<<< HEAD
                     "x": 296.10101318359377,
+=======
+                    "x": 375.10101318359377,
+>>>>>>> parent of 183dfd4a (draft lighting)
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24112,12 +24373,16 @@
                     "z": 0.0
                 },
                 "min": {
+<<<<<<< HEAD
                     "x": 228.60101318359376,
+=======
+                    "x": 307.60101318359377,
+>>>>>>> parent of 183dfd4a (draft lighting)
                     "y": -334.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 843.43115234375,
+                    "x": 442.60101318359377,
                     "y": -318.3426513671875,
                     "z": 0.0
                 }
@@ -24186,7 +24451,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 715.614990234375,
+                    "x": 314.78485107421877,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24264,7 +24529,11 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
+<<<<<<< HEAD
                     "x": 275.74517822265627,
+=======
+                    "x": 354.74517822265627,
+>>>>>>> parent of 183dfd4a (draft lighting)
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24342,7 +24611,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 775.5753173828125,
+                    "x": 374.74517822265627,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24420,7 +24689,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 795.5753173828125,
+                    "x": 394.74517822265627,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24498,7 +24767,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 835.5753173828125,
+                    "x": 434.74517822265627,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24576,7 +24845,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 735.5753173828125,
+                    "x": 334.74517822265627,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24654,7 +24923,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 815.5753173828125,
+                    "x": 414.74517822265627,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24732,7 +25001,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1083.0858154296876,
+                    "x": 816.43701171875,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24760,7 +25029,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1083.0858154296876,
+                    "x": 816.43701171875,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24770,12 +25039,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1015.5858154296875,
+                    "x": 748.9370727539063,
                     "y": -769.9077758789063,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1150.5858154296876,
+                    "x": 883.9369506835938,
                     "y": -753.9077758789063,
                     "z": 0.0
                 }
@@ -24844,7 +25113,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1022.7696533203125,
+                    "x": 756.120849609375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24922,7 +25191,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1062.72998046875,
+                    "x": 796.0811767578125,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25000,7 +25269,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1082.72998046875,
+                    "x": 816.0811767578125,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25078,7 +25347,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1102.72998046875,
+                    "x": 836.0811767578125,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25156,7 +25425,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1142.72998046875,
+                    "x": 876.0811767578125,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -25234,7 +25503,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 577.1484375,
+                    "x": 253.81399536132813,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -25262,7 +25531,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 577.1484375,
+                    "x": 253.81399536132813,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -25272,12 +25541,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 529.1484375,
+                    "x": 205.81399536132813,
                     "y": -836.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 625.1484375,
+                    "x": 301.8139953613281,
                     "y": -820.3426513671875,
                     "z": 0.0
                 }
@@ -25346,7 +25615,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 536.832275390625,
+                    "x": 213.49783325195313,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -25424,7 +25693,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 556.7926025390625,
+                    "x": 233.45816040039063,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -25502,7 +25771,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 576.7926025390625,
+                    "x": 253.45816040039063,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -25580,7 +25849,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 596.7926025390625,
+                    "x": 273.4581604003906,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -25658,7 +25927,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 616.7926025390625,
+                    "x": 293.4581604003906,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -26189,8 +26458,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -78.54334259033203,
-                    "y": -8.523804664611817,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
@@ -26316,7 +26585,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 0,
+                            "lookAtEntity": 181,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -26455,7 +26724,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 0,
+                            "lookAtEntity": 183,
                             "resetOnExit": true,
                             "zoneDampingY": 1.7000000476837159
                         }
@@ -26594,7 +26863,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 0,
+                            "lookAtEntity": 185,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -26667,51 +26936,6 @@
             },
             "layer": {
                 "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "PlayerBookGlow",
-            "uuid": 11223344556677890101,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -98.54318237304688,
-                    "y": -28.52381134033203,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "light": {
-                "active": true,
-                "intensity": 2.5,
-                "radius": 55.0,
-                "shape": 0,
-                "blendMode": 0,
-                "affectBloom": true,
-                "useTransform": true,
-                "renderSelf": true,
-                "renderBehind": false,
-                "color": {
-                    "x": 1.0,
-                    "y": 0.15000000596046449,
-                    "z": 0.15000000596046449
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "Player",
                 "z": 0
             }
         },
