@@ -645,7 +645,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "1.  Player1  -  51331",
+                "text": "1.  Player1  -  00:51.33",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -719,7 +719,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "2.  AAA  -  1000",
+                "text": "2.  Loser  -  00:49.98",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -793,7 +793,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "",
+                "text": "3.  AAA  -  00:01.00",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -894,6 +894,16 @@
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
                 "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 12
             },
             "parent": {
                 "parentUUID": 5243449983656791706,
@@ -1338,6 +1348,16 @@
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
                 "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 12
             },
             "parent": {
                 "parentUUID": 5243449983656791706,
