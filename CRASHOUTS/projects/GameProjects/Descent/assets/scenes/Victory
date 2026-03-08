@@ -122,15 +122,7 @@
                 "scripts": [
                     {
                         "className": "MenuButtons",
-                        "fields": {
-                            "StartBtn": 0,
-                            "SettingsBtn": 0,
-                            "CloseBtn": 0,
-                            "QuitBtn": 0,
-                            "QuitCheckPanel": 0,
-                            "YesBtn": 0,
-                            "NoBtn": 0
-                        }
+                        "fields": {}
                     },
                     {
                         "className": "VictoryQuit",
@@ -253,15 +245,7 @@
                 "scripts": [
                     {
                         "className": "MenuButtons",
-                        "fields": {
-                            "StartBtn": 0,
-                            "SettingsBtn": 0,
-                            "CloseBtn": 0,
-                            "QuitBtn": 0,
-                            "QuitCheckPanel": 0,
-                            "YesBtn": 0,
-                            "NoBtn": 0
-                        }
+                        "fields": {}
                     }
                 ]
             },

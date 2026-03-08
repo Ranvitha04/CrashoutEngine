@@ -107,8 +107,7 @@
                             "TotalCheckpointsInTrack": 3,
                             "lapDisplay": 9,
                             "timerDisplay": 10,
-                            "TrackName": "Level1",
-                            "playerName": "Player1"
+                            "TrackName": "Level1"
                         }
                     }
                 ]

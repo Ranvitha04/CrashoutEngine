@@ -16,9 +16,6 @@ namespace CrashoutsEngine
         public Entity timerDisplay;
         public string TrackName = "Level1"; 
         
-        // --- LEADERBOARD SETTINGS ---
-        public string playerName = "Player1"; // You can hook this up to a save file/menu later
-
         private int _targetCheckpointID = 1; 
 
         private float _raceTime = 0f;
@@ -104,12 +101,6 @@ namespace CrashoutsEngine
                         {
                             InternalCalls.SetText(lapDisplay.ID, "FINISHED!");
                         }
-
-                        // ==========================================
-                        // --- LEADERBOARD SUBMISSION ---
-                        // ==========================================
-                        Debug.Log($"Submitting final time: {FormatTime(_raceTime)} to leaderboard...");
-                        Leaderboard.SubmitTime(playerName, _raceTime);
                     }
                     else
                     {
