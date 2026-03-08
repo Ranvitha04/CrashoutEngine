@@ -1,4 +1,4 @@
-﻿/*!
+/*!
 @file       debugmenu_panels.cpp
 @author     mohamadamirakmal.b@digipen.edu
 @date       25/12/2025

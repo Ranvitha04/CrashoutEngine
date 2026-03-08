@@ -21,6 +21,7 @@ All content ? 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "engine.h"
 #include "camera.h"
 #include "transformcomponent.h"
+#include "activecomponent.h"
 #include "shapescomponent.h"
 #include "collisionmanager.h"
 #include "hierarchycomponent.h"
@@ -166,28 +167,33 @@ namespace CrashoutsEngine {
 
             // layout(location = 2) vec2 iLightPos
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
             glVertexAttribDivisor(2, 1);
 
             // layout(location = 3) float iLightRadius
             glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(2 * sizeof(float)));
+            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(2 * sizeof(float)));
             glVertexAttribDivisor(3, 1);
 
             // layout(location = 4) vec3 iLightColor
             glEnableVertexAttribArray(4);
-            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(3 * sizeof(float)));
             glVertexAttribDivisor(4, 1);
 
             // layout(location = 5) float iIntensity
             glEnableVertexAttribArray(5);
-            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(6 * sizeof(float)));
             glVertexAttribDivisor(5, 1);
 
             // layout(location = 6) float iShadowIndex
             glEnableVertexAttribArray(6);
-            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(7 * sizeof(float)));
+            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(7 * sizeof(float)));
             glVertexAttribDivisor(6, 1);
+
+            // layout(location = 7) vec3 iShapeParams (shape, halfX, halfY)
+            glEnableVertexAttribArray(7);
+            glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+            glVertexAttribDivisor(7, 1);
 
             glBindVertexArray(0); // Unbind
 
@@ -332,9 +338,13 @@ namespace CrashoutsEngine {
                 float radiusUV{ 0.0f };
                 CEVec3 worldPos{ 0.0f, 0.0f, 0.0f };
                 float radiusWorld{ 0.0f };
+                float cullRadiusWorld{ 0.0f };
                 CEVec3 color{ 1.0f, 1.0f, 1.0f };
                 float intensity{ 1.0f };
                 int shadowRow{ -1 };
+                int shape{ 0 };
+                glm::vec2 rectHalfSizeWorld{ 0.0f, 0.0f };
+                int blendMode{ 0 };
             };
 
             struct LightInstance {
@@ -346,6 +356,9 @@ namespace CrashoutsEngine {
                 float colorB;
                 float intensity;
                 float shadowIndex;
+                float shape;
+                float rectHalfX;
+                float rectHalfY;
             };
 
 
@@ -365,9 +378,23 @@ namespace CrashoutsEngine {
                         }
 
                         Entity ent = lightArray.indexToEntity[i];
+                        if (ecs.HasComponent<ActiveComponent>(ent) && !ecs.GetComponent<ActiveComponent>(ent)->isActive) {
+                            lightDraws[i].active = false;
+                            continue;
+                        }
                         CEVec3 worldPos = lc->position;
-                        if (lc->useTransform && ecs.HasComponent<TransformComponent>(ent)) {
-                            worldPos = ecs.GetComponent<TransformComponent>(ent)->position;
+                        glm::vec2 rectHalfSize(0.0f, 0.0f);
+                        TransformComponent* tc = nullptr;
+                        if (ecs.HasComponent<TransformComponent>(ent)) {
+                            tc = ecs.GetComponent<TransformComponent>(ent);
+                        }
+                        if (lc->useTransform && tc) {
+                            worldPos = tc->position;
+                        }
+                        if (lc->shape == 1 && tc) {
+                            rectHalfSize = glm::abs(glm::vec2(tc->size.x, tc->size.y)) * 0.5f;
+                            float m = std::max(rectHalfSize.x, rectHalfSize.y);
+                            if (m > 0.0001f) rectHalfSize /= m;
                         }
 
                         glm::vec4 clip = proj * view * glm::vec4(worldPos.x, worldPos.y, worldPos.z, 1.0f);
@@ -379,7 +406,13 @@ namespace CrashoutsEngine {
                         glm::vec2 uvCenter = glm::vec2(ndc.x, ndc.y) * 0.5f + 0.5f;
 
                         // Radius in screen UV
-                        glm::vec4 clipR = proj * view * glm::vec4(worldPos.x + lc->radius, worldPos.y, worldPos.z, 1.0f);
+                        float cullRadiusWorld = lc->radius;
+                        if (lc->shape == 1) {
+                            float feather = std::max(2.0f, lc->radius * 0.2f);
+                            glm::vec2 halfSize = rectHalfSize * lc->radius;
+                            cullRadiusWorld = glm::length(halfSize) + feather;
+                        }
+                        glm::vec4 clipR = proj * view * glm::vec4(worldPos.x + cullRadiusWorld, worldPos.y, worldPos.z, 1.0f);
                         glm::vec3 ndcR = glm::vec3(clipR) / clipR.w;
                         glm::vec2 uvR = glm::vec2(ndcR.x, ndcR.y) * 0.5f + 0.5f;
                         float radiusUV = glm::length(uvR - uvCenter);
@@ -400,8 +433,12 @@ namespace CrashoutsEngine {
                         lightDraws[i].radiusUV = radiusUV;
                         lightDraws[i].worldPos = worldPos;
                         lightDraws[i].radiusWorld = lc->radius;
+                        lightDraws[i].cullRadiusWorld = cullRadiusWorld;
                         lightDraws[i].color = lc->color;
                         lightDraws[i].intensity = lc->intensity;
+                        lightDraws[i].shape = lc->shape;
+                        lightDraws[i].rectHalfSizeWorld = rectHalfSize;
+                        lightDraws[i].blendMode = lc->blendMode;
 
                         // Occluder rectangles are built on the main thread after this pass.
                     }
@@ -417,6 +454,7 @@ namespace CrashoutsEngine {
             if (g_shadowsEnabled) {
                 for (size_t i = 0; i < lightDraws.size(); ++i) {
                     if (!lightDraws[i].active) continue;
+                    if (lightDraws[i].shape != 0) continue;
                     shadowRowByLight[i] = static_cast<int>(shadowLights.size());
                     shadowLights.push_back(i);
                 }
@@ -527,28 +565,35 @@ namespace CrashoutsEngine {
                 glBindTexture(GL_TEXTURE_2D, shadowTex);
 
                 static std::vector<LightInstance> instances;
-                instances.clear();
-                instances.reserve(lightDraws.size());
+                auto renderBatch = [&](int blendMode, GLenum blendEq) {
+                    glBlendEquation(blendEq);
+                    instances.clear();
+                    instances.reserve(lightDraws.size());
 
-                for (size_t i = 0; i < lightDraws.size(); ++i) {
-                    const LightDraw& ld = lightDraws[i];
-                    if (!ld.active) continue;
-                    if (ld.affectBloom != affectBloom) continue;
-                    if (ld.renderBehind != renderBehind) continue;
+                    for (size_t i = 0; i < lightDraws.size(); ++i) {
+                        const LightDraw& ld = lightDraws[i];
+                        if (!ld.active) continue;
+                        if (ld.affectBloom != affectBloom) continue;
+                        if (ld.renderBehind != renderBehind) continue;
+                        if (ld.blendMode != blendMode) continue;
 
-                    LightInstance inst{};
-                    inst.posX = ld.uvCenter.x;
-                    inst.posY = ld.uvCenter.y;
-                    inst.radiusWorld = ld.radiusWorld;
-                    inst.colorR = ld.color.x;
-                    inst.colorG = ld.color.y;
-                    inst.colorB = ld.color.z;
-                    inst.intensity = ld.intensity;
-                    inst.shadowIndex = (shadowRowByLight[i] >= 0) ? (float)shadowRowByLight[i] : -1.0f;
-                    instances.push_back(inst);
-                }
+                        LightInstance inst{};
+                        inst.posX = ld.uvCenter.x;
+                        inst.posY = ld.uvCenter.y;
+                        inst.radiusWorld = ld.radiusWorld;
+                        inst.colorR = ld.color.x;
+                        inst.colorG = ld.color.y;
+                        inst.colorB = ld.color.z;
+                        inst.intensity = ld.intensity;
+                        inst.shadowIndex = (shadowRowByLight[i] >= 0) ? (float)shadowRowByLight[i] : -1.0f;
+                        inst.shape = (float)ld.shape;
+                        inst.rectHalfX = ld.rectHalfSizeWorld.x;
+                        inst.rectHalfY = ld.rectHalfSizeWorld.y;
+                        instances.push_back(inst);
+                    }
 
-                if (!instances.empty()) {
+                    if (instances.empty()) return;
+
                     glBindVertexArray(quadvao);
                     glBindBuffer(GL_ARRAY_BUFFER, lightInstanceVbo);
                     glBufferData(GL_ARRAY_BUFFER, instances.size() * sizeof(LightInstance), instances.data(), GL_DYNAMIC_DRAW);
@@ -556,7 +601,10 @@ namespace CrashoutsEngine {
                     Component::Rendering::Get().drawCalls++;
                     glBindVertexArray(0);
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
-                }
+                };
+
+                renderBatch(0, GL_FUNC_ADD);
+                renderBatch(1, GL_MAX);
                 glDisable(GL_BLEND);
             };
 
@@ -595,6 +643,7 @@ namespace CrashoutsEngine {
                     LightComponent* lc = lightArray.dense[i];
                     if (!lc) continue;
                     Entity ent = lightArray.indexToEntity[i];
+                    if (ecs.HasComponent<ActiveComponent>(ent) && !ecs.GetComponent<ActiveComponent>(ent)->isActive) continue;
                     if (!ecs.HasComponent<TransformComponent>(ent)) continue;
                     if (!ecs.HasComponent<ShapeComponent>(ent)) continue;
 

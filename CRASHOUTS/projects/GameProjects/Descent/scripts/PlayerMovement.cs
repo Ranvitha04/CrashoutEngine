@@ -94,9 +94,12 @@ namespace CrashoutsEngine
         private float passthroughOverlapTimer = 0.0f;
 
         private Entity pauseScreenEntity;
+        private Entity bookGlowEntity;
+        private TransformComponent bookGlowTf;
         private CEVec3 storedVelocity;
         [SerializeField] private bool reloadOnDeath = false;
         [SerializeField] private string reloadSceneName = "";
+        [SerializeField] public bool lockBookGlowToPlayer = true;
 
         // --- CORE LOGIC ---
 
@@ -132,6 +135,14 @@ namespace CrashoutsEngine
 
             pauseScreenEntity = Entity.Find("Pause");
             if (pauseScreenEntity != null) InternalCalls.SetActive(pauseScreenEntity.ID, false);
+
+            bookGlowEntity = Entity.Find("PlayerBookGlow");
+            if (bookGlowEntity != null)
+            {
+                bookGlowTf = bookGlowEntity.GetComponent<TransformComponent>();
+                InternalCalls.SetActive(bookGlowEntity.ID, true);
+                UpdateBookGlowTransform();
+            }
 
             if (!string.IsNullOrEmpty(landingDustName))
             {
@@ -175,6 +186,7 @@ namespace CrashoutsEngine
             if (Input.IsKeyPressed(Key.A) && !isDialogueActive) facingRight = false;
             else if (Input.IsKeyPressed(Key.D) && !isDialogueActive) facingRight = true;
             ApplyFlipping();
+            UpdateBookGlowTransform();
 
             if (playDialogueOnStart && isDialogueActive)
             {
@@ -300,6 +312,16 @@ namespace CrashoutsEngine
 
             ApplyMovementPhysics();
             ApplyGravity();
+        }
+
+        private void UpdateBookGlowTransform()
+        {
+            if (tf == null || bookGlowTf == null) return;
+            if (!lockBookGlowToPlayer) return;
+
+            float xOffset = facingRight ? 30.0f : -30.0f;
+            CEVec3 basePos = tf.Position;
+            bookGlowTf.Position = new CEVec3(basePos.x + xOffset, basePos.y, basePos.z);
         }
 
         private void UpdateAnimationState(bool isSwitching)
