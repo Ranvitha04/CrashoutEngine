@@ -25016,7 +25016,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 2241071384,
+                            "lookAtEntity": 162,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -25155,7 +25155,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 2241071384,
+                            "lookAtEntity": 164,
                             "resetOnExit": true,
                             "zoneDampingY": 1.7000000476837159
                         }
@@ -25294,7 +25294,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 2241071384,
+                            "lookAtEntity": 166,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
