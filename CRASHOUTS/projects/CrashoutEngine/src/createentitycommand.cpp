@@ -5,7 +5,12 @@
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
-
+#include "namecomponent.h"
+#include "activecomponent.h"
+#include "transformcomponent.h"
+#include "uuidcomponent.h"
+#include "layercomponent.h"
+#include "tagcomponent.h"
 namespace CrashoutsEngine {
 
     CreateEntityCommand::CreateEntityCommand() {}
@@ -14,10 +19,29 @@ namespace CrashoutsEngine {
     {
         ECS& ecs = *ECS::getInstance();
 
-       
         if (m_entityJson.empty())
         {
             m_createdEntity = ecs.CreateEntity();
+
+            if (!ecs.HasComponent<Component::NameComponent>(m_createdEntity)) {
+                ecs.AddComponent<Component::NameComponent>(
+                    m_createdEntity, "Entity " + std::to_string(m_createdEntity));
+            }
+            if (!ecs.HasComponent<Component::ActiveComponent>(m_createdEntity)) {
+                ecs.AddComponent<Component::ActiveComponent>(m_createdEntity, true);
+            }
+            if (!ecs.HasComponent<Component::TransformComponent>(m_createdEntity)) {
+                ecs.AddComponent<Component::TransformComponent>(m_createdEntity);
+            }
+            if (!ecs.HasComponent<Component::UUIDComponent>(m_createdEntity)) {
+                ecs.AddComponent<Component::UUIDComponent>(m_createdEntity);
+            }
+            if (!ecs.HasComponent<Component::LayerComponent>(m_createdEntity)) {
+                ecs.AddComponent<Component::LayerComponent>(m_createdEntity);
+            }
+            if (!ecs.HasComponent<Component::TagComponent>(m_createdEntity)) {
+                ecs.AddComponent<Component::TagComponent>(m_createdEntity);
+            }
 
             rapidjson::Document doc;
             doc.SetArray();
@@ -34,7 +58,6 @@ namespace CrashoutsEngine {
             return;
         }
 
-    
         rapidjson::Document doc;
         doc.Parse(m_entityJson.c_str());
 
