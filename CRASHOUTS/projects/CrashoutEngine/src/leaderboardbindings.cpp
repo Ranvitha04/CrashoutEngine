@@ -36,7 +36,7 @@ namespace {
     }
 
     // This allows C# to instantly update the UI after submitting a score
-    static void ForceRefresh_Internal(uint64_t entityID) {
+    static void ForceRefresh_Internal(Entity entityID) {
         auto* ecs = ECS::getInstance();
         if (ecs->HasComponent<Component::LeaderboardComponent>(entityID)) {
             ecs->GetComponent<Component::LeaderboardComponent>(entityID)->requestNow = true;

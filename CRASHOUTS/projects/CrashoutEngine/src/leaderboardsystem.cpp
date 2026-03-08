@@ -38,34 +38,22 @@ namespace {
     }
 
     static std::string GetFieldValue(const Component::LeaderboardEntryData& e, const std::string& key) {
-        // For generic points setter
-        /*if (key == "rank") return std::to_string(e.rank);
+        if (key == "rank") return std::to_string(e.rank);
         if (key == "name") return e.name;
         if (key == "score") return std::to_string(e.score);
         if (key == "created_at") return e.created_at;
         auto it = e.extraFields.find(key);
         if (it != e.extraFields.end()) return it->second;
-        return "";*/
-
-        // Specialized Time points setter
-        if (key == "rank") return std::to_string(e.rank);
-        if (key == "name") return e.name;
-        if (key == "score") {
-            // --- TIME FORMATTING ---
-            // Convert the raw milliseconds back into mm:ss.ms
-            int totalMs = e.score;
-            int mins = totalMs / 60000;
-            int secs = (totalMs % 60000) / 1000;
-            int ms = (totalMs % 1000) / 10; // Divide by 10 to get 2-digit centiseconds
-
-            char buf[32];
-            std::snprintf(buf, sizeof(buf), "%02d:%02d.%02d", mins, secs, ms);
-            return std::string(buf);
-        }
-        if (key == "created_at") return e.created_at;
-        auto it = e.extraFields.find(key);
-        if (it != e.extraFields.end()) return it->second;
         return "";
+    }
+
+    static std::string FormatScoreAsTime(int totalMs) {
+        int mins = totalMs / 60000;
+        int secs = (totalMs % 60000) / 1000;
+        int ms = (totalMs % 1000) / 10;
+        char buf[32];
+        std::snprintf(buf, sizeof(buf), "%02d:%02d.%02d", mins, secs, ms);
+        return std::string(buf);
     }
 
     static std::string FormatLine(const Component::LeaderboardComponent& comp,
@@ -73,7 +61,12 @@ namespace {
         std::string out = comp.lineFormat;
         ReplaceAll(out, "{rank}", std::to_string(e.rank));
         ReplaceAll(out, "{name}", e.name);
-        ReplaceAll(out, "{score}", std::to_string(e.score));
+        
+        //ReplaceAll(out, "{score}", std::to_string(e.score));
+        
+        // For forcing the time format
+        ReplaceAll(out, "{score}", FormatScoreAsTime(e.score));
+
         ReplaceAll(out, "{created_at}", e.created_at);
         for (const auto& kv : e.extraFields) {
             ReplaceAll(out, "{" + kv.first + "}", kv.second);
