@@ -1751,10 +1751,6 @@
     ],
     "prefabs": [
         {
-            "name": "PlayerBarrier",
-            "path": "PlayerBarrier.json"
-        },
-        {
             "name": "AudioManager_Prefab",
             "path": "AudioManager_Prefab.json"
         },
@@ -1765,6 +1761,10 @@
         {
             "name": "Camera_Prefab",
             "path": "Camera_Prefab.json"
+        },
+        {
+            "name": "Door_Prefab",
+            "path": "Door_Prefab.json"
         },
         {
             "name": "Moving_Gate",
@@ -1781,6 +1781,10 @@
         {
             "name": "Moving_Platform(Sinking)",
             "path": "Moving_Platform(Sinking).json"
+        },
+        {
+            "name": "PlayerBarrier",
+            "path": "PlayerBarrier.json"
         },
         {
             "name": "PlayerUI_Prefab",
