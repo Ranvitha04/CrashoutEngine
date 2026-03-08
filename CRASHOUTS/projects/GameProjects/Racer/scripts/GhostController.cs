@@ -24,7 +24,7 @@ namespace CrashoutsEngine
             {
                 // GET THE LIVE TRANSFORM
                 var liveTransform = Entity.GetComponent<TransformComponent>();
-                Debug.Log($"GHOST BRAIN: Trying to move to X: {savedPos.x}, Y: {savedPos.y}");
+                //Debug.Log($"GHOST BRAIN: Trying to move to X: {savedPos.x}, Y: {savedPos.y}");
                 // Set the position directly!
                 liveTransform.Position = savedPos;
                 liveTransform.Rotation = savedRot;
