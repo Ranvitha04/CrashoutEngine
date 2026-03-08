@@ -1,0 +1,58 @@
+{
+    "shaders": [
+        {
+            "name": "BloomCompositeShader",
+            "path": "BloomCompositeShader"
+        },
+        {
+            "name": "LightShader",
+            "path": "LightShader"
+        },
+        {
+            "name": "BlurShader",
+            "path": "BlurShader"
+        },
+        {
+            "name": "PPShader",
+            "path": "PPShader"
+        },
+        {
+            "name": "BrightShader",
+            "path": "BrightShader"
+        },
+        {
+            "name": "OccluderMaskShader",
+            "path": "OccluderMaskShader"
+        },
+        {
+            "name": "CombineShader",
+            "path": "CombineShader"
+        },
+        {
+            "name": "CrashoutShader",
+            "path": "CrashoutShader"
+        },
+        {
+            "name": "TextShader",
+            "path": "TextShader"
+        }
+    ],
+    "fonts": [
+        {
+            "name": "Exo2-Regular",
+            "path": "Exo2-Regular.ttf"
+        }
+    ],
+    "json": [
+        {
+            "name": "assetmanifest",
+            "path": "assetmanifest.json"
+        }
+    ],
+    "images": [
+        {
+            "name": "missing",
+            "path": "missing.png"
+        }
+    ]
+}

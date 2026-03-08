@@ -1751,12 +1751,12 @@
     ],
     "prefabs": [
         {
-            "name": "AudioManager_Prefab",
-            "path": "AudioManager_Prefab.json"
-        },
-        {
             "name": "Moving_Platform",
             "path": "Moving_Platform.json"
+        },
+        {
+            "name": "AudioManager_Prefab",
+            "path": "AudioManager_Prefab.json"
         },
         {
             "name": "Camera_Prefab",
@@ -1777,6 +1777,10 @@
         {
             "name": "FilledAudioManager_Prefab",
             "path": "FilledAudioManager_Prefab.json"
+        },
+        {
+            "name": "EnergyBall_Prefab",
+            "path": "EnergyBall_Prefab.json"
         },
         {
             "name": "Moving_Platform(Sinking)",

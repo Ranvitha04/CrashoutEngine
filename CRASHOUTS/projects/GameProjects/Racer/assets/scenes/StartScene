@@ -645,7 +645,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "1.  AAA  -  1000",
+                "text": "1.  Player1  -  51331",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -719,7 +719,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "",
+                "text": "2.  AAA  -  1000",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,

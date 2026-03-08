@@ -10,6 +10,7 @@
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
+#include "log.h"
 
 namespace CrashoutsEngine {
     static std::string JsonValueToString(const rapidjson::Value& v) {
@@ -139,10 +140,10 @@ namespace CrashoutsEngine {
             // --- PRINT THE SERVER'S RESPONSE ---
             // If the server rejects it (e.g. 400 Bad Request), this will tell you exactly why!
             if (response.empty()) {
-                std::cout << "[Leaderboard] ERROR: Server did not respond or connection failed to " << url << std::endl;
+                LOGI(Debug, "[Leaderboard] ERROR: Server did not respond or connection failed to " + url);
             }
             else {
-                std::cout << "[Leaderboard] Server Response: " << response << std::endl;
+                LOGI(Debug, "[Leaderboard] Server Response: " + response);
             }
 
             return !response.empty();
