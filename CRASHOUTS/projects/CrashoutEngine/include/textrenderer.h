@@ -115,11 +115,13 @@ public:
                            float lineSpacing = 0.0f);
 
     // Function to get the (x, y) baseline position of the cursor
-    CEVec2 GetCursorPosition(const std::string& text, size_t cursorPos,
-        GLfloat x, GLfloat y, GLfloat scale, const std::string fontName);
+    CEVec2 GetCursorPosition(const std::string& text, size_t cursorPos, 
+        GLfloat x, GLfloat y, GLfloat scale, const std::string fontName, float letterSpacing = 0.0f);
 
     // Helper to get font height (we'll need this for drawing)
     GLfloat GetLineHeight(const std::string fontName, GLfloat scale);
+
+    float GetTextWidth(const std::string& text, const std::string& fontName, GLfloat scale, float letterSpacing = 0.0f);
 
 private:
     /*!

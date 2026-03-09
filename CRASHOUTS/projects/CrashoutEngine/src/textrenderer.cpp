@@ -363,11 +363,34 @@ GLfloat TextRenderer::GetLineHeight(const std::string fontName, GLfloat scale) {
     return (baseLineHeight * 1.2f) * scale;
 }
 
+float TextRenderer::GetTextWidth(const std::string& text, const std::string& fontName, GLfloat scale, float letterSpacing) {
+    scale *= FONT_SCALE;
+    using namespace CrashoutsEngine::Assets;
+    AssetManager& assetManager = AssetManager::GetInstance();
+    FontAsset* font = assetManager.Get<FontAsset>(fontName);
+
+    if (!font) return 0.0f;
+
+    const std::map<GLchar, Character>& characters = font->characters;
+    float textWidth = 0.0f;
+
+    for (size_t i = 0; i < text.length(); ++i) {
+        char c = text[i];
+        if (characters.find(c) != characters.end()) {
+            Character ch = characters.at(c);
+            textWidth += (ch.Advance >> 6) * scale;
+            if (i < text.length() - 1) {
+                textWidth += (letterSpacing * scale);
+            }
+        }
+    }
+    return textWidth;
+}
 
 // This is the main calculation function
 CEVec2 TextRenderer::GetCursorPosition(const std::string& text, size_t cursorPos,
     GLfloat x, GLfloat y, GLfloat scale,
-    const std::string fontName)
+    const std::string fontName, float letterSpacing) // <-- ADDED letterSpacing parameter!
 {
     scale *= FONT_SCALE;
 
@@ -381,16 +404,19 @@ CEVec2 TextRenderer::GetCursorPosition(const std::string& text, size_t cursorPos
     const std::map<GLchar, Character>& characters = font->characters;
 
     GLfloat original_x = x;
-    GLfloat lineHeight = GetLineHeight(fontName, scale * FONT_SCALE); // GetLineHeight handles scaling
+
+    // Fix Double-Scaling: scale was already multiplied by FONT_SCALE above, 
+    // and GetLineHeight ALSO multiplies by FONT_SCALE internally. Pass the raw scale!
+    GLfloat lineHeight = GetLineHeight(fontName, scale / FONT_SCALE);
 
     // Loop only up to the cursor's position
     for (size_t i = 0; i < cursorPos; ++i) {
         char c = text[i];
 
         if (c == '\n') {
-            y -= lineHeight * .5f;
+            y -= lineHeight; // RenderText uses full lineHeight, not .5f
             x = original_x;
-            continue; // Skip unknown chars
+            continue;
         }
 
         if (characters.find(c) == characters.end()) {
@@ -398,7 +424,9 @@ CEVec2 TextRenderer::GetCursorPosition(const std::string& text, size_t cursorPos
         }
 
         Character ch = characters.at(c);
-        x += (ch.Advance >> 6) * scale * .5f; // Advance X
+
+        // Removed the * .5f, and added letterSpacing to exactly match RenderText!
+        x += (ch.Advance >> 6) * scale + (letterSpacing * scale);
     }
 
     // Return the final (x, y) baseline position
