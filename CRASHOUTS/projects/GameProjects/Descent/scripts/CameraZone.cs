@@ -22,18 +22,41 @@ namespace CrashoutsEngine
         [SerializeField] public float zoneDampingY = 1.5f; 
 
         public override void Start()
-        {          
-            lookAtEntity = new Entity(lookAtEntity.ID);
+        {   
+            if (lookAtEntity != null && lookAtEntity.ID != 0) lookAtEntity = new Entity(lookAtEntity.ID);
             
             // Register Physics Overlaps
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnZoneEnter);
             CollisionEvents.RegisterTriggerExit(Entity.ID, this.OnZoneExit);
         }
 
+        // --- HELPER METHOD TO CHECK IF ENTITY IS THE PLAYER ---
+        private bool IsPlayerEntity(Entity e)
+        {
+            // 1. Check Tag
+            var tag = e.GetComponent<TagComponent>();
+            if (tag != null && tag.HasTag("Player")) 
+                return true;
+
+            // 2. Check Name (Assuming standard NameComponent C# wrapper)
+            var nameComp = e.GetComponent<NameComponent>();
+            if (nameComp != null && nameComp.Value == "Player") // (Change .Name to .name if your wrapper uses lowercase!)
+                return true;
+
+            // 3. Check for PlayerMovement Script
+            var playerScript = e.GetComponent<PlayerMovement>();
+            if (playerScript != null) 
+                return true;
+
+            return false;
+        }
+
         public void OnZoneEnter(uint otherID)
         {
-            var tag = new Entity(otherID).GetComponent<TagComponent>();
-            if (tag != null && tag.HasTag("Player"))
+            Entity otherEntity = new Entity(otherID);
+            
+            // Replaced the old tag check with our new robust helper method
+            if (IsPlayerEntity(otherEntity))
             {
                 if (lookAtEntity != null && lookAtEntity.ID != 0)
                 {
@@ -48,8 +71,9 @@ namespace CrashoutsEngine
         {
             if (resetOnExit)
             {
-                var tag = new Entity(otherID).GetComponent<TagComponent>();
-                if (tag != null && tag.HasTag("Player"))
+                Entity otherEntity = new Entity(otherID);
+                
+                if (IsPlayerEntity(otherEntity))
                 {
                     // Remove the target so the camera goes back to normal
                     if (CameraController.CurrentLookAtTarget != null && 

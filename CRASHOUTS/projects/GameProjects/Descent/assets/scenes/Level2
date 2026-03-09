@@ -1812,12 +1812,17 @@
                     {
                         "x": -6,
                         "y": -23,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": -18,
                         "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -6,
                         "y": -17,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -6,
@@ -1977,12 +1982,17 @@
                     {
                         "x": -5,
                         "y": -23,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -18,
                         "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -5,
                         "y": -17,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -5,
@@ -2147,12 +2157,12 @@
                     {
                         "x": -4,
                         "y": -18,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -4,
                         "y": -17,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -4,
@@ -2347,12 +2357,12 @@
                     {
                         "x": -3,
                         "y": -18,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -3,
                         "y": -17,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": -3,
@@ -16932,84 +16942,6 @@
         },
         {
             "active": true,
-            "name": "Platform",
-            "uuid": 7261408752062828203,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 105.25616455078125,
-                    "y": -687.9077758789063,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 4604773747429101195,
-                "localPos": {
-                    "x": 0.39644163846969607,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Enemy",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
             "name": "lavaParticle",
             "uuid": 7470256824246531283,
             "tag": {
@@ -17018,25 +16950,25 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 65.8714599609375,
-                    "y": -769.3372802734375,
+                    "x": 177.150634765625,
+                    "y": -805.1334228515625,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 7.0,
+                    "x": 6.0,
                     "y": 5.0
                 }
             },
             "parent": {
                 "parentUUID": 6529571415753105255,
                 "localPos": {
-                    "x": 65.8714599609375,
-                    "y": -769.3372802734375,
+                    "x": 177.150634765625,
+                    "y": -805.1334228515625,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 7.0,
+                    "x": 6.0,
                     "y": 5.0
                 },
                 "inheritColor": false,
@@ -17121,84 +17053,6 @@
                     "x": 1.0,
                     "y": 1.0
                 }
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 14638174084030638680,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 25.25616455078125,
-                    "y": -687.9077758789063,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 4604773747429101195,
-                "localPos": {
-                    "x": -0.4035583436489105,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Enemy",
-                "z": 0
             }
         },
         {
@@ -22071,7 +21925,7 @@
                     {
                         "className": "PauseButtons",
                         "fields": {
-                            "currentScene": "Level1"
+                            "currentScene": "Level2"
                         }
                     }
                 ]
@@ -23020,7 +22874,7 @@
                     {
                         "className": "GameOverUI",
                         "fields": {
-                            "currentSceneName": "Level1",
+                            "currentSceneName": "Level2",
                             "mainMenuScene": "descentmenu"
                         }
                     }
@@ -24096,7 +23950,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -186.80577087402345,
-                    "y": -29.564861297607423,
+                    "y": -158.5648651123047,
                     "z": 0.0
                 },
                 "size": {
@@ -24124,7 +23978,7 @@
                 "enabled": true,
                 "position": {
                     "x": -186.80577087402345,
-                    "y": -31.764862060546876,
+                    "y": -160.76486206054688,
                     "z": 0.0
                 },
                 "offset": {
@@ -24134,12 +23988,12 @@
                 },
                 "min": {
                     "x": -195.30577087402345,
-                    "y": -60.864837646484378,
+                    "y": -189.86483764648438,
                     "z": 0.0
                 },
                 "max": {
                     "x": -178.30577087402345,
-                    "y": -2.664886474609375,
+                    "y": -131.66488647460938,
                     "z": 0.0
                 }
             },
@@ -24394,6 +24248,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -24446,7 +24331,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -24460,14 +24345,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -24520,37 +24405,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -24843,7 +24697,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -186.80577087402345,
-                    "y": 28.805049896240236,
+                    "y": -100.19495391845703,
                     "z": 0.0
                 },
                 "size": {
@@ -24961,7 +24815,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -186.80577087402345,
-                    "y": 28.805049896240236,
+                    "y": -100.19495391845703,
                     "z": 0.0
                 },
                 "size": {
@@ -25079,7 +24933,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -186.80577087402345,
-                    "y": 28.805049896240236,
+                    "y": -100.19495391845703,
                     "z": 0.0
                 },
                 "size": {
@@ -25197,7 +25051,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -186.80577087402345,
-                    "y": 28.805049896240236,
+                    "y": -100.19495391845703,
                     "z": 0.0
                 },
                 "size": {
@@ -25315,7 +25169,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -472.60003662109377,
-                    "y": -228.9224090576172,
+                    "y": -357.92242431640627,
                     "z": 0.0
                 },
                 "size": {
@@ -26399,7 +26253,8 @@
                             "MovementDistance": 260.0,
                             "MoveSpeed": 40.0,
                             "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
+                            "maxDrop": 0.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -26901,7 +26756,8 @@
                             "MovementDistance": 250.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
-                            "maxDrop": 130.0
+                            "maxDrop": 125.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -27577,7 +27433,7 @@
         },
         {
             "active": true,
-            "name": "Moving_Platform_5(Sinking)",
+            "name": "Moving_Platform_2(Sinking)",
             "uuid": 4604773747429101195,
             "tag": {
                 "tagMask": 2
@@ -27585,8 +27441,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 65.61199951171875,
-                    "y": -687.9077758789063,
+                    "x": 34.61199951171875,
+                    "y": -696.9077758789063,
                     "z": 0.0
                 },
                 "size": {
@@ -27613,8 +27469,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 65.61199951171875,
-                    "y": -687.9077758789063,
+                    "x": 34.61199951171875,
+                    "y": -696.9077758789063,
                     "z": 0.0
                 },
                 "offset": {
@@ -27623,13 +27479,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -1.887939453125,
-                    "y": -695.9077758789063,
+                    "x": 6.4120025634765629,
+                    "y": -704.9077758789063,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 133.1119384765625,
-                    "y": -679.9077758789063,
+                    "x": 62.81199645996094,
+                    "y": -688.9077758789063,
                     "z": 0.0
                 }
             },
@@ -27674,10 +27530,11 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 550.0,
+                            "MovementDistance": 250.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
-                            "maxDrop": 125.0
+                            "maxDrop": 80.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -27697,8 +27554,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 5.29583740234375,
-                    "y": -687.9077758789063,
+                    "x": 14.29583740234375,
+                    "y": -696.9077758789063,
                     "z": 0.0
                 },
                 "size": {
@@ -27743,85 +27600,7 @@
             "parent": {
                 "parentUUID": 4604773747429101195,
                 "localPos": {
-                    "x": -0.603161633014679,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Enemy",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 13606237039748870703,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 45.25616455078125,
-                    "y": -687.9077758789063,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 4604773747429101195,
-                "localPos": {
-                    "x": -0.20355835556983949,
+                    "x": -0.20316162705421449,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -27853,8 +27632,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 65.25616455078125,
-                    "y": -687.9077758789063,
+                    "x": 34.25616455078125,
+                    "y": -696.9077758789063,
                     "z": 0.0
                 },
                 "size": {
@@ -27924,15 +27703,15 @@
         {
             "active": true,
             "name": "Platform",
-            "uuid": 4140935617001450408,
+            "uuid": 9252997116925777039,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 85.25616455078125,
-                    "y": -687.9077758789063,
+                    "x": 54.25616455078125,
+                    "y": -696.9077758789063,
                     "z": 0.0
                 },
                 "size": {
@@ -27948,7 +27727,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "textureName": "images/spritesheet/Platform/Platform_35.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -28001,94 +27780,16 @@
         },
         {
             "active": true,
-            "name": "Platform",
-            "uuid": 9252997116925777039,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 125.25616455078125,
-                    "y": -687.9077758789063,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Platform/Platform_35.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 4604773747429101195,
-                "localPos": {
-                    "x": 0.5964416265487671,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Enemy",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
             "name": "Filler",
             "uuid": 7951651824985604451,
             "tag": {
                 "tagMask": 2
             },
             "transform": {
-                "rotation": 0.0,
+                "rotation": -90.0,
                 "position": {
-                    "x": -15.712327003479004,
-                    "y": -352.40679931640627,
+                    "x": 223.44161987304688,
+                    "y": -16.40679931640625,
                     "z": 0.0
                 },
                 "size": {
@@ -28115,8 +27816,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -15.712327003479004,
-                    "y": -352.40679931640627,
+                    "x": 223.44161987304688,
+                    "y": -16.40679931640625,
                     "z": 0.0
                 },
                 "offset": {
@@ -28578,7 +28279,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -153.177490234375,
-                    "y": -37.6126708984375,
+                    "y": -166.6126708984375,
                     "z": 0.0
                 },
                 "size": {
@@ -30595,8 +30296,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -255.5577392578125,
-                    "y": 1.03143310546875,
+                    "x": 309.4422607421875,
+                    "y": -51.96856689453125,
                     "z": 0.0
                 },
                 "size": {
@@ -30623,23 +30324,23 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": -887.457763671875,
-                    "y": 43.431434631347659,
+                    "x": 309.4422607421875,
+                    "y": -119.96856689453125,
                     "z": 0.0
                 },
                 "offset": {
-                    "x": -631.9000244140625,
-                    "y": 42.400001525878909,
+                    "x": 0.0,
+                    "y": -68.0,
                     "z": 0.0
                 },
                 "min": {
-                    "x": -1187.15771484375,
-                    "y": -81.16856384277344,
+                    "x": 210.04226684570313,
+                    "y": -257.46856689453127,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -587.7578125,
-                    "y": 168.03143310546876,
+                    "x": 408.8422546386719,
+                    "y": 17.53143310546875,
                     "z": 0.0
                 }
             },
@@ -30648,7 +30349,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 152,
+                            "lookAtEntity": 146,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -30658,8 +30359,8 @@
             "parent": {
                 "parentUUID": 7610932790271590026,
                 "localPos": {
-                    "x": -255.5577392578125,
-                    "y": 1.03143310546875,
+                    "x": 309.4422607421875,
+                    "y": -51.96856689453125,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -30690,8 +30391,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -255.5577392578125,
-                    "y": -60.5,
+                    "x": 309.4422607421875,
+                    "y": -313.2478942871094,
                     "z": 0.0
                 },
                 "size": {
@@ -30703,7 +30404,7 @@
                 "parentUUID": 3574140040263968269,
                 "localPos": {
                     "x": 0.0,
-                    "y": -61.53143310546875,
+                    "y": -261.2793273925781,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -31513,25 +31214,25 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 572.8714599609375,
-                    "y": -865.3372802734375,
+                    "x": 619.9993896484375,
+                    "y": -836.3775634765625,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 7.0,
+                    "x": 6.0,
                     "y": 5.0
                 }
             },
             "parent": {
                 "parentUUID": 6529571415753105255,
                 "localPos": {
-                    "x": 572.8714599609375,
-                    "y": -865.3372802734375,
+                    "x": 619.9993896484375,
+                    "y": -836.3775634765625,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 7.0,
+                    "x": 6.0,
                     "y": 5.0
                 },
                 "inheritColor": false,
@@ -31628,8 +31329,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 859.8714599609375,
-                    "y": -833.3372802734375,
+                    "x": 756.3290405273438,
+                    "y": -804.3968505859375,
                     "z": 0.0
                 },
                 "size": {
@@ -31640,8 +31341,8 @@
             "parent": {
                 "parentUUID": 6529571415753105255,
                 "localPos": {
-                    "x": 859.8714599609375,
-                    "y": -833.3372802734375,
+                    "x": 756.3290405273438,
+                    "y": -804.3968505859375,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -31735,121 +31436,6 @@
         },
         {
             "active": true,
-            "name": "lavaParticle",
-            "uuid": 16370853894982439358,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 993.8714599609375,
-                    "y": -801.3372802734375,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.5,
-                    "y": 5.0
-                }
-            },
-            "parent": {
-                "parentUUID": 6529571415753105255,
-                "localPos": {
-                    "x": 993.8714599609375,
-                    "y": -801.3372802734375,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.5,
-                    "y": 5.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Player",
-                "z": -5
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": true,
-                "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 10.0,
-                "playOnStop": true,
-                "emissionShape": 0,
-                "radiusMin": 0.0,
-                "radiusMax": 5.0,
-                "lengthMin": 60.0,
-                "lengthMax": 50.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 5.0,
-                    "y": 5.0
-                },
-                "startLifeMin": 5.0,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 0.15000000596046449,
-                "startSizeXMax": 1.5,
-                "startSizeYMin": 1.0,
-                "startSizeYMax": 1.0,
-                "sizeOverTime": -2.5,
-                "rotationOverTime": 15.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 0.0,
-                "startColor": {
-                    "x": 0.9641433954238892,
-                    "y": 0.8495192527770996,
-                    "z": 0.1421246975660324,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 1.0,
-                    "y": 0.3585657477378845,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 7.099999904632568,
-                    "y": 13.100000381469727,
-                    "z": 5.800000190734863
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            }
-        },
-        {
-            "active": true,
             "name": "Cam_Zone_2",
             "uuid": 10021553441540741671,
             "tag": {
@@ -31858,8 +31444,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -777.5176391601563,
-                    "y": -427.39764404296877,
+                    "x": -62.51763916015625,
+                    "y": -609.8277587890625,
                     "z": 0.0
                 },
                 "size": {
@@ -31886,23 +31472,23 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": -777.5176391601563,
-                    "y": -427.39764404296877,
+                    "x": -62.51763916015625,
+                    "y": -580.6277465820313,
                     "z": 0.0
                 },
                 "offset": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 29.200000762939454,
                     "z": 0.0
                 },
                 "min": {
-                    "x": -934.4176025390625,
-                    "y": -547.2976684570313,
+                    "x": -219.4176025390625,
+                    "y": -675.1277465820313,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -620.61767578125,
-                    "y": -307.49761962890627,
+                    "x": 94.38232421875,
+                    "y": -486.12774658203127,
                     "z": 0.0
                 }
             },
@@ -31911,7 +31497,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 187,
+                            "lookAtEntity": 159,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -31921,8 +31507,8 @@
             "parent": {
                 "parentUUID": 7610932790271590026,
                 "localPos": {
-                    "x": -777.5176391601563,
-                    "y": -427.39764404296877,
+                    "x": -62.51763916015625,
+                    "y": -609.8277587890625,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -31953,8 +31539,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -777.5176391601563,
-                    "y": -609.031494140625,
+                    "x": -62.51763916015625,
+                    "y": -791.4616088867188,
                     "z": 0.0
                 },
                 "size": {
@@ -32345,44 +31931,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -32435,7 +31983,7 @@
                         ]
                     },
                     {
-                        "name": "slimeStunned",
+                        "name": "slimeWalk",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -32449,14 +31997,21 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32488,6 +32043,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32946,6 +32532,44 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -32998,7 +32622,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -33012,21 +32636,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -33058,37 +32675,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -33167,6 +32753,386 @@
                         ]
                     }
                 ]
+            }
+        },
+        {
+            "active": true,
+            "name": "Filler",
+            "uuid": 3884955572056252072,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": -90.0,
+                "position": {
+                    "x": -256.7839050292969,
+                    "y": -16.40677833557129,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 3,
+                "isContinuous": false,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -256.7839050292969,
+                    "y": -16.40677833557129,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p1": {
+                    "x": -16.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 16.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "lavaParticle",
+            "uuid": 3826516140166188617,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1440.02197265625,
+                    "y": -97.04598236083985,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 6.0,
+                    "y": 5.0
+                }
+            },
+            "parent": {
+                "parentUUID": 6529571415753105255,
+                "localPos": {
+                    "x": 1440.02197265625,
+                    "y": -97.04598236083985,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 6.0,
+                    "y": 5.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": -5
+            },
+            "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 25.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 60.0,
+                "lengthMax": 50.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 5.0,
+                "startLifeMax": 5.0,
+                "startSpeedMin": 0.0,
+                "startSpeedMax": 0.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.15000000596046449,
+                "startSizeXMax": 1.5,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": -2.5,
+                "rotationOverTime": 15.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 0.0,
+                "startColor": {
+                    "x": 0.9641433954238892,
+                    "y": 0.8495192527770996,
+                    "z": 0.1421246975660324,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 1.0,
+                    "y": 0.3585657477378845,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 7.099999904632568,
+                    "y": 13.100000381469727,
+                    "z": 5.800000190734863
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            }
+        },
+        {
+            "active": true,
+            "name": "Filler",
+            "uuid": 1380810547397968878,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": -90.0,
+                "position": {
+                    "x": 1088.0589599609376,
+                    "y": -15.80272388458252,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 3,
+                "isContinuous": false,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1088.0589599609376,
+                    "y": -15.80272388458252,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p1": {
+                    "x": -16.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 16.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Cam_Zone_3",
+            "uuid": 12179009855837808703,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1666.68994140625,
+                    "y": -152.43289184570313,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isContinuous": false,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 1666.68994140625,
+                    "y": -152.43289184570313,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1555.7899169921876,
+                    "y": -277.03289794921877,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1777.5899658203126,
+                    "y": -27.8328857421875,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "CameraZone",
+                        "fields": {
+                            "lookAtEntity": 169,
+                            "resetOnExit": true,
+                            "zoneDampingY": 1.5
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 7610932790271590026,
+                "localPos": {
+                    "x": 1666.68994140625,
+                    "y": -152.43289184570313,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Zone3_Target",
+            "uuid": 11244013137075949580,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1666.68994140625,
+                    "y": -332.4328918457031,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12179009855837808703,
+                "localPos": {
+                    "x": 0.0,
+                    "y": -180.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],
