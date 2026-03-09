@@ -8,7 +8,7 @@ All content � 2026 Digipen Institute of Technology Singapore. All rights reser
 */
 
 #include <mono/jit/jit.h>
-//#include <mono/metadata/string-icalls.h> // For mono_string_to_utf8
+#include <mono/metadata/object.h>
 #include "LeaderboardService.h"
 #include "leaderboardbindings.h"
 #include "leaderboardcomponent.h"
@@ -19,20 +19,30 @@ using namespace Component;
 namespace {
 
     // The C++ function that C# will call (URL removed)
-    static void SubmitScore_Internal(MonoString* nameObj, int score) {
+    static void SubmitScore_Internal(MonoString* nameObj, int score, MonoString* ghostPathObj) {
         if (!nameObj) return;
 
+        // Convert Name string
         char* nameCStr = mono_string_to_utf8(nameObj);
         std::string name(nameCStr);
         mono_free(nameCStr);
 
+        // Convert Ghost Path string (Safely check if it's null first)
+        std::string ghostPath = "";
+        if (ghostPathObj) {
+            char* ghostPathCStr = mono_string_to_utf8(ghostPathObj);
+            ghostPath = std::string(ghostPathCStr);
+            mono_free(ghostPathCStr);
+        }
+
         // Define your Single Source of Truth here! 
-        // (Alternatively, fetch this from a Settings/Config manager)
         std::string backendUrl = "http://104.214.187.128";
 
         // Instantiate the service and submit asynchronously
         LeaderboardService svc(backendUrl);
-        svc.SubmitScoreAsync(name, score);
+
+        // Pass the new ghostPath parameter!
+        svc.SubmitScoreAsync(name, score, ghostPath);
     }
 
     // This allows C# to instantly update the UI after submitting a score

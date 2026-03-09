@@ -32,7 +32,7 @@ namespace CrashoutsEngine {
 
         // Async versions using JobSystem worker threads
         std::future<std::vector<LeaderboardEntry>> FetchLeaderboardAsync(int limit);
-        std::future<bool> SubmitScoreAsync(const std::string& name, int score);
+        std::future<bool> SubmitScoreAsync(const std::string& name, int score, const std::string& ghostFilePath = "");
 
     private:
         std::string baseUrl_;

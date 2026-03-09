@@ -13,6 +13,45 @@
 #include "log.h"
 
 namespace CrashoutsEngine {
+
+    // --- Read File to Byte Buffer ---
+    static std::vector<unsigned char> ReadFileBinary(const std::string& filepath) {
+        std::ifstream file(filepath, std::ios::binary);
+        if (!file.is_open()) return {};
+        return std::vector<unsigned char>(std::istreambuf_iterator<char>(file), {});
+    }
+
+    // --- Base64 Encoder ---
+    static std::string Base64Encode(const std::vector<unsigned char>& data) {
+        static const char* base64_chars =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        std::string ret;
+        int i = 0, j = 0;
+        unsigned char char_array_3[3], char_array_4[4];
+
+        for (unsigned char c : data) {
+            char_array_3[i++] = c;
+            if (i == 3) {
+                char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+                char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+                char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+                char_array_4[3] = char_array_3[2] & 0x3f;
+                for (i = 0; i < 4; i++) ret += base64_chars[char_array_4[i]];
+                i = 0;
+            }
+        }
+        if (i > 0) {
+            for (j = i; j < 3; j++) char_array_3[j] = '\0';
+            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+            char_array_4[3] = char_array_3[2] & 0x3f;
+            for (j = 0; j < i + 1; j++) ret += base64_chars[char_array_4[j]];
+            while (i++ < 3) ret += '=';
+        }
+        return ret;
+    }
+
     static std::string JsonValueToString(const rapidjson::Value& v) {
         if (v.IsString()) return v.GetString();
         if (v.IsInt()) return std::to_string(v.GetInt());
@@ -112,20 +151,32 @@ namespace CrashoutsEngine {
         });
     }
 
-    std::future<bool> LeaderboardService::SubmitScoreAsync(const std::string& name, int score) {
+    std::future<bool> LeaderboardService::SubmitScoreAsync(const std::string& name, int score, const std::string& ghostFilePath) {
         std::string baseUrl = baseUrl_;
         std::string nameCopy = name;
-        return JobSystem::Get().Enqueue([baseUrl, nameCopy, score]() {
+        std::string ghostPathCopy = ghostFilePath; // Capture the path for the async thread
+
+        return JobSystem::Get().Enqueue([baseUrl, nameCopy, score, ghostPathCopy]() {
             rapidjson::Document doc;
             doc.SetObject();
             auto& alloc = doc.GetAllocator();
 
-            // Add the name
             doc.AddMember("name", rapidjson::Value(nameCopy.c_str(), alloc), alloc);
-
-            // Send both 'score' and 'time' just to be safe, so the backend gets whatever it is looking for!
             doc.AddMember("score", score, alloc);
             doc.AddMember("time", score, alloc);
+
+            // --- ATTACH GHOST DATA IF IT EXISTS ---
+            if (!ghostPathCopy.empty()) {
+                std::vector<unsigned char> fileData = ReadFileBinary(ghostPathCopy);
+                if (!fileData.empty()) {
+                    std::string base64Ghost = Base64Encode(fileData);
+                    doc.AddMember("ghost_data", rapidjson::Value(base64Ghost.c_str(), alloc), alloc);
+                    LOGI(Debug, "[Leaderboard] Attached Ghost Data: " + std::to_string(fileData.size()) + " bytes.");
+                }
+                else {
+                    LOGI(Debug, "[Leaderboard] Warning: Could not read ghost file at " + ghostPathCopy);
+                }
+            }
 
             rapidjson::StringBuffer buffer;
             rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
@@ -133,14 +184,10 @@ namespace CrashoutsEngine {
 
             HttpClient http;
             std::string url = baseUrl + "/submitScore";
-
-            // Send the request
             std::string response = http.HttpPostJson(url, buffer.GetString());
 
-            // --- PRINT THE SERVER'S RESPONSE ---
-            // If the server rejects it (e.g. 400 Bad Request), this will tell you exactly why!
             if (response.empty()) {
-                LOGI(Debug, "[Leaderboard] ERROR: Server did not respond or connection failed to " + url);
+                LOGI(Debug, "[Leaderboard] ERROR: Server did not respond.");
             }
             else {
                 LOGI(Debug, "[Leaderboard] Server Response: " + response);

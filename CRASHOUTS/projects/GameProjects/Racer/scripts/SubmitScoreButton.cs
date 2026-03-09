@@ -40,34 +40,33 @@ namespace CrashoutsEngine
         {
             string typedName = "Anonymous";
 
-            // 1. Get the name using our new InternalCall
             if (textInputBox != null && textInputBox.ID != 0)
             {
                 string uiText = InternalCalls.GetText(textInputBox.ID);
-                // Make sure they actually typed something and it's not a placeholder
                 if (!string.IsNullOrEmpty(uiText) && uiText != "Enter Name:") 
                 {
                     typedName = uiText;
                 }
             }
 
-            // 2. Get the saved time from LapTracker
             float finalTime = LapTracker.Instance.FinalTime;
 
-            // 3. Submit the score
-            Debug.Log($"Submitting {typedName} with time {finalTime}");
-            Leaderboard.SubmitTime(typedName, finalTime);
+            // --- RECONSTRUCT THE REPLAY FILE PATH ---
+            // Make sure this matches wherever your ReplayManager actually saves the files!
+            string trackName = LapTracker.Instance.TrackName;
+            string replayFilePath = $"assets/replays/{trackName}_Ghost.bin"; 
 
-            // 4. Force the Leaderboard to refresh immediately
+            // 3. Submit the score WITH the ghost data!
+            Debug.Log($"Submitting {typedName} with time {finalTime} and replay {replayFilePath}");
+            Leaderboard.SubmitTime(typedName, finalTime, replayFilePath);
+
             if (leaderboardUI != null && leaderboardUI.ID != 0)
             {
                 Leaderboard.ForceRefresh(leaderboardUI);
             }
 
-            // 5. Hide the popup panel 
             if (nameInputPanel != null && nameInputPanel.ID != 0)
             {
-                // Note: casting to uint to match your MenuButtons.cs architecture
                 InternalCalls.SetActive((uint)nameInputPanel.ID, false); 
             }
         }
