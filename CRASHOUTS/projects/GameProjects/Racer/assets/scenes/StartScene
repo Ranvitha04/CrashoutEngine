@@ -546,6 +546,8 @@
             "leaderboard": {
                 "baseUrl": "http://104.214.187.128",
                 "limit": 10,
+                "sortBy": "time",
+                "sortOrder": "asc",
                 "autoRefresh": true,
                 "fetchOnStart": true,
                 "updateInEditor": true,
@@ -645,7 +647,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "1.  lickytongue  -  01:01.43",
+                "text": "1.  Test  -  00:45.96",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -719,7 +721,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "2.  Player1  -  00:51.33",
+                "text": "2.  Loser  -  00:49.98",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -793,7 +795,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "3.  Loser  -  00:49.98",
+                "text": "3.  Player1  -  00:51.33",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -867,7 +869,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "4.  Test  -  00:45.96",
+                "text": "4.  lickytongue  -  01:01.43",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,

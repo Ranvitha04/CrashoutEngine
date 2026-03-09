@@ -3792,6 +3792,33 @@ namespace CrashoutsEngine
 			ImGui::SeparatorText("Connection");
 			UIHelpers::DrawUndoableString("Base URL", lc->baseUrl);
 			UIHelpers::DrawUndoableInt("Limit", lc->limit, 1.0f, 1, 100);
+			{
+				static const char* sortByLabels[] = { "None", "Score", "Time", "Created At", "Name" };
+				static const char* sortByValues[] = { "", "score", "time", "created_at", "name" };
+				int currentSortBy = 0;
+				for (int i = 0; i < IM_ARRAYSIZE(sortByValues); ++i) {
+					if (lc->sortBy == sortByValues[i]) {
+						currentSortBy = i;
+						break;
+					}
+				}
+				if (ImGui::Combo("Sort By", &currentSortBy, sortByLabels, IM_ARRAYSIZE(sortByLabels))) {
+					lc->sortBy = sortByValues[currentSortBy];
+				}
+
+				static const char* sortOrderLabels[] = { "Default", "Ascending", "Descending" };
+				static const char* sortOrderValues[] = { "", "asc", "desc" };
+				int currentSortOrder = 0;
+				for (int i = 0; i < IM_ARRAYSIZE(sortOrderValues); ++i) {
+					if (lc->sortOrder == sortOrderValues[i]) {
+						currentSortOrder = i;
+						break;
+					}
+				}
+				if (ImGui::Combo("Sort Order", &currentSortOrder, sortOrderLabels, IM_ARRAYSIZE(sortOrderLabels))) {
+					lc->sortOrder = sortOrderValues[currentSortOrder];
+				}
+			}
 
 			ImGui::SeparatorText("Refresh");
 			UIHelpers::DrawUndoableBool("Auto Refresh", lc->autoRefresh);

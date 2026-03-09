@@ -13,43 +13,18 @@
 #include "log.h"
 
 namespace CrashoutsEngine {
-
-    // --- Read File to Byte Buffer ---
-    static std::vector<unsigned char> ReadFileBinary(const std::string& filepath) {
-        std::ifstream file(filepath, std::ios::binary);
-        if (!file.is_open()) return {};
-        return std::vector<unsigned char>(std::istreambuf_iterator<char>(file), {});
-    }
-
-    // --- Base64 Encoder ---
-    static std::string Base64Encode(const std::vector<unsigned char>& data) {
-        static const char* base64_chars =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        std::string ret;
-        int i = 0, j = 0;
-        unsigned char char_array_3[3], char_array_4[4];
-
-        for (unsigned char c : data) {
-            char_array_3[i++] = c;
-            if (i == 3) {
-                char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-                char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-                char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-                char_array_4[3] = char_array_3[2] & 0x3f;
-                for (i = 0; i < 4; i++) ret += base64_chars[char_array_4[i]];
-                i = 0;
+    namespace {
+        static std::string BuildLeaderboardUrl(const std::string& baseUrl, int limit,
+            const std::string& sortBy, const std::string& sortOrder) {
+            std::string url = baseUrl + "/leaderboard?limit=" + std::to_string(limit);
+            if (!sortBy.empty()) {
+                url += "&sortBy=" + sortBy;
             }
+            if (!sortOrder.empty()) {
+                url += "&sortOrder=" + sortOrder;
+            }
+            return url;
         }
-        if (i > 0) {
-            for (j = i; j < 3; j++) char_array_3[j] = '\0';
-            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-            char_array_4[3] = char_array_3[2] & 0x3f;
-            for (j = 0; j < i + 1; j++) ret += base64_chars[char_array_4[j]];
-            while (i++ < 3) ret += '=';
-        }
-        return ret;
     }
 
     static std::string JsonValueToString(const rapidjson::Value& v) {
@@ -66,11 +41,11 @@ namespace CrashoutsEngine {
     LeaderboardService::LeaderboardService(const std::string& baseUrl)
         : baseUrl_(baseUrl) {}
 
-    void LeaderboardService::FetchLeaderboard(int limit) {
+    void LeaderboardService::FetchLeaderboard(int limit, const std::string& sortBy, const std::string& sortOrder) {
         entries_.clear();
 
         HttpClient http;
-        std::string url = baseUrl_ + "/leaderboard?limit=" + std::to_string(limit);
+        std::string url = BuildLeaderboardUrl(baseUrl_, limit, sortBy, sortOrder);
         std::string response = http.HttpGet(url);
         if (response.empty()) return;
 
@@ -114,13 +89,16 @@ namespace CrashoutsEngine {
         http.HttpPostJson(url, buffer.GetString());
     }
 
-    std::future<std::vector<LeaderboardEntry>> LeaderboardService::FetchLeaderboardAsync(int limit) {
+    std::future<std::vector<LeaderboardEntry>> LeaderboardService::FetchLeaderboardAsync(
+        int limit, const std::string& sortBy, const std::string& sortOrder) {
         std::string baseUrl = baseUrl_;
-        return JobSystem::Get().Enqueue([baseUrl, limit]() {
+        std::string sortByCopy = sortBy;
+        std::string sortOrderCopy = sortOrder;
+        return JobSystem::Get().Enqueue([baseUrl, limit, sortByCopy, sortOrderCopy]() {
             std::vector<LeaderboardEntry> results;
 
             HttpClient http;
-            std::string url = baseUrl + "/leaderboard?limit=" + std::to_string(limit);
+            std::string url = BuildLeaderboardUrl(baseUrl, limit, sortByCopy, sortOrderCopy);
             std::string response = http.HttpGet(url);
             if (response.empty()) return results;
 
