@@ -644,11 +644,26 @@ namespace CrashoutsEngine {
                     if (!lc) continue;
                     Entity ent = lightArray.indexToEntity[i];
                     if (ecs.HasComponent<ActiveComponent>(ent) && !ecs.GetComponent<ActiveComponent>(ent)->isActive) continue;
-                    if (!ecs.HasComponent<TransformComponent>(ent)) continue;
-                    if (!ecs.HasComponent<ShapeComponent>(ent)) continue;
+                    Entity occEnt = ent;
+                    if (!lc->ignoreParentOccluders && ecs.HasComponent<Component::ParentComponent>(ent)) {
+                        auto* pc = ecs.GetComponent<Component::ParentComponent>(ent);
+                        Entity p = (pc && pc->parent != 0) ? pc->parent : 0;
+                        while (p != 0) {
+                            if (ecs.HasComponent<TransformComponent>(p) && ecs.HasComponent<ShapeComponent>(p)) {
+                                occEnt = p;
+                                break;
+                            }
+                            if (!ecs.HasComponent<Component::ParentComponent>(p)) break;
+                            auto* next = ecs.GetComponent<Component::ParentComponent>(p);
+                            p = (next && next->parent != 0) ? next->parent : 0;
+                        }
+                    }
 
-                    auto* tc = ecs.GetComponent<TransformComponent>(ent);
-                    auto* sc = ecs.GetComponent<ShapeComponent>(ent);
+                    if (!ecs.HasComponent<TransformComponent>(occEnt)) continue;
+                    if (!ecs.HasComponent<ShapeComponent>(occEnt)) continue;
+
+                    auto* tc = ecs.GetComponent<TransformComponent>(occEnt);
+                    auto* sc = ecs.GetComponent<ShapeComponent>(occEnt);
                     if (!tc || !sc) continue;
 
                     GLuint texHandle = 0;
@@ -666,8 +681,7 @@ namespace CrashoutsEngine {
                     float rot = tc->rotation;
                     float c = std::cos(rot);
                     float s = std::sin(rot);
-                    CEVec3 worldPos = lc->position;
-                    if (lc->useTransform) worldPos = tc->position;
+                    CEVec3 worldPos = tc->position;
 
                     glm::vec2 local[4] = {
                         { -half.x, -half.y }, // BL

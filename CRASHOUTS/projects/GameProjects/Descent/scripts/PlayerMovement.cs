@@ -77,8 +77,26 @@ namespace CrashoutsEngine
 
         private string currentAnimState = "";
         private bool isLight = false;
+        public bool IsLightMode { get { return isLight; } }
         private float swapPauseTimer = 0.0f;
         private bool stateChangedThisSwap = false;
+        private bool switchStartIsLight = false;
+        private bool switchTargetIsLight = false;
+
+        public bool IsSwitching { get { return swapPauseTimer > 0.0f; } }
+        public bool SwitchStartIsLight { get { return switchStartIsLight; } }
+        public bool SwitchTargetIsLight { get { return switchTargetIsLight; } }
+        public float SwitchProgress01
+        {
+            get
+            {
+                if (swapPause <= 0.0001f) return 1.0f;
+                float t = 1.0f - (swapPauseTimer / swapPause);
+                if (t < 0.0f) return 0.0f;
+                if (t > 1.0f) return 1.0f;
+                return t;
+            }
+        }
 
         private uint landingDustID = 0;
         private float landingDustTimer = 0.0f;
@@ -136,12 +154,14 @@ namespace CrashoutsEngine
             pauseScreenEntity = Entity.Find("Pause");
             if (pauseScreenEntity != null) InternalCalls.SetActive(pauseScreenEntity.ID, false);
 
-            bookGlowEntity = Entity.Find("PlayerBookGlow");
-            if (bookGlowEntity != null)
-            {
-                bookGlowTf = bookGlowEntity.GetComponent<TransformComponent>();
-                InternalCalls.SetActive(bookGlowEntity.ID, true);
-                UpdateBookGlowTransform();
+            if (lockBookGlowToPlayer) {
+                bookGlowEntity = Entity.Find("PlayerBookGlow");
+                if (bookGlowEntity != null)
+                {
+                    bookGlowTf = bookGlowEntity.GetComponent<TransformComponent>();
+                    InternalCalls.SetActive(bookGlowEntity.ID, true);
+                    UpdateBookGlowTransform();
+                }
             }
 
             if (!string.IsNullOrEmpty(landingDustName))
@@ -186,7 +206,7 @@ namespace CrashoutsEngine
             if (Input.IsKeyPressed(Key.A) && !isDialogueActive) facingRight = false;
             else if (Input.IsKeyPressed(Key.D) && !isDialogueActive) facingRight = true;
             ApplyFlipping();
-            UpdateBookGlowTransform();
+            if (lockBookGlowToPlayer) UpdateBookGlowTransform();
 
             if (playDialogueOnStart && isDialogueActive)
             {
@@ -204,6 +224,8 @@ namespace CrashoutsEngine
             if (Input.IsKeyTriggered(Key.E) && IsGrounded && CurrentEnergy >= energyConsumption && swapPauseTimer <= 0.0f)
             {
                 RemoveEnergy(energyConsumption);
+                switchStartIsLight = isLight;
+                switchTargetIsLight = !isLight;
                 swapPauseTimer = swapPause;
                 stateChangedThisSwap = false;
                 rb.LinearVelocity = new CEVec3(0, 0, 0);

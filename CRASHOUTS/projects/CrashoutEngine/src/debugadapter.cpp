@@ -11,7 +11,7 @@ Declares and registers built-in Debug Menu adapters & providers:
 These adapters make the ECS inspector and physics/game-state panels
 runtime-extensible and project-agnostic.
 
-All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content 
 
 //__________________________________________________________________________*/
 
@@ -1862,6 +1862,18 @@ namespace {
 									MonoString* newMonoStr = mono_string_new(MonoManager::GetDomain(), strVal.c_str());
 									mono_field_set_value(instance, field, newMonoStr);
 								}
+							}
+							else if (typeEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEVec2") == 0) {
+								CEVec2 val{ 0.f, 0.f };
+								mono_field_get_value(instance, field, &val);
+								UIHelpers::DrawUndoableVec2(fName, val);
+								mono_field_set_value(instance, field, &val);
+							}
+							else if (typeEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEVec3") == 0) {
+								CEVec3 val{ 0.f, 0.f, 0.f };
+								mono_field_get_value(instance, field, &val);
+								UIHelpers::DrawUndoableVec3(fName, val);
+								mono_field_set_value(instance, field, &val);
 							}
 							else if (strcmp(fieldClassName, "Entity") == 0) {
 								uint32_t currentID = 0;
