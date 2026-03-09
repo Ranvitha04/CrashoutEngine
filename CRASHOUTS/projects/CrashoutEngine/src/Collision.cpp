@@ -1090,12 +1090,16 @@ namespace Collision {
 		}
 
 		/*BROADPHASE*/
-		// 2. Only rebuild the QuadTree on the FIRST sub-step, and ONLY with static objects!
-		if (subStepIndex == 0) {
-			quadTree.Clear();
-			for (CrashoutsEngine::Entity& staticEnt : staticEntities) {
-				quadTree.Insert(staticEnt);
-			}
+		// 2. Rebuild the QuadTree EVERY sub-step with ALL objects!
+		// Because dynamic objects move during sub-steps, the tree must be updated 
+		// so queries in sub-steps 1, 2, and 3 remain accurate.
+		quadTree.Clear();
+
+		for (CrashoutsEngine::Entity& staticEnt : staticEntities) {
+			quadTree.Insert(staticEnt);
+		}
+		for (CrashoutsEngine::Entity& dynamicEnt : dynamicEntities) {
+			quadTree.Insert(dynamicEnt);
 		}
 
 		/*DETECT COLLISION*/
@@ -1110,6 +1114,7 @@ namespace Collision {
 			auto& result = threadResults[threadIdx];
 
 			std::vector<CrashoutsEngine::Entity> localCollidableObjects;
+			localCollidableObjects.reserve(128); // Pre-allocate memory to prevent heap reallocations!
 
 			for (unsigned int i = start; i < end; ++i) {
 				CrashoutsEngine::Entity entity1 = dynamicEntities[i];
@@ -1123,31 +1128,39 @@ namespace Collision {
 					continue;
 				}
 
-				// Query the QuadTree for Static objects near this Dynamic object
+				// Query the QuadTree for ALL objects (Static AND Dynamic) near this entity
 				localCollidableObjects.clear();
 				AABBRect region = GetAABB(*(collider1->collider), transform1->position);
 				quadTree.Query(region, localCollidableObjects);
 
-				// Also add ALL OTHER Dynamic objects to the check list.
-				// We do the ID check HERE to prevent double-checking Dynamic vs Dynamic,
-				// while ensuring Static objects from the QuadTree are never dropped!
-				for (CrashoutsEngine::Entity& dEnt : dynamicEntities) {
-					if (entity1 < dEnt) {
-						localCollidableObjects.push_back(dEnt);
-					}
-				}
+				// DELETED the brute-force N^2 loop over dynamicEntities! 
+				// The QuadTree handles finding nearby dynamic objects now.
 
 				// NARROW PHASE COLLISION CHECK
 				for (CrashoutsEngine::Entity const& entity2 : localCollidableObjects) {
 
 					if (!IsEntityActive(globalECS, entity2)) continue;
+
+					// Prevent checking an object against itself
 					if (entity1 == entity2) continue;
 
-					// Prevents double checks, only process if ID1 < ID2
-					if (entity1 > entity2) continue;
-
+					// Prevent child/parent collisions
 					if (CrashoutsEngine::IsAlreadyChildOf(globalECS, entity1, entity2) ||
 						CrashoutsEngine::IsAlreadyChildOf(globalECS, entity2, entity1)) continue;
+
+					// --- DOUBLE-CHECK PREVENTION LOGIC ---
+					bool isDynamic2 = false;
+					if (globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) {
+						auto* rb2 = globalECS.GetComponent<Component::RigidBodyComponent>(entity2);
+						if (rb2->getMass() != 0.0f) isDynamic2 = true;
+					}
+
+					// If both are Dynamic, enforce an ID order to prevent A->B and B->A double checks.
+					// If entity2 is Static, we ALWAYS want to check it, regardless of ID order!
+					if (isDynamic2 && entity1 > entity2) {
+						continue;
+					}
+					// -------------------------------------
 
 					Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
 					Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };

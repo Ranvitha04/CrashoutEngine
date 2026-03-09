@@ -156,7 +156,15 @@
                 "scripts": [
                     {
                         "className": "MenuButtons",
-                        "fields": {}
+                        "fields": {
+                            "StartBtn": 0,
+                            "SettingsBtn": 0,
+                            "CloseBtn": 0,
+                            "QuitBtn": 0,
+                            "QuitCheckPanel": 0,
+                            "YesBtn": 0,
+                            "NoBtn": 0
+                        }
                     }
                 ]
             },
@@ -306,7 +314,15 @@
                 "scripts": [
                     {
                         "className": "MenuButtons",
-                        "fields": {}
+                        "fields": {
+                            "StartBtn": 0,
+                            "SettingsBtn": 0,
+                            "CloseBtn": 0,
+                            "QuitBtn": 0,
+                            "QuitCheckPanel": 0,
+                            "YesBtn": 0,
+                            "NoBtn": 0
+                        }
                     }
                 ]
             },
@@ -520,7 +536,15 @@
                 "scripts": [
                     {
                         "className": "MenuButtons",
-                        "fields": {}
+                        "fields": {
+                            "StartBtn": 0,
+                            "SettingsBtn": 0,
+                            "CloseBtn": 0,
+                            "QuitBtn": 0,
+                            "QuitCheckPanel": 0,
+                            "YesBtn": 0,
+                            "NoBtn": 0
+                        }
                     }
                 ]
             },
@@ -608,5 +632,10 @@
             "x": 2000.0,
             "y": 2000.0
         }
+    },
+    "VisualScripting": {
+        "nextNodeId": 1,
+        "nodes": [],
+        "links": []
     }
 }

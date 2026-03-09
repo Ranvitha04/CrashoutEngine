@@ -48,8 +48,8 @@ namespace CrashoutsEngine {
         float g_bloomThreshold = 1.0f;
         float g_bloomIntensity = 0.8f;
         int g_bloomIterations = 6;
-        bool g_shadowsEnabled = true;
-        int g_shadowRays = 128;
+        bool g_shadowsEnabled = false;
+        int g_shadowRays = 16;
         bool active = false;
 
         GLuint quadvao = 0;
@@ -453,6 +453,14 @@ namespace CrashoutsEngine {
                             Entity ent = lightArray.indexToEntity[lightIndex];
                             int row = shadowRowByLight[lightIndex];
                             if (row < 0) continue;
+
+                            Collision::AABBRect lightRegion(
+                                CEVec3{ ld.worldPos.x - ld.radiusWorld, ld.worldPos.y - ld.radiusWorld, 0.f },
+                                CEVec3{ ld.worldPos.x + ld.radiusWorld, ld.worldPos.y + ld.radiusWorld, 0.f }
+                            );
+                            std::vector<CrashoutsEngine::Entity> localCandidates;
+                            localCandidates.reserve(32);
+                            Collision::CollisionHandler::GetInstance().quadTree.Query(lightRegion, localCandidates);
 
                             for (int r = 0; r < shadowRays; ++r) {
                                 float angle = (static_cast<float>(r) + 0.5f) / static_cast<float>(shadowRays);

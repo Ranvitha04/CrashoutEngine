@@ -500,213 +500,186 @@ namespace Physics {
 
 		//double simDt = isSimulating ? fixedDT : 0.0;
 
-		int step = FrameRateController::GetInstance().StepCount();
-
-		// =======================================================
-		// --- DYNAMIC POWER MANAGEMENT (THE ESCAPE HATCH) ---
-		// =======================================================
-		SYSTEM_POWER_STATUS powerStatus;
-		if (GetSystemPowerStatus(&powerStatus)) {
-			// ACLineStatus: 0 = Offline (Battery), 1 = Online (Plugged In), 255 = Unknown
-			if (powerStatus.ACLineStatus == 0) {
-				// LAPTOP ON BATTERY: CPU is throttled. 
-				// Aggressively clamp to a maximum of 2 catch-up steps to prevent spiral.
-				if (step > 1) step = 1;
-			}
-			else {
-				// PLUGGED IN / DESKTOP: CPU has full power.
-				// Standard safe clamp to prevent extreme lag spikes from freezing the game.
-				if (step > 5) step = 5;
-			}
-		}
-		else {
-			// Fallback if the OS query fails
-			if (step > 5) step = 5;
-		}
-		// =======================================================
-
 		const int SUB_STEPS = 4;
 		double subDt = (isSimulating ? fixedDT : 0.0) / SUB_STEPS;
 		double fullDt = isSimulating ? fixedDT : 0.0;
 
 		/*Fixed step, accumulator will reach the target fixed dt and then execute physics simulation*/
-		for (int i{}; i < step; ++i) {
-			for (int sub{}; sub < SUB_STEPS; ++sub) {
+		for (int sub{}; sub < SUB_STEPS; ++sub) {
 
-				CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
-					for (unsigned int j = start; j < end; ++j) {
-						const CrashoutsEngine::Entity& entity = globalEntities[j];
-						if (!IsEntityActive(globalECS, entity)) continue;
+			CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
+				for (unsigned int j = start; j < end; ++j) {
+					const CrashoutsEngine::Entity& entity = globalEntities[j];
+					if (!IsEntityActive(globalECS, entity)) continue;
 
-						Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
-						//if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
-						if (!rigidBody || !rigidBody->getMass()) continue;
+					Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
+					//if (!rigidBody->getFlags().test(SIMULATE_DYNAMICS) || !rigidBody->getMass()) continue;
+					if (!rigidBody || !rigidBody->getMass()) continue;
 
-						bool isCCD = false;
-						if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-							isCCD = globalECS.GetComponent<Component::ColliderComponent>(entity)->collider->isContinuous;
+					bool isCCD = false;
+					if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+						isCCD = globalECS.GetComponent<Component::ColliderComponent>(entity)->collider->isContinuous;
+					}
+
+					// If NOT continuous, only do physics on the FIRST sub-step, using the FULL dt!
+					if (!isCCD) {
+						if (sub > 0) continue; // Skip sub-steps 1, 2, and 3 completely!
+
+						if (isSimulating) {
+							ForceManager& fm = rigidBody->getForceManager();
+							CEVec3 forces = fm.ResolveForces((f32)fullDt, rigidBody->getMass());
+							CEVec3 gravityForce = rigidBody->getMass() * sGravity * rigidBody->gravityScale;
+							rigidBody->addForce(forces + gravityForce);
+							rigidBody->UpdatePhysics(fullDt); // Uses fullDt!
 						}
+					}
+					else {
+						// IT IS A FAST OBJECT! Do physics EVERY sub-step using subDt!
+						if (isSimulating) {
+							ForceManager& fm = rigidBody->getForceManager();
+							CEVec3 forces = fm.ResolveForces((f32)subDt, rigidBody->getMass());
+							CEVec3 gravityForce = rigidBody->getMass() * sGravity * rigidBody->gravityScale;
+							rigidBody->addForce(forces + gravityForce);
+							rigidBody->UpdatePhysics(subDt); // Uses subDt!
+						}
+					}
 
-						// If NOT continuous, only do physics on the FIRST sub-step, using the FULL dt!
-						if (!isCCD) {
-							if (sub > 0) continue; // Skip sub-steps 1, 2, and 3 completely!
+					// Compute Inertia
+					if (rigidBody->invInertia == 0.0f) {
+						if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+							auto* colComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
 
-							if (isSimulating) {
-								ForceManager& fm = rigidBody->getForceManager();
-								CEVec3 forces = fm.ResolveForces((f32)fullDt, rigidBody->getMass());
-								CEVec3 gravityForce = rigidBody->getMass() * sGravity * rigidBody->gravityScale;
-								rigidBody->addForce(forces + gravityForce);
-								rigidBody->UpdatePhysics(fullDt); // Uses fullDt!
+							// Safety Check
+							if (colComp && colComp->collider) {
+								float inertia = colComp->collider->CalculateInertia(rigidBody->getMass());
+
+								rigidBody->setInertia(inertia);
+							}
+						}
+					}
+
+				}
+				});
+
+			/*PHYSICS SIM, UPDATE POSITION*/
+			CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
+				for (unsigned int j = start; j < end; ++j) {
+					const CrashoutsEngine::Entity& entity = globalEntities[j];
+					if (!IsEntityActive(globalECS, entity)) continue;
+
+					if (!globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
+					Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
+					Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
+
+					bool isCCD = false;
+					if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
+						isCCD = globalECS.GetComponent<Component::ColliderComponent>(entity)->collider->isContinuous;
+					}
+
+					// -------------------------------------------------------
+					// DYNAMIC (Physics Drives Transform)
+					// -------------------------------------------------------
+					if (rigidBody->getMass()) {
+
+						if (!isCCD && sub > 0) continue; // Skip normal objects on extra sub-steps!
+
+						f32 currentDelta = static_cast<float>(!isCCD ? fullDt : subDt);
+
+						if (isSimulating) {
+							// 1. Apply Velocity to Position ONCE
+							transform->position += rigidBody->GetVelocity() * currentDelta;
+
+							// 2. Rotate Orientation
+							if (rigidBody->invInertia > 0.0f) {
+								float angularChange = rigidBody->angularVelocity * (180.f / CEMath::PI) * currentDelta;
+								rigidBody->orientation += angularChange;
+								transform->rotation = rigidBody->orientation;
+							}
+
+							// 3. Apply Drag & Clamping
+							rigidBody->setVelocity(rigidBody->GetVelocity() * 0.999f);
+							rigidBody->angularVelocity *= 0.98f;    // Angular Drag
+
+							if (rigidBody->angularVelocity > 15.0f) rigidBody->angularVelocity = 15.0f;
+							if (rigidBody->angularVelocity < -15.0f) rigidBody->angularVelocity = -15.0f;
+
+							if (std::abs(rigidBody->angularVelocity) < 0.1f) {
+								rigidBody->angularVelocity = 0.0f;
 							}
 						}
 						else {
-							// IT IS A FAST OBJECT! Do physics EVERY sub-step using subDt!
-							if (isSimulating) {
-								ForceManager& fm = rigidBody->getForceManager();
-								CEVec3 forces = fm.ResolveForces((f32)subDt, rigidBody->getMass());
-								CEVec3 gravityForce = rigidBody->getMass() * sGravity * rigidBody->gravityScale;
-								rigidBody->addForce(forces + gravityForce);
-								rigidBody->UpdatePhysics(subDt); // Uses subDt!
-							}
+							// STOPPED: TRANSFORM (UI) DRIVES PHYSICS
+							rigidBody->orientation = transform->rotation;
+							rigidBody->angularVelocity = 0.0f;
 						}
 
-						// Compute Inertia
-						if (rigidBody->invInertia == 0.0f) {
-							if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-								auto* colComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
-
-								// Safety Check
-								if (colComp && colComp->collider) {
-									float inertia = colComp->collider->CalculateInertia(rigidBody->getMass());
-
-									rigidBody->setInertia(inertia);
-								}
-							}
-						}
-
-					}
-					});
-
-				/*PHYSICS SIM, UPDATE POSITION*/
-				CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)globalEntities.size(), [&](unsigned int start, unsigned int end) {
-					for (unsigned int j = start; j < end; ++j) {
-						const CrashoutsEngine::Entity& entity = globalEntities[j];
-						if (!IsEntityActive(globalECS, entity)) continue;
-
-						if (!globalECS.HasComponent<Component::TransformComponent>(entity)) continue;
-						Component::TransformComponent* transform{ globalECS.GetComponent<Component::TransformComponent>(entity) };
-						Component::RigidBodyComponent* rigidBody{ globalECS.GetComponent<Component::RigidBodyComponent>(entity) };
-
-						bool isCCD = false;
+						// 4. Sync Colliders
 						if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-							isCCD = globalECS.GetComponent<Component::ColliderComponent>(entity)->collider->isContinuous;
+							Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
+							if (c->collider != nullptr) {
+								c->collider->UpdateCollider(transform->position);
+								c->collider->UpdateRotation(transform->rotation);
+							}
 						}
 
-						// -------------------------------------------------------
-						// DYNAMIC (Physics Drives Transform)
-						// -------------------------------------------------------
-						if (rigidBody->getMass()) {
-
-							if (!isCCD && sub > 0) continue; // Skip normal objects on extra sub-steps!
-
-							f32 currentDelta = static_cast<float>(!isCCD ? fullDt : subDt);
-
-							if (isSimulating) {
-								// 1. Apply Velocity to Position ONCE
-								transform->position += rigidBody->GetVelocity() * currentDelta;
-
-								// 2. Rotate Orientation
-								if (rigidBody->invInertia > 0.0f) {
-									float angularChange = rigidBody->angularVelocity * (180.f / CEMath::PI) * currentDelta;
-									rigidBody->orientation += angularChange;
-									transform->rotation = rigidBody->orientation;
-								}
-
-								// 3. Apply Drag & Clamping
-								rigidBody->setVelocity(rigidBody->GetVelocity() * 0.999f);
-								rigidBody->angularVelocity *= 0.98f;    // Angular Drag
-
-								if (rigidBody->angularVelocity > 15.0f) rigidBody->angularVelocity = 15.0f;
-								if (rigidBody->angularVelocity < -15.0f) rigidBody->angularVelocity = -15.0f;
-
-								if (std::abs(rigidBody->angularVelocity) < 0.1f) {
-									rigidBody->angularVelocity = 0.0f;
-								}
-							}
-							else {
-								// STOPPED: TRANSFORM (UI) DRIVES PHYSICS
-								rigidBody->orientation = transform->rotation;
-								rigidBody->angularVelocity = 0.0f;
-							}
-
-							// 4. Sync Colliders
-							if (globalECS.HasComponent<Component::ColliderComponent>(entity)) {
-								Component::ColliderComponent* c{ globalECS.GetComponent<Component::ColliderComponent>(entity) };
-								if (c->collider != nullptr) {
-									c->collider->UpdateCollider(transform->position);
-									c->collider->UpdateRotation(transform->rotation);
-								}
-							}
-
-							// Sync children
-							SyncHierarchyPhysics(entity, globalECS);
-						}
+						// Sync children
+						SyncHierarchyPhysics(entity, globalECS);
 					}
-					});
+				}
+				});
 
-				// Detect collisions
-				{
-					// Determine state for collision
-					Collision::EngineState physState = isSimulating ? Collision::EngineState::PLAY : Collision::EngineState::STOP;
+			// Detect collisions
+			{
+				// Determine state for collision
+				Collision::EngineState physState = isSimulating ? Collision::EngineState::PLAY : Collision::EngineState::STOP;
 
-					auto& colSys = Collision::CollisionHandler::GetInstance();
-					colSys.Update(subDt, physState, sub);
+				auto& colSys = Collision::CollisionHandler::GetInstance();
+				colSys.Update(subDt, physState, sub);
+			}
+
+			// Get collision data from handler
+			const auto& events = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
+
+			/*IMPULSE RESOLUTION*/
+			for (Collision::CollisionEvent const& evnt : events) {
+
+				// Check C# logic via the manager
+				bool allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity1, evnt.entity2);
+
+				// Check the other way too
+				if (allowCollision) {
+					allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity2, evnt.entity1);
 				}
 
-				// Get collision data from handler
-				const auto& events = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
+				if (!allowCollision) continue;
 
-				/*IMPULSE RESOLUTION*/
-				for (Collision::CollisionEvent const& evnt : events) {
+				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
+				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
 
-					// Check C# logic via the manager
-					bool allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity1, evnt.entity2);
+				Component::ColliderComponent* col1 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1);
+				Component::ColliderComponent* col2 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2);
 
-					// Check the other way too
-					if (allowCollision) {
-						allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity2, evnt.entity1);
-					}
+				bool isContinuous1 = col1 ? col1->collider->isContinuous : false;
+				bool isContinuous2 = col2 ? col2->collider->isContinuous : false;
 
-					if (!allowCollision) continue;
+				// On sub-steps 1, 2, and 3, IGNORE collisions between two normal objects!
+				// They already checked for collisions on sub-step 0.
+				if (sub > 0 && !isContinuous1 && !isContinuous2) {
+					continue;
+				}
 
-					Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
-					Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
+				if ((col1 && col1->collider->isTrigger) || (col2 && col2->collider->isTrigger)) {
+					continue;
+				}
 
-					Component::ColliderComponent* col1 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1);
-					Component::ColliderComponent* col2 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2);
+				bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
+				bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
 
-					bool isContinuous1 = col1 ? col1->collider->isContinuous : false;
-					bool isContinuous2 = col2 ? col2->collider->isContinuous : false;
+				if (!isDynamic1 && !isDynamic2) continue;
 
-					// On sub-steps 1, 2, and 3, IGNORE collisions between two normal objects!
-					// They already checked for collisions on sub-step 0.
-					if (sub > 0 && !isContinuous1 && !isContinuous2) {
-						continue;
-					}
-
-					if ((col1 && col1->collider->isTrigger) || (col2 && col2->collider->isTrigger)) {
-						continue;
-					}
-
-					bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
-					bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
-
-					if (!isDynamic1 && !isDynamic2) continue;
-
-					if (isSimulating) {
-						PositionCorrection(evnt, globalECS);
-						ApplyRotationalImpulse(evnt, globalECS, (float)subDt);
-					}
+				if (isSimulating) {
+					PositionCorrection(evnt, globalECS);
+					ApplyRotationalImpulse(evnt, globalECS, (float)subDt);
 				}
 			}
 		}

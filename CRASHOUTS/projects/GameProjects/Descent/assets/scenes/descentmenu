@@ -853,7 +853,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 147.89202880859376,
+                    "x": 53.222999572753909,
                     "y": -148.96295166015626,
                     "z": 0.0
                 },
@@ -953,7 +953,7 @@
             "parent": {
                 "parentUUID": 17994454554155245929,
                 "localPos": {
-                    "x": 147.89202880859376,
+                    "x": 53.222999572753909,
                     "y": -148.9629669189453,
                     "z": 0.0
                 },
@@ -999,7 +999,7 @@
                     {
                         "className": "MenuButtons",
                         "fields": {
-                            "StartBtn": 3,
+                            "StartBtn": 12,
                             "SettingsBtn": 4,
                             "CloseBtn": 0,
                             "QuitBtn": 2,

@@ -721,7 +721,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "2.  Loser  -  00:49.98",
+                "text": "2.  Enter Name  -  00:48.31",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -795,7 +795,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "3.  Player1  -  00:51.33",
+                "text": "3.  Loser  -  00:49.98",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -869,7 +869,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "4.  lickytongue  -  01:01.43",
+                "text": "4.  Player1  -  00:51.33",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -953,7 +953,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "5.  hu  -  01:07.42",
+                "text": "5.  lickytongue  -  01:01.43",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -1027,7 +1027,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "6.  Enter Name  -  01:47.57",
+                "text": "6.  hu  -  01:07.42",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -1101,7 +1101,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "",
+                "text": "7.  Enter Name  -  01:47.57",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
