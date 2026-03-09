@@ -1767,6 +1767,10 @@
             "path": "Camera_Prefab.json"
         },
         {
+            "name": "Cam_Zone_Prefab",
+            "path": "Cam_Zone_Prefab.json"
+        },
+        {
             "name": "Door_Prefab",
             "path": "Door_Prefab.json"
         },
@@ -1817,6 +1821,10 @@
         {
             "name": "Slime V4",
             "path": "Slime V4.json"
+        },
+        {
+            "name": "Slime_Prefab",
+            "path": "Slime_Prefab.json"
         },
         {
             "name": "Test_Prefab",
