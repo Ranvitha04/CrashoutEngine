@@ -174,6 +174,10 @@ namespace Collision {
 			*/
 			bool RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, CrashoutsEngine::Entity& outEntity,
 				CrashoutsEngine::Entity ignoredEntity = 999999, CrashoutsEngine::Entity ignoredParent = 0);
+
+
+			bool RaycastAgainstList(CEVec3 start, CEVec3 end, const std::vector<CrashoutsEngine::Entity>& candidates, CEVec3& outPoint, 
+				CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity = 0, CrashoutsEngine::Entity ignoredParent = 0);
 	};
 }
 

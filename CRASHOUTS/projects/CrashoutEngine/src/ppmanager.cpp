@@ -48,8 +48,8 @@ namespace CrashoutsEngine {
         float g_bloomThreshold = 1.0f;
         float g_bloomIntensity = 0.8f;
         int g_bloomIterations = 6;
-        bool g_shadowsEnabled = false;
-        int g_shadowRays = 16;
+        bool g_shadowsEnabled = true;
+        int g_shadowRays = 48;
         bool active = false;
 
         GLuint quadvao = 0;
@@ -445,6 +445,48 @@ namespace CrashoutsEngine {
                 float camWidth = currentCamera.GetVisibleWorldWidth();
                 float camHeight = currentCamera.GetVisibleWorldHeight();
 
+                // Get camera bounds to clamp massive lights
+                CEVec3 camPos = currentCamera.GetPosition();
+                float maxScreenRadius = std::max(camWidth, camHeight) * 1.5f;
+
+                // 1. PRE-COMPUTE CANDIDATES ON THE MAIN THREAD (Thread Safe!)
+                // We use a vector of vectors so each light has its own dedicated list of colliders to check.
+                std::vector<std::vector<CrashoutsEngine::Entity>> allLightCandidates(shadowLights.size());
+
+                for (size_t idx = 0; idx < shadowLights.size(); ++idx) {
+                    size_t lightIndex = shadowLights[idx];
+                    const LightDraw& ld = lightDraws[lightIndex];
+                    int row = shadowRowByLight[lightIndex];
+                    if (row < 0) continue;
+
+                    // Clamp the query region so massive lights don't query the entire map!
+                    float queryRadius = std::min(ld.radiusWorld, maxScreenRadius);
+
+                    Collision::AABBRect lightRegion(
+                        CEVec3{ ld.worldPos.x - queryRadius, ld.worldPos.y - queryRadius, 0.f },
+                        CEVec3{ ld.worldPos.x + queryRadius, ld.worldPos.y + queryRadius, 0.f }
+                    );
+
+                    allLightCandidates[idx].reserve(64);
+                    Collision::CollisionHandler::GetInstance().quadTree.Query(lightRegion, allLightCandidates[idx]);
+
+                    // PRE-UPDATE COLLIDERS ON MAIN THREAD
+                    // This prevents multiple threads from calling UpdateCollider on the same entity later.
+                    for (auto ent : allLightCandidates[idx]) {
+                        auto* cc = ecs.GetComponent<Component::ColliderComponent>(ent);
+                        auto* tc = ecs.GetComponent<Component::TransformComponent>(ent);
+                        if (cc && cc->collider && tc) {
+                            cc->collider->UpdateCollider(tc->position);
+                            if (cc->collider->type == Collision::ColliderType::OBB ||
+                                cc->collider->type == Collision::ColliderType::POLYGON ||
+                                cc->collider->type == Collision::ColliderType::TRIANGLE) {
+                                cc->collider->UpdateRotation(tc->rotation);
+                            }
+                        }
+                    }
+                }
+
+                // 2. RUN THE HEAVY RAYCAST MATH ON WORKER THREADS
                 CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(shadowLights.size()),
                     [&](unsigned int start, unsigned int end) {
                         for (unsigned int idx = start; idx < end; ++idx) {
@@ -454,21 +496,26 @@ namespace CrashoutsEngine {
                             int row = shadowRowByLight[lightIndex];
                             if (row < 0) continue;
 
-                            Collision::AABBRect lightRegion(
-                                CEVec3{ ld.worldPos.x - ld.radiusWorld, ld.worldPos.y - ld.radiusWorld, 0.f },
-                                CEVec3{ ld.worldPos.x + ld.radiusWorld, ld.worldPos.y + ld.radiusWorld, 0.f }
-                            );
-                            std::vector<CrashoutsEngine::Entity> localCandidates;
-                            localCandidates.reserve(32);
-                            Collision::CollisionHandler::GetInstance().quadTree.Query(lightRegion, localCandidates);
+                            const auto& localCandidates = allLightCandidates[idx];
 
+                            // --- CACHE PARENT LOGIC ONCE ---
+                            CrashoutsEngine::Entity ignoredParent = 0;
+                            if (ld.ignoreParentOccluders) {
+                                ignoredParent = ent;
+                                if (ecs.HasComponent<Component::ParentComponent>(ent)) {
+                                    auto* pc = ecs.GetComponent<Component::ParentComponent>(ent);
+                                    if (pc && pc->parent != 0) ignoredParent = pc->parent;
+                                }
+                            }
+
+                            // --- CAST ALL RAYS AGAINST THE PRE-FILTERED LIST ---
                             for (int r = 0; r < shadowRays; ++r) {
                                 float angle = (static_cast<float>(r) + 0.5f) / static_cast<float>(shadowRays);
                                 angle *= 6.28318530718f;
                                 float ux = std::cos(angle);
                                 float uy = std::sin(angle);
 
-                                // Map UV direction to world direction using camera extents
+                                // Map UV direction to world direction
                                 CEVec3 dir{ ux * camWidth, uy * camHeight, 0.f };
                                 float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
                                 if (len > 0.0001f) {
@@ -480,15 +527,11 @@ namespace CrashoutsEngine {
                                 CEVec3 endPos = startPos + dir * ld.radiusWorld;
                                 CEVec3 hitPoint{};
                                 CrashoutsEngine::Entity hitEnt = 0;
-                                CrashoutsEngine::Entity ignoredParent = 0;
-                                if (ld.ignoreParentOccluders) {
-                                    ignoredParent = ent;
-                                    if (ecs.HasComponent<Component::ParentComponent>(ent)) {
-                                        auto* pc = ecs.GetComponent<Component::ParentComponent>(ent);
-                                        if (pc && pc->parent != 0) ignoredParent = pc->parent;
-                                    }
-                                }
-                                bool hit = Collision::CollisionHandler::GetInstance().RaycastHit(startPos, endPos, hitPoint, hitEnt, ent, ignoredParent);
+
+                                // --- USE THE NEW FAST RAYCAST ---
+                                bool hit = Collision::CollisionHandler::GetInstance().RaycastAgainstList(
+                                    startPos, endPos, localCandidates, hitPoint, hitEnt, ent, ignoredParent
+                                );
 
                                 float dist = ld.radiusWorld;
                                 if (hit) {
