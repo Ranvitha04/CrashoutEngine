@@ -129,12 +129,11 @@ namespace CrashoutsEngine {
         });
     }
 
-    std::future<bool> LeaderboardService::SubmitScoreAsync(const std::string& name, int score, const std::string& ghostFilePath) {
+    std::future<bool> LeaderboardService::SubmitScoreAsync(const std::string& name, int score) {
         std::string baseUrl = baseUrl_;
         std::string nameCopy = name;
-        std::string ghostPathCopy = ghostFilePath; // Capture the path for the async thread
 
-        return JobSystem::Get().Enqueue([baseUrl, nameCopy, score, ghostPathCopy]() {
+        return JobSystem::Get().Enqueue([baseUrl, nameCopy, score]() {
             rapidjson::Document doc;
             doc.SetObject();
             auto& alloc = doc.GetAllocator();
@@ -142,19 +141,6 @@ namespace CrashoutsEngine {
             doc.AddMember("name", rapidjson::Value(nameCopy.c_str(), alloc), alloc);
             doc.AddMember("score", score, alloc);
             doc.AddMember("time", score, alloc);
-
-            // --- ATTACH GHOST DATA IF IT EXISTS ---
-            if (!ghostPathCopy.empty()) {
-                std::vector<unsigned char> fileData = ReadFileBinary(ghostPathCopy);
-                if (!fileData.empty()) {
-                    std::string base64Ghost = Base64Encode(fileData);
-                    doc.AddMember("ghost_data", rapidjson::Value(base64Ghost.c_str(), alloc), alloc);
-                    LOGI(Debug, "[Leaderboard] Attached Ghost Data: " + std::to_string(fileData.size()) + " bytes.");
-                }
-                else {
-                    LOGI(Debug, "[Leaderboard] Warning: Could not read ghost file at " + ghostPathCopy);
-                }
-            }
 
             rapidjson::StringBuffer buffer;
             rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);

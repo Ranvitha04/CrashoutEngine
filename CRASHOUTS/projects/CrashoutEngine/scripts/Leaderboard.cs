@@ -15,17 +15,17 @@ namespace CrashoutsEngine
     public static class Leaderboard
     {
         // Submits a standard integer score.
-        public static void SubmitScore(string playerName, int score, string ghostFilePath = "")
+        public static void SubmitScore(string playerName, int score)
         {
-            SubmitScore_Internal(playerName, score, ghostFilePath);
+            SubmitScore_Internal(playerName, score);
         }
 
         // Helper for timing-based leaderboards (e.g., Speedruns).
         // Converts a float time (seconds) into milliseconds (int) for backend sorting.
-        public static void SubmitTime(string playerName, float timeInSeconds, string ghostFilePath = "")
+        public static void SubmitTime(string playerName, float timeInSeconds)
         {
             int timeInMs = (int)(timeInSeconds * 1000f);
-            SubmitScore_Internal(playerName, timeInMs, ghostFilePath);
+            SubmitScore_Internal(playerName, timeInMs);
         }
 
         public static void ForceRefresh(Entity leaderboardEntity)
@@ -36,8 +36,9 @@ namespace CrashoutsEngine
             }
         }
 
+        // The exact signature matching our mono_add_internal_call string
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void SubmitScore_Internal(string name, int score, string ghostFilePath);
+        private static extern void SubmitScore_Internal(string name, int score);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void ForceRefresh_Internal(ulong entityID);

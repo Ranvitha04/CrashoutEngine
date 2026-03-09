@@ -16,12 +16,13 @@ namespace CrashoutsEngine
         public Entity timerDisplay;
         public string TrackName = "Level1"; 
         public Entity nameInputPanel;
-        // Store the final time so the Submit button can access it later!
-        public float FinalTime { get; private set; }        
-        private int _targetCheckpointID = 1; 
+        
+        public float FinalTime { get; private set; }         
         private float _raceTime = 0f;
+        private int _lastClearedID = 0; 
         private bool _isRacing = false;
         private float _currentLapTime = 0f;
+        private bool _isWrongWay = false;
 
         public override void Start()
         {
@@ -29,7 +30,9 @@ namespace CrashoutsEngine
             _raceTime = 0f;
             _currentLapTime = 0f;
             CurrentLap = 0;
+            _lastClearedID = 0;
             _isRacing = true; 
+            _isWrongWay = false;
 
             if (TotalLaps <= 0) TotalLaps = 3;
             if (TotalCheckpointsInTrack <= 0) TotalCheckpointsInTrack = 3;
@@ -42,20 +45,11 @@ namespace CrashoutsEngine
 
             Debug.Log($"Race Started! Lap {(CurrentLap + 1)} / {TotalLaps}");
             
-            // Just start recording!
             ReplayManager.StartRecording();
+            UpdateLapUI();
 
-            if (lapDisplay != null && lapDisplay.ID != 0)
-            {
-                InternalCalls.SetText(lapDisplay.ID, $"Lap: [{(CurrentLap + 1)} / {TotalLaps}]");
-            }
-
-            // Start with name input disabled
             if (nameInputPanel != null && nameInputPanel.ID != 0)
-            {
-                // Activate the panel entity (Adjust this to match your specific C# Active API)
                 InternalCalls.SetActive(nameInputPanel.ID, false);
-            }
         }
 
         public override void Update() 
@@ -71,7 +65,7 @@ namespace CrashoutsEngine
                     InternalCalls.SetText(timerDisplay.ID, FormatTime(_raceTime));
                 }
 
-                if (lapDisplay != null && lapDisplay.ID != 0 && CurrentLap == 0)
+                if (lapDisplay != null && lapDisplay.ID != 0 && CurrentLap == 0 && !_isWrongWay)
                 {
                     InternalCalls.SetText(lapDisplay.ID, $"Lap: [1 / {TotalLaps}]");
                 }
@@ -80,63 +74,99 @@ namespace CrashoutsEngine
 
         public void CheckpointHit(int hitID)
         {
-            if (!_isRacing) return; 
+            if (!_isRacing) return;
 
-            if (hitID == _targetCheckpointID)
+            // --- CASE 1: HITTING THE FINISH LINE (ID 0) ---
+            if (hitID == 0)
             {
-                _targetCheckpointID++;
-
-                if (_targetCheckpointID >= TotalCheckpointsInTrack)
-                {
-                    _targetCheckpointID = 0;
-                }
-
-                if (hitID == 0)
+                // FIX 1: You must clear ALL checkpoints (e.g., ID 3) before hitting 0.
+                if (_lastClearedID == TotalCheckpointsInTrack)
                 {
                     CurrentLap++;
+                    _lastClearedID = 0;
+                    SetWrongWay(false); 
                     
                     if (CurrentLap >= TotalLaps)
                     {
-                        Debug.Log("RACE FINISHED!");
-                        
-                        _isRacing = false; 
-                        FinalTime = _raceTime; // SAVE THE TIME!
-
-                        ReplayManager.StopRecording();
-                        ReplayManager.SaveRecording($"{TrackName}_Ghost");
-
-                        if (lapDisplay != null && lapDisplay.ID != 0)
-                            InternalCalls.SetText(lapDisplay.ID, "FINISHED!");
-
-                        // ==========================================
-                        // OPEN THE NAME INPUT POPUP
-                        // ==========================================
-                        if (nameInputPanel != null && nameInputPanel.ID != 0)
-                        {
-                            // Activate the panel entity (Adjust this to match your specific C# Active API)
-                            InternalCalls.SetActive(nameInputPanel.ID, true);
-                        }
+                        CompleteRace();
                     }
                     else
                     {
-                        Debug.Log($"Lap {CurrentLap} complete! Split time: {FormatTime(_currentLapTime)}");
-                        _currentLapTime = 0f; 
-
-                        if (lapDisplay != null && lapDisplay.ID != 0)
-                        {
-                            InternalCalls.SetText(lapDisplay.ID, $"Lap: [{(CurrentLap + 1)} / {TotalLaps}]");
-                        }
+                        Debug.Log($"Lap {CurrentLap} Completed!");
+                        UpdateLapUI(); 
                     }
                 }
-                else 
+                else if (_lastClearedID == 0)
                 {
-                    Debug.Log($"Checkpoint {hitID} cleared! Head to {_targetCheckpointID}");
+                    // Player is just sitting on the start line or just started, ignore.
+                    SetWrongWay(false);
                 }
+                else
+                {
+                    // Player hit finish line but missed checkpoints!
+                    Debug.Log("Wrong Way! Missed checkpoints before finish.");
+                    SetWrongWay(true);
+                }
+                return; // Exit here so we don't process Cases 2/3/4 below
             }
-            else if (hitID != _targetCheckpointID - 1)
+
+            // --- CASE 2: NORMAL PROGRESSION ---
+            if (hitID == _lastClearedID + 1)
             {
-                Debug.Log($"Wrong Way! Expected Checkpoint {_targetCheckpointID}");
+                _lastClearedID = hitID;
+                SetWrongWay(false); 
+                Debug.Log($"Progressed to Checkpoint {hitID}");
             }
+            // --- CASE 3: BACKTRACKING ---
+            else if (hitID <= _lastClearedID)
+            {
+                // FIX 2: If you reverse into CP 2, your progress drops to CP 1.
+                // This forces you to drive forward through CP 2 again to turn off the warning!
+                _lastClearedID = hitID - 1; 
+                SetWrongWay(true);
+                Debug.Log($"Backtracked into {hitID}! Progress dropped to {_lastClearedID}.");
+            }
+            // --- CASE 4: SKIPPING ---
+            else if (hitID > _lastClearedID + 1)
+            {
+                SetWrongWay(true);
+                Debug.Log($"Gate Skipped! Hit {hitID} but expected {_lastClearedID + 1}");
+            }
+        }
+
+        private void SetWrongWay(bool active)
+        {
+            if (_isWrongWay == active) return; 
+            _isWrongWay = active;
+            UpdateLapUI();
+        }
+
+        private void UpdateLapUI()
+        {
+            if (lapDisplay == null || lapDisplay.ID == 0) return;
+
+            if (_isWrongWay)
+            {
+                InternalCalls.SetText(lapDisplay.ID, "WRONG WAY!");
+            }
+            else
+            {
+                InternalCalls.SetText(lapDisplay.ID, $"Lap: [{(CurrentLap + 1)} / {TotalLaps}]");
+            }
+        }
+
+        private void CompleteRace()
+        {
+            _isRacing = false;
+            FinalTime = _raceTime;
+            ReplayManager.StopRecording();
+            ReplayManager.SaveRecording($"{TrackName}_Ghost");
+
+            if (lapDisplay != null && lapDisplay.ID != 0)
+                InternalCalls.SetText(lapDisplay.ID, "FINISHED!");
+
+            if (nameInputPanel != null && nameInputPanel.ID != 0)
+                InternalCalls.SetActive(nameInputPanel.ID, true);
         }
 
         private string FormatTime(float timeInSeconds)

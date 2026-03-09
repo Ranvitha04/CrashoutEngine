@@ -15771,6 +15771,8 @@
             "leaderboard": {
                 "baseUrl": "http://104.214.187.128",
                 "limit": 10,
+                "sortBy": "",
+                "sortOrder": "",
                 "autoRefresh": true,
                 "fetchOnStart": true,
                 "updateInEditor": false,
@@ -16003,5 +16005,10 @@
             "x": 2000.0,
             "y": 2000.0
         }
+    },
+    "VisualScripting": {
+        "nextNodeId": 1,
+        "nodes": [],
+        "links": []
     }
 }
