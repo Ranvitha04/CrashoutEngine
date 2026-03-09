@@ -107,7 +107,8 @@
                             "TotalCheckpointsInTrack": 3,
                             "lapDisplay": 9,
                             "timerDisplay": 10,
-                            "TrackName": "Level1"
+                            "TrackName": "Level1",
+                            "nameInputPanel": 15
                         }
                     }
                 ]
@@ -15215,7 +15216,7 @@
                 "dialogueID": ""
             },
             "layer": {
-                "layerName": "",
+                "layerName": "UI",
                 "z": 0
             }
         },
@@ -15269,7 +15270,7 @@
                 "dialogueID": ""
             },
             "layer": {
-                "layerName": "",
+                "layerName": "UI",
                 "z": 0
             }
         },
@@ -15590,15 +15591,403 @@
                     "y": 1.0
                 }
             }
+        },
+        {
+            "active": true,
+            "name": "PlayerNameTextBox",
+            "uuid": 4030542275805188561,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 49.0,
+                    "y": -41.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 30.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.6795580387115479
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Enter Name",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 11
+            },
+            "textinput": {
+                "isFocused": false,
+                "cursorPos": 0,
+                "maxCharacters": 255
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 16471702607345235234,
+                "localPos": {
+                    "x": -13.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 10.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "NameInputPanel",
+            "uuid": 16471702607345235234,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 62.0,
+                    "y": -41.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "leaderboard": {
+                "baseUrl": "http://104.214.187.128",
+                "limit": 10,
+                "autoRefresh": true,
+                "fetchOnStart": true,
+                "updateInEditor": false,
+                "refreshIntervalSec": 10.0,
+                "rootEntityName": "",
+                "entryNamePrefix": "LB_Entry_",
+                "entryIndexBase": 1,
+                "lineFormat": "{rank}. {name} - {score}",
+                "emptyLineText": "",
+                "useColumns": false,
+                "rankNamePrefix": "LB_Rank_",
+                "playerNamePrefix": "LB_Name_",
+                "scoreNamePrefix": "LB_Score_",
+                "dateNamePrefix": "",
+                "columnKeys": [],
+                "columnPrefixes": [],
+                "renderToSelfText": false,
+                "selfTextIncludeHeader": true,
+                "selfTextIncludeStatus": true,
+                "selfTextSeparator": " | ",
+                "headerEntityName": "",
+                "headerText": "",
+                "statusEntityName": "",
+                "loadingText": "Loading...",
+                "errorText": "Failed to load",
+                "emptyStatusText": ""
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "SubmitButton",
+            "uuid": 16377582169658673890,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 73.0,
+                    "y": -41.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 15.0,
+                    "y": 10.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Exo2-Regular",
+                "text": "Send",
+                "scale": 20.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SubmitScoreButton",
+                        "fields": {
+                            "submitBtn": 16,
+                            "textInputBox": 14,
+                            "leaderboardUI": 15,
+                            "nameInputPanel": 15
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "shapeHoveredColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "shapePressedColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "textNormalColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "textHoveredColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "textPressedColor": {
+                    "x": 0.1764705926179886,
+                    "y": 1.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 16471702607345235234,
+                "localPos": {
+                    "x": 11.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 15.0,
+                    "y": 10.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
         }
     ],
     "layers": {
         "Default": 0,
-        "Player": 1
+        "Player": 1,
+        "UI": 2
     },
     "layer_visibility": {
         "Default": true,
-        "Player": true
+        "Player": true,
+        "UI": true
     },
     "tag_mapping": {
         "Default": 0,

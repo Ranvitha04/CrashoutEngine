@@ -33,7 +33,7 @@ namespace CrashoutsEngine
         public override void Update()
         {
             // Restart Current Scene
-            if (Input.IsKeyPressed(Key.R))
+            if (Input.IsKeyPressed(Key.Home))
             {
                 Debug.Log($"[C#] Restarting Game. Loading Scene: {CurrentSceneName}");
                 SceneManager.LoadScene(CurrentSceneName, 0.5f);

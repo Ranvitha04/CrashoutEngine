@@ -1,0 +1,224 @@
+{
+    "prefabs": [
+        {
+            "name": "EnergyBall_Prefab",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "PickUp",
+                    "uuid": 14341608125575037330,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 1445.7991943359376,
+                            "y": -455.3166198730469,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "rigidbody": {
+                        "mass": 0.0,
+                        "restitutionCoeff": 0.0,
+                        "maximumVelocity": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "staticFriction": 0.5,
+                        "dynamicFriction": 0.5,
+                        "inertia": 0.0,
+                        "invInertia": 0.0
+                    },
+                    "collider": {
+                        "ColliderType": 0,
+                        "isContinuous": false,
+                        "isTrigger": true,
+                        "enabled": true,
+                        "position": {
+                            "x": 1445.7991943359376,
+                            "y": -455.3166198730469,
+                            "z": 0.0
+                        },
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "radius": 11.649999618530274,
+                        "center": {
+                            "x": 1445.7991943359376,
+                            "y": -455.3166198730469,
+                            "z": 0.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                        "uvSize": {
+                            "x": 0.125,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "EnergyBall",
+                                "fields": {
+                                    "energyAmount": 25.0,
+                                    "respawnTime": 30.0
+                                }
+                            }
+                        ]
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    },
+                    "keyframe_animator": {
+                        "current": "charged",
+                        "t": 17.299907684326173,
+                        "playing": true,
+                        "clips": [
+                            {
+                                "name": "charged",
+                                "wrap": 0,
+                                "textureAsset": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                                "spriteCols": 8,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 32.0,
+                                "targetHeight": 40.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.5,
+                                                "v": 2.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.75,
+                                                "v": 2.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "cooldown",
+                                "wrap": 0,
+                                "textureAsset": "images/UI\\Energy Ball\\Energy Ball spritesheet.png",
+                                "spriteCols": 8,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 32.0,
+                                "targetHeight": 40.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 4.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.5,
+                                                "v": 5.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.75,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0,
+                                                "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.25,
+                                                "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

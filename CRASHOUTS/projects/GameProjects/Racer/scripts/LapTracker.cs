@@ -15,9 +15,10 @@ namespace CrashoutsEngine
         public Entity lapDisplay;
         public Entity timerDisplay;
         public string TrackName = "Level1"; 
-        
+        public Entity nameInputPanel;
+        // Store the final time so the Submit button can access it later!
+        public float FinalTime { get; private set; }        
         private int _targetCheckpointID = 1; 
-
         private float _raceTime = 0f;
         private bool _isRacing = false;
         private float _currentLapTime = 0f;
@@ -47,6 +48,13 @@ namespace CrashoutsEngine
             if (lapDisplay != null && lapDisplay.ID != 0)
             {
                 InternalCalls.SetText(lapDisplay.ID, $"Lap: [{(CurrentLap + 1)} / {TotalLaps}]");
+            }
+
+            // Start with name input disabled
+            if (nameInputPanel != null && nameInputPanel.ID != 0)
+            {
+                // Activate the panel entity (Adjust this to match your specific C# Active API)
+                InternalCalls.SetActive(nameInputPanel.ID, false);
             }
         }
 
@@ -89,17 +97,24 @@ namespace CrashoutsEngine
                     
                     if (CurrentLap >= TotalLaps)
                     {
-                        Debug.Log("RACE FINISHED! OVERWRITING GHOST DATA...");
+                        Debug.Log("RACE FINISHED!");
                         
-                        ReplayManager.StopRecording();
+                        _isRacing = false; 
+                        FinalTime = _raceTime; // SAVE THE TIME!
 
+                        ReplayManager.StopRecording();
                         ReplayManager.SaveRecording($"{TrackName}_Ghost");
 
-                        _isRacing = false; 
-                        
                         if (lapDisplay != null && lapDisplay.ID != 0)
-                        {
                             InternalCalls.SetText(lapDisplay.ID, "FINISHED!");
+
+                        // ==========================================
+                        // OPEN THE NAME INPUT POPUP
+                        // ==========================================
+                        if (nameInputPanel != null && nameInputPanel.ID != 0)
+                        {
+                            // Activate the panel entity (Adjust this to match your specific C# Active API)
+                            InternalCalls.SetActive(nameInputPanel.ID, true);
                         }
                     }
                     else

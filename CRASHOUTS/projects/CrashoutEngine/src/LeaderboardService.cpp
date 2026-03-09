@@ -10,6 +10,7 @@
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
+#include "log.h"
 
 namespace CrashoutsEngine {
     static std::string JsonValueToString(const rapidjson::Value& v) {
@@ -118,8 +119,13 @@ namespace CrashoutsEngine {
             rapidjson::Document doc;
             doc.SetObject();
             auto& alloc = doc.GetAllocator();
+
+            // Add the name
             doc.AddMember("name", rapidjson::Value(nameCopy.c_str(), alloc), alloc);
+
+            // Send both 'score' and 'time' just to be safe, so the backend gets whatever it is looking for!
             doc.AddMember("score", score, alloc);
+            doc.AddMember("time", score, alloc);
 
             rapidjson::StringBuffer buffer;
             rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
@@ -127,7 +133,19 @@ namespace CrashoutsEngine {
 
             HttpClient http;
             std::string url = baseUrl + "/submitScore";
+
+            // Send the request
             std::string response = http.HttpPostJson(url, buffer.GetString());
+
+            // --- PRINT THE SERVER'S RESPONSE ---
+            // If the server rejects it (e.g. 400 Bad Request), this will tell you exactly why!
+            if (response.empty()) {
+                LOGI(Debug, "[Leaderboard] ERROR: Server did not respond or connection failed to " + url);
+            }
+            else {
+                LOGI(Debug, "[Leaderboard] Server Response: " + response);
+            }
+
             return !response.empty();
         });
     }
