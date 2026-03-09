@@ -65,6 +65,11 @@
             "texAssetName": "spritesheet\\Rock\\Rock_03.png",
             "colliderType": "ColliderType::AABB",
             "ruleBitMap": 4
+        },
+        {
+            "texAssetName": "spritesheet\\Rock\\Rock_14.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 5
         }
     ]
 }

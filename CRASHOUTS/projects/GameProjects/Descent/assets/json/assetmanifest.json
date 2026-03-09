@@ -1697,6 +1697,10 @@
             "path": "descentsettings"
         },
         {
+            "name": "Level2",
+            "path": "Level2"
+        },
+        {
             "name": "GameOver",
             "path": "GameOver"
         },
@@ -1787,6 +1791,10 @@
             "path": "Moving_Platform(Sinking).json"
         },
         {
+            "name": "NextLevelDoor_Prefab",
+            "path": "NextLevelDoor_Prefab.json"
+        },
+        {
             "name": "PlayerBarrier",
             "path": "PlayerBarrier.json"
         },
@@ -1801,6 +1809,10 @@
         {
             "name": "PressurePlate",
             "path": "PressurePlate.json"
+        },
+        {
+            "name": "Scuff_WinDoor_Prefab",
+            "path": "Scuff_WinDoor_Prefab.json"
         },
         {
             "name": "Slime V4",
