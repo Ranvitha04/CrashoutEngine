@@ -13,6 +13,20 @@
 #include "log.h"
 
 namespace CrashoutsEngine {
+    namespace {
+        static std::string BuildLeaderboardUrl(const std::string& baseUrl, int limit,
+            const std::string& sortBy, const std::string& sortOrder) {
+            std::string url = baseUrl + "/leaderboard?limit=" + std::to_string(limit);
+            if (!sortBy.empty()) {
+                url += "&sortBy=" + sortBy;
+            }
+            if (!sortOrder.empty()) {
+                url += "&sortOrder=" + sortOrder;
+            }
+            return url;
+        }
+    }
+
     static std::string JsonValueToString(const rapidjson::Value& v) {
         if (v.IsString()) return v.GetString();
         if (v.IsInt()) return std::to_string(v.GetInt());
@@ -27,11 +41,11 @@ namespace CrashoutsEngine {
     LeaderboardService::LeaderboardService(const std::string& baseUrl)
         : baseUrl_(baseUrl) {}
 
-    void LeaderboardService::FetchLeaderboard(int limit) {
+    void LeaderboardService::FetchLeaderboard(int limit, const std::string& sortBy, const std::string& sortOrder) {
         entries_.clear();
 
         HttpClient http;
-        std::string url = baseUrl_ + "/leaderboard?limit=" + std::to_string(limit);
+        std::string url = BuildLeaderboardUrl(baseUrl_, limit, sortBy, sortOrder);
         std::string response = http.HttpGet(url);
         if (response.empty()) return;
 
@@ -75,13 +89,16 @@ namespace CrashoutsEngine {
         http.HttpPostJson(url, buffer.GetString());
     }
 
-    std::future<std::vector<LeaderboardEntry>> LeaderboardService::FetchLeaderboardAsync(int limit) {
+    std::future<std::vector<LeaderboardEntry>> LeaderboardService::FetchLeaderboardAsync(
+        int limit, const std::string& sortBy, const std::string& sortOrder) {
         std::string baseUrl = baseUrl_;
-        return JobSystem::Get().Enqueue([baseUrl, limit]() {
+        std::string sortByCopy = sortBy;
+        std::string sortOrderCopy = sortOrder;
+        return JobSystem::Get().Enqueue([baseUrl, limit, sortByCopy, sortOrderCopy]() {
             std::vector<LeaderboardEntry> results;
 
             HttpClient http;
-            std::string url = baseUrl + "/leaderboard?limit=" + std::to_string(limit);
+            std::string url = BuildLeaderboardUrl(baseUrl, limit, sortByCopy, sortOrderCopy);
             std::string response = http.HttpGet(url);
             if (response.empty()) return results;
 

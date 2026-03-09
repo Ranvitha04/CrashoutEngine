@@ -434,6 +434,8 @@ namespace CrashoutsEngine {
 				rapidjson::Value val(rapidjson::kObjectType);
 				val.AddMember("baseUrl", rapidjson::Value(c.baseUrl.c_str(), allocator), allocator);
 				val.AddMember("limit", c.limit, allocator);
+				val.AddMember("sortBy", rapidjson::Value(c.sortBy.c_str(), allocator), allocator);
+				val.AddMember("sortOrder", rapidjson::Value(c.sortOrder.c_str(), allocator), allocator);
 				val.AddMember("autoRefresh", c.autoRefresh, allocator);
 				val.AddMember("fetchOnStart", c.fetchOnStart, allocator);
 				val.AddMember("updateInEditor", c.updateInEditor, allocator);
@@ -1086,6 +1088,8 @@ namespace CrashoutsEngine {
 				auto& c = gECS.AddComponent<Component::LeaderboardComponent>(newEntity);
 				c.baseUrl = GetString(v, "baseUrl", c.baseUrl.c_str());
 				c.limit = GetInt(v, "limit", c.limit);
+				c.sortBy = GetString(v, "sortBy", c.sortBy.c_str());
+				c.sortOrder = GetString(v, "sortOrder", c.sortOrder.c_str());
 				c.autoRefresh = GetBool(v, "autoRefresh", c.autoRefresh);
 				c.fetchOnStart = GetBool(v, "fetchOnStart", c.fetchOnStart);
 				c.updateInEditor = GetBool(v, "updateInEditor", c.updateInEditor);

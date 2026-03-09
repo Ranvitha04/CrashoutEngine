@@ -18,6 +18,7 @@
 #include <future>
 #include <algorithm>
 #include <chrono>
+#include <cstdlib>
 
 namespace {
     using CrashoutsEngine::Entity;
@@ -72,6 +73,58 @@ namespace {
             ReplaceAll(out, "{" + kv.first + "}", kv.second);
         }
         return out;
+    }
+
+    static bool TryParseDouble(const std::string& value, double& out) {
+        if (value.empty()) return false;
+        char* end = nullptr;
+        out = std::strtod(value.c_str(), &end);
+        return end != value.c_str() && end && *end == '\0';
+    }
+
+    static bool TryGetNumericFieldValue(const Component::LeaderboardEntryData& e,
+        const std::string& key, double& out) {
+        if (key == "rank") {
+            out = static_cast<double>(e.rank);
+            return true;
+        }
+        if (key == "score") {
+            out = static_cast<double>(e.score);
+            return true;
+        }
+
+        auto it = e.extraFields.find(key);
+        if (it == e.extraFields.end()) return false;
+        return TryParseDouble(it->second, out);
+    }
+
+    static void ApplyLocalSort(Component::LeaderboardComponent& comp) {
+        if (comp.sortBy.empty() || comp.entries.empty()) return;
+
+        const bool ascending = comp.sortOrder != "desc";
+        const std::string sortKey = comp.sortBy;
+
+        std::stable_sort(comp.entries.begin(), comp.entries.end(),
+            [&](const Component::LeaderboardEntryData& a, const Component::LeaderboardEntryData& b) {
+                double aNum = 0.0;
+                double bNum = 0.0;
+                const bool aHasNum = TryGetNumericFieldValue(a, sortKey, aNum);
+                const bool bHasNum = TryGetNumericFieldValue(b, sortKey, bNum);
+
+                if (aHasNum && bHasNum) {
+                    if (aNum == bNum) return a.name < b.name;
+                    return ascending ? (aNum < bNum) : (aNum > bNum);
+                }
+
+                const std::string aValue = GetFieldValue(a, sortKey);
+                const std::string bValue = GetFieldValue(b, sortKey);
+                if (aValue == bValue) return a.name < b.name;
+                return ascending ? (aValue < bValue) : (aValue > bValue);
+            });
+
+        for (size_t i = 0; i < comp.entries.size(); ++i) {
+            comp.entries[i].rank = static_cast<int>(i) + 1;
+        }
     }
 
     static CrashoutsEngine::Entity FindEntityByName(CrashoutsEngine::ECS& ecs, const std::string& name) {
@@ -150,7 +203,9 @@ namespace CrashoutsEngine::LeaderboardSystem {
             if (shouldFetch) {
                 if (g_pendingFetches.find(entity) == g_pendingFetches.end()) {
                     LeaderboardService svc(comp->baseUrl);
-                    g_pendingFetches[entity] = PendingFetch{ svc.FetchLeaderboardAsync(comp->limit) };
+                    g_pendingFetches[entity] = PendingFetch{
+                        svc.FetchLeaderboardAsync(comp->limit, comp->sortBy, comp->sortOrder)
+                    };
                     comp->refreshTimer = 0.0f;
                 }
             }
@@ -175,6 +230,8 @@ namespace CrashoutsEngine::LeaderboardSystem {
                         e.extraFields = r.extraFields;
                         comp->entries.push_back(std::move(e));
                     }
+
+                    ApplyLocalSort(*comp);
 
                     comp->hasEverFetched = true;
                     comp->lastError.clear();

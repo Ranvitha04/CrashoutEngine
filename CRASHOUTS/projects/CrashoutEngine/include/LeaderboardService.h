@@ -25,13 +25,13 @@ namespace CrashoutsEngine {
     public:
         explicit LeaderboardService(const std::string& baseUrl);
 
-        void FetchLeaderboard(int limit);
+        void FetchLeaderboard(int limit, const std::string& sortBy = "", const std::string& sortOrder = "");
         void SubmitScore(const std::string& name, int score);
 
         const std::vector<LeaderboardEntry>& GetEntries() const { return entries_; }
 
         // Async versions using JobSystem worker threads
-        std::future<std::vector<LeaderboardEntry>> FetchLeaderboardAsync(int limit);
+        std::future<std::vector<LeaderboardEntry>> FetchLeaderboardAsync(int limit, const std::string& sortBy = "", const std::string& sortOrder = "");
         std::future<bool> SubmitScoreAsync(const std::string& name, int score);
 
     private:

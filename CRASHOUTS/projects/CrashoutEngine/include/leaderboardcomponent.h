@@ -24,6 +24,8 @@ namespace Component {
         // Connection
         std::string baseUrl{ "http://104.214.187.128" };
         int limit{ 10 };
+        std::string sortBy{ "" };      // e.g. "time" for fastest-time boards
+        std::string sortOrder{ "" };   // e.g. "asc" for fastest first, "desc" for highest first
 
         // Refresh
         bool autoRefresh{ true };
