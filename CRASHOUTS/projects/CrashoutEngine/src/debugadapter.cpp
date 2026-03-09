@@ -232,7 +232,7 @@ namespace {
 	f32 max(f32 x1, f32 y2, f32 z3) {
 		return std::max(std::max(x1, y2), z3);
 	}
-	static CrashoutsEngine::TransformState MakeTransformState(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity e)
+	/*static CrashoutsEngine::TransformState MakeTransformState(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity e)
 	{
 		CrashoutsEngine::TransformState s{};
 
@@ -257,7 +257,7 @@ namespace {
 		}
 
 		return s;
-	}
+	}*/
 	/*!
 	@brief Shared helper to draw a multi-select tag dropdown.
 	@param ecs Reference to ECS (needed to clean up components if a tag is deleted).

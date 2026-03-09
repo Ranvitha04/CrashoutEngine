@@ -1189,36 +1189,6 @@
                     "y": 1.0
                 }
             },
-            "text": {
-                "font": "Exo2-Regular",
-                "text": "TEST",
-                "scale": 1.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": true,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "letterSpacing": 0.0,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
             "postprocessing": {
                 "brightness": 0.0,
                 "contrast": 0.0,

@@ -758,8 +758,8 @@ namespace UI {
                         }
                         else if (p->kind == AssetKind::Prefab) {
                             // 1. Capture the size of the transform list BEFORE creation
-                            auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
-                            size_t initialSize = tArr.indexToEntity.size();
+                            //auto& tArr = ecs.GetComponentArray<Component::TransformComponent>();
+                            //size_t initialSize = tArr.indexToEntity.size();
 
                             // 2. Create the Prefab
                             UndoManager::GetInstance().AddCommand(
