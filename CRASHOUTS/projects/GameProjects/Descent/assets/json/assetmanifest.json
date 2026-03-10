@@ -1697,6 +1697,10 @@
             "path": "Defeat"
         },
         {
+            "name": "Level3",
+            "path": "Level3"
+        },
+        {
             "name": "descentmenu",
             "path": "descentmenu"
         },
