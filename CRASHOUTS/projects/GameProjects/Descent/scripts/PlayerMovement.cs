@@ -75,6 +75,7 @@ namespace CrashoutsEngine
         public bool alive = true;
         public bool isPaused = false; 
         private static CEVec3 respawnPos;
+        private static float checkpointEnergy = 100.0f;
         public static string lastLevelName = "";
 
         private string currentAnimState = "";
@@ -91,7 +92,7 @@ namespace CrashoutsEngine
         
         private bool jumpReady = true;
 
-        // --- NEW PASSTHROUGH LOGIC (HEARTBEAT TIMER) ---
+        // --- PASSTHROUGH LOGIC (HEARTBEAT TIMER) ---
         private bool isPhasing = false;
         private float passthroughOverlapTimer = 0.0f;
 
@@ -150,14 +151,15 @@ namespace CrashoutsEngine
             rb.Mass = normalMass;
             //rb.Restitution = 0.0f;
             IsGrounded = false;
-            CurrentEnergy = MaxEnergy;
             
             // If this is a brand new level OR we aren't respawning, 
-            // set the respawn point to the current start position.
+            // set the respawn point to the current start position and full energy.
             if (string.IsNullOrEmpty(lastLevelName) || lastLevelName != currentLevel || !RespawnNextLoad)
             {
                 respawnPos = tf.Position;
+                checkpointEnergy = MaxEnergy;
                 lastLevelName = currentLevel;
+                CurrentEnergy = MaxEnergy;
             }
             
             jumpReady = true;
@@ -520,14 +522,32 @@ namespace CrashoutsEngine
 
         public void Respawn() 
         { 
-            alive = true; tf.Position = respawnPos; rb.LinearVelocity = new CEVec3(0, 0, 0); 
-            CurrentEnergy = MaxEnergy; 
+            alive = true; 
+            tf.Position = respawnPos; 
+            rb.LinearVelocity = new CEVec3(0, 0, 0); 
+            CurrentEnergy = checkpointEnergy; 
             isPhasing = false; 
             passthroughOverlapTimer = 0.0f;
             jumpReady = true;
+
+            // REMIND MYSELF TO LIKE FIGURE PERSISTING MASS STATE
+            isLight = false;
+            rb.Mass = normalMass;
+            swapPauseTimer = 0.0f;
+
+            // Force animation reset
+            if (anim != null)
+            {
+                anim.Play("playerIdle", true);
+                currentAnimState = "playerIdle";
+            }
         }
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
         public void RemoveEnergy(float amount) { CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f); }
-        public void UpdateCheckpoint(CEVec3 newPos) { respawnPos = newPos; }
+        public void UpdateCheckpoint(CEVec3 newPos) 
+        { 
+            respawnPos = newPos; 
+            checkpointEnergy = CurrentEnergy;
+        }
     }
 }
