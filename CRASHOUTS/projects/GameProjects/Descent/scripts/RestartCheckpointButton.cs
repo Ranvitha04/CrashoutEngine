@@ -9,7 +9,7 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class RestartCheckpointButton : ScriptBase
     {
-        [SerializeField] private string gameSceneName = "descentgame";
+        [SerializeField] private string gameSceneName = ""; // Leave empty to reload current scene
         [SerializeField] private float fadeDuration = 0.5f;
 
         public override void Update()
@@ -21,7 +21,19 @@ namespace CrashoutsEngine
             {
                 // Set the flag so PlayerMovement respawns at checkpoint on start
                 PlayerMovement.RespawnNextLoad = true;
-                SceneManager.LoadScene(gameSceneName, fadeDuration);
+
+                // FIX: If blank, use the last known game level name instead of the current UI scene name
+                string targetScene = string.IsNullOrEmpty(gameSceneName) ? PlayerMovement.lastLevelName : gameSceneName;
+                
+                if (!string.IsNullOrEmpty(targetScene))
+                {
+                    SceneManager.LoadScene(targetScene, fadeDuration);
+                }
+                else
+                {
+                    // Fallback if somehow everything is empty
+                    SceneManager.LoadScene("tutorial", fadeDuration);
+                }
             }
         }
     }

@@ -74,7 +74,8 @@ namespace CrashoutsEngine
 
         public bool alive = true;
         public bool isPaused = false; 
-        private CEVec3 respawnPos;
+        private static CEVec3 respawnPos;
+        public static string lastLevelName = "";
 
         private string currentAnimState = "";
         private bool isLight = false;
@@ -125,6 +126,8 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
+            string currentLevel = SceneManager.GetActiveSceneName();
+
             currentGoalPlates = 0;
             Instance = this;
             rb = Entity.GetComponent<RigidBodyComponent>();
@@ -148,7 +151,15 @@ namespace CrashoutsEngine
             //rb.Restitution = 0.0f;
             IsGrounded = false;
             CurrentEnergy = MaxEnergy;
-            respawnPos = tf.Position;
+            
+            // If this is a brand new level OR we aren't respawning, 
+            // set the respawn point to the current start position.
+            if (string.IsNullOrEmpty(lastLevelName) || lastLevelName != currentLevel || !RespawnNextLoad)
+            {
+                respawnPos = tf.Position;
+                lastLevelName = currentLevel;
+            }
+            
             jumpReady = true;
 
             if (RespawnNextLoad)
@@ -484,18 +495,26 @@ namespace CrashoutsEngine
         private void HandleDeath()
         {
             alive = false;
-            if (!reloadOnDeath) 
+
+            // If a Game Over scene is defined, ALWAYS go there first
+            if (!string.IsNullOrEmpty(gameOverSceneName))
             {
                 if (!SceneManager.IsTransitioning())
                 {
                     SceneManager.LoadScene(gameOverSceneName, 1.0f);
                 }
-                return; 
+                return;
             }
-            if (!SceneManager.IsTransitioning())
+
+            // Fallback: reload the level directly ONLY if no Game Over scene exists
+            if (reloadOnDeath) 
             {
-                string target = string.IsNullOrEmpty(reloadSceneName) ? "tutorial2" : reloadSceneName;
-                SceneManager.LoadScene(target, 1.0f);
+                if (!SceneManager.IsTransitioning())
+                {
+                    RespawnNextLoad = true;
+                    string target = string.IsNullOrEmpty(reloadSceneName) ? SceneManager.GetActiveSceneName() : reloadSceneName;
+                    SceneManager.LoadScene(target, 1.0f);
+                }
             }
         }
 
