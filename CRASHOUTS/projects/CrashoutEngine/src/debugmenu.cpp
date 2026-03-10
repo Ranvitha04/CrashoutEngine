@@ -410,18 +410,21 @@ namespace UI { // --------------------------------------------------------------
 			ImGui::DockBuilderFinish(dockspace_id);
 		}
 
-		if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::Z))
+		ImGuiIO& io = ImGui::GetIO();
+		const bool ctrlDown = io.KeyCtrl || InputManager::IsKeyHeld(Key::LeftCtrl);
+
+		if (ctrlDown && (ImGui::IsKeyPressed(ImGuiKey_Z, false) || InputManager::IsKeyTriggered(Key::Z)))
 		{
 			LOGI(Core, "Undo Triggered");
 			UndoManager::GetInstance().Undo();
 		}
-		if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::Y))
+		if (ctrlDown && (ImGui::IsKeyPressed(ImGuiKey_Y, false) || InputManager::IsKeyTriggered(Key::Y)))
 		{
 			LOGI(Core, "Redo Triggered");
 			UndoManager::GetInstance().Redo();
 		}
 
-		if (InputManager::IsKeyHeld(Key::LeftCtrl) && InputManager::IsKeyTriggered(Key::S))
+		if (ctrlDown && (ImGui::IsKeyPressed(ImGuiKey_S, false) || InputManager::IsKeyTriggered(Key::S)))
 		{
 			if (!CrashoutsEngine::Serialization::currSceneName.empty()) {
 				CrashoutsEngine::Serialization::SaveScenes(CrashoutsEngine::Serialization::currSceneName);

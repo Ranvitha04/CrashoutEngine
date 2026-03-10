@@ -20359,37 +20359,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -20442,7 +20411,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -20456,14 +20425,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20516,6 +20485,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22802,7 +22802,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 296.10101318359377,
+                    "x": 775.93115234375,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -22812,7 +22812,7 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 228.60101318359376,
+                    "x": 468.51611328125,
                     "y": -334.3426513671875,
                     "z": 0.0
                 },
@@ -22964,7 +22964,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 275.74517822265627,
+                    "x": 755.5753173828125,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -25372,6 +25372,52 @@
         },
         {
             "active": true,
+            "name": "PlayerBookGlow",
+            "uuid": 11223344556677890101,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -98.54318237304688,
+                    "y": -28.52381134033203,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 2.5,
+                "radius": 55.0,
+                "shape": 0,
+                "blendMode": 0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": false,
+                "ignoreParentOccluders": true,
+                "color": {
+                    "x": 1.0,
+                    "y": 0.15000000596046449,
+                    "z": 0.15000000596046449
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
             "name": "PPManager",
             "uuid": 1600728882397032906,
             "tag": {
@@ -25417,8 +25463,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -153.177490234375,
-                    "y": -30.612668991088868,
+                    "x": -114.91490173339844,
+                    "y": -36.54780578613281,
                     "z": 0.0
                 },
                 "size": {
@@ -25430,6 +25476,8 @@
                 "active": false,
                 "intensity": 0.15000000596046449,
                 "radius": 39.0,
+                "shape": 0,
+                "blendMode": 0,
                 "affectBloom": true,
                 "useTransform": true,
                 "renderSelf": true,

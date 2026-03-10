@@ -15,12 +15,16 @@ out vec3 vLightColor;
 out float vIntensity;
 out float vShadowIndex;
 
-void main() {
+void main()
+{
     texCoord = aTexCoord;
+
     vLightPos = iLightPos;
     vLightRadius = iLightRadius;
     vLightColor = iLightColor;
     vIntensity = iIntensity;
     vShadowIndex = iShadowIndex;
+    vShapeParams = iShapeParams;
+
     gl_Position = vec4(aPos, 0.0, 1.0);
 }

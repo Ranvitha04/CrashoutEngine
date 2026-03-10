@@ -20,9 +20,20 @@ void main() {
     vec2 dWorld = vec2(d.x * uWorldSize.x, d.y * uWorldSize.y);
     float dist = length(dWorld);
     float radius = vLightRadius;
-    float falloff = smoothstep(radius, 0.0, dist);
 
-    if (uUseShadows == 1 && vShadowIndex >= 0.0 && radius > 0.0001) {
+    float falloff = 0.0;
+    if (vShapeParams.x < 0.5) {
+        falloff = smoothstep(radius, 0.0, dist);
+    }
+    else {
+        vec2 halfSize = vShapeParams.yz * radius;
+        vec2 q = abs(dWorld) - halfSize;
+        float outsideDist = length(max(q, vec2(0.0)));
+        float feather = max(radius * 0.2, 0.0001);
+        falloff = smoothstep(feather, 0.0, outsideDist);
+    }
+
+    if (vShapeParams.x < 0.5 && uUseShadows == 1 && vShadowIndex >= 0.0 && radius > 0.0001) {
         float angle = atan(d.y, d.x);
         angle = (angle < 0.0) ? (angle + 6.28318530718) : angle;
         float u = angle / 6.28318530718;
