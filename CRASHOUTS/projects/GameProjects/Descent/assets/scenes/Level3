@@ -9377,7 +9377,7 @@
                     {
                         "x": 33,
                         "y": -26,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 33,
@@ -16017,33 +16017,48 @@
                     },
                     {
                         "x": 5,
-                        "y": -27,
+                        "y": -29,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
-                        "x": 6,
+                        "x": 5,
                         "y": -27,
+                        "asset": ""
+                    },
+                    {
+                        "x": 6,
+                        "y": -29,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": 7,
-                        "y": -27,
+                        "y": -29,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": 8,
-                        "y": -27,
+                        "y": -29,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 9,
+                        "y": -29,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": 9,
                         "y": -27,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": -29,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": 10,
                         "y": -27,
-                        "asset": "tilemaps/Passthrough_Floor"
+                        "asset": ""
                     },
                     {
                         "x": 12,
@@ -16071,8 +16086,18 @@
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
+                        "x": 17,
+                        "y": -27,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
                         "x": 18,
                         "y": -29,
+                        "asset": ""
+                    },
+                    {
+                        "x": 18,
+                        "y": -27,
                         "asset": ""
                     },
                     {
@@ -16083,7 +16108,7 @@
                     {
                         "x": 20,
                         "y": -29,
-                        "asset": "tilemaps/Passthrough_Floor"
+                        "asset": ""
                     },
                     {
                         "x": 21,
@@ -16123,6 +16148,41 @@
                     {
                         "x": 25,
                         "y": -29,
+                        "asset": ""
+                    },
+                    {
+                        "x": 26,
+                        "y": -29,
+                        "asset": ""
+                    },
+                    {
+                        "x": 27,
+                        "y": -29,
+                        "asset": ""
+                    },
+                    {
+                        "x": 28,
+                        "y": -29,
+                        "asset": ""
+                    },
+                    {
+                        "x": 29,
+                        "y": -29,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 30,
+                        "y": -29,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 31,
+                        "y": -29,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 32,
+                        "y": -29,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
@@ -16131,59 +16191,84 @@
                         "asset": ""
                     },
                     {
+                        "x": 37,
+                        "y": -25,
+                        "asset": ""
+                    },
+                    {
                         "x": 38,
                         "y": -47,
                         "asset": ""
                     },
                     {
                         "x": 38,
-                        "y": -25,
+                        "y": -24,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": 39,
                         "y": -47,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 39,
+                        "y": -46,
                         "asset": ""
                     },
                     {
                         "x": 39,
-                        "y": -46,
+                        "y": -24,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
-                        "x": 39,
-                        "y": -25,
+                        "x": 40,
+                        "y": -47,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": 40,
                         "y": -46,
-                        "asset": "tilemaps/Passthrough_Floor"
+                        "asset": ""
                     },
                     {
                         "x": 40,
-                        "y": -25,
+                        "y": -24,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 41,
+                        "y": -47,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": 41,
                         "y": -46,
-                        "asset": "tilemaps/Passthrough_Floor"
+                        "asset": ""
                     },
                     {
                         "x": 41,
                         "y": -25,
+                        "asset": ""
+                    },
+                    {
+                        "x": 41,
+                        "y": -24,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
                         "x": 42,
+                        "y": -46,
+                        "asset": ""
+                    },
+                    {
+                        "x": 42,
                         "y": -25,
-                        "asset": "tilemaps/Passthrough_Floor"
+                        "asset": ""
                     },
                     {
                         "x": 43,
                         "y": -25,
-                        "asset": "tilemaps/Passthrough_Floor"
+                        "asset": ""
                     },
                     {
                         "x": 46,
@@ -16252,8 +16337,13 @@
                     },
                     {
                         "x": 52,
-                        "y": -44,
+                        "y": -45,
                         "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 52,
+                        "y": -44,
+                        "asset": ""
                     },
                     {
                         "x": 52,
@@ -16262,7 +16352,7 @@
                     },
                     {
                         "x": 53,
-                        "y": -44,
+                        "y": -45,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
@@ -16272,7 +16362,7 @@
                     },
                     {
                         "x": 54,
-                        "y": -44,
+                        "y": -45,
                         "asset": "tilemaps/Passthrough_Floor"
                     },
                     {
@@ -16282,8 +16372,13 @@
                     },
                     {
                         "x": 55,
-                        "y": -44,
+                        "y": -45,
                         "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 55,
+                        "y": -44,
+                        "asset": ""
                     },
                     {
                         "x": 58,
@@ -17109,7 +17204,7 @@
                     {
                         "x": 33,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 33,
@@ -24768,6 +24863,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -24820,7 +24946,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -24834,14 +24960,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -24894,37 +25020,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -27550,7 +27645,7 @@
                             "MovementDistance": 250.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
-                            "maxDrop": 60.0,
+                            "maxDrop": 100.0,
                             "WaitTime": 0.5
                         }
                     }
@@ -30147,8 +30242,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -677.2905883789063,
-                    "y": -51.96856689453125,
+                    "x": 1331.4722900390626,
+                    "y": -57.207618713378909,
                     "z": 0.0
                 },
                 "size": {
@@ -30175,8 +30270,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": -677.2905883789063,
-                    "y": -119.96856689453125,
+                    "x": 1331.4722900390626,
+                    "y": -125.2076187133789,
                     "z": 0.0
                 },
                 "offset": {
@@ -30185,13 +30280,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -776.6905517578125,
-                    "y": -257.46856689453127,
+                    "x": 1125.6722412109376,
+                    "y": -202.3076171875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -577.890625,
-                    "y": 17.53143310546875,
+                    "x": 1537.2723388671876,
+                    "y": -48.10762023925781,
                     "z": 0.0
                 }
             },
@@ -30200,7 +30295,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 146,
+                            "lookAtEntity": 139,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -30210,8 +30305,8 @@
             "parent": {
                 "parentUUID": 7610932790271590026,
                 "localPos": {
-                    "x": -677.2905883789063,
-                    "y": -51.96856689453125,
+                    "x": 1331.4722900390626,
+                    "y": -57.207618713378909,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -30242,8 +30337,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -677.2905883789063,
-                    "y": -313.2478942871094,
+                    "x": 1331.4722900390626,
+                    "y": -218.23373413085938,
                     "z": 0.0
                 },
                 "size": {
@@ -30255,7 +30350,7 @@
                 "parentUUID": 3574140040263968269,
                 "localPos": {
                     "x": 0.0,
-                    "y": -261.2793273925781,
+                    "y": -161.026123046875,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -31295,7 +31390,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -710.6656494140625,
+                    "x": -312.0399169921875,
                     "y": -609.8277587890625,
                     "z": 0.0
                 },
@@ -31323,7 +31418,7 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": -710.6656494140625,
+                    "x": -312.0399169921875,
                     "y": -580.6277465820313,
                     "z": 0.0
                 },
@@ -31333,12 +31428,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -867.5656127929688,
+                    "x": -374.5399169921875,
                     "y": -675.1277465820313,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -553.7656860351563,
+                    "x": -249.5399169921875,
                     "y": -486.12774658203127,
                     "z": 0.0
                 }
@@ -31348,7 +31443,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 159,
+                            "lookAtEntity": 152,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -31358,7 +31453,7 @@
             "parent": {
                 "parentUUID": 7610932790271590026,
                 "localPos": {
-                    "x": -710.6656494140625,
+                    "x": -312.0399169921875,
                     "y": -609.8277587890625,
                     "z": 0.0
                 },
@@ -31390,8 +31485,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -710.6656494140625,
-                    "y": -791.4616088867188,
+                    "x": -312.0399169921875,
+                    "y": -640.0927734375,
                     "z": 0.0
                 },
                 "size": {
@@ -31403,7 +31498,7 @@
                 "parentUUID": 10021553441540741671,
                 "localPos": {
                     "x": 0.0,
-                    "y": -181.63385009765626,
+                    "y": -30.2650146484375,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -31782,44 +31877,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -31872,7 +31929,7 @@
                         ]
                     },
                     {
-                        "name": "slimeStunned",
+                        "name": "slimeWalk",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -31886,14 +31943,21 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -31925,6 +31989,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32157,7 +32252,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1389.81396484375,
+                    "x": 1363.3843994140626,
                     "y": -75.80115509033203,
                     "z": 51.0
                 },
@@ -32185,7 +32280,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1390.513916015625,
+                    "x": 1364.0843505859376,
                     "y": -79.30115509033203,
                     "z": 51.0
                 },
@@ -32195,12 +32290,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1375.6138916015626,
+                    "x": 1349.184326171875,
                     "y": -89.50116729736328,
                     "z": 51.0
                 },
                 "max": {
-                    "x": 1405.4139404296876,
+                    "x": 1378.984375,
                     "y": -69.10114288330078,
                     "z": 51.0
                 }
@@ -32383,6 +32478,44 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -32435,7 +32568,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -32449,21 +32582,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32495,37 +32621,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32857,8 +32952,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2022.6876220703126,
-                    "y": -152.43289184570313,
+                    "x": 1153.8692626953126,
+                    "y": -710.4741821289063,
                     "z": 0.0
                 },
                 "size": {
@@ -32885,8 +32980,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 2022.6876220703126,
-                    "y": -152.43289184570313,
+                    "x": 1153.8692626953126,
+                    "y": -710.4741821289063,
                     "z": 0.0
                 },
                 "offset": {
@@ -32895,13 +32990,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1911.78759765625,
-                    "y": -277.03289794921877,
+                    "x": 981.3692626953125,
+                    "y": -835.07421875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 2133.587646484375,
-                    "y": -27.8328857421875,
+                    "x": 1326.3692626953126,
+                    "y": -585.8741455078125,
                     "z": 0.0
                 }
             },
@@ -32910,7 +33005,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 169,
+                            "lookAtEntity": 162,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -32920,8 +33015,8 @@
             "parent": {
                 "parentUUID": 7610932790271590026,
                 "localPos": {
-                    "x": 2022.6876220703126,
-                    "y": -152.43289184570313,
+                    "x": 1153.8692626953126,
+                    "y": -710.4741821289063,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -32952,8 +33047,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 2022.6876220703126,
-                    "y": -332.4328918457031,
+                    "x": 1153.8692626953126,
+                    "y": -767.7952270507813,
                     "z": 0.0
                 },
                 "size": {
@@ -32965,7 +33060,7 @@
                 "parentUUID": 12179009855837808703,
                 "localPos": {
                     "x": 0.0,
-                    "y": -180.0,
+                    "y": -57.321044921875,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -33575,7 +33670,7 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 250.0,
+                            "MovementDistance": 300.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
                             "maxDrop": 125.0,
@@ -33922,11 +34017,11 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 150.0,
+                            "MovementDistance": 200.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
                             "maxDrop": 50.0,
-                            "WaitTime": 0.5
+                            "WaitTime": 110.0
                         }
                     }
                 ]
