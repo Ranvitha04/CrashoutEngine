@@ -22540,7 +22540,7 @@
                     {
                         "className": "PauseButtons",
                         "fields": {
-                            "currentScene": "Level2"
+                            "currentScene": "Level3"
                         }
                     }
                 ]
@@ -23489,7 +23489,7 @@
                     {
                         "className": "GameOverUI",
                         "fields": {
-                            "currentSceneName": "Level2",
+                            "currentSceneName": "Level3",
                             "mainMenuScene": "descentmenu"
                         }
                     }
