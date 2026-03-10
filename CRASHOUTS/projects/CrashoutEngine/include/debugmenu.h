@@ -104,8 +104,12 @@ namespace UI {
         float fontScale = 1.0f;         // Set the font scale
         VisualScriptingGraph visualGraph;
         bool drawGameDebug = false;     // Toggle for script-based debug drawing (circles/lines)
-    };
+        std::string openedVisualScriptPath;
+  
+        bool openVisualScriptPanel{ false };
 
+    };
+    UIState* GetUIState();
     // -- Lifecycle ----------------------------------------------------
 
     /*!
@@ -165,5 +169,6 @@ namespace UI {
     VisualScriptingGraph& GetVisualScriptingGraph();
     void ClearVisualScriptingGraph();
     void SetDarkGrayTheme();
-
+    bool SaveVisualScriptingGraph(const std::string& path, const VisualScriptingGraph& graph);
+    bool LoadVisualScriptingGraph(const std::string& path, VisualScriptingGraph& graph);
 } // namespace UI

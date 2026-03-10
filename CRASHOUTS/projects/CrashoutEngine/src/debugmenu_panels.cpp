@@ -23,6 +23,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <cstdio>
 #include "createentitycommand.h"
 #include "createprefabcommand.h"
+
 using namespace CrashoutsEngine;
 using namespace Serialization;
 using namespace KeyframeUnity;
@@ -1666,6 +1667,7 @@ namespace UI {
 	//VISUAL SCRIPTING PANEL
 	void UI::RenderVisualScriptingPanel(UIState& ui)
 	{
+
 		if (!ui.showVisualScripting) return;
 
 		ScopedWindow w("Visual Scripting", LockFlags(ui.lockLayout));
@@ -1674,7 +1676,18 @@ namespace UI {
 		auto& nodes = graph.nodes;
 		auto& links = graph.links;
 		auto& nextNodeId = graph.nextNodeId;
+		ImGui::Text("Graph: %s", ui.openedVisualScriptPath.empty() ? "(none)" : ui.openedVisualScriptPath.c_str());
+		if (ImGui::Button("Save Graph")) {
+			if (!ui.openedVisualScriptPath.empty()) {
+				UI::SaveVisualScriptingGraph(ui.openedVisualScriptPath, UI::GetVisualScriptingGraph());
+			}
+		}
 
+		ImGui::SameLine();
+
+		if (ImGui::Button("Close Graph")) {
+			ui.showVisualScripting = false;
+		}
 		if (nodes.empty())
 		{
 			nodes.push_back({ 1, VSNodeType::Start,  "Start",  ImVec2(60.0f, 80.0f),  ImVec2(140.0f, 70.0f) });
