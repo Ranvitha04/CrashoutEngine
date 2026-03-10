@@ -59,6 +59,7 @@ namespace CrashoutsEngine
         public bool OnWall { get; private set; } = false;
 
         public static PlayerMovement Instance;
+        public static bool RespawnNextLoad = false;
         public float CurrentEnergy = 0.0f;
         public float MaxEnergy = 100.0f;
 
@@ -94,9 +95,11 @@ namespace CrashoutsEngine
         private float passthroughOverlapTimer = 0.0f;
 
         private Entity pauseScreenEntity;
+        private Entity gameOverScreen;
         private CEVec3 storedVelocity;
         [SerializeField] private bool reloadOnDeath = false;
         [SerializeField] private string reloadSceneName = "";
+        [SerializeField] private string gameOverSceneName = "Defeat";
 
         // --- CORE LOGIC ---
 
@@ -133,6 +136,8 @@ namespace CrashoutsEngine
             pauseScreenEntity = Entity.Find("Pause");
             if (pauseScreenEntity != null) InternalCalls.SetActive(pauseScreenEntity.ID, false);
 
+            gameOverScreen = Entity.Find("GameOverScreen");
+
             if (!string.IsNullOrEmpty(landingDustName))
             {
                 Entity e = Entity.Find(landingDustName);
@@ -145,6 +150,12 @@ namespace CrashoutsEngine
             CurrentEnergy = MaxEnergy;
             respawnPos = tf.Position;
             jumpReady = true;
+
+            if (RespawnNextLoad)
+            {
+                Respawn();
+                RespawnNextLoad = false;
+            }
 
             for (int i = 1; i <= 8; i++) AudioManager.SetClip3DDistances(Entity.ID, "footstep" + i, 25.0f, 250.0f);
             AudioManager.SetClip3DDistances(Entity.ID, "jumpLand", 20.0f, 600.0f);
@@ -473,7 +484,14 @@ namespace CrashoutsEngine
         private void HandleDeath()
         {
             alive = false;
-            if (!reloadOnDeath) { Respawn(); return; }
+            if (!reloadOnDeath) 
+            {
+                if (!SceneManager.IsTransitioning())
+                {
+                    SceneManager.LoadScene(gameOverSceneName, 1.0f);
+                }
+                return; 
+            }
             if (!SceneManager.IsTransitioning())
             {
                 string target = string.IsNullOrEmpty(reloadSceneName) ? "tutorial2" : reloadSceneName;

@@ -1583,6 +1583,10 @@
             "path": "UI/Energy Ball/Energy Ball spritesheet.png"
         },
         {
+            "name": "Game Over",
+            "path": "UI/Game Over.png"
+        },
+        {
             "name": "Handle",
             "path": "UI/Handle.png"
         },
@@ -1689,6 +1693,10 @@
             "path": "Cutscene"
         },
         {
+            "name": "Defeat",
+            "path": "Defeat"
+        },
+        {
             "name": "descentmenu",
             "path": "descentmenu"
         },
@@ -1751,10 +1759,6 @@
         {
             "name": "Victory2",
             "path": "Victory2"
-        },
-        {
-            "name": "Defeat",
-            "path": "Defeat"
         }
     ],
     "prefabs": [
@@ -1777,6 +1781,10 @@
         {
             "name": "Door_Prefab",
             "path": "Door_Prefab.json"
+        },
+        {
+            "name": "RestartBtn_Template",
+            "path": "RestartBtn_Template.json"
         },
         {
             "name": "Moving_Gate",
@@ -1817,6 +1825,10 @@
         {
             "name": "PressurePlate",
             "path": "PressurePlate.json"
+        },
+        {
+            "name": "QuitBtn_Template",
+            "path": "QuitBtn_Template.json"
         },
         {
             "name": "Scuff_WinDoor_Prefab",

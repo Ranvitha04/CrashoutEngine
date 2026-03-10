@@ -124,11 +124,11 @@
             },
             "text": {
                 "font": "AlegreyaSC-Medium",
-                "text": "Restart Level",
-                "scale": 20.0,
+                "text": "Restart From Checkpoint",
+                "scale": 15.0,
                 "offset": {
                     "x": 0.0,
-                    "y": 1.899999976158142
+                    "y": -0.800000011920929
                 },
                 "color": {
                     "x": 1.0,
@@ -140,7 +140,7 @@
                 "isworldspace": true,
                 "alignment": 1,
                 "verticalAlignment": 1,
-                "wrapText": false,
+                "wrapText": true,
                 "padding": {
                     "x": 0.0,
                     "y": 0.0
@@ -153,20 +153,7 @@
                 "dialogueID": ""
             },
             "script": {
-                "scripts": [
-                    {
-                        "className": "MenuButtons",
-                        "fields": {
-                            "StartBtn": 0,
-                            "SettingsBtn": 0,
-                            "CloseBtn": 0,
-                            "QuitBtn": 0,
-                            "QuitCheckPanel": 0,
-                            "YesBtn": 0,
-                            "NoBtn": 0
-                        }
-                    }
-                ]
+                "scripts": []
             },
             "button": {
                 "buttonState": 0,
@@ -311,20 +298,7 @@
                 "dialogueID": ""
             },
             "script": {
-                "scripts": [
-                    {
-                        "className": "MenuButtons",
-                        "fields": {
-                            "StartBtn": 0,
-                            "SettingsBtn": 0,
-                            "CloseBtn": 0,
-                            "QuitBtn": 0,
-                            "QuitCheckPanel": 0,
-                            "YesBtn": 0,
-                            "NoBtn": 0
-                        }
-                    }
-                ]
+                "scripts": []
             },
             "button": {
                 "buttonState": 0,
@@ -382,6 +356,46 @@
             },
             "layer": {
                 "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "DefeatScript",
+            "uuid": 5501976699484565981,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {
+                            "StartBtn": 0,
+                            "SettingsBtn": 0,
+                            "CloseBtn": 3,
+                            "QuitBtn": 0,
+                            "QuitCheckPanel": 2,
+                            "YesBtn": 0,
+                            "NoBtn": 0
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
                 "z": 0
             }
         }

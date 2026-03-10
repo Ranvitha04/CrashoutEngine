@@ -21489,7 +21489,8 @@
                             "alive": true,
                             "isPaused": false,
                             "reloadOnDeath": false,
-                            "reloadSceneName": ""
+                            "reloadSceneName": "",
+                            "gameOverSceneName": "Defeat"
                         }
                     }
                 ]
