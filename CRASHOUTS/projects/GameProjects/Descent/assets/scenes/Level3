@@ -2371,18 +2371,13 @@
                     },
                     {
                         "x": -3,
-                        "y": -9,
-                        "asset": "tilemaps/Rock"
-                    },
-                    {
-                        "x": -3,
                         "y": -8,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": -3,
                         "y": -7,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": -3,
@@ -2577,17 +2572,17 @@
                     {
                         "x": -2,
                         "y": -9,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": -2,
                         "y": -8,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": -2,
                         "y": -7,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": -2,
@@ -2777,17 +2772,17 @@
                     {
                         "x": -1,
                         "y": -9,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": -1,
                         "y": -8,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": -1,
                         "y": -7,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": -1,
@@ -2982,7 +2977,7 @@
                     {
                         "x": 0,
                         "y": -9,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 0,
@@ -3162,7 +3157,7 @@
                     {
                         "x": 1,
                         "y": -9,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 1,
@@ -3347,7 +3342,7 @@
                     {
                         "x": 2,
                         "y": -9,
-                        "asset": "tilemaps/Rock"
+                        "asset": ""
                     },
                     {
                         "x": 2,
@@ -3717,7 +3712,7 @@
                     {
                         "x": 4,
                         "y": -9,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 4,
@@ -3917,7 +3912,7 @@
                     {
                         "x": 5,
                         "y": -9,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 5,
@@ -4097,7 +4092,7 @@
                     {
                         "x": 6,
                         "y": -9,
-                        "asset": ""
+                        "asset": "tilemaps/Rock"
                     },
                     {
                         "x": 6,
@@ -5272,6 +5267,11 @@
                     {
                         "x": 12,
                         "y": -10,
+                        "asset": ""
+                    },
+                    {
+                        "x": 12,
+                        "y": -9,
                         "asset": ""
                     },
                     {
@@ -15969,7 +15969,393 @@
                 "tileAssetNames": [
                     "Passthrough_Floor"
                 ],
-                "gridData": []
+                "gridData": [
+                    {
+                        "x": -21,
+                        "y": -42,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": -20,
+                        "y": -42,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": -19,
+                        "y": -42,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": -18,
+                        "y": -42,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": -7,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": -6,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": -5,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": -4,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": -3,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 5,
+                        "y": -27,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 6,
+                        "y": -27,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 7,
+                        "y": -27,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 8,
+                        "y": -27,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 9,
+                        "y": -27,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 10,
+                        "y": -27,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 12,
+                        "y": -27,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -27,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -27,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 15,
+                        "y": -27,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 16,
+                        "y": -27,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 18,
+                        "y": -29,
+                        "asset": ""
+                    },
+                    {
+                        "x": 19,
+                        "y": -29,
+                        "asset": ""
+                    },
+                    {
+                        "x": 20,
+                        "y": -29,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 21,
+                        "y": -29,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 22,
+                        "y": -29,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 23,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 23,
+                        "y": -29,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 24,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 24,
+                        "y": -29,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 25,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 25,
+                        "y": -29,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 37,
+                        "y": -47,
+                        "asset": ""
+                    },
+                    {
+                        "x": 38,
+                        "y": -47,
+                        "asset": ""
+                    },
+                    {
+                        "x": 38,
+                        "y": -25,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 39,
+                        "y": -47,
+                        "asset": ""
+                    },
+                    {
+                        "x": 39,
+                        "y": -46,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 39,
+                        "y": -25,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 40,
+                        "y": -46,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 40,
+                        "y": -25,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 41,
+                        "y": -46,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 41,
+                        "y": -25,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 42,
+                        "y": -25,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 43,
+                        "y": -25,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 46,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 47,
+                        "y": -50,
+                        "asset": ""
+                    },
+                    {
+                        "x": 47,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 48,
+                        "y": -50,
+                        "asset": ""
+                    },
+                    {
+                        "x": 48,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 49,
+                        "y": -50,
+                        "asset": ""
+                    },
+                    {
+                        "x": 49,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 49,
+                        "y": -21,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 50,
+                        "y": -50,
+                        "asset": ""
+                    },
+                    {
+                        "x": 50,
+                        "y": -49,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 50,
+                        "y": -21,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 51,
+                        "y": -50,
+                        "asset": ""
+                    },
+                    {
+                        "x": 51,
+                        "y": -21,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 52,
+                        "y": -44,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 52,
+                        "y": -21,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 53,
+                        "y": -44,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 53,
+                        "y": -21,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 54,
+                        "y": -44,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 54,
+                        "y": -21,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 55,
+                        "y": -44,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 58,
+                        "y": -23,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 59,
+                        "y": -23,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 60,
+                        "y": -23,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 61,
+                        "y": -23,
+                        "asset": ""
+                    },
+                    {
+                        "x": 64,
+                        "y": -23,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 65,
+                        "y": -23,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 66,
+                        "y": -23,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 67,
+                        "y": -23,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 74,
+                        "y": -2,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 75,
+                        "y": -2,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 76,
+                        "y": -2,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 77,
+                        "y": -2,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 78,
+                        "y": -2,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 79,
+                        "y": -2,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    }
+                ]
             },
             "layer": {
                 "layerName": "Foreground",
@@ -16026,8 +16412,118 @@
                 ],
                 "gridData": [
                     {
+                        "x": -8,
+                        "y": -20,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -8,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -7,
+                        "y": -20,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -7,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -6,
+                        "y": -20,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -6,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -5,
+                        "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -5,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -4,
+                        "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -4,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -4,
+                        "y": 6,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -3,
+                        "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -3,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -3,
+                        "y": 6,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -2,
+                        "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -2,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -2,
+                        "y": 6,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -1,
+                        "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -1,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -1,
+                        "y": 6,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 0,
                         "y": -27,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 0,
+                        "y": -9,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 0,
+                        "y": 5,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16036,8 +16532,28 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 1,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 1,
+                        "y": -9,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 1,
+                        "y": 5,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 2,
                         "y": -27,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 2,
+                        "y": -16,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16046,13 +16562,33 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 3,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 4,
                         "y": -27,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
                         "x": 4,
+                        "y": -22,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 4,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 4,
                         "y": -5,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 4,
+                        "y": 7,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16062,7 +16598,22 @@
                     },
                     {
                         "x": 5,
+                        "y": -23,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 5,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 5,
                         "y": -5,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 5,
+                        "y": 7,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16072,7 +16623,22 @@
                     },
                     {
                         "x": 6,
+                        "y": -23,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 6,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 6,
                         "y": -5,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 6,
+                        "y": 7,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16082,7 +16648,22 @@
                     },
                     {
                         "x": 7,
+                        "y": -23,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 7,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 7,
                         "y": -5,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 7,
+                        "y": 7,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16092,12 +16673,42 @@
                     },
                     {
                         "x": 8,
+                        "y": -20,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 8,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 8,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 8,
                         "y": -5,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 8,
+                        "y": 7,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
                         "x": 9,
                         "y": -27,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 9,
+                        "y": -20,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 9,
+                        "y": -16,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16111,18 +16722,53 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 9,
+                        "y": 4,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 10,
                         "y": -27,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
                         "x": 10,
+                        "y": -20,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 10,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 10,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 10,
                         "y": -6,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 10,
+                        "y": 4,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
                         "x": 11,
                         "y": -27,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 11,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 11,
+                        "y": -16,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16137,7 +16783,42 @@
                     },
                     {
                         "x": 12,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 12,
+                        "y": -9,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 12,
                         "y": -6,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 12,
+                        "y": 1,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 13,
+                        "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 13,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 13,
+                        "y": -9,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16146,8 +16827,58 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 13,
+                        "y": 1,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 14,
+                        "y": -25,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 14,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 14,
+                        "y": -9,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 14,
                         "y": -6,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 14,
+                        "y": 0,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 15,
+                        "y": -24,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 15,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 15,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 15,
+                        "y": -9,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16156,8 +16887,93 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 15,
+                        "y": 0,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 16,
+                        "y": -24,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 16,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 16,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 16,
+                        "y": 0,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 17,
+                        "y": -24,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 17,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 17,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 17,
+                        "y": 2,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 18,
+                        "y": -25,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 18,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 18,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 18,
+                        "y": 5,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 19,
+                        "y": -25,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 19,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 19,
+                        "y": 5,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 20,
                         "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 20,
+                        "y": 7,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16166,8 +16982,18 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 21,
+                        "y": -8,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 22,
                         "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 22,
+                        "y": -7,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16176,13 +17002,38 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 23,
+                        "y": -14,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 23,
+                        "y": -6,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 24,
                         "y": -26,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 24,
+                        "y": -14,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 24,
+                        "y": -6,
+                        "asset": ""
+                    },
+                    {
                         "x": 25,
                         "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 25,
+                        "y": -14,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16191,8 +17042,68 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 26,
+                        "y": -14,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 27,
                         "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 27,
+                        "y": -14,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 28,
+                        "y": -23,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 28,
+                        "y": -17,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 28,
+                        "y": -14,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 29,
+                        "y": -23,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 29,
+                        "y": -17,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 30,
+                        "y": -17,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 31,
+                        "y": -17,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 31,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 32,
+                        "y": -17,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 32,
+                        "y": -7,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16201,8 +17112,28 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 33,
+                        "y": -17,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 33,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 34,
                         "y": -26,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 34,
+                        "y": -18,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 34,
+                        "y": -7,
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
@@ -16236,8 +17167,63 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 39,
+                        "y": 4,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
                         "x": 40,
                         "y": -25,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 40,
+                        "y": -19,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 40,
+                        "y": 4,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 41,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 41,
+                        "y": 4,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 42,
+                        "y": -16,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 42,
+                        "y": 4,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 43,
+                        "y": 5,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 47,
+                        "y": -19,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 48,
+                        "y": -19,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 49,
+                        "y": -19,
                         "asset": "tilemaps/Lava_Platform"
                     }
                 ]
@@ -16257,8 +17243,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -30.7609920501709,
-                    "y": -492.2856140136719,
+                    "x": 1326.3944091796876,
+                    "y": -108.75450897216797,
                     "z": -5.0
                 },
                 "size": {
@@ -16285,8 +17271,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -30.7609920501709,
-                    "y": -492.2856140136719,
+                    "x": 1326.3944091796876,
+                    "y": -108.75450897216797,
                     "z": -5.0
                 },
                 "offset": {
@@ -16295,13 +17281,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -130.760986328125,
-                    "y": -504.7856140136719,
+                    "x": 1226.3944091796876,
+                    "y": -121.25450897216797,
                     "z": -5.0
                 },
                 "max": {
-                    "x": 69.23900604248047,
-                    "y": -479.7856140136719,
+                    "x": 1426.3944091796876,
+                    "y": -96.25450897216797,
                     "z": -5.0
                 }
             },
@@ -23483,8 +24469,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -186.80577087402345,
-                    "y": -158.5648651123047,
+                    "x": -262.6227722167969,
+                    "y": 2.997835159301758,
                     "z": 0.0
                 },
                 "size": {
@@ -23511,8 +24497,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -186.80577087402345,
-                    "y": -160.76486206054688,
+                    "x": -262.6227722167969,
+                    "y": 0.797835111618042,
                     "z": 0.0
                 },
                 "offset": {
@@ -23521,13 +24507,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -195.30577087402345,
-                    "y": -189.86483764648438,
+                    "x": -271.1227722167969,
+                    "y": -28.302141189575197,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -178.30577087402345,
-                    "y": -131.66488647460938,
+                    "x": -254.12277221679688,
+                    "y": 29.897809982299806,
                     "z": 0.0
                 }
             },
@@ -24230,8 +25216,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -186.80577087402345,
-                    "y": -100.19495391845703,
+                    "x": -262.6227722167969,
+                    "y": 61.36774444580078,
                     "z": 0.0
                 },
                 "size": {
@@ -24348,8 +25334,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -186.80577087402345,
-                    "y": -100.19495391845703,
+                    "x": -262.6227722167969,
+                    "y": 61.36774444580078,
                     "z": 0.0
                 },
                 "size": {
@@ -24466,8 +25452,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -186.80577087402345,
-                    "y": -100.19495391845703,
+                    "x": -262.6227722167969,
+                    "y": 61.36774444580078,
                     "z": 0.0
                 },
                 "size": {
@@ -24584,8 +25570,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -186.80577087402345,
-                    "y": -100.19495391845703,
+                    "x": -262.6227722167969,
+                    "y": 61.36774444580078,
                     "z": 0.0
                 },
                 "size": {
@@ -24702,8 +25688,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -472.60003662109377,
-                    "y": -357.92242431640627,
+                    "x": -548.4169921875,
+                    "y": -196.35971069335938,
                     "z": 0.0
                 },
                 "size": {
@@ -25687,509 +26673,6 @@
         },
         {
             "active": true,
-            "name": "Moving_Platform_1",
-            "uuid": 1730123330618110689,
-            "tag": {
-                "tagMask": 2
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1330.622314453125,
-                    "y": -48.343017578125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 100.0,
-                    "y": 16.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isContinuous": false,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": 1330.622314453125,
-                    "y": -48.343017578125,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 1282.622314453125,
-                    "y": -56.343017578125,
-                    "z": 0.0
-                },
-                "max": {
-                    "x": 1378.622314453125,
-                    "y": -40.343017578125,
-                    "z": 0.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "Character/Light Mode/Left/Falling.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "WeightedPlatform",
-                        "fields": {
-                            "IsMoving": true,
-                            "MoveRight": true,
-                            "MovementDistance": 260.0,
-                            "MoveSpeed": 40.0,
-                            "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0,
-                            "WaitTime": 0.5
-                        }
-                    }
-                ]
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 15539320925371003910,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1290.30615234375,
-                    "y": -48.343017578125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Rock/Rock_33.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 1730123330618110689,
-                "localPos": {
-                    "x": -0.4031616151332855,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 12670747856464737492,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1310.2664794921876,
-                    "y": -48.343017578125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Rock/Rock_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 1730123330618110689,
-                "localPos": {
-                    "x": -0.20355835556983949,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 13066367988540364988,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1330.2664794921876,
-                    "y": -48.343017578125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Rock/Rock_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 1730123330618110689,
-                "localPos": {
-                    "x": -0.0035583495628088714,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 5753961667460610446,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1350.2664794921876,
-                    "y": -48.343017578125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Rock/Rock_34.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 1730123330618110689,
-                "localPos": {
-                    "x": 0.196441650390625,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform",
-            "uuid": 13200285090024433184,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1370.2664794921876,
-                    "y": -48.343017578125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.0,
-                    "y": 16.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "images/spritesheet/Rock/Rock_35.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 1730123330618110689,
-                "localPos": {
-                    "x": 0.39644163846969607,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
             "name": "Moving_Platform_3(Sinking)",
             "uuid": 13688077741230738189,
             "tag": {
@@ -26198,8 +26681,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 480.5675354003906,
-                    "y": -688.491455078125,
+                    "x": 451.0801086425781,
+                    "y": -661.1882934570313,
                     "z": 0.0
                 },
                 "size": {
@@ -26226,8 +26709,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 480.5675354003906,
-                    "y": -688.491455078125,
+                    "x": 451.0801086425781,
+                    "y": -661.1882934570313,
                     "z": 0.0
                 },
                 "offset": {
@@ -26236,13 +26719,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 451.8675231933594,
-                    "y": -696.491455078125,
+                    "x": 422.3800964355469,
+                    "y": -669.1882934570313,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 509.2675476074219,
-                    "y": -680.491455078125,
+                    "x": 479.7801208496094,
+                    "y": -653.1882934570313,
                     "z": 0.0
                 }
             },
@@ -26287,10 +26770,10 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 250.0,
+                            "MovementDistance": 150.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
-                            "maxDrop": 125.0,
+                            "maxDrop": 50.0,
                             "WaitTime": 0.5
                         }
                     }
@@ -26311,8 +26794,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 460.2513732910156,
-                    "y": -688.491455078125,
+                    "x": 430.7639465332031,
+                    "y": -661.1882934570313,
                     "z": 0.0
                 },
                 "size": {
@@ -26389,8 +26872,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -66.92504119873047,
-                    "y": -751.9295043945313,
+                    "x": -160.06936645507813,
+                    "y": -361.7471618652344,
                     "z": 0.0
                 },
                 "size": {
@@ -26417,8 +26900,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": -66.92504119873047,
-                    "y": -751.9295043945313,
+                    "x": -160.06936645507813,
+                    "y": -361.7471618652344,
                     "z": 0.0
                 },
                 "offset": {
@@ -26428,8 +26911,8 @@
                 },
                 "radius": 11.649999618530274,
                 "center": {
-                    "x": -66.92504119873047,
-                    "y": -751.9295043945313,
+                    "x": -160.06936645507813,
+                    "y": -361.7471618652344,
                     "z": 0.0
                 }
             },
@@ -26604,8 +27087,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 480.2117004394531,
-                    "y": -688.491455078125,
+                    "x": 450.7242736816406,
+                    "y": -661.1882934570313,
                     "z": 0.0
                 },
                 "size": {
@@ -26682,8 +27165,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 500.2117004394531,
-                    "y": -688.491455078125,
+                    "x": 470.7242736816406,
+                    "y": -661.1882934570313,
                     "z": 0.0
                 },
                 "size": {
@@ -26760,8 +27243,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 398.4091491699219,
-                    "y": -713.7791137695313,
+                    "x": 1127.422607421875,
+                    "y": -390.80743408203127,
                     "z": 0.0
                 },
                 "size": {
@@ -26788,8 +27271,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 398.4091491699219,
-                    "y": -713.7791137695313,
+                    "x": 1127.422607421875,
+                    "y": -390.80743408203127,
                     "z": 0.0
                 },
                 "offset": {
@@ -26799,8 +27282,8 @@
                 },
                 "radius": 11.649999618530274,
                 "center": {
-                    "x": 398.4091491699219,
-                    "y": -713.7791137695313,
+                    "x": 1127.422607421875,
+                    "y": -390.80743408203127,
                     "z": 0.0
                 }
             },
@@ -26975,8 +27458,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 34.61199951171875,
-                    "y": -696.9077758789063,
+                    "x": 40.0726318359375,
+                    "y": -723.1188354492188,
                     "z": 0.0
                 },
                 "size": {
@@ -27003,8 +27486,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 34.61199951171875,
-                    "y": -696.9077758789063,
+                    "x": 40.0726318359375,
+                    "y": -723.1188354492188,
                     "z": 0.0
                 },
                 "offset": {
@@ -27013,13 +27496,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 6.4120025634765629,
-                    "y": -704.9077758789063,
+                    "x": 11.872634887695313,
+                    "y": -731.1188354492188,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 62.81199645996094,
-                    "y": -688.9077758789063,
+                    "x": 68.27262878417969,
+                    "y": -715.1188354492188,
                     "z": 0.0
                 }
             },
@@ -27067,7 +27550,7 @@
                             "MovementDistance": 250.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
-                            "maxDrop": 80.0,
+                            "maxDrop": 60.0,
                             "WaitTime": 0.5
                         }
                     }
@@ -27088,8 +27571,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 14.29583740234375,
-                    "y": -696.9077758789063,
+                    "x": 19.7564697265625,
+                    "y": -723.1188354492188,
                     "z": 0.0
                 },
                 "size": {
@@ -27166,8 +27649,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 34.25616455078125,
-                    "y": -696.9077758789063,
+                    "x": 39.716796875,
+                    "y": -723.1188354492188,
                     "z": 0.0
                 },
                 "size": {
@@ -27244,8 +27727,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 54.25616455078125,
-                    "y": -696.9077758789063,
+                    "x": 59.716796875,
+                    "y": -723.1188354492188,
                     "z": 0.0
                 },
                 "size": {
@@ -27322,7 +27805,7 @@
             "transform": {
                 "rotation": -90.0,
                 "position": {
-                    "x": 223.44161987304688,
+                    "x": 63.51850891113281,
                     "y": -16.40679931640625,
                     "z": 0.0
                 },
@@ -27350,7 +27833,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 223.44161987304688,
+                    "x": 63.51850891113281,
                     "y": -16.40679931640625,
                     "z": 0.0
                 },
@@ -27385,8 +27868,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 49.23900604248047,
-                    "y": -492.2856140136719,
+                    "x": 1406.3944091796876,
+                    "y": -108.75450897216797,
                     "z": 0.0
                 },
                 "size": {
@@ -27463,8 +27946,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 9.239007949829102,
-                    "y": -492.2856140136719,
+                    "x": 1366.3944091796876,
+                    "y": -108.75450897216797,
                     "z": 0.0
                 },
                 "size": {
@@ -27541,8 +28024,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -30.7609920501709,
-                    "y": -492.2856140136719,
+                    "x": 1326.3944091796876,
+                    "y": -108.75450897216797,
                     "z": 0.0
                 },
                 "size": {
@@ -27619,8 +28102,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -70.76099395751953,
-                    "y": -492.2856140136719,
+                    "x": 1286.3944091796876,
+                    "y": -108.75450897216797,
                     "z": 0.0
                 },
                 "size": {
@@ -27697,8 +28180,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -110.76099395751953,
-                    "y": -492.2856140136719,
+                    "x": 1246.3944091796876,
+                    "y": -108.75450897216797,
                     "z": 0.0
                 },
                 "size": {
@@ -27812,8 +28295,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -153.177490234375,
-                    "y": -166.6126708984375,
+                    "x": -228.99449157714845,
+                    "y": -5.0499725341796879,
                     "z": 0.0
                 },
                 "size": {
@@ -27947,8 +28430,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 637.6989135742188,
-                    "y": -330.16064453125,
+                    "x": 1456.19921875,
+                    "y": -42.65406799316406,
                     "z": 0.0
                 },
                 "size": {
@@ -27975,8 +28458,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 637.6989135742188,
-                    "y": -330.16064453125,
+                    "x": 1456.19921875,
+                    "y": -42.65406799316406,
                     "z": 0.0
                 },
                 "offset": {
@@ -27986,8 +28469,8 @@
                 },
                 "radius": 11.649999618530274,
                 "center": {
-                    "x": 637.6989135742188,
-                    "y": -330.16064453125,
+                    "x": 1456.19921875,
+                    "y": -42.65406799316406,
                     "z": 0.0
                 }
             },
@@ -28162,8 +28645,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1662.9012451171876,
-                    "y": -395.41064453125,
+                    "x": 1411.4249267578126,
+                    "y": -648.3408203125,
                     "z": 0.0
                 },
                 "size": {
@@ -28190,8 +28673,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 1662.9012451171876,
-                    "y": -395.41064453125,
+                    "x": 1411.4249267578126,
+                    "y": -648.3408203125,
                     "z": 0.0
                 },
                 "offset": {
@@ -28201,8 +28684,8 @@
                 },
                 "radius": 11.649999618530274,
                 "center": {
-                    "x": 1662.9012451171876,
-                    "y": -395.41064453125,
+                    "x": 1411.4249267578126,
+                    "y": -648.3408203125,
                     "z": 0.0
                 }
             },
@@ -28377,8 +28860,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1229.13330078125,
-                    "y": -71.568603515625,
+                    "x": -32.629276275634769,
+                    "y": -392.7424011230469,
                     "z": -1.0
                 },
                 "size": {
@@ -28405,8 +28888,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 1229.13330078125,
-                    "y": -93.068603515625,
+                    "x": -32.629276275634769,
+                    "y": -414.2424011230469,
                     "z": -1.0
                 },
                 "offset": {
@@ -28415,13 +28898,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1213.13330078125,
-                    "y": -99.568603515625,
+                    "x": -48.629276275634769,
+                    "y": -420.7424011230469,
                     "z": -1.0
                 },
                 "max": {
-                    "x": 1245.13330078125,
-                    "y": -86.568603515625,
+                    "x": -16.629276275634767,
+                    "y": -407.7424011230469,
                     "z": -1.0
                 }
             },
@@ -28543,8 +29026,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -271.9431457519531,
-                    "y": -394.0977783203125,
+                    "x": 1520.0870361328126,
+                    "y": 25.840057373046876,
                     "z": -1.0
                 },
                 "size": {
@@ -28571,8 +29054,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": -271.9431457519531,
-                    "y": -415.5977783203125,
+                    "x": 1520.0870361328126,
+                    "y": 4.340057373046875,
                     "z": -1.0
                 },
                 "offset": {
@@ -28581,13 +29064,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -287.9431457519531,
-                    "y": -422.0977783203125,
+                    "x": 1504.0870361328126,
+                    "y": -2.159942626953125,
                     "z": -1.0
                 },
                 "max": {
-                    "x": -255.94314575195313,
-                    "y": -409.0977783203125,
+                    "x": 1536.0870361328126,
+                    "y": 10.840057373046875,
                     "z": -1.0
                 }
             },
@@ -28701,172 +29184,6 @@
         },
         {
             "active": true,
-            "name": "WinPressurePlate2",
-            "uuid": 10353177217139277787,
-            "tag": {
-                "tagMask": 2
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1351.4351806640626,
-                    "y": -683.31591796875,
-                    "z": -1.0
-                },
-                "size": {
-                    "x": 32.0,
-                    "y": 50.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 1,
-                "isContinuous": false,
-                "isTrigger": true,
-                "enabled": true,
-                "position": {
-                    "x": 1351.4351806640626,
-                    "y": -704.81591796875,
-                    "z": -1.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": -21.5,
-                    "z": 0.0
-                },
-                "min": {
-                    "x": 1335.4351806640626,
-                    "y": -711.31591796875,
-                    "z": -1.0
-                },
-                "max": {
-                    "x": 1367.4351806640626,
-                    "y": -698.31591796875,
-                    "z": -1.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI/Pressure Plate.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Switch",
-                        "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": false,
-                        "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PressurePlate",
-                        "fields": {
-                            "decrease": 5.0,
-                            "goalTextName": "GoalText",
-                            "wallName": "winwall"
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": -10
-            }
-        },
-        {
-            "active": true,
             "name": "winwall",
             "uuid": 5830775415537986151,
             "tag": {
@@ -28875,12 +29192,12 @@
             "transform": {
                 "rotation": 90.0,
                 "position": {
-                    "x": 1563.570556640625,
-                    "y": -625.376220703125,
+                    "x": 1532.880615234375,
+                    "y": -447.4461669921875,
                     "z": -5.0
                 },
                 "size": {
-                    "x": 170.0,
+                    "x": 195.0,
                     "y": 25.0
                 }
             },
@@ -28903,8 +29220,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1563.570556640625,
-                    "y": -625.376220703125,
+                    "x": 1532.880615234375,
+                    "y": -447.4461669921875,
                     "z": -5.0
                 },
                 "offset": {
@@ -28913,13 +29230,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1549.4705810546876,
-                    "y": -710.2762451171875,
+                    "x": 1518.7806396484376,
+                    "y": -545.34619140625,
                     "z": -5.0
                 },
                 "max": {
-                    "x": 1577.6705322265626,
-                    "y": -540.4761962890625,
+                    "x": 1546.9805908203126,
+                    "y": -349.546142578125,
                     "z": -5.0
                 }
             },
@@ -29102,12 +29419,12 @@
             "transform": {
                 "rotation": 90.0,
                 "position": {
-                    "x": 1563.570556640625,
-                    "y": -693.376220703125,
+                    "x": 1532.880615234375,
+                    "y": -525.4461669921875,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 34.0,
+                    "x": 39.0,
                     "y": 25.0
                 }
             },
@@ -29180,12 +29497,12 @@
             "transform": {
                 "rotation": 90.0,
                 "position": {
-                    "x": 1563.570556640625,
-                    "y": -659.376220703125,
+                    "x": 1532.880615234375,
+                    "y": -486.4461669921875,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 34.0,
+                    "x": 39.0,
                     "y": 25.0
                 }
             },
@@ -29258,12 +29575,12 @@
             "transform": {
                 "rotation": 90.0,
                 "position": {
-                    "x": 1563.570556640625,
-                    "y": -625.376220703125,
+                    "x": 1532.880615234375,
+                    "y": -447.4461669921875,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 34.0,
+                    "x": 39.0,
                     "y": 25.0
                 }
             },
@@ -29336,12 +29653,12 @@
             "transform": {
                 "rotation": 90.0,
                 "position": {
-                    "x": 1563.570556640625,
-                    "y": -591.376220703125,
+                    "x": 1532.880615234375,
+                    "y": -408.4461669921875,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 34.0,
+                    "x": 39.0,
                     "y": 25.0
                 }
             },
@@ -29414,12 +29731,12 @@
             "transform": {
                 "rotation": 90.0,
                 "position": {
-                    "x": 1563.570556640625,
-                    "y": -557.376220703125,
+                    "x": 1532.880615234375,
+                    "y": -369.4461669921875,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 34.0,
+                    "x": 39.0,
                     "y": 25.0
                 }
             },
@@ -29492,8 +29809,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1653.7320556640626,
-                    "y": -658.4404296875,
+                    "x": 1619.5478515625,
+                    "y": -496.46820068359377,
                     "z": -10.0
                 },
                 "size": {
@@ -29520,8 +29837,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 1653.7320556640626,
-                    "y": -658.4404296875,
+                    "x": 1619.5478515625,
+                    "y": -496.46820068359377,
                     "z": -10.0
                 },
                 "offset": {
@@ -29531,8 +29848,8 @@
                 },
                 "radius": 31.149999618530275,
                 "center": {
-                    "x": 1653.7320556640626,
-                    "y": -658.4404296875,
+                    "x": 1619.5478515625,
+                    "y": -496.46820068359377,
                     "z": -10.0
                 }
             },
@@ -29575,7 +29892,7 @@
                     {
                         "className": "DoorScript",
                         "fields": {
-                            "nextSceneName": "descentmenu",
+                            "nextSceneName": "Victory2",
                             "transitionDelay": 2.0,
                             "doorParticleName": "Door Particles"
                         }
@@ -29641,8 +29958,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1654.081298828125,
-                    "y": -662.0341186523438,
+                    "x": 1619.8970947265626,
+                    "y": -500.0618896484375,
                     "z": 0.0
                 },
                 "size": {
@@ -29830,7 +30147,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 309.4422607421875,
+                    "x": -677.2905883789063,
                     "y": -51.96856689453125,
                     "z": 0.0
                 },
@@ -29858,7 +30175,7 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 309.4422607421875,
+                    "x": -677.2905883789063,
                     "y": -119.96856689453125,
                     "z": 0.0
                 },
@@ -29868,12 +30185,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 210.04226684570313,
+                    "x": -776.6905517578125,
                     "y": -257.46856689453127,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 408.8422546386719,
+                    "x": -577.890625,
                     "y": 17.53143310546875,
                     "z": 0.0
                 }
@@ -29893,7 +30210,7 @@
             "parent": {
                 "parentUUID": 7610932790271590026,
                 "localPos": {
-                    "x": 309.4422607421875,
+                    "x": -677.2905883789063,
                     "y": -51.96856689453125,
                     "z": 0.0
                 },
@@ -29925,7 +30242,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 309.4422607421875,
+                    "x": -677.2905883789063,
                     "y": -313.2478942871094,
                     "z": 0.0
                 },
@@ -29967,14 +30284,14 @@
                 "tagMask": 2
             },
             "transform": {
-                "rotation": 0.0,
+                "rotation": 90.0,
                 "position": {
-                    "x": 1447.721923828125,
-                    "y": -492.81805419921877,
+                    "x": 1647.9176025390626,
+                    "y": -656.9833984375,
                     "z": -5.0
                 },
                 "size": {
-                    "x": 200.0,
+                    "x": 120.0,
                     "y": 25.0
                 }
             },
@@ -29997,8 +30314,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1447.721923828125,
-                    "y": -492.81805419921877,
+                    "x": 1647.9176025390626,
+                    "y": -656.9833984375,
                     "z": -5.0
                 },
                 "offset": {
@@ -30007,13 +30324,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1347.721923828125,
-                    "y": -505.31805419921877,
+                    "x": 1634.7176513671876,
+                    "y": -716.7833862304688,
                     "z": -5.0
                 },
                 "max": {
-                    "x": 1547.721923828125,
-                    "y": -480.31805419921877,
+                    "x": 1661.1175537109376,
+                    "y": -597.1834106445313,
                     "z": -5.0
                 }
             },
@@ -30058,8 +30375,8 @@
                         "fields": {
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
-                            "MoveRight": true,
-                            "MoveDist": -300.0,
+                            "MoveRight": false,
+                            "MoveDist": -200.0,
                             "MoveSpeed": 40.0,
                             "dustBurstDuration": 1.0
                         }
@@ -30194,14 +30511,14 @@
                 "tagMask": 0
             },
             "transform": {
-                "rotation": 0.0,
+                "rotation": 90.0,
                 "position": {
-                    "x": 1527.721923828125,
-                    "y": -492.81805419921877,
+                    "x": 1647.9176025390626,
+                    "y": -608.9833984375,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 40.0,
+                    "x": 24.0,
                     "y": 25.0
                 }
             },
@@ -30272,14 +30589,14 @@
                 "tagMask": 0
             },
             "transform": {
-                "rotation": 0.0,
+                "rotation": 90.0,
                 "position": {
-                    "x": 1487.721923828125,
-                    "y": -492.81805419921877,
+                    "x": 1647.9176025390626,
+                    "y": -632.9833984375,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 40.0,
+                    "x": 24.0,
                     "y": 25.0
                 }
             },
@@ -30350,14 +30667,14 @@
                 "tagMask": 0
             },
             "transform": {
-                "rotation": 0.0,
+                "rotation": 90.0,
                 "position": {
-                    "x": 1447.721923828125,
-                    "y": -492.81805419921877,
+                    "x": 1647.9176025390626,
+                    "y": -656.9833984375,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 40.0,
+                    "x": 24.0,
                     "y": 25.0
                 }
             },
@@ -30428,14 +30745,14 @@
                 "tagMask": 0
             },
             "transform": {
-                "rotation": 0.0,
+                "rotation": 90.0,
                 "position": {
-                    "x": 1408.7576904296876,
-                    "y": -492.81805419921877,
+                    "x": 1647.9176025390626,
+                    "y": -680.3619384765625,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 40.0,
+                    "x": 24.0,
                     "y": 25.0
                 }
             },
@@ -30506,14 +30823,14 @@
                 "tagMask": 0
             },
             "transform": {
-                "rotation": 0.0,
+                "rotation": 90.0,
                 "position": {
-                    "x": 1367.721923828125,
-                    "y": -492.81805419921877,
+                    "x": 1647.9176025390626,
+                    "y": -704.3720092773438,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 40.0,
+                    "x": 24.0,
                     "y": 25.0
                 }
             },
@@ -30554,8 +30871,8 @@
             "parent": {
                 "parentUUID": 16727213168522659396,
                 "localPos": {
-                    "x": -0.4000000059604645,
-                    "y": 0.0,
+                    "x": -0.39490509033203127,
+                    "y": 1.3809480492454896e-7,
                     "z": 5.0
                 },
                 "localRot": 0.0,
@@ -30978,7 +31295,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -62.51763916015625,
+                    "x": -710.6656494140625,
                     "y": -609.8277587890625,
                     "z": 0.0
                 },
@@ -31006,7 +31323,7 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": -62.51763916015625,
+                    "x": -710.6656494140625,
                     "y": -580.6277465820313,
                     "z": 0.0
                 },
@@ -31016,12 +31333,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -219.4176025390625,
+                    "x": -867.5656127929688,
                     "y": -675.1277465820313,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 94.38232421875,
+                    "x": -553.7656860351563,
                     "y": -486.12774658203127,
                     "z": 0.0
                 }
@@ -31041,7 +31358,7 @@
             "parent": {
                 "parentUUID": 7610932790271590026,
                 "localPos": {
-                    "x": -62.51763916015625,
+                    "x": -710.6656494140625,
                     "y": -609.8277587890625,
                     "z": 0.0
                 },
@@ -31073,7 +31390,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -62.51763916015625,
+                    "x": -710.6656494140625,
                     "y": -791.4616088867188,
                     "z": 0.0
                 },
@@ -31117,8 +31434,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1167.9747314453126,
-                    "y": -489.59661865234377,
+                    "x": 1456.26611328125,
+                    "y": -746.9609985351563,
                     "z": -1.0
                 },
                 "size": {
@@ -31145,8 +31462,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 1167.9747314453126,
-                    "y": -511.09661865234377,
+                    "x": 1456.26611328125,
+                    "y": -768.4609985351563,
                     "z": -1.0
                 },
                 "offset": {
@@ -31155,13 +31472,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1151.9747314453126,
-                    "y": -517.5966186523438,
+                    "x": 1440.26611328125,
+                    "y": -774.9609985351563,
                     "z": -1.0
                 },
                 "max": {
-                    "x": 1183.9747314453126,
-                    "y": -504.59661865234377,
+                    "x": 1472.26611328125,
+                    "y": -761.9609985351563,
                     "z": -1.0
                 }
             },
@@ -31239,8 +31556,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1510.4942626953126,
-                    "y": -461.45037841796877,
+                    "x": 1599.165283203125,
+                    "y": -785.6078491210938,
                     "z": 51.0
                 },
                 "size": {
@@ -31267,8 +31584,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1511.1942138671876,
-                    "y": -464.95037841796877,
+                    "x": 1599.865234375,
+                    "y": -789.1078491210938,
                     "z": 51.0
                 },
                 "offset": {
@@ -31277,13 +31594,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1496.294189453125,
-                    "y": -475.150390625,
+                    "x": 1584.9652099609376,
+                    "y": -799.307861328125,
                     "z": 51.0
                 },
                 "max": {
-                    "x": 1526.09423828125,
-                    "y": -454.7503662109375,
+                    "x": 1614.7652587890626,
+                    "y": -778.9078369140625,
                     "z": 51.0
                 }
             },
@@ -31698,8 +32015,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1166.02685546875,
-                    "y": -480.6920471191406,
+                    "x": 1678.0216064453126,
+                    "y": -704.5448608398438,
                     "z": 0.0
                 },
                 "size": {
@@ -31726,8 +32043,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1166.02685546875,
-                    "y": -479.9920349121094,
+                    "x": 1678.0216064453126,
+                    "y": -703.8448486328125,
                     "z": 0.0
                 },
                 "offset": {
@@ -31769,8 +32086,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -272.9945983886719,
-                    "y": -384.72369384765627,
+                    "x": 1517.760498046875,
+                    "y": 31.101306915283204,
                     "z": 0.0
                 },
                 "size": {
@@ -31797,8 +32114,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -272.9945983886719,
-                    "y": -384.023681640625,
+                    "x": 1517.760498046875,
+                    "y": 31.801307678222658,
                     "z": 0.0
                 },
                 "offset": {
@@ -31840,8 +32157,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 24.4942626953125,
-                    "y": -458.45037841796877,
+                    "x": 1389.81396484375,
+                    "y": -75.80115509033203,
                     "z": 51.0
                 },
                 "size": {
@@ -31868,8 +32185,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 25.194263458251954,
-                    "y": -461.95037841796877,
+                    "x": 1390.513916015625,
+                    "y": -79.30115509033203,
                     "z": 51.0
                 },
                 "offset": {
@@ -31878,13 +32195,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 10.294239044189454,
-                    "y": -472.150390625,
+                    "x": 1375.6138916015626,
+                    "y": -89.50116729736328,
                     "z": 51.0
                 },
                 "max": {
-                    "x": 40.09428787231445,
-                    "y": -451.7503662109375,
+                    "x": 1405.4139404296876,
+                    "y": -69.10114288330078,
                     "z": 51.0
                 }
             },
@@ -32299,7 +32616,7 @@
             "transform": {
                 "rotation": -90.0,
                 "position": {
-                    "x": -256.7839050292969,
+                    "x": -160.49136352539063,
                     "y": -16.40677833557129,
                     "z": 0.0
                 },
@@ -32327,7 +32644,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -256.7839050292969,
+                    "x": -160.49136352539063,
                     "y": -16.40677833557129,
                     "z": 0.0
                 },
@@ -32477,8 +32794,8 @@
             "transform": {
                 "rotation": -90.0,
                 "position": {
-                    "x": 1088.0589599609376,
-                    "y": -15.80272388458252,
+                    "x": -352.0740051269531,
+                    "y": -15.80265998840332,
                     "z": 0.0
                 },
                 "size": {
@@ -32505,8 +32822,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1088.0589599609376,
-                    "y": -15.80272388458252,
+                    "x": -352.0740051269531,
+                    "y": -15.80265998840332,
                     "z": 0.0
                 },
                 "offset": {
@@ -32540,7 +32857,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1666.68994140625,
+                    "x": 2022.6876220703126,
                     "y": -152.43289184570313,
                     "z": 0.0
                 },
@@ -32568,7 +32885,7 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 1666.68994140625,
+                    "x": 2022.6876220703126,
                     "y": -152.43289184570313,
                     "z": 0.0
                 },
@@ -32578,12 +32895,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1555.7899169921876,
+                    "x": 1911.78759765625,
                     "y": -277.03289794921877,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1777.5899658203126,
+                    "x": 2133.587646484375,
                     "y": -27.8328857421875,
                     "z": 0.0
                 }
@@ -32603,7 +32920,7 @@
             "parent": {
                 "parentUUID": 7610932790271590026,
                 "localPos": {
-                    "x": 1666.68994140625,
+                    "x": 2022.6876220703126,
                     "y": -152.43289184570313,
                     "z": 0.0
                 },
@@ -32635,7 +32952,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1666.68994140625,
+                    "x": 2022.6876220703126,
                     "y": -332.4328918457031,
                     "z": 0.0
                 },
@@ -32897,6 +33214,1082 @@
                     "x": 1.0,
                     "y": 1.0
                 }
+            }
+        },
+        {
+            "active": true,
+            "name": "TriggerCP2",
+            "uuid": 3706243881979642575,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -134.5580291748047,
+                    "y": -304.37957763671877,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isContinuous": false,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": -134.5580291748047,
+                    "y": -304.37957763671877,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": -195.7579803466797,
+                    "y": -390.9795837402344,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": -73.35807800292969,
+                    "y": -217.77957153320313,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "Checkpoint",
+                        "fields": {}
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "checkpoint": {
+                "respawnPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "targetRespawnEntity": 2149,
+                "targetEntityName": "respawn2",
+                "activated": false
+            },
+            "trigger_metadata": {
+                "triggerID": "",
+                "oneTimeUse": true,
+                "triggered": false
+            }
+        },
+        {
+            "active": true,
+            "name": "respawn2",
+            "uuid": 7428796267062834939,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -153.35919189453126,
+                    "y": -345.5550842285156,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 3706243881979642575,
+                "localPos": {
+                    "x": -18.801162719726564,
+                    "y": -41.175506591796878,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "TriggerCP3",
+            "uuid": 9669753406620021068,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1328.385986328125,
+                    "y": -687.89501953125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isContinuous": false,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 1328.385986328125,
+                    "y": -687.89501953125,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1267.18603515625,
+                    "y": -774.4949951171875,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1389.5859375,
+                    "y": -601.2950439453125,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "Checkpoint",
+                        "fields": {}
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "checkpoint": {
+                "respawnPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "targetRespawnEntity": 2151,
+                "targetEntityName": "respawn3",
+                "activated": false
+            },
+            "trigger_metadata": {
+                "triggerID": "",
+                "oneTimeUse": true,
+                "triggered": false
+            }
+        },
+        {
+            "active": true,
+            "name": "respawn3",
+            "uuid": 999070341635175192,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1346.1275634765626,
+                    "y": -729.1904296875,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 9669753406620021068,
+                "localPos": {
+                    "x": 17.7415771484375,
+                    "y": -41.29541015625,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Moving_Platform_1(Sinking)",
+            "uuid": 12496393426108718676,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 165.87904357910157,
+                    "y": 15.224735260009766,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 100.0,
+                    "y": 16.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isContinuous": false,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 165.87904357910157,
+                    "y": 15.224735260009766,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 137.1790313720703,
+                    "y": 7.224735260009766,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 194.5790557861328,
+                    "y": 23.224735260009767,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Character/Light Mode/Left/Falling.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WeightedPlatform",
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 250.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 150.0,
+                            "maxDrop": 125.0,
+                            "WaitTime": 0.5
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Enemy",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 12539903680078883568,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 145.56288146972657,
+                    "y": 15.224735260009766,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_33.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12496393426108718676,
+                "localPos": {
+                    "x": -0.20316162705421449,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Enemy",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 10465844580070253510,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 165.52320861816407,
+                    "y": 15.224735260009766,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12496393426108718676,
+                "localPos": {
+                    "x": -0.0035583495628088714,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Enemy",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 2664701608630939253,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 185.52320861816407,
+                    "y": 15.224735260009766,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_35.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12496393426108718676,
+                "localPos": {
+                    "x": 0.196441650390625,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Enemy",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Moving_Platform_4(Sinking)",
+            "uuid": 15218905140341023191,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1090.173095703125,
+                    "y": -677.5701293945313,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 100.0,
+                    "y": 16.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isContinuous": false,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": 1090.173095703125,
+                    "y": -677.5701293945313,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1061.47314453125,
+                    "y": -685.5701293945313,
+                    "z": 0.0
+                },
+                "max": {
+                    "x": 1118.873046875,
+                    "y": -669.5701293945313,
+                    "z": 0.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Character/Light Mode/Left/Falling.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "WeightedPlatform",
+                        "fields": {
+                            "IsMoving": true,
+                            "MoveRight": true,
+                            "MovementDistance": 150.0,
+                            "MoveSpeed": 50.0,
+                            "VerticalSpeed": 150.0,
+                            "maxDrop": 50.0,
+                            "WaitTime": 0.5
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Enemy",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 3643409835811390325,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1069.85693359375,
+                    "y": -677.5701293945313,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_33.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 15218905140341023191,
+                "localPos": {
+                    "x": -0.20316162705421449,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Enemy",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 6281782425567298809,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1089.8172607421876,
+                    "y": -677.5701293945313,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_34.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 15218905140341023191,
+                "localPos": {
+                    "x": -0.0035583495628088714,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Enemy",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform",
+            "uuid": 4098986649387978792,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1109.8172607421876,
+                    "y": -677.5701293945313,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.0,
+                    "y": 16.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/spritesheet/Platform/Platform_35.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 15218905140341023191,
+                "localPos": {
+                    "x": 0.196441650390625,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.20000000298023225,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Enemy",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "WinPressurePlate2",
+            "uuid": 11785482890661334368,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1680.4539794921876,
+                    "y": -711.5729370117188,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isContinuous": false,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 1680.4539794921876,
+                    "y": -733.0729370117188,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -21.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1664.4539794921876,
+                    "y": -739.5729370117188,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 1696.4539794921876,
+                    "y": -726.5729370117188,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pressure Plate.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Switch",
+                        "path": "switch_stepon.wav",
+                        "volume": 0.800000011920929,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "goalTextName": "GoalText",
+                            "wallName": "winwall"
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": -10
             }
         }
     ],
