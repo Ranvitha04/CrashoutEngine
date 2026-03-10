@@ -20,6 +20,7 @@ All content ? 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "ppmanager.h"
 #include "engine.h"
 #include "camera.h"
+#include "activecomponent.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
 #include "collisionmanager.h"

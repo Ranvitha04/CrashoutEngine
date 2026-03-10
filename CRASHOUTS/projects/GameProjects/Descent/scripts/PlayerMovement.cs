@@ -59,6 +59,7 @@ namespace CrashoutsEngine
         public bool OnWall { get; private set; } = false;
 
         public static PlayerMovement Instance;
+        public bool lockBookGlowToPlayer = false;
         public float CurrentEnergy = 0.0f;
         public float MaxEnergy = 100.0f;
 

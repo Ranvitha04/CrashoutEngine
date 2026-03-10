@@ -20275,6 +20275,7 @@
                             "dialogueCooldown": 1.0,
                             "isDialogueActive": true,
                             "facingRight": true,
+                            "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 87.5,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -20359,6 +20360,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -20411,7 +20443,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -20425,14 +20457,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20485,37 +20517,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22802,7 +22803,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 775.93115234375,
+                    "x": 296.10101318359377,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -22812,12 +22813,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 468.51611328125,
+                    "x": 348.5585632324219,
                     "y": -334.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 363.60101318359377,
+                    "x": 243.64346313476563,
                     "y": -318.3426513671875,
                     "z": 0.0
                 }
@@ -22964,7 +22965,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 755.5753173828125,
+                    "x": 275.74517822265627,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -25393,8 +25394,6 @@
                 "active": true,
                 "intensity": 2.5,
                 "radius": 55.0,
-                "shape": 0,
-                "blendMode": 0,
                 "affectBloom": true,
                 "useTransform": true,
                 "renderSelf": true,
@@ -25463,8 +25462,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -114.91490173339844,
-                    "y": -36.54780578613281,
+                    "x": -153.177490234375,
+                    "y": -30.612668991088868,
                     "z": 0.0
                 },
                 "size": {
@@ -25476,8 +25475,6 @@
                 "active": false,
                 "intensity": 0.15000000596046449,
                 "radius": 39.0,
-                "shape": 0,
-                "blendMode": 0,
                 "affectBloom": true,
                 "useTransform": true,
                 "renderSelf": true,
