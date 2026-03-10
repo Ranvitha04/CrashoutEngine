@@ -1751,6 +1751,10 @@
         {
             "name": "Victory2",
             "path": "Victory2"
+        },
+        {
+            "name": "Defeat",
+            "path": "Defeat"
         }
     ],
     "prefabs": [
