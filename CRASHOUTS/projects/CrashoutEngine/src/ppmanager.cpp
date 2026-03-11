@@ -5,11 +5,11 @@
 
 @brief  This file contains values and functions to manage post-processing.
 
-All content ? 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
-/*                                                                   includes
+/* includes
 ----------------------------------------------------------------------------- */
 #include "engine_pch.h"
 #include "entitymanager.h"
@@ -32,8 +32,7 @@ All content ? 2025 Digipen Institute of Technology Singapore. All rights reserve
 
 #include "textureasset.h"
 
-/*                                                                   
------------------------------------------------------------------------------ */
+/* ----------------------------------------------------------------------------- */
 namespace CrashoutsEngine {
 
     namespace PostProcessing {
@@ -101,7 +100,6 @@ namespace CrashoutsEngine {
             float colorB;
             float intensity;
             float shadowIndex;
-            float affectBloom;
         };
 
 
@@ -157,16 +155,20 @@ namespace CrashoutsEngine {
 
             cachedWidth = gameTextureWidth;
             cachedHeight = gameTextureHeight;
-            int halfW = std::max(1, cachedWidth / 2);
-            int halfH = std::max(1, cachedHeight / 2);
+
+            // [OPTIMIZATION 1]: Use Quarter-Resolution for Bloom passes to save 75% GPU Fill-Rate!
+            int blurW = std::max(1, cachedWidth / 4);
+            int blurH = std::max(1, cachedHeight / 4);
 
             CreateFboWithTexturesMRT(frontLightsFbo, frontLightsTex, cachedWidth, cachedHeight);
             CreateFboWithTexturesMRT(behindLightsFbo, behindLightsTex, cachedWidth, cachedHeight);
             CreateFboWithTexture(occluderFbo, occluderTexture, cachedWidth, cachedHeight);
             CreateFboWithTexture(combineFbo, combineTexture, cachedWidth, cachedHeight);
-            CreateFboWithTexture(brightFbo, brightTexture, halfW, halfH);
-            CreateFboWithTexture(pingpongFbo[0], pingpongTex[0], halfW, halfH);
-            CreateFboWithTexture(pingpongFbo[1], pingpongTex[1], halfW, halfH);
+
+            // Apply the quarter-res targets to the heavy blur passes
+            CreateFboWithTexture(brightFbo, brightTexture, blurW, blurH);
+            CreateFboWithTexture(pingpongFbo[0], pingpongTex[0], blurW, blurH);
+            CreateFboWithTexture(pingpongFbo[1], pingpongTex[1], blurW, blurH);
 
             if (shadowTex == 0) glGenTextures(1, &shadowTex);
 
@@ -211,33 +213,28 @@ namespace CrashoutsEngine {
 
             // layout(location = 2) vec2 iLightPos
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
             glVertexAttribDivisor(2, 1);
 
             // layout(location = 3) float iLightRadius
             glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(2 * sizeof(float)));
+            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(2 * sizeof(float)));
             glVertexAttribDivisor(3, 1);
 
             // layout(location = 4) vec3 iLightColor
             glEnableVertexAttribArray(4);
-            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
             glVertexAttribDivisor(4, 1);
 
             // layout(location = 5) float iIntensity
             glEnableVertexAttribArray(5);
-            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
             glVertexAttribDivisor(5, 1);
 
             // layout(location = 6) float iShadowIndex
             glEnableVertexAttribArray(6);
-            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
+            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(7 * sizeof(float)));
             glVertexAttribDivisor(6, 1);
-
-            // layout(location = 7) float iAffectBloom
-            glEnableVertexAttribArray(7);
-            glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(8 * sizeof(float)));
-            glVertexAttribDivisor(7, 1);
 
             glBindVertexArray(0); // Unbind
 
@@ -246,7 +243,7 @@ namespace CrashoutsEngine {
             glGenBuffers(1, &occluderVbo);
             glBindVertexArray(occluderVao);
             glBindBuffer(GL_ARRAY_BUFFER, occluderVbo);
-            glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, 6 * 4 * sizeof(float), nullptr, GL_DYNAMIC_DRAW); // Pre-allocated
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(1);
@@ -290,7 +287,6 @@ namespace CrashoutsEngine {
         void UpdatePP() {
             EnsureTargets();
 
-            // Get reference
             ECS& gECS = *ECS::getInstance();
             ECS::ComponentArray<PPComponent>& ppArray = gECS.GetComponentArray<PPComponent>();
 
@@ -315,15 +311,15 @@ namespace CrashoutsEngine {
             }
         }
 
-        static void RenderFullscreen(GLSLShader& shader, GLuint tex0, const char* uniform0, GLuint tex1 = 0, const char* uniform1 = nullptr) {
+        static void RenderFullscreenCached(GLSLShader& shader, GLuint tex0, GLint loc0, GLuint tex1 = 0, GLint loc1 = -1) {
             shader.Use();
-            if (uniform0) {
-                glUniform1i(glGetUniformLocation(shader.GetHandle(), uniform0), 0);
+            if (loc0 != -1) {
+                glUniform1i(loc0, 0);
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, tex0);
             }
-            if (uniform1) {
-                glUniform1i(glGetUniformLocation(shader.GetHandle(), uniform1), 1);
+            if (loc1 != -1) {
+                glUniform1i(loc1, 1);
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, tex1);
             }
@@ -348,11 +344,25 @@ namespace CrashoutsEngine {
 
             GLSLShader& ppShader = ppAsset->shaderObject;
             ppShader.Use();
-            glUniform1i(glGetUniformLocation(ppShader.GetHandle(), "u_active"), active ? 1 : 0);
-            glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_brightness"), g_brightness);
-            glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_contrast"), g_contrast);
-            glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_saturation"), g_saturation);
-            RenderFullscreen(ppShader, sceneTextureID, "u_sceneTexture");
+
+            static GLint loc_active = glGetUniformLocation(ppShader.GetHandle(), "u_active");
+            static GLint loc_bright = glGetUniformLocation(ppShader.GetHandle(), "u_brightness");
+            static GLint loc_contrast = glGetUniformLocation(ppShader.GetHandle(), "u_contrast");
+            static GLint loc_saturation = glGetUniformLocation(ppShader.GetHandle(), "u_saturation");
+            static GLint loc_sceneTex = glGetUniformLocation(ppShader.GetHandle(), "u_sceneTexture");
+
+            if (loc_active == -1) loc_active = glGetUniformLocation(ppShader.GetHandle(), "u_active");
+            if (loc_bright == -1) loc_bright = glGetUniformLocation(ppShader.GetHandle(), "u_brightness");
+            if (loc_contrast == -1) loc_contrast = glGetUniformLocation(ppShader.GetHandle(), "u_contrast");
+            if (loc_saturation == -1) loc_saturation = glGetUniformLocation(ppShader.GetHandle(), "u_saturation");
+            if (loc_sceneTex == -1) loc_sceneTex = glGetUniformLocation(ppShader.GetHandle(), "u_sceneTexture");
+
+            glUniform1i(loc_active, active ? 1 : 0);
+            glUniform1f(loc_bright, g_brightness);
+            glUniform1f(loc_contrast, g_contrast);
+            glUniform1f(loc_saturation, g_saturation);
+
+            RenderFullscreenCached(ppShader, sceneTextureID, loc_sceneTex);
         }
 
         static void renderLightsMRT(GLuint targetFbo, bool renderBehind, auto const& lightDraws, auto const& shadowRowByLight, int shadowTexHeight, bool shadowsEnabled, GLuint shadowTex, const RenderCamera::Camera& currentCamera) {
@@ -366,9 +376,8 @@ namespace CrashoutsEngine {
             glClearColor(0.f, 0.f, 0.f, 0.f);
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
-            // Set independent blending for each render target
-            glBlendFunci(0, GL_ONE, GL_ONE); // For bloom lights
-            glBlendFunci(1, GL_ONE, GL_ONE); // For non-bloom lights
+            glBlendFunci(0, GL_ONE, GL_ONE);
+            glBlendFunci(1, GL_ONE, GL_ONE);
 
 
             auto* lightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("LightShader");
@@ -380,10 +389,20 @@ namespace CrashoutsEngine {
             lightShader.Use();
             float camWidth = currentCamera.GetVisibleWorldWidth();
             float camHeight = currentCamera.GetVisibleWorldHeight();
-            glUniform2f(glGetUniformLocation(lightShader.GetHandle(), "uWorldSize"), camWidth, camHeight);
-            glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uUseShadows"), (shadowsEnabled && !shadowRowByLight.empty()) ? 1 : 0);
-            glUniform1f(glGetUniformLocation(lightShader.GetHandle(), "uShadowTexHeight"), (float)shadowTexHeight);
-            glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uShadowTex"), 1);
+
+            static GLint loc_worldSize = -1, loc_useShadows = -1, loc_shadowTexHeight = -1, loc_shadowTex = -1;
+            if (loc_worldSize == -1) {
+                loc_worldSize = glGetUniformLocation(lightShader.GetHandle(), "uWorldSize");
+                loc_useShadows = glGetUniformLocation(lightShader.GetHandle(), "uUseShadows");
+                loc_shadowTexHeight = glGetUniformLocation(lightShader.GetHandle(), "uShadowTexHeight");
+                loc_shadowTex = glGetUniformLocation(lightShader.GetHandle(), "uShadowTex");
+            }
+
+            glUniform2f(loc_worldSize, camWidth, camHeight);
+            glUniform1i(loc_useShadows, (shadowsEnabled && !shadowRowByLight.empty()) ? 1 : 0);
+            glUniform1f(loc_shadowTexHeight, (float)shadowTexHeight);
+            glUniform1i(loc_shadowTex, 1);
+
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, shadowTex);
 
@@ -404,7 +423,6 @@ namespace CrashoutsEngine {
                 inst.colorB = ld.color.z;
                 inst.intensity = ld.intensity;
                 inst.shadowIndex = (shadowRowByLight[i] >= 0) ? (float)shadowRowByLight[i] : -1.0f;
-                inst.affectBloom = ld.affectBloom ? 1.0f : 0.0f;
                 instances.push_back(inst);
             }
 
@@ -425,7 +443,6 @@ namespace CrashoutsEngine {
 
             ECS& ecs = *ECS::getInstance();
 
-            // Determine active camera
 #if USE_IMGUI_EDITOR
             auto& currentCamera = (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
 #else
@@ -439,7 +456,6 @@ namespace CrashoutsEngine {
             lightDraws.clear();
             lightDraws.resize(lightArray.dense.size());
 
-            // Precompute light screen-space data and occluder rects off the render loop.
             CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(lightArray.dense.size()),
                 [&](unsigned int start, unsigned int end) {
                     for (unsigned int i = start; i < end; ++i) {
@@ -463,13 +479,11 @@ namespace CrashoutsEngine {
                         glm::vec3 ndc = glm::vec3(clip) / clip.w;
                         glm::vec2 uvCenter = glm::vec2(ndc.x, ndc.y) * 0.5f + 0.5f;
 
-                        // Radius in screen UV
                         glm::vec4 clipR = proj * view * glm::vec4(worldPos.x + lc->radius, worldPos.y, worldPos.z, 1.0f);
                         glm::vec3 ndcR = glm::vec3(clipR) / clipR.w;
                         glm::vec2 uvR = glm::vec2(ndcR.x, ndcR.y) * 0.5f + 0.5f;
                         float radiusUV = glm::length(uvR - uvCenter);
 
-                        // Off-screen culling in UV space
                         if (radiusUV <= 0.0f ||
                             (uvCenter.x + radiusUV) < 0.0f || (uvCenter.x - radiusUV) > 1.0f ||
                             (uvCenter.y + radiusUV) < 0.0f || (uvCenter.y - radiusUV) > 1.0f) {
@@ -487,12 +501,9 @@ namespace CrashoutsEngine {
                         lightDraws[i].radiusWorld = lc->radius;
                         lightDraws[i].color = lc->color;
                         lightDraws[i].intensity = lc->intensity;
-
-                        // Occluder rectangles are built on the main thread after this pass.
                     }
                 });
 
-            // --- Build shadow map rows ---
             static std::vector<int> shadowRowByLight;
             shadowRowByLight.assign(lightDraws.size(), -1);
             static std::vector<size_t> shadowLights;
@@ -510,10 +521,12 @@ namespace CrashoutsEngine {
             int shadowRays = std::max(8, g_shadowRays);
             int shadowRows = static_cast<int>(shadowLights.size());
 
-            if (shadowRows < 1) shadowRows = 1;
-            if (shadowTexWidth != shadowRays || shadowTexHeight != shadowRows) {
+            static int maxShadowRows = 1;
+            if (shadowRows > maxShadowRows) maxShadowRows = shadowRows;
+
+            if (shadowTexWidth != shadowRays || shadowTexHeight < maxShadowRows) {
                 shadowTexWidth = shadowRays;
-                shadowTexHeight = shadowRows;
+                shadowTexHeight = maxShadowRows;
                 glBindTexture(GL_TEXTURE_2D, shadowTex);
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, shadowTexWidth, shadowTexHeight, 0, GL_RED, GL_FLOAT, nullptr);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -524,27 +537,43 @@ namespace CrashoutsEngine {
             }
 
             static std::vector<float> shadowData;
-            shadowData.assign(shadowTexWidth * shadowTexHeight, 1.0f);
+            if (shadowData.size() < (size_t)(shadowTexWidth * shadowTexHeight)) {
+                shadowData.resize(shadowTexWidth * shadowTexHeight);
+            }
+            std::fill(shadowData.begin(), shadowData.end(), 1.0f);
 
             if (!shadowLights.empty()) {
                 float camWidth = currentCamera.GetVisibleWorldWidth();
                 float camHeight = currentCamera.GetVisibleWorldHeight();
-
-                // Get camera bounds to clamp massive lights
                 CEVec3 camPos = currentCamera.GetPosition();
                 float maxScreenRadius = std::max(camWidth, camHeight) * 1.5f;
 
-                // 1. PRE-COMPUTE CANDIDATES ON THE MAIN THREAD (Thread Safe!)
-                // We use a vector of vectors so each light has its own dedicated list of colliders to check.
-                std::vector<std::vector<CrashoutsEngine::Entity>> allLightCandidates(shadowLights.size());
+                static std::vector<std::vector<CrashoutsEngine::Entity>> allLightCandidates;
+                if (allLightCandidates.size() < shadowLights.size()) {
+                    allLightCandidates.resize(shadowLights.size());
+                }
+                for (auto& vec : allLightCandidates) vec.clear();
+
+                // [OPTIMIZATION 2]: Cache ignored parents OUTSIDE the parallel ray loop to completely skip ECS lookup per ray!
+                static std::vector<CrashoutsEngine::Entity> ignoredParents;
+                ignoredParents.assign(shadowLights.size(), 0);
 
                 for (size_t idx = 0; idx < shadowLights.size(); ++idx) {
                     size_t lightIndex = shadowLights[idx];
                     const LightDraw& ld = lightDraws[lightIndex];
+                    Entity ent = lightArray.indexToEntity[lightIndex];
                     int row = shadowRowByLight[lightIndex];
                     if (row < 0) continue;
 
-                    // Clamp the query region so massive lights don't query the entire map!
+                    // Cache parent lookup
+                    if (ld.ignoreParentOccluders) {
+                        ignoredParents[idx] = ent;
+                        if (ecs.HasComponent<Component::ParentComponent>(ent)) {
+                            auto* pc = ecs.GetComponent<Component::ParentComponent>(ent);
+                            if (pc && pc->parent != 0) ignoredParents[idx] = pc->parent;
+                        }
+                    }
+
                     float queryRadius = std::min(ld.radiusWorld, maxScreenRadius);
 
                     Collision::AABBRect lightRegion(
@@ -555,11 +584,9 @@ namespace CrashoutsEngine {
                     allLightCandidates[idx].reserve(64);
                     Collision::CollisionHandler::GetInstance().quadTree.Query(lightRegion, allLightCandidates[idx]);
 
-                    // PRE-UPDATE COLLIDERS ON MAIN THREAD
-                    // This prevents multiple threads from calling UpdateCollider on the same entity later.
-                    for (auto ent : allLightCandidates[idx]) {
-                        auto* cc = ecs.GetComponent<Component::ColliderComponent>(ent);
-                        auto* tc = ecs.GetComponent<Component::TransformComponent>(ent);
+                    for (auto candEnt : allLightCandidates[idx]) {
+                        auto* cc = ecs.GetComponent<Component::ColliderComponent>(candEnt);
+                        auto* tc = ecs.GetComponent<Component::TransformComponent>(candEnt);
                         if (cc && cc->collider && tc) {
                             cc->collider->UpdateCollider(tc->position);
                             if (cc->collider->type == Collision::ColliderType::OBB ||
@@ -571,36 +598,31 @@ namespace CrashoutsEngine {
                     }
                 }
 
-                // 2. RUN THE HEAVY RAYCAST MATH ON WORKER THREADS
-                CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(shadowLights.size()),
-                    [&](unsigned int start, unsigned int end) {
-                        for (unsigned int idx = start; idx < end; ++idx) {
-                            size_t lightIndex = shadowLights[idx];
-                            const LightDraw& ld = lightDraws[lightIndex];
-                            Entity ent = lightArray.indexToEntity[lightIndex];
-                            int row = shadowRowByLight[lightIndex];
-                            if (row < 0) continue;
+                // [OPTIMIZATION 3]: "Flattened Threading"
+                // Instead of 1 task per light (leaving threads idle), we make 1 task per RAY. 
+                // A massive parallel boost for the CPU.
+                int totalRays = static_cast<int>(shadowLights.size()) * shadowRays;
 
-                            const auto& localCandidates = allLightCandidates[idx];
+                if (totalRays > 0) {
+                    CrashoutsEngine::JobSystem::Get().ParallelFor(totalRays,
+                        [&](unsigned int start, unsigned int end) {
+                            for (unsigned int taskIdx = start; taskIdx < end; ++taskIdx) {
+                                int shadowArrIdx = taskIdx / shadowRays;
+                                int r = taskIdx % shadowRays;
 
-                            // --- CACHE PARENT LOGIC ONCE ---
-                            CrashoutsEngine::Entity ignoredParent = 0;
-                            if (ld.ignoreParentOccluders) {
-                                ignoredParent = ent;
-                                if (ecs.HasComponent<Component::ParentComponent>(ent)) {
-                                    auto* pc = ecs.GetComponent<Component::ParentComponent>(ent);
-                                    if (pc && pc->parent != 0) ignoredParent = pc->parent;
-                                }
-                            }
+                                size_t lightIndex = shadowLights[shadowArrIdx];
+                                const LightDraw& ld = lightDraws[lightIndex];
+                                Entity ent = lightArray.indexToEntity[lightIndex];
+                                int row = shadowRowByLight[lightIndex];
 
-                            // --- CAST ALL RAYS AGAINST THE PRE-FILTERED LIST ---
-                            for (int r = 0; r < shadowRays; ++r) {
+                                const auto& localCandidates = allLightCandidates[shadowArrIdx];
+                                CrashoutsEngine::Entity ignoredParent = ignoredParents[shadowArrIdx];
+
                                 float angle = (static_cast<float>(r) + 0.5f) / static_cast<float>(shadowRays);
                                 angle *= 6.28318530718f;
                                 float ux = std::cos(angle);
                                 float uy = std::sin(angle);
 
-                                // Map UV direction to world direction
                                 CEVec3 dir{ ux * camWidth, uy * camHeight, 0.f };
                                 float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
                                 if (len > 0.0001f) {
@@ -613,7 +635,6 @@ namespace CrashoutsEngine {
                                 CEVec3 hitPoint{};
                                 CrashoutsEngine::Entity hitEnt = 0;
 
-                                // --- USE THE NEW FAST RAYCAST ---
                                 bool hit = Collision::CollisionHandler::GetInstance().RaycastAgainstList(
                                     startPos, endPos, localCandidates, hitPoint, hitEnt, ent, ignoredParent
                                 );
@@ -628,8 +649,8 @@ namespace CrashoutsEngine {
                                 float norm = (ld.radiusWorld > 0.0001f) ? (dist / ld.radiusWorld) : 1.0f;
                                 shadowData[row * shadowRays + r] = norm;
                             }
-                        }
-                    });
+                        });
+                }
 
                 glBindTexture(GL_TEXTURE_2D, shadowTex);
                 glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, shadowTexWidth, shadowTexHeight, GL_RED, GL_FLOAT, shadowData.data());
@@ -650,99 +671,103 @@ namespace CrashoutsEngine {
             {
                 struct OccVertex { float x, y, u, v; };
                 auto* occAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("OccluderMaskShader");
-                if (!occAsset) {
-                    // Skip occluder pass if shader is missing
-                }
-                else {
+                if (occAsset) {
                     GLSLShader& occShader = occAsset->shaderObject;
-                occShader.Use();
-                glEnable(GL_BLEND);
-                glBlendEquation(GL_MAX);
-                glBlendFunc(GL_ONE, GL_ONE);
-                glDisable(GL_CULL_FACE);
+                    occShader.Use();
+                    glEnable(GL_BLEND);
+                    glBlendEquation(GL_MAX);
+                    glBlendFunc(GL_ONE, GL_ONE);
+                    glDisable(GL_CULL_FACE);
 
-                glBindVertexArray(occluderVao);
-                glBindBuffer(GL_ARRAY_BUFFER, occluderVbo);
-
-                for (size_t i = 0; i < lightDraws.size(); ++i) {
-                    if (!lightDraws[i].active || !lightDraws[i].renderBehind) continue;
-                    LightComponent* lc = lightArray.dense[i];
-                    if (!lc) continue;
-                    Entity ent = lightArray.indexToEntity[i];
-                    if (!ecs.HasComponent<TransformComponent>(ent)) continue;
-                    if (!ecs.HasComponent<ShapeComponent>(ent)) continue;
-
-                    auto* tc = ecs.GetComponent<TransformComponent>(ent);
-                    auto* sc = ecs.GetComponent<ShapeComponent>(ent);
-                    if (!tc || !sc) continue;
-
-                    GLuint texHandle = 0;
-                    if (sc->enableTexture) {
-                        texHandle = Component::TextureRenderer::GetTextureHandle(sc->textureName);
-                        if (texHandle == 0) continue;
+                    static GLint loc_useTex = -1, loc_alpha = -1, loc_tex2d = -1;
+                    if (loc_useTex == -1) {
+                        loc_useTex = glGetUniformLocation(occShader.GetHandle(), "uUseTexture");
+                        loc_alpha = glGetUniformLocation(occShader.GetHandle(), "uAlpha");
+                        loc_tex2d = glGetUniformLocation(occShader.GetHandle(), "uTex2d");
                     }
 
-                    float u0 = sc->uvOffset.x;
-                    float v0 = sc->uvOffset.y;
-                    float u1 = u0 + sc->uvSize.x;
-                    float v1 = v0 + sc->uvSize.y;
+                    glBindVertexArray(occluderVao);
+                    glBindBuffer(GL_ARRAY_BUFFER, occluderVbo);
 
-                    glm::vec2 half(tc->size.x * 0.5f, tc->size.y * 0.5f);
-                    float rot = tc->rotation;
-                    float c = std::cos(rot);
-                    float s = std::sin(rot);
-                    CEVec3 worldPos = lc->position;
-                    if (lc->useTransform) worldPos = tc->position;
+                    for (size_t i = 0; i < lightDraws.size(); ++i) {
+                        if (!lightDraws[i].active || !lightDraws[i].renderBehind) continue;
+                        LightComponent* lc = lightArray.dense[i];
+                        if (!lc) continue;
+                        Entity ent = lightArray.indexToEntity[i];
+                        if (!ecs.HasComponent<TransformComponent>(ent)) continue;
+                        if (!ecs.HasComponent<ShapeComponent>(ent)) continue;
 
-                    glm::vec2 local[4] = {
-                        { -half.x, -half.y }, // BL
-                        {  half.x, -half.y }, // BR
-                        {  half.x,  half.y }, // TR
-                        { -half.x,  half.y }  // TL
-                    };
+                        auto* tc = ecs.GetComponent<TransformComponent>(ent);
+                        auto* sc = ecs.GetComponent<ShapeComponent>(ent);
+                        if (!tc || !sc) continue;
 
-                    glm::vec2 ndc[4];
-                    bool ok = true;
-                    for (int k = 0; k < 4; ++k) {
-                        glm::vec2 r = {
-                            local[k].x * c - local[k].y * s,
-                            local[k].x * s + local[k].y * c
+                        GLuint texHandle = 0;
+                        if (sc->enableTexture) {
+                            texHandle = Component::TextureRenderer::GetTextureHandle(sc->textureName);
+                            if (texHandle == 0) continue;
+                        }
+
+                        float u0 = sc->uvOffset.x;
+                        float v0 = sc->uvOffset.y;
+                        float u1 = u0 + sc->uvSize.x;
+                        float v1 = v0 + sc->uvSize.y;
+
+                        glm::vec2 half(tc->size.x * 0.5f, tc->size.y * 0.5f);
+                        float rot = tc->rotation;
+                        float c = std::cos(rot);
+                        float s = std::sin(rot);
+                        CEVec3 worldPos = lc->position;
+                        if (lc->useTransform) worldPos = tc->position;
+
+                        glm::vec2 local[4] = {
+                            { -half.x, -half.y }, // BL
+                            {  half.x, -half.y }, // BR
+                            {  half.x,  half.y }, // TR
+                            { -half.x,  half.y }  // TL
                         };
-                        glm::vec4 clipC = proj * view * glm::vec4(worldPos.x + r.x, worldPos.y + r.y, worldPos.z, 1.0f);
-                        if (clipC.w == 0.0f) { ok = false; break; }
-                        glm::vec3 ndcC = glm::vec3(clipC) / clipC.w;
-                        ndc[k] = { ndcC.x, ndcC.y };
+
+                        glm::vec2 ndc[4];
+                        bool ok = true;
+                        for (int k = 0; k < 4; ++k) {
+                            glm::vec2 r = {
+                                local[k].x * c - local[k].y * s,
+                                local[k].x * s + local[k].y * c
+                            };
+                            glm::vec4 clipC = proj * view * glm::vec4(worldPos.x + r.x, worldPos.y + r.y, worldPos.z, 1.0f);
+                            if (clipC.w == 0.0f) { ok = false; break; }
+                            glm::vec3 ndcC = glm::vec3(clipC) / clipC.w;
+                            ndc[k] = { ndcC.x, ndcC.y };
+                        }
+                        if (!ok) continue;
+
+                        OccVertex verts[6] = {
+                            { ndc[0].x, ndc[0].y, u0, v1 }, // BL
+                            { ndc[1].x, ndc[1].y, u1, v1 }, // BR
+                            { ndc[2].x, ndc[2].y, u1, v0 }, // TR
+                            { ndc[0].x, ndc[0].y, u0, v1 }, // BL
+                            { ndc[2].x, ndc[2].y, u1, v0 }, // TR
+                            { ndc[3].x, ndc[3].y, u0, v0 }  // TL
+                        };
+
+                        glUniform1i(loc_useTex, sc->enableTexture ? 1 : 0);
+                        glUniform1f(loc_alpha, sc->color.w());
+                        if (sc->enableTexture) {
+                            glUniform1i(loc_tex2d, 0);
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, texHandle);
+                        }
+
+                        // Use SubData to overwrite memory instead of re-allocating
+                        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verts), verts);
+                        glDrawArrays(GL_TRIANGLES, 0, 6);
+                        Component::Rendering::Get().drawCalls++;
                     }
-                    if (!ok) continue;
 
-                    OccVertex verts[6] = {
-                        { ndc[0].x, ndc[0].y, u0, v1 }, // BL
-                        { ndc[1].x, ndc[1].y, u1, v1 }, // BR
-                        { ndc[2].x, ndc[2].y, u1, v0 }, // TR
-                        { ndc[0].x, ndc[0].y, u0, v1 }, // BL
-                        { ndc[2].x, ndc[2].y, u1, v0 }, // TR
-                        { ndc[3].x, ndc[3].y, u0, v0 }  // TL
-                    };
-
-                    glUniform1i(glGetUniformLocation(occShader.GetHandle(), "uUseTexture"), sc->enableTexture ? 1 : 0);
-                    glUniform1f(glGetUniformLocation(occShader.GetHandle(), "uAlpha"), sc->color.w());
-                    if (sc->enableTexture) {
-                        glUniform1i(glGetUniformLocation(occShader.GetHandle(), "uTex2d"), 0);
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, texHandle);
-                    }
-
-                    glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_DYNAMIC_DRAW);
-                    glDrawArrays(GL_TRIANGLES, 0, 6);
-                    Component::Rendering::Get().drawCalls++;
-                }
-
-
-                glBindVertexArray(0);
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
-                glBlendEquation(GL_FUNC_ADD);
-                glDisable(GL_BLEND);
-                glEnable(GL_CULL_FACE);
+                    glBindVertexArray(0);
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    glBlendEquation(GL_FUNC_ADD);
+                    glDisable(GL_BLEND);
+                    glEnable(GL_CULL_FACE);
                 }
             }
 
@@ -759,21 +784,32 @@ namespace CrashoutsEngine {
             }
             GLSLShader& combineShader = combineAsset->shaderObject;
             combineShader.Use();
-            glUniform1f(glGetUniformLocation(combineShader.GetHandle(), "uAmbient"), g_ambient);
-            glUniform1i(glGetUniformLocation(combineShader.GetHandle(), "uLightBehind"), 2);
-            glUniform1i(glGetUniformLocation(combineShader.GetHandle(), "uOccluderMask"), 3);
+
+            static GLint loc_cAmbient = -1, loc_cLightBehind = -1, loc_cOccluder = -1, loc_cScene = -1, loc_cLight = -1;
+            if (loc_cAmbient == -1) {
+                loc_cAmbient = glGetUniformLocation(combineShader.GetHandle(), "uAmbient");
+                loc_cLightBehind = glGetUniformLocation(combineShader.GetHandle(), "uLightBehind");
+                loc_cOccluder = glGetUniformLocation(combineShader.GetHandle(), "uOccluderMask");
+                loc_cScene = glGetUniformLocation(combineShader.GetHandle(), "uScene");
+                loc_cLight = glGetUniformLocation(combineShader.GetHandle(), "uLight");
+            }
+
+            glUniform1f(loc_cAmbient, g_ambient);
+            glUniform1i(loc_cLightBehind, 2);
+            glUniform1i(loc_cOccluder, 3);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, behindLightsTex[0]);
+            glBindTexture(GL_TEXTURE_2D, behindLightsTex[0]); // Bloom Behind
             glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_2D, occluderTexture);
-            RenderFullscreen(combineShader, sceneTextureID, "uScene", frontLightsTex[0], "uLight");
+
+            RenderFullscreenCached(combineShader, sceneTextureID, loc_cScene, frontLightsTex[0], loc_cLight); // Bloom Front
             glBindTexture(GL_TEXTURE_2D, 0);
 
-            // --- Bright Pass ---
-            int halfW = std::max(1, gameTextureWidth / 2);
-            int halfH = std::max(1, gameTextureHeight / 2);
+            // --- Bright Pass (Quarter Res) ---
+            int blurW = std::max(1, gameTextureWidth / 4);
+            int blurH = std::max(1, gameTextureHeight / 4);
             glBindFramebuffer(GL_FRAMEBUFFER, brightFbo);
-            glViewport(0, 0, halfW, halfH);
+            glViewport(0, 0, blurW, blurH);
             glClear(GL_COLOR_BUFFER_BIT);
 
             auto* brightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BrightShader");
@@ -783,10 +819,16 @@ namespace CrashoutsEngine {
             }
             GLSLShader& brightShader = brightAsset->shaderObject;
             brightShader.Use();
-            glUniform1f(glGetUniformLocation(brightShader.GetHandle(), "uThreshold"), g_bloomThreshold);
-            RenderFullscreen(brightShader, combineTexture, "uScene");
 
-            // --- Blur Pass (Kawase) ---
+            static GLint loc_bThreshold = -1, loc_bScene = -1;
+            if (loc_bThreshold == -1) {
+                loc_bThreshold = glGetUniformLocation(brightShader.GetHandle(), "uThreshold");
+                loc_bScene = glGetUniformLocation(brightShader.GetHandle(), "uScene");
+            }
+            glUniform1f(loc_bThreshold, g_bloomThreshold);
+            RenderFullscreenCached(brightShader, combineTexture, loc_bScene);
+
+            // --- Blur Pass (Quarter Res) ---
             GLuint blurInput = brightTexture;
             int iterations = std::max(0, g_bloomIterations);
             auto* blurAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BlurShader");
@@ -798,20 +840,27 @@ namespace CrashoutsEngine {
 
             if (iterations > 0) {
                 blurShader.Use();
-                glUniform2f(glGetUniformLocation(blurShader.GetHandle(), "uTexelSize"), 1.0f / halfW, 1.0f / halfH);
+
+                static GLint loc_blurTexel = -1, loc_blurPass = -1, loc_blurImage = -1;
+                if (loc_blurTexel == -1) {
+                    loc_blurTexel = glGetUniformLocation(blurShader.GetHandle(), "uTexelSize");
+                    loc_blurPass = glGetUniformLocation(blurShader.GetHandle(), "uPass");
+                    loc_blurImage = glGetUniformLocation(blurShader.GetHandle(), "uImage");
+                }
+
+                glUniform2f(loc_blurTexel, 1.0f / blurW, 1.0f / blurH);
 
                 for (int i = 0; i < iterations; ++i) {
                     glBindFramebuffer(GL_FRAMEBUFFER, pingpongFbo[i % 2]);
-                    glViewport(0, 0, halfW, halfH);
+                    glViewport(0, 0, blurW, blurH);
                     glClear(GL_COLOR_BUFFER_BIT);
 
-                    glUniform1i(glGetUniformLocation(blurShader.GetHandle(), "uPass"), i);
-
-                    RenderFullscreen(blurShader, blurInput, "uImage");
+                    glUniform1i(loc_blurPass, i);
+                    RenderFullscreenCached(blurShader, blurInput, loc_blurImage);
                     blurInput = pingpongTex[i % 2];
                 }
             }
-            
+
             GLuint bloomTex = (iterations > 0) ? blurInput : brightTexture;
 
             // --- Final Composite (to currently bound framebuffer) ---
@@ -826,35 +875,46 @@ namespace CrashoutsEngine {
             }
             GLSLShader& finalShader = finalAsset->shaderObject;
             finalShader.Use();
-            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uUseBloom"), g_bloomEnabled ? 1 : 0);
-            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uBloomIntensity"), g_bloomIntensity);
-            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uActive"), active ? 1 : 0);
-            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uBrightness"), g_brightness);
-            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uContrast"), g_contrast + 1.f);
-            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uSaturation"), g_saturation + 1.f);
-            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uNoBloomLight"), 2);
-            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uNoBloomBehind"), 3);
-            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uOccluderMask"), 4);
+
+            static GLint loc_fUseBloom = -1, loc_fBloomInt = -1, loc_fActive = -1, loc_fBright = -1;
+            static GLint loc_fContrast = -1, loc_fSat = -1, loc_fNoBloomL = -1, loc_fNoBloomB = -1, loc_fOcc = -1;
+            static GLint loc_fScene = -1, loc_fBloom = -1;
+
+            if (loc_fUseBloom == -1) {
+                loc_fUseBloom = glGetUniformLocation(finalShader.GetHandle(), "uUseBloom");
+                loc_fBloomInt = glGetUniformLocation(finalShader.GetHandle(), "uBloomIntensity");
+                loc_fActive = glGetUniformLocation(finalShader.GetHandle(), "uActive");
+                loc_fBright = glGetUniformLocation(finalShader.GetHandle(), "uBrightness");
+                loc_fContrast = glGetUniformLocation(finalShader.GetHandle(), "uContrast");
+                loc_fSat = glGetUniformLocation(finalShader.GetHandle(), "uSaturation");
+                loc_fNoBloomL = glGetUniformLocation(finalShader.GetHandle(), "uNoBloomLight");
+                loc_fNoBloomB = glGetUniformLocation(finalShader.GetHandle(), "uNoBloomBehind");
+                loc_fOcc = glGetUniformLocation(finalShader.GetHandle(), "uOccluderMask");
+                loc_fScene = glGetUniformLocation(finalShader.GetHandle(), "uScene");
+                loc_fBloom = glGetUniformLocation(finalShader.GetHandle(), "uBloom");
+            }
+
+            glUniform1i(loc_fUseBloom, g_bloomEnabled ? 1 : 0);
+            glUniform1f(loc_fBloomInt, g_bloomIntensity);
+            glUniform1i(loc_fActive, active ? 1 : 0);
+            glUniform1f(loc_fBright, g_brightness);
+            glUniform1f(loc_fContrast, g_contrast + 1.f);
+            glUniform1f(loc_fSat, g_saturation + 1.f);
+            glUniform1i(loc_fNoBloomL, 2);
+            glUniform1i(loc_fNoBloomB, 3);
+            glUniform1i(loc_fOcc, 4);
+
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, frontLightsTex[1]);
+            glBindTexture(GL_TEXTURE_2D, frontLightsTex[1]); // NoBloom Front
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, behindLightsTex[1]);
+            glBindTexture(GL_TEXTURE_2D, behindLightsTex[1]); // NoBloom Behind
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, occluderTexture);
-            RenderFullscreen(finalShader, combineTexture, "uScene", bloomTex, "uBloom");
+
+            RenderFullscreenCached(finalShader, combineTexture, loc_fScene, bloomTex, loc_fBloom);
             glBindTexture(GL_TEXTURE_2D, 0);
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
-
     }
-
 }
-
-
-
-
-
-
-
-
