@@ -219,6 +219,16 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasShape(uint entityID);
 
+        // --- LIGHT COMPONENT LIFECYCLE ---
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void AddLight(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void RemoveLight(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasLight(uint entityID);
+
         // --- Tag COMPONENT LIFECYCLE ---
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void AddTag(uint entityID);

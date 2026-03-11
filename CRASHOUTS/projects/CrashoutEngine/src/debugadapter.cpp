@@ -70,6 +70,7 @@ All content
 #include "collisionmanager.h"
 #include "gamestatemanager.h"
 #include "assetmanager.h"
+#include "sceneasset.h"
 #include "monomanager.h"
 #include "audioSystem.h"
 #include "tilemapasset.h"
@@ -97,6 +98,13 @@ using namespace Component;
  once via RegisterBuiltinComponentAdapters(), which the app calls at startup.
 */
 namespace {
+
+	static void AutoSaveSceneIfRuntime()
+	{
+		if (engineState == EngineState::STOP) return;
+		if (CrashoutsEngine::Serialization::currSceneName.empty()) return;
+		CrashoutsEngine::Serialization::SaveScenes(CrashoutsEngine::Serialization::currSceneName);
+	}
 
 	//------------------------------------- UI Helpers for Undo/ Redo logic -------------------------------------- 
 	namespace UIHelpers {
@@ -1773,18 +1781,22 @@ namespace {
 								mono_field_get_value(instance, field, &val);
 								UIHelpers::DrawUndoableFloat(fName, val);
 								mono_field_set_value(instance, field, &val);
+								if (ImGui::IsItemDeactivatedAfterEdit()) AutoSaveSceneIfRuntime();
 							}
 							else if (typeEnum == MONO_TYPE_I4) { // Int
 								int val = 0;
 								mono_field_get_value(instance, field, &val);
 								UIHelpers::DrawUndoableInt(fName, val);
 								mono_field_set_value(instance, field, &val);
+								if (ImGui::IsItemDeactivatedAfterEdit()) AutoSaveSceneIfRuntime();
 							}
 							else if (typeEnum == MONO_TYPE_BOOLEAN) { // Bool
 								bool val = false;
 								mono_field_get_value(instance, field, &val);
+								bool oldVal = val;
 								UIHelpers::DrawUndoableBool(fName, val);
 								mono_field_set_value(instance, field, &val);
+								if (val != oldVal) AutoSaveSceneIfRuntime();
 							}
 							else if (typeEnum == MONO_TYPE_STRING) { // String
 								MonoString* monoStr = nullptr;
@@ -1799,6 +1811,7 @@ namespace {
 
 								std::string oldVal = strVal;
 								UIHelpers::DrawUndoableString(fName, strVal);
+								if (ImGui::IsItemDeactivatedAfterEdit()) AutoSaveSceneIfRuntime();
 
 								if (strVal != oldVal) {
 									MonoString* newMonoStr = mono_string_new(MonoManager::GetDomain(), strVal.c_str());
@@ -1810,12 +1823,14 @@ namespace {
 								mono_field_get_value(instance, field, &val);
 								UIHelpers::DrawUndoableVec2(fName, val);
 								mono_field_set_value(instance, field, &val);
+								if (ImGui::IsItemDeactivatedAfterEdit()) AutoSaveSceneIfRuntime();
 							}
 							else if (typeEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEVec3") == 0) {
 								CEVec3 val{ 0.f, 0.f, 0.f };
 								mono_field_get_value(instance, field, &val);
 								UIHelpers::DrawUndoableVec3(fName, val);
 								mono_field_set_value(instance, field, &val);
+								if (ImGui::IsItemDeactivatedAfterEdit()) AutoSaveSceneIfRuntime();
 							}
 							else if (strcmp(fieldClassName, "Entity") == 0) {
 								uint32_t currentID = 0;

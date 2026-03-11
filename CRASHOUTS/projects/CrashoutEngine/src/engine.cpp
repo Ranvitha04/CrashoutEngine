@@ -679,8 +679,8 @@ void Update(double const& dt) {
         CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, true);
     }
     else if (engineState == EngineState::PAUSE) {
-        // Freeze gameplay, but still allow editor camera to move
         physicsSystem.Update(0.f);
+        CrashoutsEngine::ScriptSystem::LateUpdateAll();
         InputManager::ClearInputs();
         return;
     }

@@ -538,6 +538,33 @@ namespace CrashoutsEngine {
 									MonoString* ms = nullptr; mono_field_get_value(instance, field, &ms);
 									if (ms) { char* s = mono_string_to_utf8(ms); fields.AddMember(key, rapidjson::Value(s, allocator), allocator); mono_free(s); }
 								}
+								else if (tEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEVec2") == 0) {
+									CEVec2 v{};
+									mono_field_get_value(instance, field, &v);
+									rapidjson::Value obj(rapidjson::kObjectType);
+									obj.AddMember("x", v.x, allocator);
+									obj.AddMember("y", v.y, allocator);
+									fields.AddMember(key, obj, allocator);
+								}
+								else if (tEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEVec3") == 0) {
+									CEVec3 v{};
+									mono_field_get_value(instance, field, &v);
+									rapidjson::Value obj(rapidjson::kObjectType);
+									obj.AddMember("x", v.x, allocator);
+									obj.AddMember("y", v.y, allocator);
+									obj.AddMember("z", v.z, allocator);
+									fields.AddMember(key, obj, allocator);
+								}
+								else if (tEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEColor") == 0) {
+									CEColor c{};
+									mono_field_get_value(instance, field, &c);
+									rapidjson::Value obj(rapidjson::kObjectType);
+									obj.AddMember("x", c.x(), allocator);
+									obj.AddMember("y", c.y(), allocator);
+									obj.AddMember("z", c.z(), allocator);
+									obj.AddMember("w", c.w(), allocator);
+									fields.AddMember(key, obj, allocator);
+								}
 								else if (strcmp(fieldClassName, "Entity") == 0) {
 									uint32_t currentID = 0;
 									MonoClassField* idField = mono_class_get_field_from_name(fieldClass, "ID");
