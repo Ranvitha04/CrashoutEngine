@@ -25,6 +25,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "collisionmanager.h"
 #include "hierarchycomponent.h"
 #include "jobsystem.h"
+#include "performanceSystem.h" // <--- ADDED PROFiler HEADER
 #include <iostream>
 #include <algorithm>
 #include <cmath>
@@ -156,7 +157,6 @@ namespace CrashoutsEngine {
             cachedWidth = gameTextureWidth;
             cachedHeight = gameTextureHeight;
 
-            // [OPTIMIZATION 1]: Use Quarter-Resolution for Bloom passes to save 75% GPU Fill-Rate!
             int blurW = std::max(1, cachedWidth / 4);
             int blurH = std::max(1, cachedHeight / 4);
 
@@ -165,7 +165,6 @@ namespace CrashoutsEngine {
             CreateFboWithTexture(occluderFbo, occluderTexture, cachedWidth, cachedHeight);
             CreateFboWithTexture(combineFbo, combineTexture, cachedWidth, cachedHeight);
 
-            // Apply the quarter-res targets to the heavy blur passes
             CreateFboWithTexture(brightFbo, brightTexture, blurW, blurH);
             CreateFboWithTexture(pingpongFbo[0], pingpongTex[0], blurW, blurH);
             CreateFboWithTexture(pingpongFbo[1], pingpongTex[1], blurW, blurH);
@@ -188,62 +187,50 @@ namespace CrashoutsEngine {
         }
 
         void InitPP() {
-            // --- Create the Full-Screen Quad ---
             glGenVertexArrays(1, &quadvao);
             glGenBuffers(1, &quadvbo);
 
             glBindVertexArray(quadvao);
             glBindBuffer(GL_ARRAY_BUFFER, quadvbo);
-
-            // Pass the vertices from your header
             glBufferData(GL_ARRAY_BUFFER, sizeof(quadVerticesNDC), &quadVerticesNDC, GL_STATIC_DRAW);
 
-            // Attribute 0: Position (vec2)
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 
-            // Attribute 1: TexCoords (vec2)
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
-            // Instance buffer for lights
             glGenBuffers(1, &lightInstanceVbo);
             glBindBuffer(GL_ARRAY_BUFFER, lightInstanceVbo);
             glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 
-            // layout(location = 2) vec2 iLightPos
             glEnableVertexAttribArray(2);
             glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
             glVertexAttribDivisor(2, 1);
 
-            // layout(location = 3) float iLightRadius
             glEnableVertexAttribArray(3);
             glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(2 * sizeof(float)));
             glVertexAttribDivisor(3, 1);
 
-            // layout(location = 4) vec3 iLightColor
             glEnableVertexAttribArray(4);
             glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
             glVertexAttribDivisor(4, 1);
 
-            // layout(location = 5) float iIntensity
             glEnableVertexAttribArray(5);
             glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
             glVertexAttribDivisor(5, 1);
 
-            // layout(location = 6) float iShadowIndex
             glEnableVertexAttribArray(6);
             glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(7 * sizeof(float)));
             glVertexAttribDivisor(6, 1);
 
-            glBindVertexArray(0); // Unbind
+            glBindVertexArray(0);
 
-            // Occluder quad VAO (dynamic)
             glGenVertexArrays(1, &occluderVao);
             glGenBuffers(1, &occluderVbo);
             glBindVertexArray(occluderVao);
             glBindBuffer(GL_ARRAY_BUFFER, occluderVbo);
-            glBufferData(GL_ARRAY_BUFFER, 6 * 4 * sizeof(float), nullptr, GL_DYNAMIC_DRAW); // Pre-allocated
+            glBufferData(GL_ARRAY_BUFFER, 6 * 4 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(1);
@@ -379,7 +366,6 @@ namespace CrashoutsEngine {
             glBlendFunci(0, GL_ONE, GL_ONE);
             glBlendFunci(1, GL_ONE, GL_ONE);
 
-
             auto* lightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("LightShader");
             if (!lightAsset) {
                 glDisable(GL_BLEND);
@@ -453,222 +439,233 @@ namespace CrashoutsEngine {
 
             auto& lightArray = ecs.GetComponentArray<LightComponent>();
             static std::vector<LightDraw> lightDraws;
-            lightDraws.clear();
-            lightDraws.resize(lightArray.dense.size());
-
-            CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(lightArray.dense.size()),
-                [&](unsigned int start, unsigned int end) {
-                    for (unsigned int i = start; i < end; ++i) {
-                        LightComponent* lc = lightArray.dense[i];
-                        if (!lc || !lc->active || !lc->renderSelf) {
-                            lightDraws[i].active = false;
-                            continue;
-                        }
-
-                        Entity ent = lightArray.indexToEntity[i];
-                        CEVec3 worldPos = lc->position;
-                        if (lc->useTransform && ecs.HasComponent<TransformComponent>(ent)) {
-                            worldPos = ecs.GetComponent<TransformComponent>(ent)->position;
-                        }
-
-                        glm::vec4 clip = proj * view * glm::vec4(worldPos.x, worldPos.y, worldPos.z, 1.0f);
-                        if (clip.w == 0.0f) {
-                            lightDraws[i].active = false;
-                            continue;
-                        }
-                        glm::vec3 ndc = glm::vec3(clip) / clip.w;
-                        glm::vec2 uvCenter = glm::vec2(ndc.x, ndc.y) * 0.5f + 0.5f;
-
-                        glm::vec4 clipR = proj * view * glm::vec4(worldPos.x + lc->radius, worldPos.y, worldPos.z, 1.0f);
-                        glm::vec3 ndcR = glm::vec3(clipR) / clipR.w;
-                        glm::vec2 uvR = glm::vec2(ndcR.x, ndcR.y) * 0.5f + 0.5f;
-                        float radiusUV = glm::length(uvR - uvCenter);
-
-                        if (radiusUV <= 0.0f ||
-                            (uvCenter.x + radiusUV) < 0.0f || (uvCenter.x - radiusUV) > 1.0f ||
-                            (uvCenter.y + radiusUV) < 0.0f || (uvCenter.y - radiusUV) > 1.0f) {
-                            lightDraws[i].active = false;
-                            continue;
-                        }
-
-                        lightDraws[i].active = true;
-                        lightDraws[i].affectBloom = lc->affectBloom;
-                        lightDraws[i].renderBehind = lc->renderBehind;
-                        lightDraws[i].ignoreParentOccluders = lc->ignoreParentOccluders;
-                        lightDraws[i].uvCenter = uvCenter;
-                        lightDraws[i].radiusUV = radiusUV;
-                        lightDraws[i].worldPos = worldPos;
-                        lightDraws[i].radiusWorld = lc->radius;
-                        lightDraws[i].color = lc->color;
-                        lightDraws[i].intensity = lc->intensity;
-                    }
-                });
-
             static std::vector<int> shadowRowByLight;
-            shadowRowByLight.assign(lightDraws.size(), -1);
             static std::vector<size_t> shadowLights;
-            shadowLights.clear();
-            shadowLights.reserve(lightDraws.size());
 
-            if (g_shadowsEnabled) {
-                for (size_t i = 0; i < lightDraws.size(); ++i) {
-                    if (!lightDraws[i].active) continue;
-                    shadowRowByLight[i] = static_cast<int>(shadowLights.size());
-                    shadowLights.push_back(i);
-                }
-            }
-
-            int shadowRays = std::max(8, g_shadowRays);
-            int shadowRows = static_cast<int>(shadowLights.size());
-
-            static int maxShadowRows = 1;
-            if (shadowRows > maxShadowRows) maxShadowRows = shadowRows;
-
-            if (shadowTexWidth != shadowRays || shadowTexHeight < maxShadowRows) {
-                shadowTexWidth = shadowRays;
-                shadowTexHeight = maxShadowRows;
-                glBindTexture(GL_TEXTURE_2D, shadowTex);
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, shadowTexWidth, shadowTexHeight, 0, GL_RED, GL_FLOAT, nullptr);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-                glBindTexture(GL_TEXTURE_2D, 0);
-            }
-
-            static std::vector<float> shadowData;
-            if (shadowData.size() < (size_t)(shadowTexWidth * shadowTexHeight)) {
-                shadowData.resize(shadowTexWidth * shadowTexHeight);
-            }
-            std::fill(shadowData.begin(), shadowData.end(), 1.0f);
-
-            if (!shadowLights.empty()) {
-                float camWidth = currentCamera.GetVisibleWorldWidth();
-                float camHeight = currentCamera.GetVisibleWorldHeight();
-                CEVec3 camPos = currentCamera.GetPosition();
-                float maxScreenRadius = std::max(camWidth, camHeight) * 1.5f;
-
-                static std::vector<std::vector<CrashoutsEngine::Entity>> allLightCandidates;
-                if (allLightCandidates.size() < shadowLights.size()) {
-                    allLightCandidates.resize(shadowLights.size());
-                }
-                for (auto& vec : allLightCandidates) vec.clear();
-
-                // [OPTIMIZATION 2]: Cache ignored parents OUTSIDE the parallel ray loop to completely skip ECS lookup per ray!
-                static std::vector<CrashoutsEngine::Entity> ignoredParents;
-                ignoredParents.assign(shadowLights.size(), 0);
-
-                for (size_t idx = 0; idx < shadowLights.size(); ++idx) {
-                    size_t lightIndex = shadowLights[idx];
-                    const LightDraw& ld = lightDraws[lightIndex];
-                    Entity ent = lightArray.indexToEntity[lightIndex];
-                    int row = shadowRowByLight[lightIndex];
-                    if (row < 0) continue;
-
-                    // Cache parent lookup
-                    if (ld.ignoreParentOccluders) {
-                        ignoredParents[idx] = ent;
-                        if (ecs.HasComponent<Component::ParentComponent>(ent)) {
-                            auto* pc = ecs.GetComponent<Component::ParentComponent>(ent);
-                            if (pc && pc->parent != 0) ignoredParents[idx] = pc->parent;
-                        }
-                    }
-
-                    float queryRadius = std::min(ld.radiusWorld, maxScreenRadius);
-
-                    Collision::AABBRect lightRegion(
-                        CEVec3{ ld.worldPos.x - queryRadius, ld.worldPos.y - queryRadius, 0.f },
-                        CEVec3{ ld.worldPos.x + queryRadius, ld.worldPos.y + queryRadius, 0.f }
-                    );
-
-                    allLightCandidates[idx].reserve(64);
-                    Collision::CollisionHandler::GetInstance().quadTree.Query(lightRegion, allLightCandidates[idx]);
-
-                    for (auto candEnt : allLightCandidates[idx]) {
-                        auto* cc = ecs.GetComponent<Component::ColliderComponent>(candEnt);
-                        auto* tc = ecs.GetComponent<Component::TransformComponent>(candEnt);
-                        if (cc && cc->collider && tc) {
-                            cc->collider->UpdateCollider(tc->position);
-                            if (cc->collider->type == Collision::ColliderType::OBB ||
-                                cc->collider->type == Collision::ColliderType::POLYGON ||
-                                cc->collider->type == Collision::ColliderType::TRIANGLE) {
-                                cc->collider->UpdateRotation(tc->rotation);
-                            }
-                        }
-                    }
-                }
-
-                // [OPTIMIZATION 3]: "Flattened Threading"
-                // Instead of 1 task per light (leaving threads idle), we make 1 task per RAY. 
-                // A massive parallel boost for the CPU.
-                int totalRays = static_cast<int>(shadowLights.size()) * shadowRays;
-
-                if (totalRays > 0) {
-                    CrashoutsEngine::JobSystem::Get().ParallelFor(totalRays,
-                        [&](unsigned int start, unsigned int end) {
-                            for (unsigned int taskIdx = start; taskIdx < end; ++taskIdx) {
-                                int shadowArrIdx = taskIdx / shadowRays;
-                                int r = taskIdx % shadowRays;
-
-                                size_t lightIndex = shadowLights[shadowArrIdx];
-                                const LightDraw& ld = lightDraws[lightIndex];
-                                Entity ent = lightArray.indexToEntity[lightIndex];
-                                int row = shadowRowByLight[lightIndex];
-
-                                const auto& localCandidates = allLightCandidates[shadowArrIdx];
-                                CrashoutsEngine::Entity ignoredParent = ignoredParents[shadowArrIdx];
-
-                                float angle = (static_cast<float>(r) + 0.5f) / static_cast<float>(shadowRays);
-                                angle *= 6.28318530718f;
-                                float ux = std::cos(angle);
-                                float uy = std::sin(angle);
-
-                                CEVec3 dir{ ux * camWidth, uy * camHeight, 0.f };
-                                float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
-                                if (len > 0.0001f) {
-                                    dir.x /= len;
-                                    dir.y /= len;
-                                }
-
-                                CEVec3 startPos = ld.worldPos;
-                                CEVec3 endPos = startPos + dir * ld.radiusWorld;
-                                CEVec3 hitPoint{};
-                                CrashoutsEngine::Entity hitEnt = 0;
-
-                                bool hit = Collision::CollisionHandler::GetInstance().RaycastAgainstList(
-                                    startPos, endPos, localCandidates, hitPoint, hitEnt, ent, ignoredParent
-                                );
-
-                                float dist = ld.radiusWorld;
-                                if (hit) {
-                                    CEVec3 delta = hitPoint - startPos;
-                                    dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
-                                    if (dist > ld.radiusWorld) dist = ld.radiusWorld;
-                                }
-
-                                float norm = (ld.radiusWorld > 0.0001f) ? (dist / ld.radiusWorld) : 1.0f;
-                                shadowData[row * shadowRays + r] = norm;
-                            }
-                        });
-                }
-
-                glBindTexture(GL_TEXTURE_2D, shadowTex);
-                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, shadowTexWidth, shadowTexHeight, GL_RED, GL_FLOAT, shadowData.data());
-                glBindTexture(GL_TEXTURE_2D, 0);
-            }
-
-            // --- Light Passes ---
-            renderLightsMRT(frontLightsFbo, false, lightDraws, shadowRowByLight, shadowTexHeight, g_shadowsEnabled, shadowTex, currentCamera);
-            renderLightsMRT(behindLightsFbo, true, lightDraws, shadowRowByLight, shadowTexHeight, g_shadowsEnabled, shadowTex, currentCamera);
-
-            // --- Occluder Mask Pass ---
-            glBindFramebuffer(GL_FRAMEBUFFER, occluderFbo);
-            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-            glDisable(GL_DEPTH_TEST);
-            glClearColor(0.f, 0.f, 0.f, 1.f);
-            glClear(GL_COLOR_BUFFER_BIT);
-
+            // ==========================================
+            // 1. SETUP & CPU SHADOWS
+            // ==========================================
             {
+                FrameProfiler::Scoped sSetup(PerformanceSystem::Get().GetProfiler(), "PP_CPU_Shadows");
+
+                lightDraws.clear();
+                lightDraws.resize(lightArray.dense.size());
+
+                CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(lightArray.dense.size()),
+                    [&](unsigned int start, unsigned int end) {
+                        for (unsigned int i = start; i < end; ++i) {
+                            LightComponent* lc = lightArray.dense[i];
+                            if (!lc || !lc->active || !lc->renderSelf) {
+                                lightDraws[i].active = false;
+                                continue;
+                            }
+
+                            Entity ent = lightArray.indexToEntity[i];
+                            CEVec3 worldPos = lc->position;
+                            if (lc->useTransform && ecs.HasComponent<TransformComponent>(ent)) {
+                                worldPos = ecs.GetComponent<TransformComponent>(ent)->position;
+                            }
+
+                            glm::vec4 clip = proj * view * glm::vec4(worldPos.x, worldPos.y, worldPos.z, 1.0f);
+                            if (clip.w == 0.0f) {
+                                lightDraws[i].active = false;
+                                continue;
+                            }
+                            glm::vec3 ndc = glm::vec3(clip) / clip.w;
+                            glm::vec2 uvCenter = glm::vec2(ndc.x, ndc.y) * 0.5f + 0.5f;
+
+                            glm::vec4 clipR = proj * view * glm::vec4(worldPos.x + lc->radius, worldPos.y, worldPos.z, 1.0f);
+                            glm::vec3 ndcR = glm::vec3(clipR) / clipR.w;
+                            glm::vec2 uvR = glm::vec2(ndcR.x, ndcR.y) * 0.5f + 0.5f;
+                            float radiusUV = glm::length(uvR - uvCenter);
+
+                            if (radiusUV <= 0.0f ||
+                                (uvCenter.x + radiusUV) < 0.0f || (uvCenter.x - radiusUV) > 1.0f ||
+                                (uvCenter.y + radiusUV) < 0.0f || (uvCenter.y - radiusUV) > 1.0f) {
+                                lightDraws[i].active = false;
+                                continue;
+                            }
+
+                            lightDraws[i].active = true;
+                            lightDraws[i].affectBloom = lc->affectBloom;
+                            lightDraws[i].renderBehind = lc->renderBehind;
+                            lightDraws[i].ignoreParentOccluders = lc->ignoreParentOccluders;
+                            lightDraws[i].uvCenter = uvCenter;
+                            lightDraws[i].radiusUV = radiusUV;
+                            lightDraws[i].worldPos = worldPos;
+                            lightDraws[i].radiusWorld = lc->radius;
+                            lightDraws[i].color = lc->color;
+                            lightDraws[i].intensity = lc->intensity;
+                        }
+                    });
+
+                shadowRowByLight.assign(lightDraws.size(), -1);
+                shadowLights.clear();
+                shadowLights.reserve(lightDraws.size());
+
+                if (g_shadowsEnabled) {
+                    for (size_t i = 0; i < lightDraws.size(); ++i) {
+                        if (!lightDraws[i].active) continue;
+                        shadowRowByLight[i] = static_cast<int>(shadowLights.size());
+                        shadowLights.push_back(i);
+                    }
+                }
+
+                int shadowRays = std::max(8, g_shadowRays);
+                int shadowRows = static_cast<int>(shadowLights.size());
+
+                static int maxShadowRows = 1;
+                if (shadowRows > maxShadowRows) maxShadowRows = shadowRows;
+
+                if (shadowTexWidth != shadowRays || shadowTexHeight < maxShadowRows) {
+                    shadowTexWidth = shadowRays;
+                    shadowTexHeight = maxShadowRows;
+                    glBindTexture(GL_TEXTURE_2D, shadowTex);
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, shadowTexWidth, shadowTexHeight, 0, GL_RED, GL_FLOAT, nullptr);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                    glBindTexture(GL_TEXTURE_2D, 0);
+                }
+
+                static std::vector<float> shadowData;
+                if (shadowData.size() < (size_t)(shadowTexWidth * shadowTexHeight)) {
+                    shadowData.resize(shadowTexWidth * shadowTexHeight);
+                }
+                std::fill(shadowData.begin(), shadowData.end(), 1.0f);
+
+                if (!shadowLights.empty()) {
+                    float camWidth = currentCamera.GetVisibleWorldWidth();
+                    float camHeight = currentCamera.GetVisibleWorldHeight();
+                    CEVec3 camPos = currentCamera.GetPosition();
+                    float maxScreenRadius = std::max(camWidth, camHeight) * 1.5f;
+
+                    static std::vector<std::vector<CrashoutsEngine::Entity>> allLightCandidates;
+                    if (allLightCandidates.size() < shadowLights.size()) {
+                        allLightCandidates.resize(shadowLights.size());
+                    }
+                    for (auto& vec : allLightCandidates) vec.clear();
+
+                    static std::vector<CrashoutsEngine::Entity> ignoredParents;
+                    ignoredParents.assign(shadowLights.size(), 0);
+
+                    for (size_t idx = 0; idx < shadowLights.size(); ++idx) {
+                        size_t lightIndex = shadowLights[idx];
+                        const LightDraw& ld = lightDraws[lightIndex];
+                        Entity ent = lightArray.indexToEntity[lightIndex];
+                        int row = shadowRowByLight[lightIndex];
+                        if (row < 0) continue;
+
+                        if (ld.ignoreParentOccluders) {
+                            ignoredParents[idx] = ent;
+                            if (ecs.HasComponent<Component::ParentComponent>(ent)) {
+                                auto* pc = ecs.GetComponent<Component::ParentComponent>(ent);
+                                if (pc && pc->parent != 0) ignoredParents[idx] = pc->parent;
+                            }
+                        }
+
+                        float queryRadius = std::min(ld.radiusWorld, maxScreenRadius);
+
+                        Collision::AABBRect lightRegion(
+                            CEVec3{ ld.worldPos.x - queryRadius, ld.worldPos.y - queryRadius, 0.f },
+                            CEVec3{ ld.worldPos.x + queryRadius, ld.worldPos.y + queryRadius, 0.f }
+                        );
+
+                        allLightCandidates[idx].reserve(64);
+                        Collision::CollisionHandler::GetInstance().QueryTrees(lightRegion, allLightCandidates[idx]);
+
+                        for (auto candEnt : allLightCandidates[idx]) {
+                            auto* cc = ecs.GetComponent<Component::ColliderComponent>(candEnt);
+                            auto* tc = ecs.GetComponent<Component::TransformComponent>(candEnt);
+                            if (cc && cc->collider && tc) {
+                                cc->collider->UpdateCollider(tc->position);
+                                if (cc->collider->type == Collision::ColliderType::OBB ||
+                                    cc->collider->type == Collision::ColliderType::POLYGON ||
+                                    cc->collider->type == Collision::ColliderType::TRIANGLE) {
+                                    cc->collider->UpdateRotation(tc->rotation);
+                                }
+                            }
+                        }
+                    }
+
+                    int totalRays = static_cast<int>(shadowLights.size()) * shadowRays;
+
+                    if (totalRays > 0) {
+                        CrashoutsEngine::JobSystem::Get().ParallelFor(totalRays,
+                            [&](unsigned int start, unsigned int end) {
+                                for (unsigned int taskIdx = start; taskIdx < end; ++taskIdx) {
+                                    int shadowArrIdx = taskIdx / shadowRays;
+                                    int r = taskIdx % shadowRays;
+
+                                    size_t lightIndex = shadowLights[shadowArrIdx];
+                                    const LightDraw& ld = lightDraws[lightIndex];
+                                    Entity ent = lightArray.indexToEntity[lightIndex];
+                                    int row = shadowRowByLight[lightIndex];
+
+                                    const auto& localCandidates = allLightCandidates[shadowArrIdx];
+                                    CrashoutsEngine::Entity ignoredParent = ignoredParents[shadowArrIdx];
+
+                                    float angle = (static_cast<float>(r) + 0.5f) / static_cast<float>(shadowRays);
+                                    angle *= 6.28318530718f;
+                                    float ux = std::cos(angle);
+                                    float uy = std::sin(angle);
+
+                                    CEVec3 dir{ ux * camWidth, uy * camHeight, 0.f };
+                                    float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+                                    if (len > 0.0001f) {
+                                        dir.x /= len;
+                                        dir.y /= len;
+                                    }
+
+                                    CEVec3 startPos = ld.worldPos;
+                                    CEVec3 endPos = startPos + dir * ld.radiusWorld;
+                                    CEVec3 hitPoint{};
+                                    CrashoutsEngine::Entity hitEnt = 0;
+
+                                    bool hit = Collision::CollisionHandler::GetInstance().RaycastAgainstList(
+                                        startPos, endPos, localCandidates, hitPoint, hitEnt, ent, ignoredParent
+                                    );
+
+                                    float dist = ld.radiusWorld;
+                                    if (hit) {
+                                        CEVec3 delta = hitPoint - startPos;
+                                        dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+                                        if (dist > ld.radiusWorld) dist = ld.radiusWorld;
+                                    }
+
+                                    float norm = (ld.radiusWorld > 0.0001f) ? (dist / ld.radiusWorld) : 1.0f;
+                                    shadowData[row * shadowRays + r] = norm;
+                                }
+                            });
+                    }
+
+                    glBindTexture(GL_TEXTURE_2D, shadowTex);
+                    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, shadowTexWidth, shadowTexHeight, GL_RED, GL_FLOAT, shadowData.data());
+                    glBindTexture(GL_TEXTURE_2D, 0);
+                }
+            } // END CPU SHADOWS
+
+            // ==========================================
+            // 2. GPU LIGHT PASSES
+            // ==========================================
+            {
+                FrameProfiler::Scoped sLights(PerformanceSystem::Get().GetProfiler(), "PP_GPU_Lights");
+                renderLightsMRT(frontLightsFbo, false, lightDraws, shadowRowByLight, shadowTexHeight, g_shadowsEnabled, shadowTex, currentCamera);
+                renderLightsMRT(behindLightsFbo, true, lightDraws, shadowRowByLight, shadowTexHeight, g_shadowsEnabled, shadowTex, currentCamera);
+            }
+
+            // ==========================================
+            // 3. GPU OCCLUDER MASK PASS
+            // ==========================================
+            {
+                FrameProfiler::Scoped sOcc(PerformanceSystem::Get().GetProfiler(), "PP_GPU_Occluders");
+                glBindFramebuffer(GL_FRAMEBUFFER, occluderFbo);
+                glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                glDisable(GL_DEPTH_TEST);
+                glClearColor(0.f, 0.f, 0.f, 1.f);
+                glClear(GL_COLOR_BUFFER_BIT);
+
                 struct OccVertex { float x, y, u, v; };
                 auto* occAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("OccluderMaskShader");
                 if (occAsset) {
@@ -757,7 +754,6 @@ namespace CrashoutsEngine {
                             glBindTexture(GL_TEXTURE_2D, texHandle);
                         }
 
-                        // Use SubData to overwrite memory instead of re-allocating
                         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verts), verts);
                         glDrawArrays(GL_TRIANGLES, 0, 6);
                         Component::Rendering::Get().drawCalls++;
@@ -769,152 +765,168 @@ namespace CrashoutsEngine {
                     glDisable(GL_BLEND);
                     glEnable(GL_CULL_FACE);
                 }
-            }
+            } // END GPU OCCLUDERS
 
-            // --- Combine Pass ---
-            glBindFramebuffer(GL_FRAMEBUFFER, combineFbo);
-            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-            glClearColor(0.f, 0.f, 0.f, 1.f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            // ==========================================
+            // 4. GPU COMBINE PASS
+            // ==========================================
+            {
+                FrameProfiler::Scoped sComb(PerformanceSystem::Get().GetProfiler(), "PP_GPU_Combine");
+                glBindFramebuffer(GL_FRAMEBUFFER, combineFbo);
+                glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                glClearColor(0.f, 0.f, 0.f, 1.f);
+                glClear(GL_COLOR_BUFFER_BIT);
 
-            auto* combineAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("CombineShader");
-            if (!combineAsset) {
-                RenderFallback(sceneTextureID);
-                return;
-            }
-            GLSLShader& combineShader = combineAsset->shaderObject;
-            combineShader.Use();
+                auto* combineAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("CombineShader");
+                if (!combineAsset) {
+                    RenderFallback(sceneTextureID);
+                    return;
+                }
+                GLSLShader& combineShader = combineAsset->shaderObject;
+                combineShader.Use();
 
-            static GLint loc_cAmbient = -1, loc_cLightBehind = -1, loc_cOccluder = -1, loc_cScene = -1, loc_cLight = -1;
-            if (loc_cAmbient == -1) {
-                loc_cAmbient = glGetUniformLocation(combineShader.GetHandle(), "uAmbient");
-                loc_cLightBehind = glGetUniformLocation(combineShader.GetHandle(), "uLightBehind");
-                loc_cOccluder = glGetUniformLocation(combineShader.GetHandle(), "uOccluderMask");
-                loc_cScene = glGetUniformLocation(combineShader.GetHandle(), "uScene");
-                loc_cLight = glGetUniformLocation(combineShader.GetHandle(), "uLight");
-            }
-
-            glUniform1f(loc_cAmbient, g_ambient);
-            glUniform1i(loc_cLightBehind, 2);
-            glUniform1i(loc_cOccluder, 3);
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, behindLightsTex[0]); // Bloom Behind
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, occluderTexture);
-
-            RenderFullscreenCached(combineShader, sceneTextureID, loc_cScene, frontLightsTex[0], loc_cLight); // Bloom Front
-            glBindTexture(GL_TEXTURE_2D, 0);
-
-            // --- Bright Pass (Quarter Res) ---
-            int blurW = std::max(1, gameTextureWidth / 4);
-            int blurH = std::max(1, gameTextureHeight / 4);
-            glBindFramebuffer(GL_FRAMEBUFFER, brightFbo);
-            glViewport(0, 0, blurW, blurH);
-            glClear(GL_COLOR_BUFFER_BIT);
-
-            auto* brightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BrightShader");
-            if (!brightAsset) {
-                RenderFallback(combineTexture);
-                return;
-            }
-            GLSLShader& brightShader = brightAsset->shaderObject;
-            brightShader.Use();
-
-            static GLint loc_bThreshold = -1, loc_bScene = -1;
-            if (loc_bThreshold == -1) {
-                loc_bThreshold = glGetUniformLocation(brightShader.GetHandle(), "uThreshold");
-                loc_bScene = glGetUniformLocation(brightShader.GetHandle(), "uScene");
-            }
-            glUniform1f(loc_bThreshold, g_bloomThreshold);
-            RenderFullscreenCached(brightShader, combineTexture, loc_bScene);
-
-            // --- Blur Pass (Quarter Res) ---
-            GLuint blurInput = brightTexture;
-            int iterations = std::max(0, g_bloomIterations);
-            auto* blurAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BlurShader");
-            if (!blurAsset) {
-                RenderFallback(combineTexture);
-                return;
-            }
-            GLSLShader& blurShader = blurAsset->shaderObject;
-
-            if (iterations > 0) {
-                blurShader.Use();
-
-                static GLint loc_blurTexel = -1, loc_blurPass = -1, loc_blurImage = -1;
-                if (loc_blurTexel == -1) {
-                    loc_blurTexel = glGetUniformLocation(blurShader.GetHandle(), "uTexelSize");
-                    loc_blurPass = glGetUniformLocation(blurShader.GetHandle(), "uPass");
-                    loc_blurImage = glGetUniformLocation(blurShader.GetHandle(), "uImage");
+                static GLint loc_cAmbient = -1, loc_cLightBehind = -1, loc_cOccluder = -1, loc_cScene = -1, loc_cLight = -1;
+                if (loc_cAmbient == -1) {
+                    loc_cAmbient = glGetUniformLocation(combineShader.GetHandle(), "uAmbient");
+                    loc_cLightBehind = glGetUniformLocation(combineShader.GetHandle(), "uLightBehind");
+                    loc_cOccluder = glGetUniformLocation(combineShader.GetHandle(), "uOccluderMask");
+                    loc_cScene = glGetUniformLocation(combineShader.GetHandle(), "uScene");
+                    loc_cLight = glGetUniformLocation(combineShader.GetHandle(), "uLight");
                 }
 
-                glUniform2f(loc_blurTexel, 1.0f / blurW, 1.0f / blurH);
+                glUniform1f(loc_cAmbient, g_ambient);
+                glUniform1i(loc_cLightBehind, 2);
+                glUniform1i(loc_cOccluder, 3);
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, behindLightsTex[0]); // Bloom Behind
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, occluderTexture);
 
-                for (int i = 0; i < iterations; ++i) {
-                    glBindFramebuffer(GL_FRAMEBUFFER, pingpongFbo[i % 2]);
-                    glViewport(0, 0, blurW, blurH);
-                    glClear(GL_COLOR_BUFFER_BIT);
+                RenderFullscreenCached(combineShader, sceneTextureID, loc_cScene, frontLightsTex[0], loc_cLight); // Bloom Front
+                glBindTexture(GL_TEXTURE_2D, 0);
+            } // END GPU COMBINE
 
-                    glUniform1i(loc_blurPass, i);
-                    RenderFullscreenCached(blurShader, blurInput, loc_blurImage);
-                    blurInput = pingpongTex[i % 2];
+            // ==========================================
+            // 5. GPU BLOOM
+            // ==========================================
+            GLuint bloomTex = brightTexture; // Declared outside so Composite can use it
+            {
+                FrameProfiler::Scoped sBloom(PerformanceSystem::Get().GetProfiler(), "PP_GPU_Bloom");
+
+                int blurW = std::max(1, gameTextureWidth / 4);
+                int blurH = std::max(1, gameTextureHeight / 4);
+                glBindFramebuffer(GL_FRAMEBUFFER, brightFbo);
+                glViewport(0, 0, blurW, blurH);
+                glClear(GL_COLOR_BUFFER_BIT);
+
+                auto* brightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BrightShader");
+                if (!brightAsset) {
+                    RenderFallback(combineTexture);
+                    return;
                 }
-            }
+                GLSLShader& brightShader = brightAsset->shaderObject;
+                brightShader.Use();
 
-            GLuint bloomTex = (iterations > 0) ? blurInput : brightTexture;
+                static GLint loc_bThreshold = -1, loc_bScene = -1;
+                if (loc_bThreshold == -1) {
+                    loc_bThreshold = glGetUniformLocation(brightShader.GetHandle(), "uThreshold");
+                    loc_bScene = glGetUniformLocation(brightShader.GetHandle(), "uScene");
+                }
+                glUniform1f(loc_bThreshold, g_bloomThreshold);
+                RenderFullscreenCached(brightShader, combineTexture, loc_bScene);
 
-            // --- Final Composite (to currently bound framebuffer) ---
-            glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
-            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-            glClear(GL_COLOR_BUFFER_BIT);
+                GLuint blurInput = brightTexture;
+                int iterations = std::max(0, g_bloomIterations);
+                auto* blurAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BlurShader");
+                if (!blurAsset) {
+                    RenderFallback(combineTexture);
+                    return;
+                }
+                GLSLShader& blurShader = blurAsset->shaderObject;
 
-            auto* finalAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BloomCompositeShader");
-            if (!finalAsset) {
-                RenderFallback(combineTexture);
-                return;
-            }
-            GLSLShader& finalShader = finalAsset->shaderObject;
-            finalShader.Use();
+                if (iterations > 0) {
+                    blurShader.Use();
 
-            static GLint loc_fUseBloom = -1, loc_fBloomInt = -1, loc_fActive = -1, loc_fBright = -1;
-            static GLint loc_fContrast = -1, loc_fSat = -1, loc_fNoBloomL = -1, loc_fNoBloomB = -1, loc_fOcc = -1;
-            static GLint loc_fScene = -1, loc_fBloom = -1;
+                    static GLint loc_blurTexel = -1, loc_blurPass = -1, loc_blurImage = -1;
+                    if (loc_blurTexel == -1) {
+                        loc_blurTexel = glGetUniformLocation(blurShader.GetHandle(), "uTexelSize");
+                        loc_blurPass = glGetUniformLocation(blurShader.GetHandle(), "uPass");
+                        loc_blurImage = glGetUniformLocation(blurShader.GetHandle(), "uImage");
+                    }
 
-            if (loc_fUseBloom == -1) {
-                loc_fUseBloom = glGetUniformLocation(finalShader.GetHandle(), "uUseBloom");
-                loc_fBloomInt = glGetUniformLocation(finalShader.GetHandle(), "uBloomIntensity");
-                loc_fActive = glGetUniformLocation(finalShader.GetHandle(), "uActive");
-                loc_fBright = glGetUniformLocation(finalShader.GetHandle(), "uBrightness");
-                loc_fContrast = glGetUniformLocation(finalShader.GetHandle(), "uContrast");
-                loc_fSat = glGetUniformLocation(finalShader.GetHandle(), "uSaturation");
-                loc_fNoBloomL = glGetUniformLocation(finalShader.GetHandle(), "uNoBloomLight");
-                loc_fNoBloomB = glGetUniformLocation(finalShader.GetHandle(), "uNoBloomBehind");
-                loc_fOcc = glGetUniformLocation(finalShader.GetHandle(), "uOccluderMask");
-                loc_fScene = glGetUniformLocation(finalShader.GetHandle(), "uScene");
-                loc_fBloom = glGetUniformLocation(finalShader.GetHandle(), "uBloom");
-            }
+                    glUniform2f(loc_blurTexel, 1.0f / blurW, 1.0f / blurH);
 
-            glUniform1i(loc_fUseBloom, g_bloomEnabled ? 1 : 0);
-            glUniform1f(loc_fBloomInt, g_bloomIntensity);
-            glUniform1i(loc_fActive, active ? 1 : 0);
-            glUniform1f(loc_fBright, g_brightness);
-            glUniform1f(loc_fContrast, g_contrast + 1.f);
-            glUniform1f(loc_fSat, g_saturation + 1.f);
-            glUniform1i(loc_fNoBloomL, 2);
-            glUniform1i(loc_fNoBloomB, 3);
-            glUniform1i(loc_fOcc, 4);
+                    for (int i = 0; i < iterations; ++i) {
+                        glBindFramebuffer(GL_FRAMEBUFFER, pingpongFbo[i % 2]);
+                        glViewport(0, 0, blurW, blurH);
+                        glClear(GL_COLOR_BUFFER_BIT);
 
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, frontLightsTex[1]); // NoBloom Front
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, behindLightsTex[1]); // NoBloom Behind
-            glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, occluderTexture);
+                        glUniform1i(loc_blurPass, i);
+                        RenderFullscreenCached(blurShader, blurInput, loc_blurImage);
+                        blurInput = pingpongTex[i % 2];
+                    }
+                }
 
-            RenderFullscreenCached(finalShader, combineTexture, loc_fScene, bloomTex, loc_fBloom);
-            glBindTexture(GL_TEXTURE_2D, 0);
+                bloomTex = (iterations > 0) ? blurInput : brightTexture;
+            } // END GPU BLOOM
 
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            // ==========================================
+            // 6. GPU FINAL COMPOSITE
+            // ==========================================
+            {
+                FrameProfiler::Scoped sComp(PerformanceSystem::Get().GetProfiler(), "PP_GPU_Composite");
+                glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
+                glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                glClear(GL_COLOR_BUFFER_BIT);
+
+                auto* finalAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BloomCompositeShader");
+                if (!finalAsset) {
+                    RenderFallback(combineTexture);
+                    return;
+                }
+                GLSLShader& finalShader = finalAsset->shaderObject;
+                finalShader.Use();
+
+                static GLint loc_fUseBloom = -1, loc_fBloomInt = -1, loc_fActive = -1, loc_fBright = -1;
+                static GLint loc_fContrast = -1, loc_fSat = -1, loc_fNoBloomL = -1, loc_fNoBloomB = -1, loc_fOcc = -1;
+                static GLint loc_fScene = -1, loc_fBloom = -1;
+
+                if (loc_fUseBloom == -1) {
+                    loc_fUseBloom = glGetUniformLocation(finalShader.GetHandle(), "uUseBloom");
+                    loc_fBloomInt = glGetUniformLocation(finalShader.GetHandle(), "uBloomIntensity");
+                    loc_fActive = glGetUniformLocation(finalShader.GetHandle(), "uActive");
+                    loc_fBright = glGetUniformLocation(finalShader.GetHandle(), "uBrightness");
+                    loc_fContrast = glGetUniformLocation(finalShader.GetHandle(), "uContrast");
+                    loc_fSat = glGetUniformLocation(finalShader.GetHandle(), "uSaturation");
+                    loc_fNoBloomL = glGetUniformLocation(finalShader.GetHandle(), "uNoBloomLight");
+                    loc_fNoBloomB = glGetUniformLocation(finalShader.GetHandle(), "uNoBloomBehind");
+                    loc_fOcc = glGetUniformLocation(finalShader.GetHandle(), "uOccluderMask");
+                    loc_fScene = glGetUniformLocation(finalShader.GetHandle(), "uScene");
+                    loc_fBloom = glGetUniformLocation(finalShader.GetHandle(), "uBloom");
+                }
+
+                glUniform1i(loc_fUseBloom, g_bloomEnabled ? 1 : 0);
+                glUniform1f(loc_fBloomInt, g_bloomIntensity);
+                glUniform1i(loc_fActive, active ? 1 : 0);
+                glUniform1f(loc_fBright, g_brightness);
+                glUniform1f(loc_fContrast, g_contrast + 1.f);
+                glUniform1f(loc_fSat, g_saturation + 1.f);
+                glUniform1i(loc_fNoBloomL, 2);
+                glUniform1i(loc_fNoBloomB, 3);
+                glUniform1i(loc_fOcc, 4);
+
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, frontLightsTex[1]); // NoBloom Front
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, behindLightsTex[1]); // NoBloom Behind
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D, occluderTexture);
+
+                RenderFullscreenCached(finalShader, combineTexture, loc_fScene, bloomTex, loc_fBloom);
+                glBindTexture(GL_TEXTURE_2D, 0);
+
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            } // END GPU COMPOSITE
         }
     }
 }

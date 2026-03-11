@@ -1621,7 +1621,10 @@ namespace CrashoutsEngine {
 					bounds.max = newMax;
 				}
 
-				colHandler.quadTree.Resize(bounds);
+				colHandler.staticQuadTree.Resize(bounds);
+				colHandler.dynamicQuadTree.Resize(bounds);
+
+				colHandler.isStaticDirty = true;
 			}
 
 			if (doc.HasMember("layers")) {
@@ -1874,12 +1877,12 @@ namespace CrashoutsEngine {
 
 			Collision::CollisionHandler& colHandler{ Collision::CollisionHandler::GetInstance() };
 			rapidjson::Value min(rapidjson::kObjectType);
-			min.AddMember("x", colHandler.quadTree.boundary.min.x, allocator);
-			min.AddMember("y", colHandler.quadTree.boundary.min.y, allocator);
+			min.AddMember("x", colHandler.staticQuadTree.boundary.min.x, allocator);
+			min.AddMember("y", colHandler.staticQuadTree.boundary.min.y, allocator);
 
 			rapidjson::Value max(rapidjson::kObjectType);
-			max.AddMember("x", colHandler.quadTree.boundary.max.x, allocator);
-			max.AddMember("y", colHandler.quadTree.boundary.max.y, allocator);
+			max.AddMember("x", colHandler.staticQuadTree.boundary.max.x, allocator);
+			max.AddMember("y", colHandler.staticQuadTree.boundary.max.y, allocator);
 
 			quadTree.AddMember("min", min, allocator);
 			quadTree.AddMember("max", max, allocator);
