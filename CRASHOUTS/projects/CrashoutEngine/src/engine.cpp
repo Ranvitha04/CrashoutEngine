@@ -933,7 +933,10 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClear(GL_COLOR_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    {
+        FrameProfiler::Scoped ppScope(PerformanceSystem::Get().GetProfiler(), "PostProcessing");
+        CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     UI::EndFrame();
@@ -990,7 +993,10 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glDisable(GL_DEPTH_TEST);
 
     // 3. Render the Post Processing image directly into that centered box!
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    {
+        FrameProfiler::Scoped ppScope(PerformanceSystem::Get().GetProfiler(), "PostProcessing");
+        CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    }
 
 #endif
 
