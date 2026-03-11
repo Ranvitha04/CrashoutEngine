@@ -6,6 +6,8 @@
 */
 #pragma once
 
+#include "LeaderboardService.h"
+
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -22,7 +24,8 @@ namespace Component {
 
     struct LeaderboardComponent {
         // Connection
-        std::string baseUrl{ "http://104.214.187.128" };
+        std::string baseUrl{ CrashoutsEngine::kDefaultLeaderboardBaseUrl };
+        std::string apiKey{ CrashoutsEngine::kDefaultLeaderboardApiKey };
         int limit{ 10 };
         std::string sortBy{ "" };      // e.g. "time" for fastest-time boards
         std::string sortOrder{ "" };   // e.g. "asc" for fastest first, "desc" for highest first

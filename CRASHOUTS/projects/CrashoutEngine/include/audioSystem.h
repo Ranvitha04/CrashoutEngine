@@ -188,6 +188,7 @@ namespace CrashoutsEngine
             std::unordered_map<std::string, FMOD::Studio::Bank*> mBanks;
 
             std::vector<std::string> mRawAudioFiles;
+            std::unordered_map<std::string, std::string> mSoundPaths;
             std::unordered_map<std::string, FMOD::Sound*> mRawSoundCache;
 
             //For tagged playback

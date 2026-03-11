@@ -462,8 +462,14 @@ void Update(double const& dt) {
 
     CrashoutsEngine::ECS& ecs = *CrashoutsEngine::ECS::getInstance();
 
-    CrashoutsEngine::UpdateActiveHierarchy(ecs);
-    CrashoutsEngine::UpdateHierarchy(ecs);
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ActiveHierarchy");
+        CrashoutsEngine::UpdateActiveHierarchy(ecs);
+    }
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Hierarchy");
+        CrashoutsEngine::UpdateHierarchy(ecs);
+    }
 
 #if !USE_IMGUI_EDITOR 
     bool releaseCameraUpdated = false;
@@ -535,10 +541,22 @@ void Update(double const& dt) {
             }
         }
 #endif
-        KeyframeUnity::UpdateAll(ecs, (float)dt);
-        CrashoutsEngine::VideoSystem::Update((float)dt);
-        CrashoutsEngine::ScriptSystem::UpdateAll();
-        CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, false);
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "KeyframeUpdate");
+            KeyframeUnity::UpdateAll(ecs, (float)dt);
+        }
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "VideoUpdate");
+            CrashoutsEngine::VideoSystem::Update((float)dt);
+        }
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptUpdate");
+            CrashoutsEngine::ScriptSystem::UpdateAll();
+        }
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "LeaderboardUpdate");
+            CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, false);
+        }
 
         //fixed Update please work
         int steps = FrameRateController::GetInstance().StepCount();
@@ -614,12 +632,17 @@ void Update(double const& dt) {
 
             // Loop through ALL clips on this component
             for (auto& clip : audioComp->clips) {
+                bool isPlaying = false;
+                bool isPaused = false;
 
-                // Cleanup stale channel pointer if sound finished
                 if (clip.channel) {
-                    bool isPlaying = false;
                     clip.channel->isPlaying(&isPlaying);
-                    if (!isPlaying) clip.channel = nullptr;
+                    clip.channel->getPaused(&isPaused);
+                    
+                    // Cleanup stale channel pointer if sound finished
+                    if (!isPlaying) {
+                        clip.channel = nullptr;
+                    }
                 }
 
                 // Case 1: Entity is Inactive -> Force Pause
@@ -631,18 +654,18 @@ void Update(double const& dt) {
                 else {
                     if (engineState == EngineState::PLAY) {
                         // Only unpause if it was paused!
-                        if (clip.channel) {
-                            bool p; clip.channel->getPaused(&p);
-                            if (p) clip.channel->setPaused(false);
+                        if (clip.channel && isPaused) {
+                            clip.channel->setPaused(false);
+                            isPaused = false; // It's unpaused now
                         }
                         if (clip.inst) {
-                            bool p; clip.inst->setPaused(&p);
+                            bool p; clip.inst->getPaused(&p);
                             if (p) clip.inst->setPaused(false);
                         }
                     }
 
                     // Update 3D Position if applicable
-                    if (clip.spatial3D && clip.channel && transform) {
+                    if (clip.spatial3D && clip.channel && transform && isPlaying && !isPaused) {
                         CrashoutsEngine::Audio::AudioSystem::instance().SetChannel3DAttributes(clip.channel, transform->position, clip.minDistance, clip.maxDistance);
                     }
                 }
@@ -676,7 +699,10 @@ void Update(double const& dt) {
 #else
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
-        CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, true);
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "LeaderboardUpdate");
+            CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, true);
+        }
     }
     else if (engineState == EngineState::PAUSE) {
         // Freeze gameplay, but still allow editor camera to move
@@ -722,11 +748,20 @@ void Update(double const& dt) {
     }
 
     // Always run Gizmo drawing (Debug shapes)
-    CrashoutsEngine::ScriptSystem::DrawGizmosAll();
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "DrawGizmos");
+        CrashoutsEngine::ScriptSystem::DrawGizmosAll();
+    }
 
-    Scene::UpdateScene(ecs);
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "SceneUpdate");
+        Scene::UpdateScene(ecs);
+    }
 
-    InputManager::Update();
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "InputUpdate");
+        InputManager::Update();
+    }
     
     // ==========================================
     // REPLAY DEBUG HOTKEYS
@@ -748,20 +783,26 @@ void Update(double const& dt) {
 //#endif
     // ==========================================
 
-    CrashoutsEngine::PostProcessing::UpdatePP();
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "PostProcessingUpdate");
+        CrashoutsEngine::PostProcessing::UpdatePP();
+    }
 
 
     // Cycle and draw Tile Map Editor if needed
     CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
         CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
 
-    for (size_t i = 0; i < tmArray.dense.size(); ++i) {
-        // 1. Get the Component
-        Component::TileMapComponent* tm = tmArray.dense[i];
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "TileMapCacheRebuild");
+        for (size_t i = 0; i < tmArray.dense.size(); ++i) {
+            // 1. Get the Component
+            Component::TileMapComponent* tm = tmArray.dense[i];
 
-        // 2. Get the Entity ID associated with this index
-        CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
-        if (tm->isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(*tm, entityID);
+            // 2. Get the Entity ID associated with this index
+            CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
+            if (tm->isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(*tm, entityID);
+        }
     }
 
 }

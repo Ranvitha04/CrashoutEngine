@@ -221,15 +221,11 @@ namespace CrashoutsEngine::Audio
                         mRawAudioFiles.push_back(key);
                     }
 
-                    FMOD::Sound* s = nullptr;
-                    // FMOD_DEFAULT | FMOD_2D -> Load entirely into RAM
-                    FMOD_RESULT r = mCore->createSound(diskPath.c_str(), FMOD_DEFAULT | FMOD_2D, nullptr, &s);
-                    if (r == FMOD_OK && s) {
-                        mRawSoundCache[key] = s;
-                        count++;
-                    }
+                    // Lazy Loading: Just store the path for now, don't create the sound yet.
+                    mSoundPaths[key] = diskPath;
+                    count++;
                 }
-                std::cout << "[Audio] Loaded " << count << " files.\n";
+                std::cout << "[Audio] Scanned " << count << " files for lazy loading.\n";
             }
         }
         catch (...) { std::cout << "[Audio] Scan Error.\n"; }
@@ -988,17 +984,25 @@ namespace CrashoutsEngine::Audio
             snd = it->second;
         }
         else {
-            std::string fullPath = joinPath(mBanksDir, key);
+            auto pathIt = mSoundPaths.find(key);
+            std::string fullPath = (pathIt != mSoundPaths.end()) ? pathIt->second : joinPath(mBanksDir, key);
+            
             createdLocal = true;
-            // Failsafe: Stream if not in cache
-            FMOD_RESULT r = mCore->createSound(fullPath.c_str(),
-                FMOD_CREATESTREAM | (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF),
-                nullptr, &snd);
+            // To Optimize later: Music should ALWAYS be streamed to save RAM
+            FMOD_MODE mode = FMOD_CREATESTREAM | FMOD_2D;
+            mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+
+            FMOD_RESULT r = mCore->createSound(fullPath.c_str(), mode, nullptr, &snd);
 
             if (r != FMOD_OK) {
-                mCore->createSound(path.c_str(),
-                    FMOD_CREATESTREAM | (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF),
-                    nullptr, &snd);
+                // Second attempt with the raw path if joinPath failed
+                mCore->createSound(path.c_str(), mode, nullptr, &snd);
+            }
+
+            // If we successfully loaded it, cache it to avoid redundant I/O next time
+            if (snd) {
+                mRawSoundCache[key] = snd;
+                createdLocal = false; // Now the cache owns it
             }
         }
 
@@ -1008,16 +1012,11 @@ namespace CrashoutsEngine::Audio
         // Play the sound
         if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch), "playMusic"))
         {
-            if (createdLocal && snd) snd->release();
             return nullptr;
         }
 
         if (ch) {
-            // Cached sounds default to LOOP_OFF, must override it here.
-            //ch->setMode(loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
             ch->setMode(loop ? (FMOD_LOOP_NORMAL | FMOD_2D) : (FMOD_LOOP_OFF | FMOD_2D));
-
-            if (createdLocal) mActiveSounds.emplace_back(ch, snd);
         }
 
         return ch;
@@ -1030,11 +1029,8 @@ namespace CrashoutsEngine::Audio
     {
         if (!mCore || !mSFXGroup) return nullptr;
 
-        // SANITIZE (MATCH THE KEY)
         std::string key = SanitizeKey(path);
-
         FMOD::Sound* snd = nullptr;
-        bool createdLocal = false;
 
         // LOOKUP
         auto it = mRawSoundCache.find(key);
@@ -1042,35 +1038,23 @@ namespace CrashoutsEngine::Audio
             snd = it->second;
         }
         else {
-            // FAIL-SAFE
-            // This handles files dragged in while the game is running
-            std::string fullPath = joinPath(mBanksDir, key);
+            auto pathIt = mSoundPaths.find(key);
+            std::string fullPath = (pathIt != mSoundPaths.end()) ? pathIt->second : joinPath(mBanksDir, key);
 
             // Check extensions to be safe
             if (!IsSupportedAudioFile(fullPath)) {
-                // Try the original path if the joinPath failed (e.g. absolute paths)
                 if (IsSupportedAudioFile(path)) fullPath = path;
                 else return nullptr;
             }
 
-            createdLocal = true;
-            // Load into RAM
+            // Load into RAM (FMOD_DEFAULT) for SFX as they are small and latency-sensitive
             FMOD_MODE mode = FMOD_DEFAULT;
-            if (spatial3D) {
-                mode |= FMOD_3D;
-            } else {
-                mode |= FMOD_2D;
-            }
+            mode |= (spatial3D ? FMOD_3D : FMOD_2D);
 
             FMOD_RESULT r = mCore->createSound(fullPath.c_str(), mode, nullptr, &snd);
 
-            if (r == FMOD_OK) {
+            if (r == FMOD_OK && snd) {
                 mRawSoundCache[key] = snd;
-                createdLocal = false;
-
-                if (std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), key) == mRawAudioFiles.end()) {
-                    mRawAudioFiles.push_back(key);
-                }
             }
             else {
                 return nullptr;
@@ -1080,7 +1064,6 @@ namespace CrashoutsEngine::Audio
         FMOD::Channel* ch = nullptr;
         if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch), "playSound(sfx)"))
         {
-            if (createdLocal && snd) snd->release();
             return nullptr;
         }
 
@@ -1088,11 +1071,9 @@ namespace CrashoutsEngine::Audio
             if (spatial3D) {
                 ch->setMode(FMOD_3D);
                 ch->set3DMinMaxDistance(minDistance, maxDistance);
-                // Initial position will be set by the ICALL later, if needed
             } else {
                 ch->setMode(FMOD_2D);
             }
-            if (createdLocal) mActiveSounds.emplace_back(ch, snd);
         }
 
         return ch;
@@ -1318,23 +1299,26 @@ namespace CrashoutsEngine::Audio
 
         std::string cacheKey = SanitizeKey(path);
         FMOD::Sound* snd = nullptr;
-        bool createdLocal = false;
 
         auto it = mRawSoundCache.find(cacheKey);
         if (it != mRawSoundCache.end()) {
             snd = it->second;
         }
         else {
-            std::string fullPath = joinPath(mBanksDir, cacheKey);
+            auto pathIt = mSoundPaths.find(cacheKey);
+            std::string fullPath = (pathIt != mSoundPaths.end()) ? pathIt->second : joinPath(mBanksDir, cacheKey);
+
             FMOD_MODE mode = FMOD_CREATESTREAM | FMOD_2D;
-            if (loop) mode |= FMOD_LOOP_NORMAL;
-            else      mode |= FMOD_LOOP_OFF;
+            mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
 
             FMOD_RESULT r = mCore->createSound(fullPath.c_str(), mode, nullptr, &snd);
             if (r != FMOD_OK) {
                 mCore->createSound(path.c_str(), mode, nullptr, &snd);
             }
-            if (snd) createdLocal = true;
+
+            if (snd) {
+                mRawSoundCache[cacheKey] = snd;
+            }
         }
 
         if (!snd) return false;
@@ -1342,20 +1326,13 @@ namespace CrashoutsEngine::Audio
         FMOD::Channel* ch = nullptr;
         if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch), "playMusicTagged"))
         {
-            if (createdLocal) snd->release();
             return false;
         }
 
         if (ch)
         {
-            // Loop Mode override
             ch->setMode(loop ? (FMOD_LOOP_NORMAL | FMOD_2D) : (FMOD_LOOP_OFF | FMOD_2D));
-
             mTaggedChannels[key] = ch;
-
-            if (createdLocal) {
-                mActiveSounds.emplace_back(ch, snd);
-            }
         }
 
         return true;
@@ -1373,7 +1350,6 @@ namespace CrashoutsEngine::Audio
         std::string cacheKey = SanitizeKey(path);
 
         FMOD::Sound* snd = nullptr;
-        bool createdLocal = false;
 
         // CACHE LOOKUP
         auto it = mRawSoundCache.find(cacheKey);
@@ -1381,22 +1357,16 @@ namespace CrashoutsEngine::Audio
             snd = it->second;
         }
         else {
-            // FAILSAFE
-            std::string fullPath = joinPath(mBanksDir, cacheKey);
+            auto pathIt = mSoundPaths.find(cacheKey);
+            std::string fullPath = (pathIt != mSoundPaths.end()) ? pathIt->second : joinPath(mBanksDir, cacheKey);
 
             FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D;
-            if (loop) mode |= FMOD_LOOP_NORMAL;
-            else      mode |= FMOD_LOOP_OFF;
+            mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
 
             FMOD_RESULT r = mCore->createSound(fullPath.c_str(), mode, nullptr, &snd);
 
-            // If we loaded it successfully, let's cache it for next time!
             if (r == FMOD_OK && snd) {
                 mRawSoundCache[cacheKey] = snd;
-                if (std::find(mRawAudioFiles.begin(), mRawAudioFiles.end(), cacheKey) == mRawAudioFiles.end()) {
-                    mRawAudioFiles.push_back(cacheKey);
-                }
-                // createdLocal stays FALSE because now the cache owns it
             }
             else {
                 return false;
@@ -1406,7 +1376,6 @@ namespace CrashoutsEngine::Audio
         FMOD::Channel* ch = nullptr;
         if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch), "playSound(sfxTagged)"))
         {
-            if (createdLocal) snd->release();
             return false;
         }
 
@@ -1414,10 +1383,6 @@ namespace CrashoutsEngine::Audio
         {
             ch->setMode(loop ? (FMOD_LOOP_NORMAL | FMOD_2D) : (FMOD_LOOP_OFF | FMOD_2D));
             mTaggedChannels[key] = ch;
-
-            if (createdLocal) {
-                mActiveSounds.emplace_back(ch, snd);
-            }
         }
 
         return true;
