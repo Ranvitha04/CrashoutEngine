@@ -1837,44 +1837,12 @@
     ],
     "tilemaps": [
         {
-            "name": "ProjectSettings",
-            "path": ".vs/ProjectSettings.json"
-        },
-        {
-            "name": "slnx",
-            "path": ".vs/slnx.sqlite"
-        },
-        {
-            "name": "CodeChunks",
-            "path": ".vs/tilemaps/CopilotIndices/17.14.1290.42047/CodeChunks.db"
-        },
-        {
-            "name": "DocumentLayout",
-            "path": ".vs/tilemaps/v17/DocumentLayout.json"
-        },
-        {
-            "name": "SemanticSymbols",
-            "path": ".vs/tilemaps/CopilotIndices/17.14.1290.42047/SemanticSymbols.db"
-        },
-        {
-            "name": "39a76b67-19c8-4f17-bd6f-82623f5e83f9",
-            "path": ".vs/tilemaps/FileContentIndex/39a76b67-19c8-4f17-bd6f-82623f5e83f9.vsidx"
-        },
-        {
-            "name": "3a120126-1ab1-4b73-af3d-b16b9dd1f7fe",
-            "path": ".vs/tilemaps/FileContentIndex/3a120126-1ab1-4b73-af3d-b16b9dd1f7fe.vsidx"
-        },
-        {
-            "name": ".wsuo",
-            "path": ".vs/tilemaps/v17/.wsuo"
-        },
-        {
-            "name": "VSWorkspaceState",
-            "path": ".vs/VSWorkspaceState.json"
-        },
-        {
             "name": "Rock",
             "path": "Rock"
+        },
+        {
+            "name": "Passthrough_Floor",
+            "path": "Passthrough_Floor"
         },
         {
             "name": "Darker_Platform",
@@ -1883,10 +1851,6 @@
         {
             "name": "Lava_Platform",
             "path": "Lava_Platform"
-        },
-        {
-            "name": "Passthrough_Floor",
-            "path": "Passthrough_Floor"
         },
         {
             "name": "Platform",
