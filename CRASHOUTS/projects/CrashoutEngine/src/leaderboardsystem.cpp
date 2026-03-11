@@ -202,7 +202,7 @@ namespace CrashoutsEngine::LeaderboardSystem {
 
             if (shouldFetch) {
                 if (g_pendingFetches.find(entity) == g_pendingFetches.end()) {
-                    LeaderboardService svc(comp->baseUrl);
+                    LeaderboardService svc(comp->baseUrl, comp->apiKey);
                     g_pendingFetches[entity] = PendingFetch{
                         svc.FetchLeaderboardAsync(comp->limit, comp->sortBy, comp->sortOrder)
                     };

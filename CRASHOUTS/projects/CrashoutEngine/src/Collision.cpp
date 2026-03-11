@@ -24,9 +24,28 @@ All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â�
 #include "colliders.h"
 #include "jobsystem.h"
 #include "performanceSystem.h"
+#include <unordered_map>
+#include <unordered_set>
 
 /*UTILS RIGHT HERE*/
 namespace Collision {
+	namespace {
+		struct ContactPairHash {
+			size_t operator()(ContactPair const& pair) const noexcept {
+				size_t h1 = std::hash<CrashoutsEngine::Entity>{}(pair.first);
+				size_t h2 = std::hash<CrashoutsEngine::Entity>{}(pair.second);
+				return h1 ^ (h2 + 0x9e3779b9u + (h1 << 6) + (h1 >> 2));
+			}
+		};
+
+		struct EntityCollisionCache {
+			Component::ColliderComponent* collider{ nullptr };
+			Component::TransformComponent* transform{ nullptr };
+			Component::RigidBodyComponent* rigidBody{ nullptr };
+			bool isDynamic{ false };
+		};
+	}
+
 	std::pair<f32, f32> projOBBOnAxis(Polygon::Vertices const& vertices, CEVec3 const& axis) {
 		f32 min{ CEMath::Dot(vertices[0], axis) };
 		f32 max{ min };
@@ -324,9 +343,9 @@ namespace Collision {
 
 		CollisionManifold result{ .collisionOccured = false };
 
-		Circle const& sphere1Temp = dynamic_cast<Circle const&>(*(coll1.collider));
+		Circle const& sphere1Temp = static_cast<Circle const&>(*(coll1.collider));
 
-		Circle const& sphere2Temp = dynamic_cast<Circle const&>(*(coll2.collider));
+		Circle const& sphere2Temp = static_cast<Circle const&>(*(coll2.collider));
 
 		float totalRadius{ sphere1Temp.radius + sphere2Temp.radius };
 		CEVec3 circ1ToCirc2{ coll2.position - coll1.position };
@@ -354,8 +373,8 @@ namespace Collision {
 
 		CollisionManifold result{ .collisionOccured = false };
 
-		AABBRect const& aabb1Temp = dynamic_cast<AABBRect const&>(*(coll1.collider));
-		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(coll2.collider));
+		AABBRect const& aabb1Temp = static_cast<AABBRect const&>(*(coll1.collider));
+		AABBRect const& aabb2Temp = static_cast<AABBRect const&>(*(coll2.collider));
 
 		CEVec3 posDelta{ (coll2.position + aabb2Temp.offset) - (coll1.position + aabb1Temp.offset) }; /*Vector showing distance + the direction*/
 
@@ -409,9 +428,9 @@ namespace Collision {
 		CollisionProps const* polygonPtr1{ &coll1 };
 		CollisionProps const* polygonPtr2{ &coll2 };
 
-		Polygon const& polygon1 = dynamic_cast<Polygon const&>(*(polygonPtr1->collider));
+		Polygon const& polygon1 = static_cast<Polygon const&>(*(polygonPtr1->collider));
 
-		Polygon const& polygon2 = dynamic_cast<Polygon const&>(*(polygonPtr2->collider));
+		Polygon const& polygon2 = static_cast<Polygon const&>(*(polygonPtr2->collider));
 
 		Contact contactA{ getContactPoint(polygon1, polygon2) };
 		if (!contactA) return result;
@@ -451,8 +470,8 @@ namespace Collision {
 			swapped = true;
 		}
 
-		Circle const& circle = dynamic_cast<Circle const&>(*(spherePtr->collider));
-		Polygon const& polygon = dynamic_cast<Polygon const&>(*(polygonPtr->collider));
+		Circle const& circle = static_cast<Circle const&>(*(spherePtr->collider));
+		Polygon const& polygon = static_cast<Polygon const&>(*(polygonPtr->collider));
 
 		// SAT IMPLEMENTATION (Replaces Edge/Corner helper logic for robustness)
 		float minOverlap = std::numeric_limits<float>::max();
@@ -567,8 +586,8 @@ namespace Collision {
 			swapped = true;
 		}
 
-		Circle const& sphere1Temp = dynamic_cast<Circle const&>(*(spherePtr->collider));
-		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
+		Circle const& sphere1Temp = static_cast<Circle const&>(*(spherePtr->collider));
+		AABBRect const& aabb2Temp = static_cast<AABBRect const&>(*(aabbPtr->collider));
 
 		// Apply Offsets (Use the collider's effective center, not just entity position)
 		CEVec3 spherePos = spherePtr->position + sphere1Temp.offset;
@@ -651,8 +670,8 @@ namespace Collision {
 			swapped = true;
 		}
 
-		Circle const& circle = dynamic_cast<Circle const&>(*(circlePtr->collider));
-		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
+		Circle const& circle = static_cast<Circle const&>(*(circlePtr->collider));
+		LineSegment const& line = static_cast<LineSegment const&>(*(linePtr->collider));
 
 		// Find closest point on line segment to circle
 		CEVec3 closest = ClosestPointOnSegment(line.GetWorldP1(), line.GetWorldP2(), circle.position);
@@ -697,8 +716,8 @@ namespace Collision {
 			swapped = true;
 		}
 
-		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
-		Polygon const& existingPoly = dynamic_cast<Polygon const&>(*(polyPtr->collider));
+		AABBRect const& aabb = static_cast<AABBRect const&>(*(aabbPtr->collider));
+		Polygon const& existingPoly = static_cast<Polygon const&>(*(polyPtr->collider));
 
 		// Cannot use aabb.min/max directly if they are local. We use Position +/- Extents
 		CEVec3 aabbPos = aabbPtr->position + aabb.offset;
@@ -757,8 +776,8 @@ namespace Collision {
 			swapped = true;
 		}
 
-		Polygon const& poly = dynamic_cast<Polygon const&>(*(polyPtr->collider));
-		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
+		Polygon const& poly = static_cast<Polygon const&>(*(polyPtr->collider));
+		LineSegment const& line = static_cast<LineSegment const&>(*(linePtr->collider));
 
 		f32 minOverlap = std::numeric_limits<f32>::max();
 		CEVec3 bestAxis{ 0.f, 0.f, 0.f };
@@ -892,8 +911,8 @@ namespace Collision {
 		CollisionProps const* aabbPtr = swapped ? &coll2 : &coll1;
 		CollisionProps const* linePtr = swapped ? &coll1 : &coll2;
 
-		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
-		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
+		AABBRect const& aabb = static_cast<AABBRect const&>(*(aabbPtr->collider));
+		LineSegment const& line = static_cast<LineSegment const&>(*(linePtr->collider));
 
 		// 2. Extract Data
 		CEVec3 aabbCenter = aabbPtr->position + aabb.offset;
@@ -964,8 +983,8 @@ namespace Collision {
 	CollisionManifold CollisionHandler::LineToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
 
-		LineSegment const& line1 = dynamic_cast<LineSegment const&>(*(coll1.collider));
-		LineSegment const& line2 = dynamic_cast<LineSegment const&>(*(coll2.collider));
+		LineSegment const& line1 = static_cast<LineSegment const&>(*(coll1.collider));
+		LineSegment const& line2 = static_cast<LineSegment const&>(*(coll2.collider));
 
 		CEVec3 p1 = line1.GetWorldP1();
 		CEVec3 p2 = line1.GetWorldP2();
@@ -1122,6 +1141,9 @@ namespace Collision {
 		std::vector<CrashoutsEngine::Entity> colliderEntities =
 			globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
 
+		std::unordered_map<CrashoutsEngine::Entity, EntityCollisionCache> entityCache;
+		entityCache.reserve(colliderEntities.size());
+
 		if (subStepIndex == 0) {
 			if (state == EngineState::STOP) {
 				lastFrameCollision.clear();
@@ -1129,9 +1151,23 @@ namespace Collision {
 			currentFrameCollision.clear(); // Fresh start for this frame's accumulation
 		}
 
+		std::unordered_set<ContactPair, ContactPairHash> lastFramePairs;
+		lastFramePairs.reserve(lastFrameCollision.size());
+		for (ContactInformation const& info : lastFrameCollision) {
+			lastFramePairs.insert(info.contacts);
+		}
+
+		std::unordered_set<ContactPair, ContactPairHash> currentFramePairs;
+		currentFramePairs.reserve(currentFrameCollision.size());
+		for (ContactInformation const& info : currentFrameCollision) {
+			currentFramePairs.insert(info.contacts);
+		}
+
 		// --- SPLIT STATIC AND DYNAMIC LISTS ---
 		std::vector<CrashoutsEngine::Entity> dynamicEntities;
 		std::vector<CrashoutsEngine::Entity> staticEntities;
+		dynamicEntities.reserve(colliderEntities.size());
+		staticEntities.reserve(colliderEntities.size());
 
 		for (CrashoutsEngine::Entity& entity : colliderEntities) {
 			if (!IsEntityActive(globalECS, entity)) continue;
@@ -1139,12 +1175,14 @@ namespace Collision {
 			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
 			if (!collider || !collider->collider || !collider->collider->enabled) continue;
 
+			auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
+			if (!transform) continue;
+
+			auto* rb = globalECS.GetComponent<Component::RigidBodyComponent>(entity);
+
 			// Check if it has mass (is moving)
-			bool isDynamic = false;
-			if (globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
-				auto* rb = globalECS.GetComponent<Component::RigidBodyComponent>(entity);
-				if (rb->getMass() != 0.0f) isDynamic = true;
-			}
+			bool isDynamic = rb && rb->getMass() != 0.0f;
+			entityCache.emplace(entity, EntityCollisionCache{ collider, transform, rb, isDynamic });
 
 			if (isDynamic) {
 				dynamicEntities.push_back(entity);
@@ -1153,11 +1191,8 @@ namespace Collision {
 				staticEntities.push_back(entity);
 
 				// Since it's static, force its collider to match its transform!
-				if (globalECS.HasComponent<Component::TransformComponent>(entity)) {
-					auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
-					collider->collider->UpdateCollider(transform->position);
-					collider->collider->UpdateRotation(transform->rotation);
-				}
+				collider->collider->UpdateCollider(transform->position);
+				collider->collider->UpdateRotation(transform->rotation);
 			}
 		}
 
@@ -1190,9 +1225,13 @@ namespace Collision {
 
 			for (unsigned int i = start; i < end; ++i) {
 				CrashoutsEngine::Entity entity1 = dynamicEntities[i];
+				auto cache1It = entityCache.find(entity1);
+				if (cache1It == entityCache.end()) continue;
+				EntityCollisionCache const& entity1Cache = cache1It->second;
 
-				Component::ColliderComponent* collider1 = globalECS.GetComponent<Component::ColliderComponent>(entity1);
-				Component::TransformComponent* transform1 = globalECS.GetComponent<Component::TransformComponent>(entity1);
+				Component::ColliderComponent* collider1 = entity1Cache.collider;
+				Component::TransformComponent* transform1 = entity1Cache.transform;
+				Component::RigidBodyComponent* rb1 = entity1Cache.rigidBody;
 
 				// --- SKIP LOGIC FOR CCD ---
 				// If we are on sub-step 1, 2, or 3, AND this dynamic object is NOT continuous, skip it!
@@ -1210,59 +1249,41 @@ namespace Collision {
 
 				// NARROW PHASE COLLISION CHECK
 				for (CrashoutsEngine::Entity const& entity2 : localCollidableObjects) {
-
-					if (!IsEntityActive(globalECS, entity2)) continue;
-
 					// Prevent checking an object against itself
 					if (entity1 == entity2) continue;
+
+					auto cache2It = entityCache.find(entity2);
+					if (cache2It == entityCache.end()) continue;
+					EntityCollisionCache const& entity2Cache = cache2It->second;
 
 					// Prevent child/parent collisions
 					if (CrashoutsEngine::IsAlreadyChildOf(globalECS, entity1, entity2) ||
 						CrashoutsEngine::IsAlreadyChildOf(globalECS, entity2, entity1)) continue;
 
-					// --- DOUBLE-CHECK PREVENTION LOGIC ---
-					bool isDynamic2 = false;
-					if (globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) {
-						auto* rb2 = globalECS.GetComponent<Component::RigidBodyComponent>(entity2);
-						if (rb2->getMass() != 0.0f) isDynamic2 = true;
-					}
-
 					// If both are Dynamic, enforce an ID order to prevent A->B and B->A double checks.
 					// If entity2 is Static, we ALWAYS want to check it, regardless of ID order!
-					if (isDynamic2 && entity1 > entity2) {
+					if (entity2Cache.isDynamic && entity1 > entity2) {
 						continue;
 					}
-					// -------------------------------------
 
-					Component::ColliderComponent* collider2{ globalECS.GetComponent<Component::ColliderComponent>(entity2) };
-					Component::TransformComponent* transform2{ globalECS.GetComponent<Component::TransformComponent>(entity2) };
+					Component::ColliderComponent* collider2 = entity2Cache.collider;
+					Component::TransformComponent* transform2 = entity2Cache.transform;
+					Component::RigidBodyComponent* rb2 = entity2Cache.rigidBody;
+					FunctionDispatchType dispatch = callCollFunct(collider1->collider->type, collider2->collider->type);
+					if (!dispatch) continue;
 
 					Collision::CollisionManifold collisionManifold;
 
-					// Optimization: Skip two static rigidbodies (This shouldn't happen anyway with our new logic, but good safety)
-					if (globalECS.HasComponent<Component::RigidBodyComponent>(entity1) &&
-						globalECS.HasComponent<Component::RigidBodyComponent>(entity2)) {
-						auto* rb1 = globalECS.GetComponent<Component::RigidBodyComponent>(entity1);
-						auto* rb2 = globalECS.GetComponent<Component::RigidBodyComponent>(entity2);
-						if (rb1->getMass() == 0.f && rb2->getMass() == 0.f) continue;
-						if (rb1 == nullptr || rb2 == nullptr) continue;
+					if (rb1 && rb2 && rb1->getMass() == 0.f && rb2->getMass() == 0.f) continue;
 
-						// Check Collision
-						collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
-							Collision::CollisionProps{ collider1->collider, rb1->GetVelocity(), transform1->position },
-							Collision::CollisionProps{ collider2->collider, rb2->GetVelocity(), transform2->position }
-							);
-					}
-					else {
-						// One object doesn't have a rigid body (it's static)
-						CEVec3 vel1 = globalECS.HasComponent<Component::RigidBodyComponent>(entity1) ? globalECS.GetComponent<Component::RigidBodyComponent>(entity1)->GetVelocity() : CEVec3{ 0,0,0 };
-						CEVec3 vel2 = globalECS.HasComponent<Component::RigidBodyComponent>(entity2) ? globalECS.GetComponent<Component::RigidBodyComponent>(entity2)->GetVelocity() : CEVec3{ 0,0,0 };
+					const CEVec3 kZeroVelocity{ 0.f, 0.f, 0.f };
+					CEVec3 const& vel1 = rb1 ? rb1->GetVelocity() : kZeroVelocity;
+					CEVec3 const& vel2 = rb2 ? rb2->GetVelocity() : kZeroVelocity;
 
-						collisionManifold = callCollFunct(collider1->collider->type, collider2->collider->type)(
-							Collision::CollisionProps{ collider1->collider, vel1, transform1->position },
-							Collision::CollisionProps{ collider2->collider, vel2, transform2->position }
-							);
-					}
+					collisionManifold = dispatch(
+						Collision::CollisionProps{ collider1->collider, vel1, transform1->position },
+						Collision::CollisionProps{ collider2->collider, vel2, transform2->position }
+					);
 
 					if (collisionManifold.collisionOccured) {
 						// Populate master list
@@ -1278,7 +1299,7 @@ namespace Collision {
 
 							ContactPair pair{ entity1, entity2 };
 
-							if (isPairInCollection(pair, lastFrameCollision)) {
+							if (lastFramePairs.find(pair) != lastFramePairs.end()) {
 								result.messages.push_back({ stayType, collisionManifold, entity1, entity2 });
 							}
 							else {
@@ -1302,7 +1323,7 @@ namespace Collision {
 				for (size_t i = 0; i < res.contacts.size(); ++i) {
 					ContactPair pair = res.contacts[i].contacts;
 
-					if (!isPairInCollection(pair, currentFrameCollision)) {
+					if (currentFramePairs.insert(pair).second) {
 						currentFrameCollision.push_back(res.contacts[i]);
 
 						auto& msg = res.messages[i];
@@ -1319,7 +1340,7 @@ namespace Collision {
 			// This prevents non-CCD objects from instantly "exiting" on sub-step 1!
 			if (subStepIndex == 3) {
 				for (ContactInformation const& contactInfo : lastFrameCollision) {
-					if (!isPairInCollection(contactInfo.contacts, currentFrameCollision)) {
+					if (currentFramePairs.find(contactInfo.contacts) == currentFramePairs.end()) {
 
 						using namespace Messaging;
 						EventType exitType = EventType::CollisionExit;

@@ -1,6 +1,7 @@
 #version 460 core
 
-out vec4 fragColor;
+layout (location = 0) out vec4 fragBloom;
+layout (location = 1) out vec4 fragNoBloom;
 
 in vec2 texCoord;
 
@@ -9,6 +10,7 @@ in float vLightRadius;
 in vec3 vLightColor;
 in float vIntensity;
 in float vShadowIndex;
+in float vAffectBloom;
 
 uniform vec2 uWorldSize;
 uniform sampler2D uShadowTex;
@@ -35,6 +37,13 @@ void main() {
         }
     }
     vec3 color = vLightColor * vIntensity * falloff;
-    fragColor = vec4(color, 1.0);
+    
+    if (vAffectBloom > 0.5) {
+        fragBloom = vec4(color, 1.0);
+        fragNoBloom = vec4(0.0, 0.0, 0.0, 1.0);
+    } else {
+        fragBloom = vec4(0.0, 0.0, 0.0, 1.0);
+        fragNoBloom = vec4(color, 1.0);
+    }
 }
 

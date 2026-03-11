@@ -5,36 +5,21 @@ out vec4 fragColor;
 in vec2 texCoord;
 
 uniform sampler2D uImage;
-uniform int uHorizontal;
+uniform vec2 uTexelSize; // 1.0 / textureSize(uImage, 0)
+uniform int uPass;       // The current blur pass (0, 1, 2, ...)
 
-const float weights[3] = float[](
-    0.2941176,
-    0.2352941,
-    0.1176470
-);
+void main() {
+    // The offset is increased for each pass
+    float offset = float(uPass) + 0.5;
+    
+    vec2 halfTexel = uTexelSize * 0.5;
 
-void main()
-{
-    vec2 texOffset = 1.0 / vec2(textureSize(uImage, 0));
+    // Sample in a diamond pattern
+    vec4 sum = texture(uImage, texCoord) * 4.0;
+    sum += texture(uImage, texCoord + vec2( offset * uTexelSize.x,  halfTexel.y));
+    sum += texture(uImage, texCoord + vec2(-offset * uTexelSize.x, -halfTexel.y));
+    sum += texture(uImage, texCoord + vec2( halfTexel.x,  offset * uTexelSize.y));
+    sum += texture(uImage, texCoord + vec2(-halfTexel.x, -offset * uTexelSize.y));
 
-    vec3 result = texture(uImage, texCoord).rgb * weights[0];
-
-    if (uHorizontal == 1)
-    {
-        result += texture(uImage, texCoord + vec2(texOffset.x,0)).rgb * weights[1];
-        result += texture(uImage, texCoord - vec2(texOffset.x,0)).rgb * weights[1];
-
-        result += texture(uImage, texCoord + vec2(texOffset.x*2,0)).rgb * weights[2];
-        result += texture(uImage, texCoord - vec2(texOffset.x*2,0)).rgb * weights[2];
-    }
-    else
-    {
-        result += texture(uImage, texCoord + vec2(0,texOffset.y)).rgb * weights[1];
-        result += texture(uImage, texCoord - vec2(0,texOffset.y)).rgb * weights[1];
-
-        result += texture(uImage, texCoord + vec2(0,texOffset.y*2)).rgb * weights[2];
-        result += texture(uImage, texCoord - vec2(0,texOffset.y*2)).rgb * weights[2];
-    }
-
-    fragColor = vec4(result, 1.0);
+    fragColor = sum / 8.0;
 }

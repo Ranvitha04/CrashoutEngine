@@ -48,7 +48,7 @@ namespace CrashoutsEngine {
         bool g_bloomEnabled = true;
         float g_bloomThreshold = 1.0f;
         float g_bloomIntensity = 0.8f;
-        int g_bloomIterations = 6;
+        int g_bloomIterations = 4;
         bool g_shadowsEnabled = true;
         int g_shadowRays = 48;
         bool active = false;
@@ -61,14 +61,10 @@ namespace CrashoutsEngine {
         GLuint ppFboID = 0;
         GLuint ppTextureID = 0;
 
-        static GLuint lightFbo = 0;
-        static GLuint lightTexture = 0;
-        static GLuint noBloomLightFbo = 0;
-        static GLuint noBloomLightTexture = 0;
-        static GLuint behindLightFbo = 0;
-        static GLuint behindLightTexture = 0;
-        static GLuint behindNoBloomLightFbo = 0;
-        static GLuint behindNoBloomLightTexture = 0;
+        static GLuint frontLightsFbo = 0;
+        static GLuint frontLightsTex[2]{ 0, 0 }; // [0] = Bloom, [1] = NoBloom
+        static GLuint behindLightsFbo = 0;
+        static GLuint behindLightsTex[2]{ 0, 0 }; // [0] = Bloom, [1] = NoBloom
         static GLuint occluderFbo = 0;
         static GLuint occluderTexture = 0;
         static GLuint combineFbo = 0;
@@ -83,6 +79,33 @@ namespace CrashoutsEngine {
         static int cachedWidth = 0;
         static int cachedHeight = 0;
 
+        struct LightDraw {
+            bool active{ false };
+            bool affectBloom{ true };
+            bool renderBehind{ false };
+            bool ignoreParentOccluders{ true };
+            glm::vec2 uvCenter{ 0.0f, 0.0f };
+            float radiusUV{ 0.0f };
+            CEVec3 worldPos{ 0.0f, 0.0f, 0.0f };
+            float radiusWorld{ 0.0f };
+            CEVec3 color{ 1.0f, 1.0f, 1.0f };
+            float intensity{ 1.0f };
+            int shadowRow{ -1 };
+        };
+
+        struct LightInstance {
+            float posX;
+            float posY;
+            float radiusWorld;
+            float colorR;
+            float colorG;
+            float colorB;
+            float intensity;
+            float shadowIndex;
+            float affectBloom;
+        };
+
+
         static void CreateTexture(GLuint& tex, int w, int h, GLenum internalFormat, GLenum format) {
             if (tex == 0) glGenTextures(1, &tex);
             glBindTexture(GL_TEXTURE_2D, tex);
@@ -92,6 +115,30 @@ namespace CrashoutsEngine {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glBindTexture(GL_TEXTURE_2D, 0);
+        }
+
+        static void CreateFboWithTexturesMRT(GLuint& fbo, GLuint tex[2], int w, int h) {
+            if (fbo == 0) glGenFramebuffers(1, &fbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+            for (int i = 0; i < 2; ++i) {
+                if (tex[i] == 0) glGenTextures(1, &tex[i]);
+                glBindTexture(GL_TEXTURE_2D, tex[i]);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, tex[i], 0);
+            }
+
+            GLenum attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+            glDrawBuffers(2, attachments);
+
+            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+                std::cout << "ERROR: Post-Processing MRT Framebuffer is not complete!" << std::endl;
+            }
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
         static void CreateFboWithTexture(GLuint& fbo, GLuint& tex, int w, int h) {
@@ -114,10 +161,8 @@ namespace CrashoutsEngine {
             int halfW = std::max(1, cachedWidth / 2);
             int halfH = std::max(1, cachedHeight / 2);
 
-            CreateFboWithTexture(lightFbo, lightTexture, cachedWidth, cachedHeight);
-            CreateFboWithTexture(noBloomLightFbo, noBloomLightTexture, cachedWidth, cachedHeight);
-            CreateFboWithTexture(behindLightFbo, behindLightTexture, cachedWidth, cachedHeight);
-            CreateFboWithTexture(behindNoBloomLightFbo, behindNoBloomLightTexture, cachedWidth, cachedHeight);
+            CreateFboWithTexturesMRT(frontLightsFbo, frontLightsTex, cachedWidth, cachedHeight);
+            CreateFboWithTexturesMRT(behindLightsFbo, behindLightsTex, cachedWidth, cachedHeight);
             CreateFboWithTexture(occluderFbo, occluderTexture, cachedWidth, cachedHeight);
             CreateFboWithTexture(combineFbo, combineTexture, cachedWidth, cachedHeight);
             CreateFboWithTexture(brightFbo, brightTexture, halfW, halfH);
@@ -167,28 +212,33 @@ namespace CrashoutsEngine {
 
             // layout(location = 2) vec2 iLightPos
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
             glVertexAttribDivisor(2, 1);
 
             // layout(location = 3) float iLightRadius
             glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(2 * sizeof(float)));
+            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(2 * sizeof(float)));
             glVertexAttribDivisor(3, 1);
 
             // layout(location = 4) vec3 iLightColor
             glEnableVertexAttribArray(4);
-            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
             glVertexAttribDivisor(4, 1);
 
             // layout(location = 5) float iIntensity
             glEnableVertexAttribArray(5);
-            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
             glVertexAttribDivisor(5, 1);
 
             // layout(location = 6) float iShadowIndex
             glEnableVertexAttribArray(6);
-            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(7 * sizeof(float)));
+            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
             glVertexAttribDivisor(6, 1);
+
+            // layout(location = 7) float iAffectBloom
+            glEnableVertexAttribArray(7);
+            glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(8 * sizeof(float)));
+            glVertexAttribDivisor(7, 1);
 
             glBindVertexArray(0); // Unbind
 
@@ -218,14 +268,10 @@ namespace CrashoutsEngine {
             glDeleteFramebuffers(1, &ppFboID);
             glDeleteTextures(1, &ppTextureID);
 #endif
-            glDeleteFramebuffers(1, &lightFbo);
-            glDeleteTextures(1, &lightTexture);
-            glDeleteFramebuffers(1, &noBloomLightFbo);
-            glDeleteTextures(1, &noBloomLightTexture);
-            glDeleteFramebuffers(1, &behindLightFbo);
-            glDeleteTextures(1, &behindLightTexture);
-            glDeleteFramebuffers(1, &behindNoBloomLightFbo);
-            glDeleteTextures(1, &behindNoBloomLightTexture);
+            glDeleteFramebuffers(1, &frontLightsFbo);
+            glDeleteTextures(2, frontLightsTex);
+            glDeleteFramebuffers(1, &behindLightsFbo);
+            glDeleteTextures(2, behindLightsTex);
             glDeleteFramebuffers(1, &occluderFbo);
             glDeleteTextures(1, &occluderTexture);
             glDeleteFramebuffers(1, &combineFbo);
@@ -308,6 +354,71 @@ namespace CrashoutsEngine {
             glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_contrast"), g_contrast);
             glUniform1f(glGetUniformLocation(ppShader.GetHandle(), "u_saturation"), g_saturation);
             RenderFullscreen(ppShader, sceneTextureID, "u_sceneTexture");
+        }
+
+        static void renderLightsMRT(GLuint targetFbo, bool renderBehind, auto const& lightDraws, auto const& shadowRowByLight, int shadowTexHeight, bool shadowsEnabled, GLuint shadowTex, const RenderCamera::Camera& currentCamera) {
+            glBindFramebuffer(GL_FRAMEBUFFER, targetFbo);
+            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+
+            GLenum attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+            glDrawBuffers(2, attachments);
+
+            glDisable(GL_DEPTH_TEST);
+            glClearColor(0.f, 0.f, 0.f, 0.f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glEnable(GL_BLEND);
+            // Set independent blending for each render target
+            glBlendFunci(0, GL_ONE, GL_ONE); // For bloom lights
+            glBlendFunci(1, GL_ONE, GL_ONE); // For non-bloom lights
+
+
+            auto* lightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("LightShader");
+            if (!lightAsset) {
+                glDisable(GL_BLEND);
+                return;
+            }
+            GLSLShader& lightShader = lightAsset->shaderObject;
+            lightShader.Use();
+            float camWidth = currentCamera.GetVisibleWorldWidth();
+            float camHeight = currentCamera.GetVisibleWorldHeight();
+            glUniform2f(glGetUniformLocation(lightShader.GetHandle(), "uWorldSize"), camWidth, camHeight);
+            glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uUseShadows"), (shadowsEnabled && !shadowRowByLight.empty()) ? 1 : 0);
+            glUniform1f(glGetUniformLocation(lightShader.GetHandle(), "uShadowTexHeight"), (float)shadowTexHeight);
+            glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uShadowTex"), 1);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, shadowTex);
+
+            static std::vector<LightInstance> instances;
+            instances.clear();
+            instances.reserve(lightDraws.size());
+
+            for (size_t i = 0; i < lightDraws.size(); ++i) {
+                const LightDraw& ld = lightDraws[i];
+                if (!ld.active || ld.renderBehind != renderBehind) continue;
+
+                LightInstance inst{};
+                inst.posX = ld.uvCenter.x;
+                inst.posY = ld.uvCenter.y;
+                inst.radiusWorld = ld.radiusWorld;
+                inst.colorR = ld.color.x;
+                inst.colorG = ld.color.y;
+                inst.colorB = ld.color.z;
+                inst.intensity = ld.intensity;
+                inst.shadowIndex = (shadowRowByLight[i] >= 0) ? (float)shadowRowByLight[i] : -1.0f;
+                inst.affectBloom = ld.affectBloom ? 1.0f : 0.0f;
+                instances.push_back(inst);
+            }
+
+            if (!instances.empty()) {
+                glBindVertexArray(quadvao);
+                glBindBuffer(GL_ARRAY_BUFFER, lightInstanceVbo);
+                glBufferData(GL_ARRAY_BUFFER, instances.size() * sizeof(LightInstance), instances.data(), GL_DYNAMIC_DRAW);
+                glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instances.size()));
+                Component::Rendering::Get().drawCalls++;
+                glBindVertexArray(0);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+            }
+            glDisable(GL_BLEND);
         }
 
         void RenderPP(GLuint sceneTextureID) {
@@ -555,71 +666,9 @@ namespace CrashoutsEngine {
                 glBindTexture(GL_TEXTURE_2D, 0);
             }
 
-
-            auto renderLightsToFbo = [&](GLuint targetFbo, bool affectBloom, bool renderBehind) {
-                glBindFramebuffer(GL_FRAMEBUFFER, targetFbo);
-                glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-                glDisable(GL_DEPTH_TEST);
-                glClearColor(0.f, 0.f, 0.f, 1.f);
-                glClear(GL_COLOR_BUFFER_BIT);
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_ONE, GL_ONE);
-
-                auto* lightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("LightShader");
-                if (!lightAsset) {
-                    glDisable(GL_BLEND);
-                    return;
-                }
-                GLSLShader& lightShader = lightAsset->shaderObject;
-                lightShader.Use();
-                float camWidth = currentCamera.GetVisibleWorldWidth();
-                float camHeight = currentCamera.GetVisibleWorldHeight();
-                glUniform2f(glGetUniformLocation(lightShader.GetHandle(), "uWorldSize"), camWidth, camHeight);
-                glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uUseShadows"), (g_shadowsEnabled && !shadowLights.empty()) ? 1 : 0);
-                glUniform1f(glGetUniformLocation(lightShader.GetHandle(), "uShadowTexHeight"), (float)shadowTexHeight);
-                glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uShadowTex"), 1);
-                glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, shadowTex);
-
-                static std::vector<LightInstance> instances;
-                instances.clear();
-                instances.reserve(lightDraws.size());
-
-                for (size_t i = 0; i < lightDraws.size(); ++i) {
-                    const LightDraw& ld = lightDraws[i];
-                    if (!ld.active) continue;
-                    if (ld.affectBloom != affectBloom) continue;
-                    if (ld.renderBehind != renderBehind) continue;
-
-                    LightInstance inst{};
-                    inst.posX = ld.uvCenter.x;
-                    inst.posY = ld.uvCenter.y;
-                    inst.radiusWorld = ld.radiusWorld;
-                    inst.colorR = ld.color.x;
-                    inst.colorG = ld.color.y;
-                    inst.colorB = ld.color.z;
-                    inst.intensity = ld.intensity;
-                    inst.shadowIndex = (shadowRowByLight[i] >= 0) ? (float)shadowRowByLight[i] : -1.0f;
-                    instances.push_back(inst);
-                }
-
-                if (!instances.empty()) {
-                    glBindVertexArray(quadvao);
-                    glBindBuffer(GL_ARRAY_BUFFER, lightInstanceVbo);
-                    glBufferData(GL_ARRAY_BUFFER, instances.size() * sizeof(LightInstance), instances.data(), GL_DYNAMIC_DRAW);
-                    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instances.size()));
-                    Component::Rendering::Get().drawCalls++;
-                    glBindVertexArray(0);
-                    glBindBuffer(GL_ARRAY_BUFFER, 0);
-                }
-                glDisable(GL_BLEND);
-            };
-
             // --- Light Passes ---
-            renderLightsToFbo(lightFbo, true, false);
-            renderLightsToFbo(noBloomLightFbo, false, false);
-            renderLightsToFbo(behindLightFbo, true, true);
-            renderLightsToFbo(behindNoBloomLightFbo, false, true);
+            renderLightsMRT(frontLightsFbo, false, lightDraws, shadowRowByLight, shadowTexHeight, g_shadowsEnabled, shadowTex, currentCamera);
+            renderLightsMRT(behindLightsFbo, true, lightDraws, shadowRowByLight, shadowTexHeight, g_shadowsEnabled, shadowTex, currentCamera);
 
             // --- Occluder Mask Pass ---
             glBindFramebuffer(GL_FRAMEBUFFER, occluderFbo);
@@ -759,10 +808,10 @@ namespace CrashoutsEngine {
             glUniform1i(glGetUniformLocation(combineShader.GetHandle(), "uLightBehind"), 2);
             glUniform1i(glGetUniformLocation(combineShader.GetHandle(), "uOccluderMask"), 3);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, behindLightTexture);
+            glBindTexture(GL_TEXTURE_2D, behindLightsTex[0]);
             glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_2D, occluderTexture);
-            RenderFullscreen(combineShader, sceneTextureID, "uScene", lightTexture, "uLight");
+            RenderFullscreen(combineShader, sceneTextureID, "uScene", frontLightsTex[0], "uLight");
             glBindTexture(GL_TEXTURE_2D, 0);
 
             // --- Bright Pass ---
@@ -782,7 +831,7 @@ namespace CrashoutsEngine {
             glUniform1f(glGetUniformLocation(brightShader.GetHandle(), "uThreshold"), g_bloomThreshold);
             RenderFullscreen(brightShader, combineTexture, "uScene");
 
-            // --- Blur Pass ---
+            // --- Blur Pass (Kawase) ---
             GLuint blurInput = brightTexture;
             int iterations = std::max(0, g_bloomIterations);
             auto* blurAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BlurShader");
@@ -791,17 +840,23 @@ namespace CrashoutsEngine {
                 return;
             }
             GLSLShader& blurShader = blurAsset->shaderObject;
-            for (int i = 0; i < iterations; ++i) {
-                bool horizontal = (i % 2 == 0);
-                glBindFramebuffer(GL_FRAMEBUFFER, pingpongFbo[horizontal ? 0 : 1]);
-                glViewport(0, 0, halfW, halfH);
-                glClear(GL_COLOR_BUFFER_BIT);
-                blurShader.Use();
-                glUniform1i(glGetUniformLocation(blurShader.GetHandle(), "uHorizontal"), horizontal ? 1 : 0);
-                RenderFullscreen(blurShader, blurInput, "uImage");
-                blurInput = pingpongTex[horizontal ? 0 : 1];
-            }
 
+            if (iterations > 0) {
+                blurShader.Use();
+                glUniform2f(glGetUniformLocation(blurShader.GetHandle(), "uTexelSize"), 1.0f / halfW, 1.0f / halfH);
+
+                for (int i = 0; i < iterations; ++i) {
+                    glBindFramebuffer(GL_FRAMEBUFFER, pingpongFbo[i % 2]);
+                    glViewport(0, 0, halfW, halfH);
+                    glClear(GL_COLOR_BUFFER_BIT);
+
+                    glUniform1i(glGetUniformLocation(blurShader.GetHandle(), "uPass"), i);
+
+                    RenderFullscreen(blurShader, blurInput, "uImage");
+                    blurInput = pingpongTex[i % 2];
+                }
+            }
+            
             GLuint bloomTex = (iterations > 0) ? blurInput : brightTexture;
 
             // --- Final Composite (to currently bound framebuffer) ---
@@ -826,9 +881,9 @@ namespace CrashoutsEngine {
             glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uNoBloomBehind"), 3);
             glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uOccluderMask"), 4);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, noBloomLightTexture);
+            glBindTexture(GL_TEXTURE_2D, frontLightsTex[1]);
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, behindNoBloomLightTexture);
+            glBindTexture(GL_TEXTURE_2D, behindLightsTex[1]);
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, occluderTexture);
             RenderFullscreen(finalShader, combineTexture, "uScene", bloomTex, "uBloom");

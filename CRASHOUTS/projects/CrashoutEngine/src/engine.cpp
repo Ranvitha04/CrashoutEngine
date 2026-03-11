@@ -462,8 +462,14 @@ void Update(double const& dt) {
 
     CrashoutsEngine::ECS& ecs = *CrashoutsEngine::ECS::getInstance();
 
-    CrashoutsEngine::UpdateActiveHierarchy(ecs);
-    CrashoutsEngine::UpdateHierarchy(ecs);
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ActiveHierarchy");
+        CrashoutsEngine::UpdateActiveHierarchy(ecs);
+    }
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Hierarchy");
+        CrashoutsEngine::UpdateHierarchy(ecs);
+    }
 
 #if !USE_IMGUI_EDITOR 
     bool releaseCameraUpdated = false;
@@ -535,10 +541,22 @@ void Update(double const& dt) {
             }
         }
 #endif
-        KeyframeUnity::UpdateAll(ecs, (float)dt);
-        CrashoutsEngine::VideoSystem::Update((float)dt);
-        CrashoutsEngine::ScriptSystem::UpdateAll();
-        CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, false);
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "KeyframeUpdate");
+            KeyframeUnity::UpdateAll(ecs, (float)dt);
+        }
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "VideoUpdate");
+            CrashoutsEngine::VideoSystem::Update((float)dt);
+        }
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "ScriptUpdate");
+            CrashoutsEngine::ScriptSystem::UpdateAll();
+        }
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "LeaderboardUpdate");
+            CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, false);
+        }
 
         //fixed Update please work
         int steps = FrameRateController::GetInstance().StepCount();
@@ -670,8 +688,8 @@ void Update(double const& dt) {
     }
     else if (engineState == EngineState::STOP) {
         {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-            physicsSystem.Update(0.f);
+            //FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+            //physicsSystem.Update(0.f);
         }
 
         // Process Editor Camera Input
@@ -681,7 +699,10 @@ void Update(double const& dt) {
 #else
         CrashoutsEngine::RenderCamera::engineCamera.UpdateMatrices(GLApp::width, GLApp::height);
 #endif
-        CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, true);
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "LeaderboardUpdate");
+            CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, true);
+        }
     }
     else if (engineState == EngineState::PAUSE) {
         physicsSystem.Update(0.f);
@@ -727,11 +748,20 @@ void Update(double const& dt) {
     }
 
     // Always run Gizmo drawing (Debug shapes)
-    CrashoutsEngine::ScriptSystem::DrawGizmosAll();
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "DrawGizmos");
+        CrashoutsEngine::ScriptSystem::DrawGizmosAll();
+    }
 
-    Scene::UpdateScene(ecs);
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "SceneUpdate");
+        Scene::UpdateScene(ecs);
+    }
 
-    InputManager::Update();
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "InputUpdate");
+        InputManager::Update();
+    }
     
     // ==========================================
     // REPLAY DEBUG HOTKEYS
@@ -753,20 +783,26 @@ void Update(double const& dt) {
 //#endif
     // ==========================================
 
-    CrashoutsEngine::PostProcessing::UpdatePP();
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "PostProcessingUpdate");
+        CrashoutsEngine::PostProcessing::UpdatePP();
+    }
 
 
     // Cycle and draw Tile Map Editor if needed
     CrashoutsEngine::ECS::ComponentArray<Component::TileMapComponent>& tmArray =
         CrashoutsEngine::ECS::getInstance()->GetComponentArray<Component::TileMapComponent>();
 
-    for (size_t i = 0; i < tmArray.dense.size(); ++i) {
-        // 1. Get the Component
-        Component::TileMapComponent* tm = tmArray.dense[i];
+    {
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "TileMapCacheRebuild");
+        for (size_t i = 0; i < tmArray.dense.size(); ++i) {
+            // 1. Get the Component
+            Component::TileMapComponent* tm = tmArray.dense[i];
 
-        // 2. Get the Entity ID associated with this index
-        CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
-        if (tm->isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(*tm, entityID);
+            // 2. Get the Entity ID associated with this index
+            CrashoutsEngine::Entity entityID = tmArray.indexToEntity[i];
+            if (tm->isCacheDirty) CrashoutsEngine::TileMapUtils::RebuildCache(*tm, entityID);
+        }
     }
 
 }
@@ -862,19 +898,21 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glm::mat4 proj = currentCamera.GetProjectionMatrix();
 
     // --- Profiling & Scene Rendering ---
-    FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Graphics");
-    ScopedMemTag mem(MemTag::Graphics);
     {
-        FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
-        //GLApp::draw();
-        Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Graphics");
+        ScopedMemTag mem(MemTag::Graphics);
+        {
+            FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
+            //GLApp::draw();
+            Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
 
-        // Flush Debug Queue (Lines/Circles from Scripts)
-        Component::Rendering::Get().FlushDebugQueue();
+            // Flush Debug Queue (Lines/Circles from Scripts)
+            Component::Rendering::Get().FlushDebugQueue();
 
-        if (CurrentDescriptor) {
-            //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
-            if (CurrentDescriptor->Render) CurrentDescriptor->Render();
+            if (CurrentDescriptor) {
+                //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
+                if (CurrentDescriptor->Render) CurrentDescriptor->Render();
+            }
         }
     }
 
@@ -938,7 +976,10 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClear(GL_COLOR_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    {
+        FrameProfiler::Scoped ppScope(PerformanceSystem::Get().GetProfiler(), "PostProcessing");
+        CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     UI::EndFrame();
@@ -995,7 +1036,10 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glDisable(GL_DEPTH_TEST);
 
     // 3. Render the Post Processing image directly into that centered box!
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    {
+        FrameProfiler::Scoped ppScope(PerformanceSystem::Get().GetProfiler(), "PostProcessing");
+        CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    }
 
 #endif
 

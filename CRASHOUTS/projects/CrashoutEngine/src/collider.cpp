@@ -31,61 +31,61 @@ namespace Collision {
 
 	AABBRect GetAABB(Collider const& collider, CEVec3 const& transform) {
 
-		if (!collider.isAABBCacheDirty) return AABBRect{ collider.cachedMin, collider.cachedMax };
+	if (!collider.isAABBCacheDirty) return AABBRect{ collider.cachedMin, collider.cachedMax };
 
-		switch (collider.type) {
+	switch (collider.type) {
 
-			case ColliderType::CIRCLE: {
-				Circle const& circle{ dynamic_cast<Circle const&>(collider) };
-				CEVec3 extents{ circle.radius, circle.radius, 0.f };
-				collider.cachedMin = circle.position - extents;
-				collider.cachedMax = circle.position + extents;
-				}
-				break;
-			case ColliderType::AABB: {
-				AABBRect const& aabb = dynamic_cast<AABBRect const&>(collider);
-				collider.cachedMin = aabb.min;
-				collider.cachedMax = aabb.max;
-				}
-				break;
-			case ColliderType::LINE: {
-				LineSegment const& line{ dynamic_cast<LineSegment const&>(collider) };
-				CEVec3 min{ line.GetWorldP1() };
-				CEVec3 max{ line.GetWorldP2() };
+		case ColliderType::CIRCLE: {
+			Circle const& circle{ static_cast<Circle const&>(collider) };
+			CEVec3 extents{ circle.radius, circle.radius, 0.f };
+			collider.cachedMin = circle.position - extents;
+			collider.cachedMax = circle.position + extents;
+			}
+			break;
+		case ColliderType::AABB: {
+			AABBRect const& aabb = static_cast<AABBRect const&>(collider);
+			collider.cachedMin = aabb.min;
+			collider.cachedMax = aabb.max;
+			}
+			break;
+		case ColliderType::LINE: {
+			LineSegment const& line{ static_cast<LineSegment const&>(collider) };
+			CEVec3 min{ line.GetWorldP1() };
+			CEVec3 max{ line.GetWorldP2() };
 
-				if (min.x > max.x) std::swap(min.x, max.x);
-				if (min.y > max.y) std::swap(min.y, max.y);
+			if (min.x > max.x) std::swap(min.x, max.x);
+			if (min.y > max.y) std::swap(min.y, max.y);
 
-				collider.cachedMin = min;
-				collider.cachedMax = max;
-			}				   
-			    break;
-			case ColliderType::POLYGON: {
-				Polygon const& polygon{ dynamic_cast<Polygon const&>(collider) };
-				CEVec3 minXY{ polygon.rotatedVertices[0].x, polygon.rotatedVertices[0].y, transform.z };
-				CEVec3 maxXY{ polygon.rotatedVertices[0].x, polygon.rotatedVertices[0].y, transform.z };
+			collider.cachedMin = min;
+			collider.cachedMax = max;
+		}				   
+			break;
+		case ColliderType::POLYGON: {
+			Polygon const& polygon{ static_cast<Polygon const&>(collider) };
+			CEVec3 minXY{ polygon.rotatedVertices[0].x, polygon.rotatedVertices[0].y, transform.z };
+			CEVec3 maxXY{ polygon.rotatedVertices[0].x, polygon.rotatedVertices[0].y, transform.z };
 
-				for (int i{}; i < polygon.vertexCount; ++i) {
-					minXY.x = std::min(minXY.x, polygon.rotatedVertices[i].x);
-					minXY.y = std::min(minXY.y, polygon.rotatedVertices[i].y);
+			for (int i{}; i < polygon.vertexCount; ++i) {
+				minXY.x = std::min(minXY.x, polygon.rotatedVertices[i].x);
+				minXY.y = std::min(minXY.y, polygon.rotatedVertices[i].y);
 
-					maxXY.x = std::max(maxXY.x, polygon.rotatedVertices[i].x);
-					maxXY.y = std::max(maxXY.y, polygon.rotatedVertices[i].y);
-				}
+				maxXY.x = std::max(maxXY.x, polygon.rotatedVertices[i].x);
+				maxXY.y = std::max(maxXY.y, polygon.rotatedVertices[i].y);
+			}
 
-				collider.cachedMin = minXY;
-				collider.cachedMax = maxXY;
-				}
-				break;
-			default:
-				collider.cachedMin = CEVec3{};
-				collider.cachedMax = CEVec3{};
-				break;
-		}
-
-		collider.isAABBCacheDirty = false;
-		return AABBRect{ collider.cachedMin, collider.cachedMax };
+			collider.cachedMin = minXY;
+			collider.cachedMax = maxXY;
+			}
+			break;
+		default:
+			collider.cachedMin = CEVec3{};
+			collider.cachedMax = CEVec3{};
+			break;
 	}
+
+	collider.isAABBCacheDirty = false;
+	return AABBRect{ collider.cachedMin, collider.cachedMax };
+}
 
 	void AABBRect::UpdateCollider(CEVec3 const& newPos) {
 		position = newPos + offset;

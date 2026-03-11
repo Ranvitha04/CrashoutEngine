@@ -196,42 +196,45 @@ namespace Physics {
 		float s = std::sin(parentRad);
 		float c = std::cos(parentRad);
 
-		for (CrashoutsEngine::Entity child : childrenComp->children)
-		{
-			if (!ecs.HasComponent<Component::TransformComponent>(child)) continue;
-			if (!ecs.HasComponent<Component::ParentComponent>(child))    continue;
-
-			auto* childTransform = ecs.GetComponent<Component::TransformComponent>(child);
-			auto* rel = ecs.GetComponent<Component::ParentComponent>(child);
-
-			// 1) SCALE (match hierarchy.cpp)
-			childTransform->size.x = parentTransform->size.x * rel->localScale.x;
-			childTransform->size.y = parentTransform->size.y * rel->localScale.y;
-
-			// 2) ROTATION (degrees, additive)
-			childTransform->rotation = parentTransform->rotation + rel->localRot;
-
-			// 3) POSITION (match hierarchy.cpp: scale local offset by parent size, then rotate)
-			float scaledOffsetX = rel->localPos.x * parentTransform->size.x;
-			float scaledOffsetY = rel->localPos.y * parentTransform->size.y;
-
-			float rotatedX = (c * scaledOffsetX) - (s * scaledOffsetY);
-			float rotatedY = (s * scaledOffsetX) + (c * scaledOffsetY);
-
-			childTransform->position.x = parentTransform->position.x + rotatedX;
-			childTransform->position.y = parentTransform->position.y + rotatedY;
-			childTransform->position.z = parentTransform->position.z + rel->localPos.z;
-
-			// 4) Update child collider too (position + rotation)
-			if (ecs.HasComponent<Component::ColliderComponent>(child)) {
-				auto* childCol = ecs.GetComponent<Component::ColliderComponent>(child);
-				childCol->collider->UpdateCollider(childTransform->position);
-				childCol->collider->UpdateRotation(childTransform->rotation);
-			}
-
-			// recurse
-			SyncHierarchyPhysics(child, ecs);
+	for (CrashoutsEngine::Entity child : childrenComp->children)
+	{
+		if (ecs.HasComponent<Component::RigidBodyComponent>(child)) {
+			continue;
 		}
+		if (!ecs.HasComponent<Component::TransformComponent>(child)) continue;
+		if (!ecs.HasComponent<Component::ParentComponent>(child))    continue;
+
+		auto* childTransform = ecs.GetComponent<Component::TransformComponent>(child);
+		auto* rel = ecs.GetComponent<Component::ParentComponent>(child);
+
+		// 1) SCALE (match hierarchy.cpp)
+		childTransform->size.x = parentTransform->size.x * rel->localScale.x;
+		childTransform->size.y = parentTransform->size.y * rel->localScale.y;
+
+		// 2) ROTATION (degrees, additive)
+		childTransform->rotation = parentTransform->rotation + rel->localRot;
+
+		// 3) POSITION (match hierarchy.cpp: scale local offset by parent size, then rotate)
+		float scaledOffsetX = rel->localPos.x * parentTransform->size.x;
+		float scaledOffsetY = rel->localPos.y * parentTransform->size.y;
+
+		float rotatedX = (c * scaledOffsetX) - (s * scaledOffsetY);
+		float rotatedY = (s * scaledOffsetX) + (c * scaledOffsetY);
+
+		childTransform->position.x = parentTransform->position.x + rotatedX;
+		childTransform->position.y = parentTransform->position.y + rotatedY;
+		childTransform->position.z = parentTransform->position.z + rel->localPos.z;
+
+		// 4) Update child collider too (position + rotation)
+		if (ecs.HasComponent<Component::ColliderComponent>(child)) {
+			auto* childCol = ecs.GetComponent<Component::ColliderComponent>(child);
+			childCol->collider->UpdateCollider(childTransform->position);
+			childCol->collider->UpdateRotation(childTransform->rotation);
+		}
+
+		// recurse
+		SyncHierarchyPhysics(child, ecs);
+	}
 	}
 
 
