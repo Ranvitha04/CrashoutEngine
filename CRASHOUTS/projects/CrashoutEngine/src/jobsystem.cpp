@@ -6,13 +6,19 @@
 #include <algorithm>
 
 namespace CrashoutsEngine {
+	namespace {
+		unsigned int GetDefaultWorkerCount() {
+			unsigned int concurrency = std::thread::hardware_concurrency();
+			if (concurrency == 0) return 2;
+			return concurrency > 1 ? (concurrency - 1) : 1;
+		}
+	}
 
 	void JobSystem::Initialize(unsigned int threadCount) {
 		if (!workers.empty()) return;
 
 		if (threadCount == 0) {
-			threadCount = std::thread::hardware_concurrency();
-			if (threadCount == 0) threadCount = 2; // Fallback
+			threadCount = GetDefaultWorkerCount();
 		}
 
 		stop = false;
@@ -55,14 +61,14 @@ namespace CrashoutsEngine {
 		if (count == 0) return;
 		if (minChunkSize == 0) minChunkSize = 1;
 
-		unsigned int numThreads = GetThreadCount();
-		if (numThreads <= 1 || count <= minChunkSize) {
+		unsigned int numWorkers = GetThreadCount();
+		if (numWorkers == 0 || count <= minChunkSize) {
 			func(0, count);
 			return;
 		}
 
 		unsigned int idealChunks = (count + minChunkSize - 1) / minChunkSize;
-		unsigned int numChunks = std::min(numThreads, idealChunks);
+		unsigned int numChunks = std::min(numWorkers + 1, idealChunks);
 		if (numChunks <= 1) {
 			func(0, count);
 			return;
@@ -70,9 +76,9 @@ namespace CrashoutsEngine {
 
 		unsigned int chunkSize = (count + numChunks - 1) / numChunks;
 		std::vector<std::future<void>> futures;
-		futures.reserve(numChunks);
+		futures.reserve(numChunks - 1);
 
-		for (unsigned int i = 0; i < numChunks; ++i) {
+		for (unsigned int i = 1; i < numChunks; ++i) {
 			unsigned int start = i * chunkSize;
 			unsigned int end = std::min(count, start + chunkSize);
 			if (start >= end) continue;
@@ -80,6 +86,12 @@ namespace CrashoutsEngine {
 			futures.push_back(Enqueue([start, end, &func]() {
 				func(start, end);
 			}));
+		}
+
+		unsigned int mainStart = 0;
+		unsigned int mainEnd = std::min(count, chunkSize);
+		if (mainStart < mainEnd) {
+			func(mainStart, mainEnd);
 		}
 
 		for (auto& f : futures) {

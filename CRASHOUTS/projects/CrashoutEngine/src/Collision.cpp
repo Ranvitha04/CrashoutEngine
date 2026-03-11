@@ -1213,12 +1213,11 @@ namespace Collision {
 		unsigned int numThreads = CrashoutsEngine::JobSystem::Get().GetThreadCount();
 		if (numThreads == 0) numThreads = 1;
 		std::vector<ThreadResult> threadResults(numThreads);
+		std::mutex threadResultsMutex;
 
 		// 3. ONLY LOOP OVER DYNAMIC ENTITIES!
 		CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)dynamicEntities.size(), [&](unsigned int start, unsigned int end) {
-			unsigned int threadIdx = start / (std::max(1u, (unsigned int)dynamicEntities.size() / numThreads));
-			if (threadIdx >= numThreads) threadIdx = numThreads - 1;
-			auto& result = threadResults[threadIdx];
+			ThreadResult localResult;
 
 			std::vector<CrashoutsEngine::Entity> localCollidableObjects;
 			localCollidableObjects.reserve(128); // Pre-allocate memory to prevent heap reallocations!
@@ -1287,7 +1286,7 @@ namespace Collision {
 
 					if (collisionManifold.collisionOccured) {
 						// Populate master list
-						result.events.push_back(CollisionEvent{ collisionManifold, entity1, entity2 });
+						localResult.events.push_back(CollisionEvent{ collisionManifold, entity1, entity2 });
 
 						// Gameplay messaging only when in play mode
 						if (state == EngineState::PLAY) {
@@ -1300,15 +1299,30 @@ namespace Collision {
 							ContactPair pair{ entity1, entity2 };
 
 							if (lastFramePairs.find(pair) != lastFramePairs.end()) {
-								result.messages.push_back({ stayType, collisionManifold, entity1, entity2 });
+								localResult.messages.push_back({ stayType, collisionManifold, entity1, entity2 });
 							}
 							else {
-								result.messages.push_back({ enterType, collisionManifold, entity1, entity2 });
+								localResult.messages.push_back({ enterType, collisionManifold, entity1, entity2 });
 							}
 
-							result.contacts.push_back({ pair, collisionManifold });
+							localResult.contacts.push_back({ pair, collisionManifold });
 						}
 					}
+				}
+			}
+
+			if (!localResult.events.empty() || !localResult.messages.empty() || !localResult.contacts.empty()) {
+				std::lock_guard<std::mutex> lock(threadResultsMutex);
+
+				auto bestIt = std::min_element(threadResults.begin(), threadResults.end(),
+					[](const ThreadResult& lhs, const ThreadResult& rhs) {
+						return lhs.events.size() < rhs.events.size();
+					});
+
+				if (bestIt != threadResults.end()) {
+					bestIt->events.insert(bestIt->events.end(), localResult.events.begin(), localResult.events.end());
+					bestIt->messages.insert(bestIt->messages.end(), localResult.messages.begin(), localResult.messages.end());
+					bestIt->contacts.insert(bestIt->contacts.end(), localResult.contacts.begin(), localResult.contacts.end());
 				}
 			}
 			});
