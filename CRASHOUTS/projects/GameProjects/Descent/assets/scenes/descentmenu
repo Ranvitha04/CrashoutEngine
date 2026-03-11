@@ -523,7 +523,7 @@
                         "className": "SceneMusic",
                         "fields": {
                             "layerName": "Music",
-                            "fadeTime": 2.0,
+                            "fadeTime": 0.10000000149011612,
                             "stopLayer": false
                         }
                     }

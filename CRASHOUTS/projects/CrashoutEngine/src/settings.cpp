@@ -31,6 +31,9 @@ unsigned int Settings::screenWidth = 1280;
 /// Default screen height before loading from file
 unsigned int Settings::screenHeight = 720;
 
+float Settings::MusicVolume = 1.0f;
+float Settings::SFXVolume = 1.0f;
+
 const float Settings::TARGET_ASPECT_RATIO = 16.0f / 9.0f;
 
 struct SettingsLoader {
@@ -289,11 +292,13 @@ void Settings::LoadEditorSettings(UI::UIState& uiState) {
 
     if (json.HasMember("musicVolume") && json["musicVolume"].IsFloat()) {
         float vol = json["musicVolume"].GetFloat();
+        Settings::MusicVolume = vol;
         CrashoutsEngine::Audio::AudioSystem::instance().setMusicGroupVolume(vol);
     }
 
     if (json.HasMember("sfxVolume") && json["sfxVolume"].IsFloat()) {
         float vol = json["sfxVolume"].GetFloat();
+        Settings::SFXVolume = vol;
         CrashoutsEngine::Audio::AudioSystem::instance().setSFXGroupVolume(vol);
     }
 

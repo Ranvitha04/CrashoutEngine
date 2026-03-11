@@ -41,8 +41,6 @@ namespace
 
         g_PendingSceneName = nameString;
         g_IsSceneLoadPending = true;
-        CrashoutsEngine::Audio::AudioSystem::instance().stopMusicGroup(); // Stop FMOD Studio
-        CrashoutsEngine::Audio::AudioSystem::instance().stopSFXGroup();
 
         std::cout << "[Engine] Scene Load Scheduled: " << nameString << std::endl;
     }
@@ -70,13 +68,15 @@ namespace
         mono_free(utf8);
         if (nameString.empty()) return;
 
+        std::cout << "[Engine] Transitioning to: " << nameString << " (Out: " << fadeOut << "s, In: " << fadeIn << "s)" << std::endl;
+
         CrashoutsEngine::SceneTransition::Start(nameString, fadeOut, fadeIn);
     }
 }
 
 void CrashoutsEngine::Bindings::RegisterSceneBindings()
 {
-    mono_add_internal_call("CrashoutsEngine.SceneManager::LoadScene", (const void*)InternalLoadScene);
+    mono_add_internal_call("CrashoutsEngine.SceneManager::InternalLoadScene", (const void*)InternalLoadScene);
     mono_add_internal_call("CrashoutsEngine.SceneManager::QuitGame", (const void*)InternalQuitGame);
     mono_add_internal_call("CrashoutsEngine.SceneManager::TransitionToScene", (const void*)InternalTransitionToScene);
     mono_add_internal_call("CrashoutsEngine.SceneManager::FadeEffect", (const void*)InternalFadeEffect);

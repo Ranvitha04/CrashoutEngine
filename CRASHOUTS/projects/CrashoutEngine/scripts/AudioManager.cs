@@ -34,6 +34,13 @@ public class AudioManager
         return Instance;
     }
 
+    public static void ResetInstance()
+    {
+        Instance._activeLayers.Clear();
+        Instance.sounds.Clear();
+        // playerMusVol/playerSFXVol can stay as they are global preferences
+    }
+
     // Converted version of your "Sound[]" array
     private Dictionary<string, SoundData> sounds = new Dictionary<string, SoundData>();
         
@@ -175,7 +182,16 @@ public class AudioManager
             // Plays on SFX Group (Controlled by SFX Slider)
             InternalCalls.Audio_PlaySFXFileTagged(key, path, loop);
         }
-        InternalCalls.Audio_SetTaggedVolume(key, volume);
+
+        if (fadeDuration > 0)
+        {
+            InternalCalls.Audio_SetTaggedVolume(key, 0.0f);
+            InternalCalls.Audio_FadeTaggedVolume(key, volume, fadeDuration);
+        }
+        else
+        {
+            InternalCalls.Audio_SetTaggedVolume(key, volume);
+        }
 
         _activeLayers[layerName] = key;
     }
