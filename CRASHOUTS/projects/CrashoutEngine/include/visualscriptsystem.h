@@ -3,6 +3,7 @@
 #include "debugmenu.h" 
 #include "visualscriptcomponent.h"
 
+namespace CrashoutsEngine { class ECS; }
 
 void ExecuteVisualScript(CrashoutsEngine::ECS& ecs,
     CrashoutsEngine::Entity e,
