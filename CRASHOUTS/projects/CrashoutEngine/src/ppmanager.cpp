@@ -393,7 +393,7 @@ namespace CrashoutsEngine {
             instances.reserve(lightDraws.size());
 
             for (size_t i = 0; i < lightDraws.size(); ++i) {
-                const LightDraw& ld = lightDraws[i];
+                const auto& ld = lightDraws[i];
                 if (!ld.active || ld.renderBehind != renderBehind) continue;
 
                 LightInstance inst{};
