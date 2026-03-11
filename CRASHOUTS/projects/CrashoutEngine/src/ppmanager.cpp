@@ -538,7 +538,6 @@ namespace CrashoutsEngine {
                 if (!shadowLights.empty()) {
                     float camWidth = currentCamera.GetVisibleWorldWidth();
                     float camHeight = currentCamera.GetVisibleWorldHeight();
-                    CEVec3 camPos = currentCamera.GetPosition();
                     float maxScreenRadius = std::max(camWidth, camHeight) * 1.5f;
 
                     static std::vector<std::vector<CrashoutsEngine::Entity>> allLightCandidates;
@@ -575,18 +574,32 @@ namespace CrashoutsEngine {
                         allLightCandidates[idx].reserve(64);
                         Collision::CollisionHandler::GetInstance().QueryTrees(lightRegion, allLightCandidates[idx]);
 
-                        for (auto candEnt : allLightCandidates[idx]) {
-                            auto* cc = ecs.GetComponent<Component::ColliderComponent>(candEnt);
-                            auto* tc = ecs.GetComponent<Component::TransformComponent>(candEnt);
-                            if (cc && cc->collider && tc) {
-                                cc->collider->UpdateCollider(tc->position);
-                                if (cc->collider->type == Collision::ColliderType::OBB ||
-                                    cc->collider->type == Collision::ColliderType::POLYGON ||
-                                    cc->collider->type == Collision::ColliderType::TRIANGLE) {
-                                    cc->collider->UpdateRotation(tc->rotation);
-                                }
-                            }
+                        // DELETED: The redundant UpdateCollider/UpdateRotation loop was here!
+                    }
+
+                    // ==============================================================
+                    // PRECALCULATE TRIGONOMETRY
+                    // We calculate the ray vectors exactly ONCE per frame instead of 
+                    // inside the multithreaded loop. 
+                    // ==============================================================
+                    static std::vector<CEVec3> precalcRayDirs;
+                    if (precalcRayDirs.size() != shadowRays) {
+                        precalcRayDirs.resize(shadowRays);
+                    }
+
+                    for (int r = 0; r < shadowRays; ++r) {
+                        float angle = (static_cast<float>(r) + 0.5f) / static_cast<float>(shadowRays);
+                        angle *= 6.28318530718f;
+                        float ux = std::cos(angle);
+                        float uy = std::sin(angle);
+
+                        CEVec3 dir{ ux * camWidth, uy * camHeight, 0.f };
+                        float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+                        if (len > 0.0001f) {
+                            dir.x /= len;
+                            dir.y /= len;
                         }
+                        precalcRayDirs[r] = dir;
                     }
 
                     int totalRays = static_cast<int>(shadowLights.size()) * shadowRays;
@@ -606,17 +619,8 @@ namespace CrashoutsEngine {
                                     const auto& localCandidates = allLightCandidates[shadowArrIdx];
                                     CrashoutsEngine::Entity ignoredParent = ignoredParents[shadowArrIdx];
 
-                                    float angle = (static_cast<float>(r) + 0.5f) / static_cast<float>(shadowRays);
-                                    angle *= 6.28318530718f;
-                                    float ux = std::cos(angle);
-                                    float uy = std::sin(angle);
-
-                                    CEVec3 dir{ ux * camWidth, uy * camHeight, 0.f };
-                                    float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
-                                    if (len > 0.0001f) {
-                                        dir.x /= len;
-                                        dir.y /= len;
-                                    }
+                                    // Instantly grab the pre-calculated direction!
+                                    CEVec3 dir = precalcRayDirs[r];
 
                                     CEVec3 startPos = ld.worldPos;
                                     CEVec3 endPos = startPos + dir * ld.radiusWorld;
@@ -644,7 +648,7 @@ namespace CrashoutsEngine {
                     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, shadowTexWidth, shadowTexHeight, GL_RED, GL_FLOAT, shadowData.data());
                     glBindTexture(GL_TEXTURE_2D, 0);
                 }
-            } // END CPU SHADOWS
+            }
 
             // ==========================================
             // 2. GPU LIGHT PASSES
