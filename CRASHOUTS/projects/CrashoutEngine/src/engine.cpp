@@ -665,8 +665,8 @@ void Update(double const& dt) {
     }
     else if (engineState == EngineState::STOP) {
         {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-            physicsSystem.Update(0.f);
+            //FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+            //physicsSystem.Update(0.f);
         }
 
         // Process Editor Camera Input

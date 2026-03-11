@@ -647,7 +647,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "1.  Test  -  00:45.96",
+                "text": "1.  Rain  -  00:49.64",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -721,7 +721,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "2.  Enter Name  -  00:48.31",
+                "text": "2.  Loser  -  00:49.98",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -795,7 +795,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "3.  Loser  -  00:49.98",
+                "text": "3.  Player1  -  00:51.33",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -869,7 +869,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "4.  Player1  -  00:51.33",
+                "text": "4.  Enter Name  -  00:54.51",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -953,7 +953,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "5.  lickytongue  -  01:01.43",
+                "text": "5.  Joses!  -  00:55.83",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -1027,7 +1027,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "6.  hu  -  01:07.42",
+                "text": "6.  elijah  -  00:55.89",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -1101,7 +1101,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "7.  Enter Name  -  01:47.57",
+                "text": "7.  lickytongue  -  01:01.43",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -1175,7 +1175,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "",
+                "text": "8.  hu  -  01:07.42",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -1249,7 +1249,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "",
+                "text": "9.  Elie  -  01:21.66",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,
@@ -1323,7 +1323,7 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "",
+                "text": "10.  Enter Name  -  01:47.57",
                 "scale": 16.0,
                 "offset": {
                     "x": 0.0,

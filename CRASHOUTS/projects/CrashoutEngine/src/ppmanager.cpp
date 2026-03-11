@@ -421,432 +421,430 @@ namespace CrashoutsEngine {
         }
 
         void RenderPP(GLuint sceneTextureID) {
-            (void)sceneTextureID;
-//            EnsureTargets();
-//
-//            ECS& ecs = *ECS::getInstance();
-//
-//            // Determine active camera
-//#if USE_IMGUI_EDITOR
-//            auto& currentCamera = (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
-//#else
-//            auto& currentCamera = RenderCamera::gameCamera;
-//#endif
-//            glm::mat4 view = currentCamera.GetViewMatrix();
-//            glm::mat4 proj = currentCamera.GetProjectionMatrix();
-//
-//            auto& lightArray = ecs.GetComponentArray<LightComponent>();
-//            static std::vector<LightDraw> lightDraws;
-//            lightDraws.clear();
-//            lightDraws.resize(lightArray.dense.size());
-//
-//            // Precompute light screen-space data and occluder rects off the render loop.
-//            CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(lightArray.dense.size()),
-//                [&](unsigned int start, unsigned int end) {
-//                    for (unsigned int i = start; i < end; ++i) {
-//                        LightComponent* lc = lightArray.dense[i];
-//                        if (!lc || !lc->active || !lc->renderSelf) {
-//                            lightDraws[i].active = false;
-//                            continue;
-//                        }
-//
-//                        Entity ent = lightArray.indexToEntity[i];
-//                        CEVec3 worldPos = lc->position;
-//                        if (lc->useTransform && ecs.HasComponent<TransformComponent>(ent)) {
-//                            worldPos = ecs.GetComponent<TransformComponent>(ent)->position;
-//                        }
-//
-//                        glm::vec4 clip = proj * view * glm::vec4(worldPos.x, worldPos.y, worldPos.z, 1.0f);
-//                        if (clip.w == 0.0f) {
-//                            lightDraws[i].active = false;
-//                            continue;
-//                        }
-//                        glm::vec3 ndc = glm::vec3(clip) / clip.w;
-//                        glm::vec2 uvCenter = glm::vec2(ndc.x, ndc.y) * 0.5f + 0.5f;
-//
-//                        // Radius in screen UV
-//                        glm::vec4 clipR = proj * view * glm::vec4(worldPos.x + lc->radius, worldPos.y, worldPos.z, 1.0f);
-//                        glm::vec3 ndcR = glm::vec3(clipR) / clipR.w;
-//                        glm::vec2 uvR = glm::vec2(ndcR.x, ndcR.y) * 0.5f + 0.5f;
-//                        float radiusUV = glm::length(uvR - uvCenter);
-//
-//                        // Off-screen culling in UV space
-//                        if (radiusUV <= 0.0f ||
-//                            (uvCenter.x + radiusUV) < 0.0f || (uvCenter.x - radiusUV) > 1.0f ||
-//                            (uvCenter.y + radiusUV) < 0.0f || (uvCenter.y - radiusUV) > 1.0f) {
-//                            lightDraws[i].active = false;
-//                            continue;
-//                        }
-//
-//                        lightDraws[i].active = true;
-//                        lightDraws[i].affectBloom = lc->affectBloom;
-//                        lightDraws[i].renderBehind = lc->renderBehind;
-//                        lightDraws[i].ignoreParentOccluders = lc->ignoreParentOccluders;
-//                        lightDraws[i].uvCenter = uvCenter;
-//                        lightDraws[i].radiusUV = radiusUV;
-//                        lightDraws[i].worldPos = worldPos;
-//                        lightDraws[i].radiusWorld = lc->radius;
-//                        lightDraws[i].color = lc->color;
-//                        lightDraws[i].intensity = lc->intensity;
-//
-//                        // Occluder rectangles are built on the main thread after this pass.
-//                    }
-//                });
-//
-//            // --- Build shadow map rows ---
-//            static std::vector<int> shadowRowByLight;
-//            shadowRowByLight.assign(lightDraws.size(), -1);
-//            static std::vector<size_t> shadowLights;
-//            shadowLights.clear();
-//            shadowLights.reserve(lightDraws.size());
-//
-//            if (g_shadowsEnabled) {
-//                for (size_t i = 0; i < lightDraws.size(); ++i) {
-//                    if (!lightDraws[i].active) continue;
-//                    shadowRowByLight[i] = static_cast<int>(shadowLights.size());
-//                    shadowLights.push_back(i);
-//                }
-//            }
-//
-//            int shadowRays = std::max(8, g_shadowRays);
-//            int shadowRows = static_cast<int>(shadowLights.size());
-//
-//            if (shadowRows < 1) shadowRows = 1;
-//            if (shadowTexWidth != shadowRays || shadowTexHeight != shadowRows) {
-//                shadowTexWidth = shadowRays;
-//                shadowTexHeight = shadowRows;
-//                glBindTexture(GL_TEXTURE_2D, shadowTex);
-//                glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, shadowTexWidth, shadowTexHeight, 0, GL_RED, GL_FLOAT, nullptr);
-//                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//                glBindTexture(GL_TEXTURE_2D, 0);
-//            }
-//
-//            static std::vector<float> shadowData;
-//            shadowData.assign(shadowTexWidth * shadowTexHeight, 1.0f);
-//
-//            if (!shadowLights.empty()) {
-//                float camWidth = currentCamera.GetVisibleWorldWidth();
-//                float camHeight = currentCamera.GetVisibleWorldHeight();
-//
-//                // Get camera bounds to clamp massive lights
-//                CEVec3 camPos = currentCamera.GetPosition();
-//                float maxScreenRadius = std::max(camWidth, camHeight) * 1.5f;
-//
-//                // 1. PRE-COMPUTE CANDIDATES ON THE MAIN THREAD (Thread Safe!)
-//                // We use a vector of vectors so each light has its own dedicated list of colliders to check.
-//                std::vector<std::vector<CrashoutsEngine::Entity>> allLightCandidates(shadowLights.size());
-//
-//                for (size_t idx = 0; idx < shadowLights.size(); ++idx) {
-//                    size_t lightIndex = shadowLights[idx];
-//                    const LightDraw& ld = lightDraws[lightIndex];
-//                    int row = shadowRowByLight[lightIndex];
-//                    if (row < 0) continue;
-//
-//                    // Clamp the query region so massive lights don't query the entire map!
-//                    float queryRadius = std::min(ld.radiusWorld, maxScreenRadius);
-//
-//                    Collision::AABBRect lightRegion(
-//                        CEVec3{ ld.worldPos.x - queryRadius, ld.worldPos.y - queryRadius, 0.f },
-//                        CEVec3{ ld.worldPos.x + queryRadius, ld.worldPos.y + queryRadius, 0.f }
-//                    );
-//
-//                    allLightCandidates[idx].reserve(64);
-//                    Collision::CollisionHandler::GetInstance().quadTree.Query(lightRegion, allLightCandidates[idx]);
-//
-//                    // PRE-UPDATE COLLIDERS ON MAIN THREAD
-//                    // This prevents multiple threads from calling UpdateCollider on the same entity later.
-//                    for (auto ent : allLightCandidates[idx]) {
-//                        auto* cc = ecs.GetComponent<Component::ColliderComponent>(ent);
-//                        auto* tc = ecs.GetComponent<Component::TransformComponent>(ent);
-//                        if (cc && cc->collider && tc) {
-//                            cc->collider->UpdateCollider(tc->position);
-//                            if (cc->collider->type == Collision::ColliderType::OBB ||
-//                                cc->collider->type == Collision::ColliderType::POLYGON ||
-//                                cc->collider->type == Collision::ColliderType::TRIANGLE) {
-//                                cc->collider->UpdateRotation(tc->rotation);
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                // 2. RUN THE HEAVY RAYCAST MATH ON WORKER THREADS
-//                CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(shadowLights.size()),
-//                    [&](unsigned int start, unsigned int end) {
-//                        for (unsigned int idx = start; idx < end; ++idx) {
-//                            size_t lightIndex = shadowLights[idx];
-//                            const LightDraw& ld = lightDraws[lightIndex];
-//                            Entity ent = lightArray.indexToEntity[lightIndex];
-//                            int row = shadowRowByLight[lightIndex];
-//                            if (row < 0) continue;
-//
-//                            const auto& localCandidates = allLightCandidates[idx];
-//
-//                            // --- CACHE PARENT LOGIC ONCE ---
-//                            CrashoutsEngine::Entity ignoredParent = 0;
-//                            if (ld.ignoreParentOccluders) {
-//                                ignoredParent = ent;
-//                                if (ecs.HasComponent<Component::ParentComponent>(ent)) {
-//                                    auto* pc = ecs.GetComponent<Component::ParentComponent>(ent);
-//                                    if (pc && pc->parent != 0) ignoredParent = pc->parent;
-//                                }
-//                            }
-//
-//                            // --- CAST ALL RAYS AGAINST THE PRE-FILTERED LIST ---
-//                            for (int r = 0; r < shadowRays; ++r) {
-//                                float angle = (static_cast<float>(r) + 0.5f) / static_cast<float>(shadowRays);
-//                                angle *= 6.28318530718f;
-//                                float ux = std::cos(angle);
-//                                float uy = std::sin(angle);
-//
-//                                // Map UV direction to world direction
-//                                CEVec3 dir{ ux * camWidth, uy * camHeight, 0.f };
-//                                float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
-//                                if (len > 0.0001f) {
-//                                    dir.x /= len;
-//                                    dir.y /= len;
-//                                }
-//
-//                                CEVec3 startPos = ld.worldPos;
-//                                CEVec3 endPos = startPos + dir * ld.radiusWorld;
-//                                CEVec3 hitPoint{};
-//                                CrashoutsEngine::Entity hitEnt = 0;
-//
-//                                // --- USE THE NEW FAST RAYCAST ---
-//                                bool hit = Collision::CollisionHandler::GetInstance().RaycastAgainstList(
-//                                    startPos, endPos, localCandidates, hitPoint, hitEnt, ent, ignoredParent
-//                                );
-//
-//                                float dist = ld.radiusWorld;
-//                                if (hit) {
-//                                    CEVec3 delta = hitPoint - startPos;
-//                                    dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
-//                                    if (dist > ld.radiusWorld) dist = ld.radiusWorld;
-//                                }
-//
-//                                float norm = (ld.radiusWorld > 0.0001f) ? (dist / ld.radiusWorld) : 1.0f;
-//                                shadowData[row * shadowRays + r] = norm;
-//                            }
-//                        }
-//                    });
-//
-//                glBindTexture(GL_TEXTURE_2D, shadowTex);
-//                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, shadowTexWidth, shadowTexHeight, GL_RED, GL_FLOAT, shadowData.data());
-//                glBindTexture(GL_TEXTURE_2D, 0);
-//            }
-//
-//
-//            // --- Light Passes ---
-//            renderLightsMRT(frontLightsFbo, false, lightDraws, shadowRowByLight, shadowTexHeight, g_shadowsEnabled, shadowTex, currentCamera);
-//            renderLightsMRT(behindLightsFbo, true, lightDraws, shadowRowByLight, shadowTexHeight, g_shadowsEnabled, shadowTex, currentCamera);
-//
-//            // --- Occluder Mask Pass ---
-//            glBindFramebuffer(GL_FRAMEBUFFER, occluderFbo);
-//            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-//            glDisable(GL_DEPTH_TEST);
-//            glClearColor(0.f, 0.f, 0.f, 1.f);
-//            glClear(GL_COLOR_BUFFER_BIT);
-//
-//            {
-//                struct OccVertex { float x, y, u, v; };
-//                auto* occAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("OccluderMaskShader");
-//                if (!occAsset) {
-//                    // Skip occluder pass if shader is missing
-//                }
-//                else {
-//                    GLSLShader& occShader = occAsset->shaderObject;
-//                occShader.Use();
-//                glEnable(GL_BLEND);
-//                glBlendEquation(GL_MAX);
-//                glBlendFunc(GL_ONE, GL_ONE);
-//                glDisable(GL_CULL_FACE);
-//
-//                glBindVertexArray(occluderVao);
-//                glBindBuffer(GL_ARRAY_BUFFER, occluderVbo);
-//
-//                for (size_t i = 0; i < lightDraws.size(); ++i) {
-//                    if (!lightDraws[i].active || !lightDraws[i].renderBehind) continue;
-//                    LightComponent* lc = lightArray.dense[i];
-//                    if (!lc) continue;
-//                    Entity ent = lightArray.indexToEntity[i];
-//                    if (!ecs.HasComponent<TransformComponent>(ent)) continue;
-//                    if (!ecs.HasComponent<ShapeComponent>(ent)) continue;
-//
-//                    auto* tc = ecs.GetComponent<TransformComponent>(ent);
-//                    auto* sc = ecs.GetComponent<ShapeComponent>(ent);
-//                    if (!tc || !sc) continue;
-//
-//                    GLuint texHandle = 0;
-//                    if (sc->enableTexture) {
-//                        texHandle = Component::TextureRenderer::GetTextureHandle(sc->textureName);
-//                        if (texHandle == 0) continue;
-//                    }
-//
-//                    float u0 = sc->uvOffset.x;
-//                    float v0 = sc->uvOffset.y;
-//                    float u1 = u0 + sc->uvSize.x;
-//                    float v1 = v0 + sc->uvSize.y;
-//
-//                    glm::vec2 half(tc->size.x * 0.5f, tc->size.y * 0.5f);
-//                    float rot = tc->rotation;
-//                    float c = std::cos(rot);
-//                    float s = std::sin(rot);
-//                    CEVec3 worldPos = lc->position;
-//                    if (lc->useTransform) worldPos = tc->position;
-//
-//                    glm::vec2 local[4] = {
-//                        { -half.x, -half.y }, // BL
-//                        {  half.x, -half.y }, // BR
-//                        {  half.x,  half.y }, // TR
-//                        { -half.x,  half.y }  // TL
-//                    };
-//
-//                    glm::vec2 ndc[4];
-//                    bool ok = true;
-//                    for (int k = 0; k < 4; ++k) {
-//                        glm::vec2 r = {
-//                            local[k].x * c - local[k].y * s,
-//                            local[k].x * s + local[k].y * c
-//                        };
-//                        glm::vec4 clipC = proj * view * glm::vec4(worldPos.x + r.x, worldPos.y + r.y, worldPos.z, 1.0f);
-//                        if (clipC.w == 0.0f) { ok = false; break; }
-//                        glm::vec3 ndcC = glm::vec3(clipC) / clipC.w;
-//                        ndc[k] = { ndcC.x, ndcC.y };
-//                    }
-//                    if (!ok) continue;
-//
-//                    OccVertex verts[6] = {
-//                        { ndc[0].x, ndc[0].y, u0, v1 }, // BL
-//                        { ndc[1].x, ndc[1].y, u1, v1 }, // BR
-//                        { ndc[2].x, ndc[2].y, u1, v0 }, // TR
-//                        { ndc[0].x, ndc[0].y, u0, v1 }, // BL
-//                        { ndc[2].x, ndc[2].y, u1, v0 }, // TR
-//                        { ndc[3].x, ndc[3].y, u0, v0 }  // TL
-//                    };
-//
-//                    glUniform1i(glGetUniformLocation(occShader.GetHandle(), "uUseTexture"), sc->enableTexture ? 1 : 0);
-//                    glUniform1f(glGetUniformLocation(occShader.GetHandle(), "uAlpha"), sc->color.w());
-//                    if (sc->enableTexture) {
-//                        glUniform1i(glGetUniformLocation(occShader.GetHandle(), "uTex2d"), 0);
-//                        glActiveTexture(GL_TEXTURE0);
-//                        glBindTexture(GL_TEXTURE_2D, texHandle);
-//                    }
-//
-//                    glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_DYNAMIC_DRAW);
-//                    glDrawArrays(GL_TRIANGLES, 0, 6);
-//                    Component::Rendering::Get().drawCalls++;
-//                }
-//
-//
-//                glBindVertexArray(0);
-//                glBindBuffer(GL_ARRAY_BUFFER, 0);
-//                glBlendEquation(GL_FUNC_ADD);
-//                glDisable(GL_BLEND);
-//                glEnable(GL_CULL_FACE);
-//                }
-//            }
-//
-//            // --- Combine Pass ---
-//            glBindFramebuffer(GL_FRAMEBUFFER, combineFbo);
-//            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-//            glClearColor(0.f, 0.f, 0.f, 1.f);
-//            glClear(GL_COLOR_BUFFER_BIT);
-//
-//            auto* combineAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("CombineShader");
-//            if (!combineAsset) {
-//                RenderFallback(sceneTextureID);
-//                return;
-//            }
-//            GLSLShader& combineShader = combineAsset->shaderObject;
-//            combineShader.Use();
-//            glUniform1f(glGetUniformLocation(combineShader.GetHandle(), "uAmbient"), g_ambient);
-//            glUniform1i(glGetUniformLocation(combineShader.GetHandle(), "uLightBehind"), 2);
-//            glUniform1i(glGetUniformLocation(combineShader.GetHandle(), "uOccluderMask"), 3);
-//            glActiveTexture(GL_TEXTURE2);
-//            glBindTexture(GL_TEXTURE_2D, behindLightsTex[0]);
-//            glActiveTexture(GL_TEXTURE3);
-//            glBindTexture(GL_TEXTURE_2D, occluderTexture);
-//            RenderFullscreen(combineShader, sceneTextureID, "uScene", frontLightsTex[0], "uLight");
-//            glBindTexture(GL_TEXTURE_2D, 0);
-//
-//            // --- Bright Pass ---
-//            int halfW = std::max(1, gameTextureWidth / 2);
-//            int halfH = std::max(1, gameTextureHeight / 2);
-//            glBindFramebuffer(GL_FRAMEBUFFER, brightFbo);
-//            glViewport(0, 0, halfW, halfH);
-//            glClear(GL_COLOR_BUFFER_BIT);
-//
-//            auto* brightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BrightShader");
-//            if (!brightAsset) {
-//                RenderFallback(combineTexture);
-//                return;
-//            }
-//            GLSLShader& brightShader = brightAsset->shaderObject;
-//            brightShader.Use();
-//            glUniform1f(glGetUniformLocation(brightShader.GetHandle(), "uThreshold"), g_bloomThreshold);
-//            RenderFullscreen(brightShader, combineTexture, "uScene");
-//
-//            // --- Blur Pass (Kawase) ---
-//            GLuint blurInput = brightTexture;
-//            int iterations = std::max(0, g_bloomIterations);
-//            auto* blurAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BlurShader");
-//            if (!blurAsset) {
-//                RenderFallback(combineTexture);
-//                return;
-//            }
-//            GLSLShader& blurShader = blurAsset->shaderObject;
-//
-//            if (iterations > 0) {
-//                blurShader.Use();
-//                glUniform2f(glGetUniformLocation(blurShader.GetHandle(), "uTexelSize"), 1.0f / halfW, 1.0f / halfH);
-//
-//                for (int i = 0; i < iterations; ++i) {
-//                    glBindFramebuffer(GL_FRAMEBUFFER, pingpongFbo[i % 2]);
-//                    glViewport(0, 0, halfW, halfH);
-//                    glClear(GL_COLOR_BUFFER_BIT);
-//
-//                    glUniform1i(glGetUniformLocation(blurShader.GetHandle(), "uPass"), i);
-//
-//                    RenderFullscreen(blurShader, blurInput, "uImage");
-//                    blurInput = pingpongTex[i % 2];
-//                }
-//            }
-//            
-//            GLuint bloomTex = (iterations > 0) ? blurInput : brightTexture;
-//
-//            // --- Final Composite (to currently bound framebuffer) ---
-//            glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
-//            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-//            glClear(GL_COLOR_BUFFER_BIT);
-//
-//            auto* finalAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BloomCompositeShader");
-//            if (!finalAsset) {
-//                RenderFallback(combineTexture);
-//                return;
-//            }
-//            GLSLShader& finalShader = finalAsset->shaderObject;
-//            finalShader.Use();
-//            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uUseBloom"), g_bloomEnabled ? 1 : 0);
-//            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uBloomIntensity"), g_bloomIntensity);
-//            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uActive"), active ? 1 : 0);
-//            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uBrightness"), g_brightness);
-//            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uContrast"), g_contrast + 1.f);
-//            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uSaturation"), g_saturation + 1.f);
-//            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uNoBloomLight"), 2);
-//            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uNoBloomBehind"), 3);
-//            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uOccluderMask"), 4);
-//            glActiveTexture(GL_TEXTURE2);
-//            glBindTexture(GL_TEXTURE_2D, frontLightsTex[1]);
-//            glActiveTexture(GL_TEXTURE3);
-//            glBindTexture(GL_TEXTURE_2D, behindLightsTex[1]);
-//            glActiveTexture(GL_TEXTURE4);
-//            glBindTexture(GL_TEXTURE_2D, occluderTexture);
-//            RenderFullscreen(finalShader, combineTexture, "uScene", bloomTex, "uBloom");
-//            glBindTexture(GL_TEXTURE_2D, 0);
-//
-//            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            EnsureTargets();
+
+            ECS& ecs = *ECS::getInstance();
+
+            // Determine active camera
+#if USE_IMGUI_EDITOR
+            auto& currentCamera = (engineState == EngineState::STOP) ? RenderCamera::engineCamera : RenderCamera::gameCamera;
+#else
+            auto& currentCamera = RenderCamera::gameCamera;
+#endif
+            glm::mat4 view = currentCamera.GetViewMatrix();
+            glm::mat4 proj = currentCamera.GetProjectionMatrix();
+
+            auto& lightArray = ecs.GetComponentArray<LightComponent>();
+            static std::vector<LightDraw> lightDraws;
+            lightDraws.clear();
+            lightDraws.resize(lightArray.dense.size());
+
+            // Precompute light screen-space data and occluder rects off the render loop.
+            CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(lightArray.dense.size()),
+                [&](unsigned int start, unsigned int end) {
+                    for (unsigned int i = start; i < end; ++i) {
+                        LightComponent* lc = lightArray.dense[i];
+                        if (!lc || !lc->active || !lc->renderSelf) {
+                            lightDraws[i].active = false;
+                            continue;
+                        }
+
+                        Entity ent = lightArray.indexToEntity[i];
+                        CEVec3 worldPos = lc->position;
+                        if (lc->useTransform && ecs.HasComponent<TransformComponent>(ent)) {
+                            worldPos = ecs.GetComponent<TransformComponent>(ent)->position;
+                        }
+
+                        glm::vec4 clip = proj * view * glm::vec4(worldPos.x, worldPos.y, worldPos.z, 1.0f);
+                        if (clip.w == 0.0f) {
+                            lightDraws[i].active = false;
+                            continue;
+                        }
+                        glm::vec3 ndc = glm::vec3(clip) / clip.w;
+                        glm::vec2 uvCenter = glm::vec2(ndc.x, ndc.y) * 0.5f + 0.5f;
+
+                        // Radius in screen UV
+                        glm::vec4 clipR = proj * view * glm::vec4(worldPos.x + lc->radius, worldPos.y, worldPos.z, 1.0f);
+                        glm::vec3 ndcR = glm::vec3(clipR) / clipR.w;
+                        glm::vec2 uvR = glm::vec2(ndcR.x, ndcR.y) * 0.5f + 0.5f;
+                        float radiusUV = glm::length(uvR - uvCenter);
+
+                        // Off-screen culling in UV space
+                        if (radiusUV <= 0.0f ||
+                            (uvCenter.x + radiusUV) < 0.0f || (uvCenter.x - radiusUV) > 1.0f ||
+                            (uvCenter.y + radiusUV) < 0.0f || (uvCenter.y - radiusUV) > 1.0f) {
+                            lightDraws[i].active = false;
+                            continue;
+                        }
+
+                        lightDraws[i].active = true;
+                        lightDraws[i].affectBloom = lc->affectBloom;
+                        lightDraws[i].renderBehind = lc->renderBehind;
+                        lightDraws[i].ignoreParentOccluders = lc->ignoreParentOccluders;
+                        lightDraws[i].uvCenter = uvCenter;
+                        lightDraws[i].radiusUV = radiusUV;
+                        lightDraws[i].worldPos = worldPos;
+                        lightDraws[i].radiusWorld = lc->radius;
+                        lightDraws[i].color = lc->color;
+                        lightDraws[i].intensity = lc->intensity;
+
+                        // Occluder rectangles are built on the main thread after this pass.
+                    }
+                });
+
+            // --- Build shadow map rows ---
+            static std::vector<int> shadowRowByLight;
+            shadowRowByLight.assign(lightDraws.size(), -1);
+            static std::vector<size_t> shadowLights;
+            shadowLights.clear();
+            shadowLights.reserve(lightDraws.size());
+
+            if (g_shadowsEnabled) {
+                for (size_t i = 0; i < lightDraws.size(); ++i) {
+                    if (!lightDraws[i].active) continue;
+                    shadowRowByLight[i] = static_cast<int>(shadowLights.size());
+                    shadowLights.push_back(i);
+                }
+            }
+
+            int shadowRays = std::max(8, g_shadowRays);
+            int shadowRows = static_cast<int>(shadowLights.size());
+
+            if (shadowRows < 1) shadowRows = 1;
+            if (shadowTexWidth != shadowRays || shadowTexHeight != shadowRows) {
+                shadowTexWidth = shadowRays;
+                shadowTexHeight = shadowRows;
+                glBindTexture(GL_TEXTURE_2D, shadowTex);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, shadowTexWidth, shadowTexHeight, 0, GL_RED, GL_FLOAT, nullptr);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+
+            static std::vector<float> shadowData;
+            shadowData.assign(shadowTexWidth * shadowTexHeight, 1.0f);
+
+            if (!shadowLights.empty()) {
+                float camWidth = currentCamera.GetVisibleWorldWidth();
+                float camHeight = currentCamera.GetVisibleWorldHeight();
+
+                // Get camera bounds to clamp massive lights
+                CEVec3 camPos = currentCamera.GetPosition();
+                float maxScreenRadius = std::max(camWidth, camHeight) * 1.5f;
+
+                // 1. PRE-COMPUTE CANDIDATES ON THE MAIN THREAD (Thread Safe!)
+                // We use a vector of vectors so each light has its own dedicated list of colliders to check.
+                std::vector<std::vector<CrashoutsEngine::Entity>> allLightCandidates(shadowLights.size());
+
+                for (size_t idx = 0; idx < shadowLights.size(); ++idx) {
+                    size_t lightIndex = shadowLights[idx];
+                    const LightDraw& ld = lightDraws[lightIndex];
+                    int row = shadowRowByLight[lightIndex];
+                    if (row < 0) continue;
+
+                    // Clamp the query region so massive lights don't query the entire map!
+                    float queryRadius = std::min(ld.radiusWorld, maxScreenRadius);
+
+                    Collision::AABBRect lightRegion(
+                        CEVec3{ ld.worldPos.x - queryRadius, ld.worldPos.y - queryRadius, 0.f },
+                        CEVec3{ ld.worldPos.x + queryRadius, ld.worldPos.y + queryRadius, 0.f }
+                    );
+
+                    allLightCandidates[idx].reserve(64);
+                    Collision::CollisionHandler::GetInstance().quadTree.Query(lightRegion, allLightCandidates[idx]);
+
+                    // PRE-UPDATE COLLIDERS ON MAIN THREAD
+                    // This prevents multiple threads from calling UpdateCollider on the same entity later.
+                    for (auto ent : allLightCandidates[idx]) {
+                        auto* cc = ecs.GetComponent<Component::ColliderComponent>(ent);
+                        auto* tc = ecs.GetComponent<Component::TransformComponent>(ent);
+                        if (cc && cc->collider && tc) {
+                            cc->collider->UpdateCollider(tc->position);
+                            if (cc->collider->type == Collision::ColliderType::OBB ||
+                                cc->collider->type == Collision::ColliderType::POLYGON ||
+                                cc->collider->type == Collision::ColliderType::TRIANGLE) {
+                                cc->collider->UpdateRotation(tc->rotation);
+                            }
+                        }
+                    }
+                }
+
+                // 2. RUN THE HEAVY RAYCAST MATH ON WORKER THREADS
+                CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(shadowLights.size()),
+                    [&](unsigned int start, unsigned int end) {
+                        for (unsigned int idx = start; idx < end; ++idx) {
+                            size_t lightIndex = shadowLights[idx];
+                            const LightDraw& ld = lightDraws[lightIndex];
+                            Entity ent = lightArray.indexToEntity[lightIndex];
+                            int row = shadowRowByLight[lightIndex];
+                            if (row < 0) continue;
+
+                            const auto& localCandidates = allLightCandidates[idx];
+
+                            // --- CACHE PARENT LOGIC ONCE ---
+                            CrashoutsEngine::Entity ignoredParent = 0;
+                            if (ld.ignoreParentOccluders) {
+                                ignoredParent = ent;
+                                if (ecs.HasComponent<Component::ParentComponent>(ent)) {
+                                    auto* pc = ecs.GetComponent<Component::ParentComponent>(ent);
+                                    if (pc && pc->parent != 0) ignoredParent = pc->parent;
+                                }
+                            }
+
+                            // --- CAST ALL RAYS AGAINST THE PRE-FILTERED LIST ---
+                            for (int r = 0; r < shadowRays; ++r) {
+                                float angle = (static_cast<float>(r) + 0.5f) / static_cast<float>(shadowRays);
+                                angle *= 6.28318530718f;
+                                float ux = std::cos(angle);
+                                float uy = std::sin(angle);
+
+                                // Map UV direction to world direction
+                                CEVec3 dir{ ux * camWidth, uy * camHeight, 0.f };
+                                float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+                                if (len > 0.0001f) {
+                                    dir.x /= len;
+                                    dir.y /= len;
+                                }
+
+                                CEVec3 startPos = ld.worldPos;
+                                CEVec3 endPos = startPos + dir * ld.radiusWorld;
+                                CEVec3 hitPoint{};
+                                CrashoutsEngine::Entity hitEnt = 0;
+
+                                // --- USE THE NEW FAST RAYCAST ---
+                                bool hit = Collision::CollisionHandler::GetInstance().RaycastAgainstList(
+                                    startPos, endPos, localCandidates, hitPoint, hitEnt, ent, ignoredParent
+                                );
+
+                                float dist = ld.radiusWorld;
+                                if (hit) {
+                                    CEVec3 delta = hitPoint - startPos;
+                                    dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+                                    if (dist > ld.radiusWorld) dist = ld.radiusWorld;
+                                }
+
+                                float norm = (ld.radiusWorld > 0.0001f) ? (dist / ld.radiusWorld) : 1.0f;
+                                shadowData[row * shadowRays + r] = norm;
+                            }
+                        }
+                    });
+
+                glBindTexture(GL_TEXTURE_2D, shadowTex);
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, shadowTexWidth, shadowTexHeight, GL_RED, GL_FLOAT, shadowData.data());
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+
+            // --- Light Passes ---
+            renderLightsMRT(frontLightsFbo, false, lightDraws, shadowRowByLight, shadowTexHeight, g_shadowsEnabled, shadowTex, currentCamera);
+            renderLightsMRT(behindLightsFbo, true, lightDraws, shadowRowByLight, shadowTexHeight, g_shadowsEnabled, shadowTex, currentCamera);
+
+            // --- Occluder Mask Pass ---
+            glBindFramebuffer(GL_FRAMEBUFFER, occluderFbo);
+            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+            glDisable(GL_DEPTH_TEST);
+            glClearColor(0.f, 0.f, 0.f, 1.f);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            {
+                struct OccVertex { float x, y, u, v; };
+                auto* occAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("OccluderMaskShader");
+                if (!occAsset) {
+                    // Skip occluder pass if shader is missing
+                }
+                else {
+                    GLSLShader& occShader = occAsset->shaderObject;
+                occShader.Use();
+                glEnable(GL_BLEND);
+                glBlendEquation(GL_MAX);
+                glBlendFunc(GL_ONE, GL_ONE);
+                glDisable(GL_CULL_FACE);
+
+                glBindVertexArray(occluderVao);
+                glBindBuffer(GL_ARRAY_BUFFER, occluderVbo);
+
+                for (size_t i = 0; i < lightDraws.size(); ++i) {
+                    if (!lightDraws[i].active || !lightDraws[i].renderBehind) continue;
+                    LightComponent* lc = lightArray.dense[i];
+                    if (!lc) continue;
+                    Entity ent = lightArray.indexToEntity[i];
+                    if (!ecs.HasComponent<TransformComponent>(ent)) continue;
+                    if (!ecs.HasComponent<ShapeComponent>(ent)) continue;
+
+                    auto* tc = ecs.GetComponent<TransformComponent>(ent);
+                    auto* sc = ecs.GetComponent<ShapeComponent>(ent);
+                    if (!tc || !sc) continue;
+
+                    GLuint texHandle = 0;
+                    if (sc->enableTexture) {
+                        texHandle = Component::TextureRenderer::GetTextureHandle(sc->textureName);
+                        if (texHandle == 0) continue;
+                    }
+
+                    float u0 = sc->uvOffset.x;
+                    float v0 = sc->uvOffset.y;
+                    float u1 = u0 + sc->uvSize.x;
+                    float v1 = v0 + sc->uvSize.y;
+
+                    glm::vec2 half(tc->size.x * 0.5f, tc->size.y * 0.5f);
+                    float rot = tc->rotation;
+                    float c = std::cos(rot);
+                    float s = std::sin(rot);
+                    CEVec3 worldPos = lc->position;
+                    if (lc->useTransform) worldPos = tc->position;
+
+                    glm::vec2 local[4] = {
+                        { -half.x, -half.y }, // BL
+                        {  half.x, -half.y }, // BR
+                        {  half.x,  half.y }, // TR
+                        { -half.x,  half.y }  // TL
+                    };
+
+                    glm::vec2 ndc[4];
+                    bool ok = true;
+                    for (int k = 0; k < 4; ++k) {
+                        glm::vec2 r = {
+                            local[k].x * c - local[k].y * s,
+                            local[k].x * s + local[k].y * c
+                        };
+                        glm::vec4 clipC = proj * view * glm::vec4(worldPos.x + r.x, worldPos.y + r.y, worldPos.z, 1.0f);
+                        if (clipC.w == 0.0f) { ok = false; break; }
+                        glm::vec3 ndcC = glm::vec3(clipC) / clipC.w;
+                        ndc[k] = { ndcC.x, ndcC.y };
+                    }
+                    if (!ok) continue;
+
+                    OccVertex verts[6] = {
+                        { ndc[0].x, ndc[0].y, u0, v1 }, // BL
+                        { ndc[1].x, ndc[1].y, u1, v1 }, // BR
+                        { ndc[2].x, ndc[2].y, u1, v0 }, // TR
+                        { ndc[0].x, ndc[0].y, u0, v1 }, // BL
+                        { ndc[2].x, ndc[2].y, u1, v0 }, // TR
+                        { ndc[3].x, ndc[3].y, u0, v0 }  // TL
+                    };
+
+                    glUniform1i(glGetUniformLocation(occShader.GetHandle(), "uUseTexture"), sc->enableTexture ? 1 : 0);
+                    glUniform1f(glGetUniformLocation(occShader.GetHandle(), "uAlpha"), sc->color.w());
+                    if (sc->enableTexture) {
+                        glUniform1i(glGetUniformLocation(occShader.GetHandle(), "uTex2d"), 0);
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, texHandle);
+                    }
+
+                    glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_DYNAMIC_DRAW);
+                    glDrawArrays(GL_TRIANGLES, 0, 6);
+                    Component::Rendering::Get().drawCalls++;
+                }
+
+
+                glBindVertexArray(0);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glBlendEquation(GL_FUNC_ADD);
+                glDisable(GL_BLEND);
+                glEnable(GL_CULL_FACE);
+                }
+            }
+
+            // --- Combine Pass ---
+            glBindFramebuffer(GL_FRAMEBUFFER, combineFbo);
+            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+            glClearColor(0.f, 0.f, 0.f, 1.f);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            auto* combineAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("CombineShader");
+            if (!combineAsset) {
+                RenderFallback(sceneTextureID);
+                return;
+            }
+            GLSLShader& combineShader = combineAsset->shaderObject;
+            combineShader.Use();
+            glUniform1f(glGetUniformLocation(combineShader.GetHandle(), "uAmbient"), g_ambient);
+            glUniform1i(glGetUniformLocation(combineShader.GetHandle(), "uLightBehind"), 2);
+            glUniform1i(glGetUniformLocation(combineShader.GetHandle(), "uOccluderMask"), 3);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, behindLightsTex[0]);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, occluderTexture);
+            RenderFullscreen(combineShader, sceneTextureID, "uScene", frontLightsTex[0], "uLight");
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            // --- Bright Pass ---
+            int halfW = std::max(1, gameTextureWidth / 2);
+            int halfH = std::max(1, gameTextureHeight / 2);
+            glBindFramebuffer(GL_FRAMEBUFFER, brightFbo);
+            glViewport(0, 0, halfW, halfH);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            auto* brightAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BrightShader");
+            if (!brightAsset) {
+                RenderFallback(combineTexture);
+                return;
+            }
+            GLSLShader& brightShader = brightAsset->shaderObject;
+            brightShader.Use();
+            glUniform1f(glGetUniformLocation(brightShader.GetHandle(), "uThreshold"), g_bloomThreshold);
+            RenderFullscreen(brightShader, combineTexture, "uScene");
+
+            // --- Blur Pass (Kawase) ---
+            GLuint blurInput = brightTexture;
+            int iterations = std::max(0, g_bloomIterations);
+            auto* blurAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BlurShader");
+            if (!blurAsset) {
+                RenderFallback(combineTexture);
+                return;
+            }
+            GLSLShader& blurShader = blurAsset->shaderObject;
+
+            if (iterations > 0) {
+                blurShader.Use();
+                glUniform2f(glGetUniformLocation(blurShader.GetHandle(), "uTexelSize"), 1.0f / halfW, 1.0f / halfH);
+
+                for (int i = 0; i < iterations; ++i) {
+                    glBindFramebuffer(GL_FRAMEBUFFER, pingpongFbo[i % 2]);
+                    glViewport(0, 0, halfW, halfH);
+                    glClear(GL_COLOR_BUFFER_BIT);
+
+                    glUniform1i(glGetUniformLocation(blurShader.GetHandle(), "uPass"), i);
+
+                    RenderFullscreen(blurShader, blurInput, "uImage");
+                    blurInput = pingpongTex[i % 2];
+                }
+            }
+            
+            GLuint bloomTex = (iterations > 0) ? blurInput : brightTexture;
+
+            // --- Final Composite (to currently bound framebuffer) ---
+            glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
+            glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            auto* finalAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BloomCompositeShader");
+            if (!finalAsset) {
+                RenderFallback(combineTexture);
+                return;
+            }
+            GLSLShader& finalShader = finalAsset->shaderObject;
+            finalShader.Use();
+            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uUseBloom"), g_bloomEnabled ? 1 : 0);
+            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uBloomIntensity"), g_bloomIntensity);
+            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uActive"), active ? 1 : 0);
+            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uBrightness"), g_brightness);
+            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uContrast"), g_contrast + 1.f);
+            glUniform1f(glGetUniformLocation(finalShader.GetHandle(), "uSaturation"), g_saturation + 1.f);
+            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uNoBloomLight"), 2);
+            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uNoBloomBehind"), 3);
+            glUniform1i(glGetUniformLocation(finalShader.GetHandle(), "uOccluderMask"), 4);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, frontLightsTex[1]);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, behindLightsTex[1]);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, occluderTexture);
+            RenderFullscreen(finalShader, combineTexture, "uScene", bloomTex, "uBloom");
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
     }

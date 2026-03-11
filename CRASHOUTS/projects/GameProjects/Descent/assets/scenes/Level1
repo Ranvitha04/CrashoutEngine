@@ -23573,7 +23573,8 @@
                             "MovementDistance": 260.0,
                             "MoveSpeed": 40.0,
                             "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
+                            "maxDrop": 0.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -24075,7 +24076,8 @@
                             "MovementDistance": 250.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
-                            "maxDrop": 130.0
+                            "maxDrop": 130.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -24733,7 +24735,8 @@
                             "MovementDistance": 550.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
-                            "maxDrop": 125.0
+                            "maxDrop": 125.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
