@@ -47,7 +47,7 @@ namespace CrashoutsEngine {
         bool g_bloomEnabled = true;
         float g_bloomThreshold = 1.0f;
         float g_bloomIntensity = 0.8f;
-        int g_bloomIterations = 6;
+        int g_bloomIterations = 4;
         bool g_shadowsEnabled = true;
         int g_shadowRays = 48;
         bool active = false;
@@ -763,7 +763,7 @@ namespace CrashoutsEngine {
             glUniform1f(glGetUniformLocation(brightShader.GetHandle(), "uThreshold"), g_bloomThreshold);
             RenderFullscreen(brightShader, combineTexture, "uScene");
 
-            // --- Blur Pass ---
+            // --- Blur Pass (Kawase) ---
             GLuint blurInput = brightTexture;
             int iterations = std::max(0, g_bloomIterations);
             auto* blurAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("BlurShader");
@@ -772,17 +772,23 @@ namespace CrashoutsEngine {
                 return;
             }
             GLSLShader& blurShader = blurAsset->shaderObject;
-            for (int i = 0; i < iterations; ++i) {
-                bool horizontal = (i % 2 == 0);
-                glBindFramebuffer(GL_FRAMEBUFFER, pingpongFbo[horizontal ? 0 : 1]);
-                glViewport(0, 0, halfW, halfH);
-                glClear(GL_COLOR_BUFFER_BIT);
-                blurShader.Use();
-                glUniform1i(glGetUniformLocation(blurShader.GetHandle(), "uHorizontal"), horizontal ? 1 : 0);
-                RenderFullscreen(blurShader, blurInput, "uImage");
-                blurInput = pingpongTex[horizontal ? 0 : 1];
-            }
 
+            if (iterations > 0) {
+                blurShader.Use();
+                glUniform2f(glGetUniformLocation(blurShader.GetHandle(), "uTexelSize"), 1.0f / halfW, 1.0f / halfH);
+
+                for (int i = 0; i < iterations; ++i) {
+                    glBindFramebuffer(GL_FRAMEBUFFER, pingpongFbo[i % 2]);
+                    glViewport(0, 0, halfW, halfH);
+                    glClear(GL_COLOR_BUFFER_BIT);
+
+                    glUniform1i(glGetUniformLocation(blurShader.GetHandle(), "uPass"), i);
+
+                    RenderFullscreen(blurShader, blurInput, "uImage");
+                    blurInput = pingpongTex[i % 2];
+                }
+            }
+            
             GLuint bloomTex = (iterations > 0) ? blurInput : brightTexture;
 
             // --- Final Composite (to currently bound framebuffer) ---
