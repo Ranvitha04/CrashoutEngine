@@ -31,6 +31,7 @@ __________________________________________________________________________*/
 #include "rendering.h"
 #include "textureasset.h"
 #include "entitymanager.h"
+#include "jobsystem.h"
 #include "spritecomponent.h"
 #include "transformcomponent.h"
 #include "frameratecontroller.h"
@@ -388,16 +389,24 @@ namespace Component {
         if (!ecs) return;
         float dt = static_cast<float>(FrameRateController::GetInstance().DT());
         auto& arr = ecs->GetComponentArray<SpriteAnimComponent>();
-        for (size_t i = 0; i < arr.indexToEntity.size(); ++i) {
-            auto id = arr.indexToEntity[i];
-            auto* anim = ecs->GetComponent<SpriteAnimComponent>(id);
-            if (!anim) continue;
-            anim->timer += dt;
-            if (anim->timer >= anim->frameTime) {
-                anim->timer -= anim->frameTime;
-                anim->frameIndex = (anim->frameIndex + 1) % std::max(anim->frameCount, 1);
-            }
-        }
+        CrashoutsEngine::JobSystem::Get().ParallelFor(
+            static_cast<unsigned int>(arr.indexToEntity.size()),
+            16u,
+            [&](unsigned int start, unsigned int end) {
+                for (unsigned int i = start; i < end; ++i) {
+                    auto id = arr.indexToEntity[i];
+                    if (!CrashoutsEngine::IsEntityActive(*ecs, id)) continue;
+
+                    auto* anim = ecs->GetComponent<SpriteAnimComponent>(id);
+                    if (!anim) continue;
+
+                    anim->timer += dt;
+                    if (anim->timer >= anim->frameTime) {
+                        anim->timer -= anim->frameTime;
+                        anim->frameIndex = (anim->frameIndex + 1) % std::max(anim->frameCount, 1);
+                    }
+                }
+            });
     }
 
     void RenderSpriteAnimationsECS() {
@@ -571,20 +580,27 @@ namespace Component {
 
             float dt = static_cast<float>(FrameRateController::GetInstance().DT());
             auto& arr = ecs->GetComponentArray<SpriteAnimComponent>();
-
-            for (size_t i = 0; i < arr.indexToEntity.size(); ++i)
-            {
-                auto id = arr.indexToEntity[i];
-                auto* anim = ecs->GetComponent<SpriteAnimComponent>(id);
-                if (!anim) continue;
-
-                anim->timer += dt;
-                if (anim->timer >= anim->frameTime)
+            CrashoutsEngine::JobSystem::Get().ParallelFor(
+                static_cast<unsigned int>(arr.indexToEntity.size()),
+                16u,
+                [&](unsigned int start, unsigned int end)
                 {
-                    anim->timer -= anim->frameTime;
-                    anim->frameIndex = (anim->frameIndex + 1) % std::max(anim->frameCount, 1);
-                }
-            }
+                    for (unsigned int i = start; i < end; ++i)
+                    {
+                        auto id = arr.indexToEntity[i];
+                        if (!CrashoutsEngine::IsEntityActive(*ecs, id)) continue;
+
+                        auto* anim = ecs->GetComponent<SpriteAnimComponent>(id);
+                        if (!anim) continue;
+
+                        anim->timer += dt;
+                        if (anim->timer >= anim->frameTime)
+                        {
+                            anim->timer -= anim->frameTime;
+                            anim->frameIndex = (anim->frameIndex + 1) % std::max(anim->frameCount, 1);
+                        }
+                    }
+                });
         }
 
         void RenderSpriteAnimationsECS()

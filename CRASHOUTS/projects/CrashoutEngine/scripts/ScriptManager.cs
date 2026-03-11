@@ -45,6 +45,9 @@ namespace CrashoutsEngine
             SyncLists();
             foreach (var script in _scripts)
             {
+                if (script?.Entity == null || !script.Entity.IsActive())
+                    continue;
+
                 // Note: We might need a way to check if the entity is still active
                 // If the engine handles active state by not calling ScriptManager.UpdateAll, 
                 // that's one thing, but here we are in C# loop.
@@ -61,6 +64,9 @@ namespace CrashoutsEngine
             SyncLists();
             foreach (var script in _scripts)
             {
+                if (script?.Entity == null || !script.Entity.IsActive())
+                    continue;
+
                 // Note: We might need a way to check if the entity is still active
                 // If the engine handles active state by not calling ScriptManager.UpdateAll, 
                 // that's one thing, but here we are in C# loop.
@@ -77,6 +83,9 @@ namespace CrashoutsEngine
             SyncLists();
             foreach (var script in _scripts)
             {
+                if (script?.Entity == null || !script.Entity.IsActive())
+                    continue;
+
                 try {
                     script.FixedUpdate();
                 } catch (Exception e) {
