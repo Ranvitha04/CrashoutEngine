@@ -632,12 +632,17 @@ void Update(double const& dt) {
 
             // Loop through ALL clips on this component
             for (auto& clip : audioComp->clips) {
+                bool isPlaying = false;
+                bool isPaused = false;
 
-                // Cleanup stale channel pointer if sound finished
                 if (clip.channel) {
-                    bool isPlaying = false;
                     clip.channel->isPlaying(&isPlaying);
-                    if (!isPlaying) clip.channel = nullptr;
+                    clip.channel->getPaused(&isPaused);
+                    
+                    // Cleanup stale channel pointer if sound finished
+                    if (!isPlaying) {
+                        clip.channel = nullptr;
+                    }
                 }
 
                 // Case 1: Entity is Inactive -> Force Pause
@@ -649,18 +654,18 @@ void Update(double const& dt) {
                 else {
                     if (engineState == EngineState::PLAY) {
                         // Only unpause if it was paused!
-                        if (clip.channel) {
-                            bool p; clip.channel->getPaused(&p);
-                            if (p) clip.channel->setPaused(false);
+                        if (clip.channel && isPaused) {
+                            clip.channel->setPaused(false);
+                            isPaused = false; // It's unpaused now
                         }
                         if (clip.inst) {
-                            bool p; clip.inst->setPaused(&p);
+                            bool p; clip.inst->getPaused(&p);
                             if (p) clip.inst->setPaused(false);
                         }
                     }
 
                     // Update 3D Position if applicable
-                    if (clip.spatial3D && clip.channel && transform) {
+                    if (clip.spatial3D && clip.channel && transform && isPlaying && !isPaused) {
                         CrashoutsEngine::Audio::AudioSystem::instance().SetChannel3DAttributes(clip.channel, transform->position, clip.minDistance, clip.maxDistance);
                     }
                 }

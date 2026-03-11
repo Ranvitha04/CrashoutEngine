@@ -28,6 +28,8 @@ namespace CrashoutsEngine
             // Register Physics Overlaps
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnZoneEnter);
             CollisionEvents.RegisterTriggerExit(Entity.ID, this.OnZoneExit);
+
+            CameraController.CurrentLookAtTarget = null;
         }
 
         // --- HELPER METHOD TO CHECK IF ENTITY IS THE PLAYER ---

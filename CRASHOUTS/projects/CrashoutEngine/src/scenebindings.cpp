@@ -9,7 +9,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 */
 
 #include "scenebindings.h"
-//#include "sceneasset.h"
+#include "sceneasset.h"
 //#include "entitymanager.h"
 #include "assetmanager.h"
 #include "glapp.h"
@@ -19,7 +19,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 // Mono headers
 #include "mono/metadata/loader.h"
-//#include "mono/metadata/appdomain.h"
+#include "mono/metadata/appdomain.h"
 #include "mono/metadata/object.h"
 //#include <mono/metadata/assembly.h>
 
@@ -56,6 +56,10 @@ namespace
         return CrashoutsEngine::SceneTransition::IsTransitioning();
     }
 
+    static MonoString* InternalGetActiveSceneName() {
+        return mono_string_new(mono_domain_get(), Serialization::currSceneName.c_str());
+    }
+
     static void InternalQuitGame() {
         glfwSetWindowShouldClose(GLApp::ptr_window, GLFW_TRUE);
     }
@@ -77,5 +81,6 @@ void CrashoutsEngine::Bindings::RegisterSceneBindings()
     mono_add_internal_call("CrashoutsEngine.SceneManager::TransitionToScene", (const void*)InternalTransitionToScene);
     mono_add_internal_call("CrashoutsEngine.SceneManager::FadeEffect", (const void*)InternalFadeEffect);
     mono_add_internal_call("CrashoutsEngine.SceneManager::IsTransitioning", (const void*)InternalIsTransitioning);
+    mono_add_internal_call("CrashoutsEngine.SceneManager::GetActiveSceneName", (const void*)InternalGetActiveSceneName);
 }
 
