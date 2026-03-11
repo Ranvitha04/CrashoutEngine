@@ -688,8 +688,8 @@ void Update(double const& dt) {
     }
     else if (engineState == EngineState::STOP) {
         {
-            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
-            physicsSystem.Update(0.f);
+            //FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Physics");
+            //physicsSystem.Update(0.f);
         }
 
         // Process Editor Camera Input
@@ -898,19 +898,21 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glm::mat4 proj = currentCamera.GetProjectionMatrix();
 
     // --- Profiling & Scene Rendering ---
-    FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Graphics");
-    ScopedMemTag mem(MemTag::Graphics);
     {
-        FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
-        //GLApp::draw();
-        Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
+        FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Graphics");
+        ScopedMemTag mem(MemTag::Graphics);
+        {
+            FrameProfiler::Scoped s2(PerformanceSystem::Get().GetProfiler(), "Scene");
+            //GLApp::draw();
+            Scene::RenderScene(*CrashoutsEngine::ECS::getInstance());
 
-        // Flush Debug Queue (Lines/Circles from Scripts)
-        Component::Rendering::Get().FlushDebugQueue();
+            // Flush Debug Queue (Lines/Circles from Scripts)
+            Component::Rendering::Get().FlushDebugQueue();
 
-        if (CurrentDescriptor) {
-            //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
-            if (CurrentDescriptor->Render) CurrentDescriptor->Render();
+            if (CurrentDescriptor) {
+                //if (CurrentDescriptor->Update) CurrentDescriptor->Update();
+                if (CurrentDescriptor->Render) CurrentDescriptor->Render();
+            }
         }
     }
 
@@ -974,7 +976,10 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClear(GL_COLOR_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    {
+        FrameProfiler::Scoped ppScope(PerformanceSystem::Get().GetProfiler(), "PostProcessing");
+        CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     UI::EndFrame();
@@ -1031,7 +1036,10 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     glDisable(GL_DEPTH_TEST);
 
     // 3. Render the Post Processing image directly into that centered box!
-    CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    {
+        FrameProfiler::Scoped ppScope(PerformanceSystem::Get().GetProfiler(), "PostProcessing");
+        CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    }
 
 #endif
 
