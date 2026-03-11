@@ -12,6 +12,8 @@
 #include <unordered_map>
 
 namespace CrashoutsEngine {
+    inline constexpr const char* kDefaultLeaderboardBaseUrl = "http://104.214.187.128";
+    inline constexpr const char* kDefaultLeaderboardApiKey = "leaderboardsecretapikey";
 
     struct LeaderboardEntry {
         int rank{};
@@ -23,19 +25,21 @@ namespace CrashoutsEngine {
 
     class LeaderboardService {
     public:
-        explicit LeaderboardService(const std::string& baseUrl);
+        explicit LeaderboardService(const std::string& baseUrl,
+            const std::string& apiKey = kDefaultLeaderboardApiKey);
 
-        void FetchLeaderboard(int limit);
+        void FetchLeaderboard(int limit, const std::string& sortBy = "", const std::string& sortOrder = "");
         void SubmitScore(const std::string& name, int score);
 
         const std::vector<LeaderboardEntry>& GetEntries() const { return entries_; }
 
         // Async versions using JobSystem worker threads
-        std::future<std::vector<LeaderboardEntry>> FetchLeaderboardAsync(int limit);
+        std::future<std::vector<LeaderboardEntry>> FetchLeaderboardAsync(int limit, const std::string& sortBy = "", const std::string& sortOrder = "");
         std::future<bool> SubmitScoreAsync(const std::string& name, int score);
 
     private:
         std::string baseUrl_;
+        std::string apiKey_;
         std::vector<LeaderboardEntry> entries_;
     };
 

@@ -23,7 +23,7 @@
                 "tileSize": 32,
                 "excludeOuterBoundary": true,
                 "lightPerTile": false,
-                "emissiveBoost": 0.6830000281333923,
+                "emissiveBoost": 0.4059999883174896,
                 "activeAsset": "tilemaps/Rock",
                 "tileAssetNames": [
                     "Rock"
@@ -20259,7 +20259,7 @@
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
                             "fallGravityMultiplier": 2.5,
-                            "footstepInterval": 0.30000001192092898,
+                            "footstepInterval": 0.5,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "coyoteTime": 0.15000000596046449,
@@ -22364,7 +22364,8 @@
                             "MovementDistance": -200.0,
                             "MoveSpeed": 40.0,
                             "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
+                            "maxDrop": 0.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -22866,7 +22867,8 @@
                             "MovementDistance": 330.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
-                            "maxDrop": 130.0
+                            "maxDrop": 130.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -23524,7 +23526,8 @@
                             "MovementDistance": 320.0,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
-                            "maxDrop": 55.0
+                            "maxDrop": 55.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -24026,7 +24029,8 @@
                             "MovementDistance": 200.0,
                             "MoveSpeed": 40.0,
                             "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
+                            "maxDrop": 0.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -25644,7 +25648,8 @@
                             "MovementDistance": 200.0,
                             "MoveSpeed": 40.0,
                             "VerticalSpeed": 0.0,
-                            "maxDrop": 0.0
+                            "maxDrop": 0.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -27891,5 +27896,10 @@
             "x": 2000.0,
             "y": 2000.0
         }
+    },
+    "VisualScripting": {
+        "nextNodeId": 1,
+        "nodes": [],
+        "links": []
     }
 }

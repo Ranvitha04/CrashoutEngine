@@ -363,7 +363,11 @@ namespace UI { // --------------------------------------------------------------
 				CollisionGizmos::DrawAllColliders(ecs, collisions, ui.overlayThickness / thicknessRatio);
 				CollisionGizmos::DrawContactsAndNormals(*ECS::getInstance(), collisions, 3.5f, ui.overlayThickness / thicknessRatio);
 			}
-			if (ui.drawQuadTree) Collision::CollisionHandler::GetInstance().quadTree.Draw();
+			if (ui.drawQuadTree) {
+				// Draw BOTH trees so you can see static geometry AND moving entities!
+				Collision::CollisionHandler::GetInstance().staticQuadTree.Draw();
+				Collision::CollisionHandler::GetInstance().dynamicQuadTree.Draw();
+			}
 
 		}
 		RenderDebugMenuBar(ui);

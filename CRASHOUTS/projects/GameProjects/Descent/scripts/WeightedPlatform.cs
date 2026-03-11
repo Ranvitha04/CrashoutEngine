@@ -4,7 +4,7 @@
 @date       27/11/2025
 @brief      Weighted Platform Script - Makes a platform that moves and sinks under player weight.
 
-All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 using System;
 using System.Runtime.InteropServices;
@@ -20,6 +20,9 @@ namespace CrashoutsEngine
         [SerializeField] float MoveSpeed = 20.0f;
         [SerializeField] float VerticalSpeed = 50.0f;
         [SerializeField] float maxDrop = 50.0f;
+        
+        // Wait time at the ends of the path
+        [SerializeField] float WaitTime = 0.5f;
 
         private TransformComponent transform;
         private TransformComponent playerTf;
@@ -27,6 +30,10 @@ namespace CrashoutsEngine
 
         private bool playerOnBoard = false;
         private bool movingForward = true;
+        
+        // Timer states
+        private bool isWaiting = false;
+        private float waitTimer = 0.0f;
 
         private CEVec3 startPos;
         private CEVec3 endPos;
@@ -52,6 +59,8 @@ namespace CrashoutsEngine
 
             playerOnBoard = false;
             currentYOffset = 0.0f;
+            isWaiting = false;
+            waitTimer = 0.0f;
             playerScript = PlayerMovement.Instance;
         }
 
@@ -100,47 +109,61 @@ namespace CrashoutsEngine
             // 1. MOVEMENT LOGIC
             if (IsMoving)
             {
-                if (MoveRight) // Horizontal
+                // Handle the Wait Timer
+                if (isWaiting)
                 {
-                    nextY = startPos.y;
-                    if (movingForward)
+                    waitTimer += dt;
+                    if (waitTimer >= WaitTime)
                     {
-                        nextX += step;
-                        if ((MovementDistance > 0 && nextX >= endPos.x) || (MovementDistance < 0 && nextX <= endPos.x))
-                        {
-                            nextX = endPos.x;
-                            movingForward = false;
-                        }
-                    }
-                    else
-                    {
-                        nextX -= step;
-                        if ((MovementDistance > 0 && nextX <= startPos.x) || (MovementDistance < 0 && nextX >= startPos.x))
-                        {
-                            nextX = startPos.x;
-                            movingForward = true;
-                        }
+                        isWaiting = false;
+                        waitTimer = 0.0f;
+                        movingForward = !movingForward; // Flip direction after waiting
                     }
                 }
-                else // Vertical
+                else // Actually move the platform
                 {
-                    nextX = startPos.x;
-                    if (movingForward)
+                    if (MoveRight) // Horizontal
                     {
-                        nextY += step;
-                        if ((MovementDistance > 0 && nextY >= endPos.y) || (MovementDistance < 0 && nextY <= endPos.y))
+                        nextY = startPos.y;
+                        if (movingForward)
                         {
-                            nextY = endPos.y;
-                            movingForward = false;
+                            nextX += step;
+                            if ((MovementDistance > 0 && nextX >= endPos.x) || (MovementDistance < 0 && nextX <= endPos.x))
+                            {
+                                nextX = endPos.x;
+                                isWaiting = true; // Reached end, start waiting
+                            }
+                        }
+                        else
+                        {
+                            nextX -= step;
+                            if ((MovementDistance > 0 && nextX <= startPos.x) || (MovementDistance < 0 && nextX >= startPos.x))
+                            {
+                                nextX = startPos.x;
+                                isWaiting = true; // Reached start, start waiting
+                            }
                         }
                     }
-                    else
+                    else // Vertical
                     {
-                        nextY -= step;
-                        if ((MovementDistance > 0 && nextY <= startPos.y) || (MovementDistance < 0 && nextY >= startPos.y))
+                        nextX = startPos.x;
+                        if (movingForward)
                         {
-                            nextY = startPos.y;
-                            movingForward = true;
+                            nextY += step;
+                            if ((MovementDistance > 0 && nextY >= endPos.y) || (MovementDistance < 0 && nextY <= endPos.y))
+                            {
+                                nextY = endPos.y;
+                                isWaiting = true; // Reached end, start waiting
+                            }
+                        }
+                        else
+                        {
+                            nextY -= step;
+                            if ((MovementDistance > 0 && nextY <= startPos.y) || (MovementDistance < 0 && nextY >= startPos.y))
+                            {
+                                nextY = startPos.y;
+                                isWaiting = true; // Reached start, start waiting
+                            }
                         }
                     }
                 }

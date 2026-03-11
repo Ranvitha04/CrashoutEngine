@@ -293,27 +293,81 @@ namespace Scene {
 				if (input && input->isFocused && engineState != EngineState::STOP) {
 					static float blinkTimer = 0.0f;
 					blinkTimer += (float)FrameRateController::GetInstance().DT();
-					bool showCursor = fmod(blinkTimer, 1.0f) < 0.5f;
 
-					if (showCursor) {
-						CEVec2 cursorPos = gTextRenderer->GetCursorPosition(
-							tc->text, input->cursorPos, finalX, finalY, 1.0f, font);
+					if (fmod(blinkTimer, 1.0f) < 0.5f) {
 
-						GLfloat cursorThickness = 0.25f;
-						GLfloat cursorHeight = gTextRenderer->GetLineHeight(font, finalScale);
-						CEColor cursorColor = { 0.f, 0.f, 0.f, 1.f };
+						// --- 1. ALIGNMENT FIX FOR CURSOR START X ---
+						float cursorStartX = finalX;
 
-						Assets::FontAsset* fontAsset = Assets::AssetManager::GetInstance().Get<Assets::FontAsset>(font);
-						float ascender = cursorHeight * 0.75f;
-						if (fontAsset && fontAsset->characters.count('H')) {
-							ascender = (float)fontAsset->characters.at('H').Bearing.y * finalScale;
-							if (!tc->isWorldSpace) ascender *= (winH / uiHeight * 0.02f);
+						if (tc->wrapText) {
+							cursorStartX = t->position.x + tc->offset.x - (t->size.x * 0.5f) + tc->padding.x;
+							if (!tc->isWorldSpace) {
+								CEVec2 p = UnitsToPixels(cursorStartX, finalY);
+								cursorStartX = p.x;
+							}
+						}
+						else if (tc->centered) {
+							float textWidth = gTextRenderer->GetTextWidth(tc->text, font, finalScale, tc->letterSpacing);
+							cursorStartX = finalX - (textWidth * 0.5f);
 						}
 
-						CEVec3 startPoint = { cursorPos.x, cursorPos.y + ascender * 0.5f, depthZ + 0.01f };
-						CEVec3 endPoint = { cursorPos.x, cursorPos.y - ascender * 0.5f, depthZ + 0.01f };
+						// --- 2. GET EXACT CURSOR POSITION ---
+						CEVec2 cursorPos = gTextRenderer->GetCursorPosition(
+							tc->text, input->cursorPos, cursorStartX, finalY, finalScale, font, tc->letterSpacing);
 
-						Shapes::CreateLine(startPoint, endPoint, cursorThickness, cursorColor, tc->isWorldSpace);
+						// --- 3. CALCULATE HEIGHT ---
+						float lineH = gTextRenderer->GetLineHeight(font, finalScale);
+
+						// Because the text uses the EXACT same vertex scaling for both Screen and World space,
+						// we DO NOT need to multiply by yRatio. That is what made it gigantic!
+
+						// The text is rendered sitting on a baseline. We want the cursor to drop 
+						// slightly below the baseline (15%) and go up to the height of a capital letter (75%).
+						float bottomY = cursorPos.y - (lineH * 0.75f);
+						float topY = cursorPos.y + (lineH * 0.75f);
+
+						float cursorZ = depthZ - 0.1f;
+						CEColor cursorColor = { 1.f, 0.f, 0.f, 1.f }; // RED for testing
+
+						CEVec3 startPoint = { cursorPos.x, bottomY, cursorZ };
+						CEVec3 endPoint = { cursorPos.x, topY, cursorZ };
+
+						// --- 4. IMMEDIATE DRAW (BYPASS EVERYTHING) ---
+						// We draw the line RIGHT NOW. No batchers, no debug queues.
+
+						glLineWidth(tc->isWorldSpace ? 3.0f : 2.0f);
+
+						renderer.shdr_pgm->Use();
+						// Use the exact matrices your text is currently using
+						renderer.shdr_pgm->SetUniform("uView", tc->isWorldSpace ? renderer.viewMatrix : glm::mat4(1.0f));
+						renderer.shdr_pgm->SetUniform("uProjection", tc->isWorldSpace ? renderer.projectionMatrix : glm::ortho(0.0f, winW, 0.0f, winH, -1.0f, 1.0f));
+						renderer.shdr_pgm->SetUniform("uColor", glm::vec4(cursorColor.r, cursorColor.g, cursorColor.b, cursorColor.a));
+
+						unsigned int VBO, VAO;
+						float vertices[] = {
+							startPoint.x, startPoint.y, startPoint.z,
+							endPoint.x,   endPoint.y,   endPoint.z
+						};
+
+						glGenVertexArrays(1, &VAO);
+						glGenBuffers(1, &VBO);
+						glBindVertexArray(VAO);
+
+						glBindBuffer(GL_ARRAY_BUFFER, VBO);
+						glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+						glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+						glEnableVertexAttribArray(0);
+
+						glDrawArrays(GL_LINES, 0, 2);
+
+						glDeleteVertexArrays(1, &VAO);
+						glDeleteBuffers(1, &VBO);
+
+						// Restore Instanced Shader for any shapes that might draw after this
+						if (renderer.shdr_pgm_instanced) {
+							renderer.shdr_pgm_instanced->Use();
+						}
 					}
 				}
 			}
@@ -537,7 +591,15 @@ namespace Scene {
 					}
 				}
 				if (newSelection != -1) {
-					globalECS.GetComponent<TextInputComponent>(newSelection)->isFocused = true;
+					TextInputComponent* input = globalECS.GetComponent<TextInputComponent>(newSelection);
+					TextComponent* txt = globalECS.GetComponent<TextComponent>(newSelection);
+
+					input->isFocused = true;
+
+					// When clicked, immediately put the cursor at the end of the text!
+					if (txt) {
+						input->cursorPos = txt->text.length();
+					}
 				}
 				selectedTextInput = newSelection;
 			}

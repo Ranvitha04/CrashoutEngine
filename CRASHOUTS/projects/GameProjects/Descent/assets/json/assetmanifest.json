@@ -1583,6 +1583,10 @@
             "path": "UI/Energy Ball/Energy Ball spritesheet.png"
         },
         {
+            "name": "Game Over",
+            "path": "UI/Game Over.png"
+        },
+        {
             "name": "Handle",
             "path": "UI/Handle.png"
         },
@@ -1689,12 +1693,24 @@
             "path": "Cutscene"
         },
         {
+            "name": "Defeat",
+            "path": "Defeat"
+        },
+        {
+            "name": "Level3",
+            "path": "Level3"
+        },
+        {
             "name": "descentmenu",
             "path": "descentmenu"
         },
         {
             "name": "descentsettings",
             "path": "descentsettings"
+        },
+        {
+            "name": "Level2",
+            "path": "Level2"
         },
         {
             "name": "GameOver",
@@ -1763,8 +1779,16 @@
             "path": "Camera_Prefab.json"
         },
         {
+            "name": "Cam_Zone_Prefab",
+            "path": "Cam_Zone_Prefab.json"
+        },
+        {
             "name": "Door_Prefab",
             "path": "Door_Prefab.json"
+        },
+        {
+            "name": "RestartBtn_Template",
+            "path": "RestartBtn_Template.json"
         },
         {
             "name": "Moving_Gate",
@@ -1787,6 +1811,10 @@
             "path": "Moving_Platform(Sinking).json"
         },
         {
+            "name": "NextLevelDoor_Prefab",
+            "path": "NextLevelDoor_Prefab.json"
+        },
+        {
             "name": "PlayerBarrier",
             "path": "PlayerBarrier.json"
         },
@@ -1803,8 +1831,20 @@
             "path": "PressurePlate.json"
         },
         {
+            "name": "QuitBtn_Template",
+            "path": "QuitBtn_Template.json"
+        },
+        {
+            "name": "Scuff_WinDoor_Prefab",
+            "path": "Scuff_WinDoor_Prefab.json"
+        },
+        {
             "name": "Slime V4",
             "path": "Slime V4.json"
+        },
+        {
+            "name": "Slime_Prefab",
+            "path": "Slime_Prefab.json"
         },
         {
             "name": "Test_Prefab",
@@ -1813,12 +1853,44 @@
     ],
     "tilemaps": [
         {
-            "name": "Rock",
-            "path": "Rock"
+            "name": "ProjectSettings",
+            "path": ".vs/ProjectSettings.json"
         },
         {
-            "name": "Passthrough_Floor",
-            "path": "Passthrough_Floor"
+            "name": "slnx",
+            "path": ".vs/slnx.sqlite"
+        },
+        {
+            "name": "CodeChunks",
+            "path": ".vs/tilemaps/CopilotIndices/17.14.1290.42047/CodeChunks.db"
+        },
+        {
+            "name": "DocumentLayout",
+            "path": ".vs/tilemaps/v17/DocumentLayout.json"
+        },
+        {
+            "name": "SemanticSymbols",
+            "path": ".vs/tilemaps/CopilotIndices/17.14.1290.42047/SemanticSymbols.db"
+        },
+        {
+            "name": "39a76b67-19c8-4f17-bd6f-82623f5e83f9",
+            "path": ".vs/tilemaps/FileContentIndex/39a76b67-19c8-4f17-bd6f-82623f5e83f9.vsidx"
+        },
+        {
+            "name": "3a120126-1ab1-4b73-af3d-b16b9dd1f7fe",
+            "path": ".vs/tilemaps/FileContentIndex/3a120126-1ab1-4b73-af3d-b16b9dd1f7fe.vsidx"
+        },
+        {
+            "name": ".wsuo",
+            "path": ".vs/tilemaps/v17/.wsuo"
+        },
+        {
+            "name": "VSWorkspaceState",
+            "path": ".vs/VSWorkspaceState.json"
+        },
+        {
+            "name": "Rock",
+            "path": "Rock"
         },
         {
             "name": "Darker_Platform",
@@ -1827,6 +1899,10 @@
         {
             "name": "Lava_Platform",
             "path": "Lava_Platform"
+        },
+        {
+            "name": "Passthrough_Floor",
+            "path": "Passthrough_Floor"
         },
         {
             "name": "Platform",

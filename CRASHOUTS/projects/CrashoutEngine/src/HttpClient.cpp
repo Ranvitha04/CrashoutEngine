@@ -8,6 +8,15 @@
 #include <curl/curl.h>
 
 namespace CrashoutsEngine {
+    namespace {
+        struct curl_slist* BuildHeaders(const std::vector<std::string>& headers) {
+            struct curl_slist* curlHeaders = nullptr;
+            for (const std::string& header : headers) {
+                curlHeaders = curl_slist_append(curlHeaders, header.c_str());
+            }
+            return curlHeaders;
+        }
+    }
 
     static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
         size_t total = size * nmemb;
@@ -17,12 +26,16 @@ namespace CrashoutsEngine {
         return total;
     }
 
-    std::string HttpClient::HttpGet(const std::string& url) {
+    std::string HttpClient::HttpGet(const std::string& url, const std::vector<std::string>& headers) {
         std::string response;
         CURL* curl = curl_easy_init();
         if (!curl) return response;
+        struct curl_slist* curlHeaders = BuildHeaders(headers);
 
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        if (curlHeaders) {
+            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, curlHeaders);
+        }
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
@@ -31,22 +44,27 @@ namespace CrashoutsEngine {
             response.clear();
         }
 
+        curl_slist_free_all(curlHeaders);
         curl_easy_cleanup(curl);
         return response;
     }
 
-    std::string HttpClient::HttpPostJson(const std::string& url, const std::string& jsonBody) {
+    std::string HttpClient::HttpPostJson(const std::string& url, const std::string& jsonBody,
+        const std::vector<std::string>& headers) {
         std::string response;
         CURL* curl = curl_easy_init();
         if (!curl) return response;
 
-        struct curl_slist* headers = nullptr;
-        headers = curl_slist_append(headers, "Content-Type: application/json");
+        std::vector<std::string> combinedHeaders = headers;
+        combinedHeaders.push_back("Content-Type: application/json");
+        struct curl_slist* curlHeaders = BuildHeaders(combinedHeaders);
 
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_POST, 1L);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonBody.c_str());
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        if (curlHeaders) {
+            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, curlHeaders);
+        }
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
@@ -55,7 +73,7 @@ namespace CrashoutsEngine {
             response.clear();
         }
 
-        curl_slist_free_all(headers);
+        curl_slist_free_all(curlHeaders);
         curl_easy_cleanup(curl);
         return response;
     }

@@ -13,6 +13,27 @@
 #include "log.h"
 
 namespace CrashoutsEngine {
+    namespace {
+        static std::vector<std::string> BuildApiKeyHeaders(const std::string& apiKey) {
+            if (apiKey.empty()) return {};
+            return {
+                "X-API-Key: " + apiKey
+            };
+        }
+
+        static std::string BuildLeaderboardUrl(const std::string& baseUrl, int limit,
+            const std::string& sortBy, const std::string& sortOrder) {
+            std::string url = baseUrl + "/leaderboard?limit=" + std::to_string(limit);
+            if (!sortBy.empty()) {
+                url += "&sortBy=" + sortBy;
+            }
+            if (!sortOrder.empty()) {
+                url += "&sortOrder=" + sortOrder;
+            }
+            return url;
+        }
+    }
+
     static std::string JsonValueToString(const rapidjson::Value& v) {
         if (v.IsString()) return v.GetString();
         if (v.IsInt()) return std::to_string(v.GetInt());
@@ -24,15 +45,15 @@ namespace CrashoutsEngine {
         return "";
     }
 
-    LeaderboardService::LeaderboardService(const std::string& baseUrl)
-        : baseUrl_(baseUrl) {}
+    LeaderboardService::LeaderboardService(const std::string& baseUrl, const std::string& apiKey)
+        : baseUrl_(baseUrl), apiKey_(apiKey) {}
 
-    void LeaderboardService::FetchLeaderboard(int limit) {
+    void LeaderboardService::FetchLeaderboard(int limit, const std::string& sortBy, const std::string& sortOrder) {
         entries_.clear();
 
         HttpClient http;
-        std::string url = baseUrl_ + "/leaderboard?limit=" + std::to_string(limit);
-        std::string response = http.HttpGet(url);
+        std::string url = BuildLeaderboardUrl(baseUrl_, limit, sortBy, sortOrder);
+        std::string response = http.HttpGet(url, BuildApiKeyHeaders(apiKey_));
         if (response.empty()) return;
 
         rapidjson::Document doc;
@@ -72,17 +93,21 @@ namespace CrashoutsEngine {
 
         HttpClient http;
         std::string url = baseUrl_ + "/submitScore";
-        http.HttpPostJson(url, buffer.GetString());
+        http.HttpPostJson(url, buffer.GetString(), BuildApiKeyHeaders(apiKey_));
     }
 
-    std::future<std::vector<LeaderboardEntry>> LeaderboardService::FetchLeaderboardAsync(int limit) {
+    std::future<std::vector<LeaderboardEntry>> LeaderboardService::FetchLeaderboardAsync(
+        int limit, const std::string& sortBy, const std::string& sortOrder) {
         std::string baseUrl = baseUrl_;
-        return JobSystem::Get().Enqueue([baseUrl, limit]() {
+        std::string apiKey = apiKey_;
+        std::string sortByCopy = sortBy;
+        std::string sortOrderCopy = sortOrder;
+        return JobSystem::Get().Enqueue([baseUrl, apiKey, limit, sortByCopy, sortOrderCopy]() {
             std::vector<LeaderboardEntry> results;
 
             HttpClient http;
-            std::string url = baseUrl + "/leaderboard?limit=" + std::to_string(limit);
-            std::string response = http.HttpGet(url);
+            std::string url = BuildLeaderboardUrl(baseUrl, limit, sortByCopy, sortOrderCopy);
+            std::string response = http.HttpGet(url, BuildApiKeyHeaders(apiKey));
             if (response.empty()) return results;
 
             rapidjson::Document doc;
@@ -114,16 +139,15 @@ namespace CrashoutsEngine {
 
     std::future<bool> LeaderboardService::SubmitScoreAsync(const std::string& name, int score) {
         std::string baseUrl = baseUrl_;
+        std::string apiKey = apiKey_;
         std::string nameCopy = name;
-        return JobSystem::Get().Enqueue([baseUrl, nameCopy, score]() {
+
+        return JobSystem::Get().Enqueue([baseUrl, apiKey, nameCopy, score]() {
             rapidjson::Document doc;
             doc.SetObject();
             auto& alloc = doc.GetAllocator();
 
-            // Add the name
             doc.AddMember("name", rapidjson::Value(nameCopy.c_str(), alloc), alloc);
-
-            // Send both 'score' and 'time' just to be safe, so the backend gets whatever it is looking for!
             doc.AddMember("score", score, alloc);
             doc.AddMember("time", score, alloc);
 
@@ -133,14 +157,10 @@ namespace CrashoutsEngine {
 
             HttpClient http;
             std::string url = baseUrl + "/submitScore";
+            std::string response = http.HttpPostJson(url, buffer.GetString(), BuildApiKeyHeaders(apiKey));
 
-            // Send the request
-            std::string response = http.HttpPostJson(url, buffer.GetString());
-
-            // --- PRINT THE SERVER'S RESPONSE ---
-            // If the server rejects it (e.g. 400 Bad Request), this will tell you exactly why!
             if (response.empty()) {
-                LOGI(Debug, "[Leaderboard] ERROR: Server did not respond or connection failed to " + url);
+                LOGI(Debug, "[Leaderboard] ERROR: Server did not respond.");
             }
             else {
                 LOGI(Debug, "[Leaderboard] Server Response: " + response);

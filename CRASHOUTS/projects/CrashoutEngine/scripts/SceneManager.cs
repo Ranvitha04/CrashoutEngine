@@ -28,6 +28,9 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern bool IsTransitioning();
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern string GetActiveSceneName();
+
         // 1. Detailed Control
         public static void LoadScene(string sceneName, float fadeOut, float fadeIn)
         {

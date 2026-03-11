@@ -8,7 +8,6 @@ All content � 2026 Digipen Institute of Technology Singapore. All rights reser
 */
 
 #include <mono/jit/jit.h>
-//#include <mono/metadata/string-icalls.h> // For mono_string_to_utf8
 #include "LeaderboardService.h"
 #include "leaderboardbindings.h"
 #include "leaderboardcomponent.h"
@@ -22,16 +21,17 @@ namespace {
     static void SubmitScore_Internal(MonoString* nameObj, int score) {
         if (!nameObj) return;
 
+        // Convert Name string
         char* nameCStr = mono_string_to_utf8(nameObj);
         std::string name(nameCStr);
         mono_free(nameCStr);
 
         // Define your Single Source of Truth here! 
-        // (Alternatively, fetch this from a Settings/Config manager)
-        std::string backendUrl = "http://104.214.187.128";
+        std::string backendUrl = CrashoutsEngine::kDefaultLeaderboardBaseUrl;
 
         // Instantiate the service and submit asynchronously
-        LeaderboardService svc(backendUrl);
+        LeaderboardService svc(backendUrl, CrashoutsEngine::kDefaultLeaderboardApiKey);
+
         svc.SubmitScoreAsync(name, score);
     }
 

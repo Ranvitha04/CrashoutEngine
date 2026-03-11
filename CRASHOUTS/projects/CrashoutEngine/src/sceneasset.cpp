@@ -433,7 +433,10 @@ namespace CrashoutsEngine {
 				const auto& c = *gECS.GetComponent<Component::LeaderboardComponent>(id);
 				rapidjson::Value val(rapidjson::kObjectType);
 				val.AddMember("baseUrl", rapidjson::Value(c.baseUrl.c_str(), allocator), allocator);
+				val.AddMember("apiKey", rapidjson::Value(c.apiKey.c_str(), allocator), allocator);
 				val.AddMember("limit", c.limit, allocator);
+				val.AddMember("sortBy", rapidjson::Value(c.sortBy.c_str(), allocator), allocator);
+				val.AddMember("sortOrder", rapidjson::Value(c.sortOrder.c_str(), allocator), allocator);
 				val.AddMember("autoRefresh", c.autoRefresh, allocator);
 				val.AddMember("fetchOnStart", c.fetchOnStart, allocator);
 				val.AddMember("updateInEditor", c.updateInEditor, allocator);
@@ -1085,7 +1088,10 @@ namespace CrashoutsEngine {
 				const auto& v = entityValue[Keys::LEADERBOARD_COMPONENT];
 				auto& c = gECS.AddComponent<Component::LeaderboardComponent>(newEntity);
 				c.baseUrl = GetString(v, "baseUrl", c.baseUrl.c_str());
+				c.apiKey = GetString(v, "apiKey", c.apiKey.c_str());
 				c.limit = GetInt(v, "limit", c.limit);
+				c.sortBy = GetString(v, "sortBy", c.sortBy.c_str());
+				c.sortOrder = GetString(v, "sortOrder", c.sortOrder.c_str());
 				c.autoRefresh = GetBool(v, "autoRefresh", c.autoRefresh);
 				c.fetchOnStart = GetBool(v, "fetchOnStart", c.fetchOnStart);
 				c.updateInEditor = GetBool(v, "updateInEditor", c.updateInEditor);
@@ -1615,7 +1621,10 @@ namespace CrashoutsEngine {
 					bounds.max = newMax;
 				}
 
-				colHandler.quadTree.Resize(bounds);
+				colHandler.staticQuadTree.Resize(bounds);
+				colHandler.dynamicQuadTree.Resize(bounds);
+
+				colHandler.isStaticDirty = true;
 			}
 
 			if (doc.HasMember("layers")) {
@@ -1868,12 +1877,12 @@ namespace CrashoutsEngine {
 
 			Collision::CollisionHandler& colHandler{ Collision::CollisionHandler::GetInstance() };
 			rapidjson::Value min(rapidjson::kObjectType);
-			min.AddMember("x", colHandler.quadTree.boundary.min.x, allocator);
-			min.AddMember("y", colHandler.quadTree.boundary.min.y, allocator);
+			min.AddMember("x", colHandler.staticQuadTree.boundary.min.x, allocator);
+			min.AddMember("y", colHandler.staticQuadTree.boundary.min.y, allocator);
 
 			rapidjson::Value max(rapidjson::kObjectType);
-			max.AddMember("x", colHandler.quadTree.boundary.max.x, allocator);
-			max.AddMember("y", colHandler.quadTree.boundary.max.y, allocator);
+			max.AddMember("x", colHandler.staticQuadTree.boundary.max.x, allocator);
+			max.AddMember("y", colHandler.staticQuadTree.boundary.max.y, allocator);
 
 			quadTree.AddMember("min", min, allocator);
 			quadTree.AddMember("max", max, allocator);

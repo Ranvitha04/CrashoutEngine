@@ -59,6 +59,7 @@ namespace CrashoutsEngine
         public bool OnWall { get; private set; } = false;
 
         public static PlayerMovement Instance;
+        public static bool RespawnNextLoad = false;
         public float CurrentEnergy = 0.0f;
         public float MaxEnergy = 100.0f;
 
@@ -73,7 +74,9 @@ namespace CrashoutsEngine
 
         public bool alive = true;
         public bool isPaused = false; 
-        private CEVec3 respawnPos;
+        private static CEVec3 respawnPos;
+        private static float checkpointEnergy = 100.0f;
+        public static string lastLevelName = "";
 
         private string currentAnimState = "";
         private bool isLight = false;
@@ -89,14 +92,16 @@ namespace CrashoutsEngine
         
         private bool jumpReady = true;
 
-        // --- NEW PASSTHROUGH LOGIC (HEARTBEAT TIMER) ---
+        // --- PASSTHROUGH LOGIC (HEARTBEAT TIMER) ---
         private bool isPhasing = false;
         private float passthroughOverlapTimer = 0.0f;
 
         private Entity pauseScreenEntity;
+        private Entity gameOverScreen;
         private CEVec3 storedVelocity;
         [SerializeField] private bool reloadOnDeath = false;
         [SerializeField] private string reloadSceneName = "";
+        [SerializeField] private string gameOverSceneName = "Defeat";
 
         // --- CORE LOGIC ---
 
@@ -122,6 +127,8 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
+            string currentLevel = SceneManager.GetActiveSceneName();
+
             currentGoalPlates = 0;
             Instance = this;
             rb = Entity.GetComponent<RigidBodyComponent>();
@@ -133,6 +140,8 @@ namespace CrashoutsEngine
             pauseScreenEntity = Entity.Find("Pause");
             if (pauseScreenEntity != null) InternalCalls.SetActive(pauseScreenEntity.ID, false);
 
+            gameOverScreen = Entity.Find("GameOverScreen");
+
             if (!string.IsNullOrEmpty(landingDustName))
             {
                 Entity e = Entity.Find(landingDustName);
@@ -142,9 +151,24 @@ namespace CrashoutsEngine
             rb.Mass = normalMass;
             //rb.Restitution = 0.0f;
             IsGrounded = false;
-            CurrentEnergy = MaxEnergy;
-            respawnPos = tf.Position;
+            
+            // If this is a brand new level OR we aren't respawning, 
+            // set the respawn point to the current start position and full energy.
+            if (string.IsNullOrEmpty(lastLevelName) || lastLevelName != currentLevel || !RespawnNextLoad)
+            {
+                respawnPos = tf.Position;
+                checkpointEnergy = MaxEnergy;
+                lastLevelName = currentLevel;
+                CurrentEnergy = MaxEnergy;
+            }
+            
             jumpReady = true;
+
+            if (RespawnNextLoad)
+            {
+                Respawn();
+                RespawnNextLoad = false;
+            }
 
             for (int i = 1; i <= 8; i++) AudioManager.SetClip3DDistances(Entity.ID, "footstep" + i, 25.0f, 250.0f);
             AudioManager.SetClip3DDistances(Entity.ID, "jumpLand", 20.0f, 600.0f);
@@ -473,11 +497,26 @@ namespace CrashoutsEngine
         private void HandleDeath()
         {
             alive = false;
-            if (!reloadOnDeath) { Respawn(); return; }
-            if (!SceneManager.IsTransitioning())
+
+            // If a Game Over scene is defined, ALWAYS go there first
+            if (!string.IsNullOrEmpty(gameOverSceneName))
             {
-                string target = string.IsNullOrEmpty(reloadSceneName) ? "tutorial2" : reloadSceneName;
-                SceneManager.LoadScene(target, 1.0f);
+                if (!SceneManager.IsTransitioning())
+                {
+                    SceneManager.LoadScene(gameOverSceneName, 1.0f);
+                }
+                return;
+            }
+
+            // Fallback: reload the level directly ONLY if no Game Over scene exists
+            if (reloadOnDeath) 
+            {
+                if (!SceneManager.IsTransitioning())
+                {
+                    RespawnNextLoad = true;
+                    string target = string.IsNullOrEmpty(reloadSceneName) ? SceneManager.GetActiveSceneName() : reloadSceneName;
+                    SceneManager.LoadScene(target, 1.0f);
+                }
             }
         }
         //Testing VSnode
@@ -492,14 +531,32 @@ namespace CrashoutsEngine
         }
         public void Respawn() 
         { 
-            alive = true; tf.Position = respawnPos; rb.LinearVelocity = new CEVec3(0, 0, 0); 
-            CurrentEnergy = MaxEnergy; 
+            alive = true; 
+            tf.Position = respawnPos; 
+            rb.LinearVelocity = new CEVec3(0, 0, 0); 
+            CurrentEnergy = checkpointEnergy; 
             isPhasing = false; 
             passthroughOverlapTimer = 0.0f;
             jumpReady = true;
+
+            // REMIND MYSELF TO LIKE FIGURE PERSISTING MASS STATE
+            isLight = false;
+            rb.Mass = normalMass;
+            swapPauseTimer = 0.0f;
+
+            // Force animation reset
+            if (anim != null)
+            {
+                anim.Play("playerIdle", true);
+                currentAnimState = "playerIdle";
+            }
         }
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
         public void RemoveEnergy(float amount) { CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f); }
-        public void UpdateCheckpoint(CEVec3 newPos) { respawnPos = newPos; }
+        public void UpdateCheckpoint(CEVec3 newPos) 
+        { 
+            respawnPos = newPos; 
+            checkpointEnergy = CurrentEnergy;
+        }
     }
 }

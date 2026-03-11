@@ -7,13 +7,15 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace CrashoutsEngine {
 
     class HttpClient {
     public:
-        std::string HttpGet(const std::string& url);
-        std::string HttpPostJson(const std::string& url, const std::string& jsonBody);
+        std::string HttpGet(const std::string& url, const std::vector<std::string>& headers = {});
+        std::string HttpPostJson(const std::string& url, const std::string& jsonBody,
+            const std::vector<std::string>& headers = {});
     };
 
 }
