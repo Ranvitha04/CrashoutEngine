@@ -1583,6 +1583,10 @@
             "path": "UI/Energy Ball/Energy Ball spritesheet.png"
         },
         {
+            "name": "Game Over",
+            "path": "UI/Game Over.png"
+        },
+        {
             "name": "Handle",
             "path": "UI/Handle.png"
         },
@@ -1689,6 +1693,14 @@
             "path": "Cutscene"
         },
         {
+            "name": "Defeat",
+            "path": "Defeat"
+        },
+        {
+            "name": "Level3",
+            "path": "Level3"
+        },
+        {
             "name": "descentmenu",
             "path": "descentmenu"
         },
@@ -1767,8 +1779,16 @@
             "path": "Camera_Prefab.json"
         },
         {
+            "name": "Cam_Zone_Prefab",
+            "path": "Cam_Zone_Prefab.json"
+        },
+        {
             "name": "Door_Prefab",
             "path": "Door_Prefab.json"
+        },
+        {
+            "name": "RestartBtn_Template",
+            "path": "RestartBtn_Template.json"
         },
         {
             "name": "Moving_Gate",
@@ -1811,12 +1831,20 @@
             "path": "PressurePlate.json"
         },
         {
+            "name": "QuitBtn_Template",
+            "path": "QuitBtn_Template.json"
+        },
+        {
             "name": "Scuff_WinDoor_Prefab",
             "path": "Scuff_WinDoor_Prefab.json"
         },
         {
             "name": "Slime V4",
             "path": "Slime V4.json"
+        },
+        {
+            "name": "Slime_Prefab",
+            "path": "Slime_Prefab.json"
         },
         {
             "name": "Test_Prefab",

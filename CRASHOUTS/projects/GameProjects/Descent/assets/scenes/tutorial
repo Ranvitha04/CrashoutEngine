@@ -20259,7 +20259,7 @@
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
                             "fallGravityMultiplier": 2.5,
-                            "footstepInterval": 0.30000001192092898,
+                            "footstepInterval": 0.5,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "coyoteTime": 0.15000000596046449,

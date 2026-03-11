@@ -4,7 +4,7 @@
 @date       28/11/2025
 @brief      Handles the Game Over and Win UI screens, including restart and quit functionality.
 
-All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+All content  2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 using System;
 using CrashoutsEngine;
