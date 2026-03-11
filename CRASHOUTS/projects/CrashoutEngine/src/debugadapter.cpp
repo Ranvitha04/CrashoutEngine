@@ -2670,6 +2670,7 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableBool("Use Transform", lc->useTransform);
 			UIHelpers::DrawUndoableBool("Render Behind Entity", lc->renderBehind);
 			UIHelpers::DrawUndoableBool("Ignore Parent Occluders", lc->ignoreParentOccluders);
+			UIHelpers::DrawUndoableBool("Ignore All Occluders (No Shadows)", lc->ignoreOccluders);
 		}
 	};
 

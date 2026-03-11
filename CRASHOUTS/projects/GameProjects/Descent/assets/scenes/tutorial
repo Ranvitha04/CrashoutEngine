@@ -20303,29 +20303,37 @@
                             "forceShowStart": false,
                             "forceShowEnd": false,
                             "showOffsetGizmos": false,
-                            "useDragHandleEntities": true,
+                            "useDragHandleEntities": false,
                             "startHandleEntityName": "BookGlow_StartHandle",
                             "endHandleEntityName": "BookGlow_EndHandle",
                             "lineEntityName": "BookGlow_PathLine",
                             "handleRadius": 14.0,
                             "lineThickness": 4.0,
-                            "finalizeAndDisableHandles": true,
+                            "finalizeAndDisableHandles": false,
                             "hideHandleEntitiesWhenDisabled": true,
                             "snapStartToEnd": false,
                             "snapEndToStart": false,
                             "overrideStartEnd": true,
                             "mirrorXForLeft": true,
                             "lockEndToBookCenter": true,
+                            "useAirEndOffset": true,
                             "startOffset": {
                                 "x": -1.7999687194824219,
                                 "y": -15.700160026550293,
                                 "z": 0.0
                             },
                             "endOffset": {
-                                "x": 34.799537658691409,
-                                "y": -7.300143718719482,
+                                "x": 33.70000076293945,
+                                "y": -12.199999809265137,
                                 "z": 0.0
                             },
+                            "endOffsetAir": {
+                                "x": 31.299999237060548,
+                                "y": 5.800000190734863,
+                                "z": 0.0
+                            },
+                            "snapAirToGround": false,
+                            "snapGroundToAir": false,
                             "offsetBehindRight": {
                                 "x": -30.0,
                                 "y": -5.0,
@@ -20337,8 +20345,8 @@
                                 "z": 0.0
                             },
                             "offsetRight": {
-                                "x": 30.0,
-                                "y": 0.0,
+                                "x": 27.0,
+                                "y": -5.300000190734863,
                                 "z": 0.0
                             },
                             "offsetLeft": {
@@ -20420,6 +20428,7 @@
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -20440,6 +20449,37 @@
                 "t": 0.28333336114883425,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -20493,7 +20533,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -20507,14 +20547,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20567,37 +20607,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -25518,6 +25527,7 @@
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
                 "color": {
                     "x": 0.8823529481887817,
                     "y": 0.08650518953800202,

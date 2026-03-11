@@ -59,5 +59,6 @@ namespace Component {
         bool renderBehind{ false };
         bool active{ true };
         bool ignoreParentOccluders{ true };
+        bool ignoreOccluders{ true };
     };
 }

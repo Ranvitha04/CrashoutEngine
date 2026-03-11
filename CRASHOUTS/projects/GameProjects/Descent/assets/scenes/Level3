@@ -24786,6 +24786,94 @@
                             "reloadOnDeath": false,
                             "reloadSceneName": ""
                         }
+                    },
+                    {
+                        "className": "PlayerBookGlowController",
+                        "fields": {
+                            "bookGlowEntityName": "PlayerBookGlow",
+                            "onlyGlowInLightMode": false,
+                            "followZ": false,
+                            "useAngledPath": false,
+                            "pathFirstPortion": 24.75,
+                            "pathAngleDeg": 0.0,
+                            "pathDistance": 50.900001525878909,
+                            "moveSpeed": 1.0,
+                            "useAlphaTransition": true,
+                            "alphaStart": 0.0,
+                            "alphaEnd": 1.0,
+                            "alphaSpeed": 0.4000000059604645,
+                            "forceShowStart": false,
+                            "forceShowEnd": false,
+                            "showOffsetGizmos": false,
+                            "useDragHandleEntities": false,
+                            "startHandleEntityName": "BookGlow_StartHandle",
+                            "endHandleEntityName": "BookGlow_EndHandle",
+                            "lineEntityName": "BookGlow_PathLine",
+                            "handleRadius": 14.0,
+                            "lineThickness": 4.0,
+                            "finalizeAndDisableHandles": false,
+                            "hideHandleEntitiesWhenDisabled": true,
+                            "snapStartToEnd": false,
+                            "snapEndToStart": false,
+                            "overrideStartEnd": true,
+                            "mirrorXForLeft": true,
+                            "lockEndToBookCenter": true,
+                            "useAirEndOffset": true,
+                            "startOffset": {
+                                "x": -1.7999687194824219,
+                                "y": -15.700160026550293,
+                                "z": 0.0
+                            },
+                            "endOffset": {
+                                "x": 33.70000076293945,
+                                "y": -12.199999809265137,
+                                "z": 0.0
+                            },
+                            "endOffsetAir": {
+                                "x": 31.299999237060548,
+                                "y": 5.800000190734863,
+                                "z": 0.0
+                            },
+                            "snapAirToGround": false,
+                            "snapGroundToAir": false,
+                            "offsetBehindRight": {
+                                "x": -30.0,
+                                "y": -5.0,
+                                "z": 0.0
+                            },
+                            "offsetBehindLeft": {
+                                "x": 30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetRight": {
+                                "x": 27.0,
+                                "y": -5.300000190734863,
+                                "z": 0.0
+                            },
+                            "offsetLeft": {
+                                "x": -30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetRightSwitch": {
+                                "x": 30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetLeftSwitch": {
+                                "x": -30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "previewEnabled": false,
+                            "previewSwitchT01": 0.0,
+                            "previewStartIsLight": false,
+                            "previewTargetIsLight": true,
+                            "previewFacingRight": true,
+                            "previewUseSwitchClip": true,
+                            "previewForceVisible": true
+                        }
                     }
                 ]
             },
@@ -24842,6 +24930,7 @@
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -34385,6 +34474,105 @@
             "layer": {
                 "layerName": "Default",
                 "z": -10
+            }
+        },
+        {
+            "active": true,
+            "name": "PlayerBookGlow",
+            "uuid": 11223344556677890113,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -228.9227752685547,
+                    "y": -9.202164649963379,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 273.8399963378906,
+                    "y": 44.5
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Icon.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.20441991090774537,
+                    "y": 0.20441991090774537,
+                    "z": 0.20441991090774537,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0,
+                "radius": 31.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "color": {
+                    "x": 0.8823529481887817,
+                    "y": 0.08650518953800202,
+                    "z": 0.08650518953800202
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 17142618762681968282,
+                "localPos": {
+                    "x": 0.23245151340961457,
+                    "y": -0.057221680879592898,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.9559999704360963,
+                    "y": 0.4449999928474426
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 1
             }
         }
     ],

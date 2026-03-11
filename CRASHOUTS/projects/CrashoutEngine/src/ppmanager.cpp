@@ -329,6 +329,7 @@ namespace CrashoutsEngine {
                 bool affectBloom{ true };
                 bool renderBehind{ false };
                 bool ignoreParentOccluders{ true };
+                bool ignoreOccluders{ false };
                 glm::vec2 uvCenter{ 0.0f, 0.0f };
                 float radiusUV{ 0.0f };
                 CEVec3 worldPos{ 0.0f, 0.0f, 0.0f };
@@ -397,6 +398,7 @@ namespace CrashoutsEngine {
                         lightDraws[i].affectBloom = lc->affectBloom;
                         lightDraws[i].renderBehind = lc->renderBehind;
                         lightDraws[i].ignoreParentOccluders = lc->ignoreParentOccluders;
+                        lightDraws[i].ignoreOccluders = lc->ignoreOccluders;
                         lightDraws[i].uvCenter = uvCenter;
                         lightDraws[i].radiusUV = radiusUV;
                         lightDraws[i].worldPos = worldPos;
@@ -418,6 +420,7 @@ namespace CrashoutsEngine {
             if (g_shadowsEnabled) {
                 for (size_t i = 0; i < lightDraws.size(); ++i) {
                     if (!lightDraws[i].active) continue;
+                    if (lightDraws[i].ignoreOccluders) continue;
                     shadowRowByLight[i] = static_cast<int>(shadowLights.size());
                     shadowLights.push_back(i);
                 }

@@ -40,6 +40,15 @@ namespace CrashoutsEngine
         internal static extern bool EntityHasTransform(ulong entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasParent(ulong entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void HierarchyGetLocalPos(ulong entityID, out CEVec3 localPos);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void HierarchySetLocalPos(ulong entityID, ref CEVec3 localPos);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern bool EntityHasRigidBody(ulong entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]

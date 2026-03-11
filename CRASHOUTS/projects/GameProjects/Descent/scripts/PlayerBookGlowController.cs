@@ -41,8 +41,12 @@ namespace CrashoutsEngine
         [SerializeField] public bool overrideStartEnd = false;
         [SerializeField] public bool mirrorXForLeft = true;
         [SerializeField] public bool lockEndToBookCenter = true;
+        [SerializeField] public bool useAirEndOffset = false;
         [SerializeField] public CEVec3 startOffset = new CEVec3(-30.0f, -5.0f, 0.0f);
         [SerializeField] public CEVec3 endOffset = new CEVec3(30.0f, 0.0f, 0.0f);
+        [SerializeField] public CEVec3 endOffsetAir = new CEVec3(30.0f, 0.0f, 0.0f);
+        [SerializeField] public bool snapAirToGround = false;
+        [SerializeField] public bool snapGroundToAir = false;
 
         [SerializeField] public CEVec3 offsetBehindRight = new CEVec3(-30.0f, -5.0f, 0.0f);
         [SerializeField] public CEVec3 offsetBehindLeft = new CEVec3(30.0f, 0.0f, 0.0f);
@@ -134,6 +138,25 @@ namespace CrashoutsEngine
             return v;
         }
 
+        private CEVec3 GetEndOffsetCanonical()
+        {
+            if (useAirEndOffset && playerMovement != null && !playerMovement.IsGrounded) return endOffsetAir;
+            return endOffset;
+        }
+
+        private void SetEndOffsetCanonical(CEVec3 v)
+        {
+            if (useAirEndOffset && playerMovement != null && !playerMovement.IsGrounded) endOffsetAir = v;
+            else endOffset = v;
+        }
+
+        private float GetMirrorSign(bool facingRight)
+        {
+            if (!mirrorXForLeft) return 1.0f;
+            if (playerTf != null) return SignNonZero(playerTf.Size.x);
+            return facingRight ? 1.0f : -1.0f;
+        }
+
         private void ComputeOffsets(bool facingRight, bool isSwitchClip, out CEVec3 behindOffset, out CEVec3 bookOffset)
         {
             behindOffset = facingRight ? offsetBehindRight : offsetBehindLeft;
@@ -143,14 +166,46 @@ namespace CrashoutsEngine
 
             if (lockEndToBookCenter)
             {
-                bookOffset = FacingAdjusted(endOffset, facingRight, mirrorXForLeft);
+                float sx = GetMirrorSign(facingRight);
+                CEVec3 e = GetEndOffsetCanonical();
+                bookOffset = new CEVec3(e.x * sx, e.y, e.z);
             }
 
             if (overrideStartEnd)
             {
-                behindOffset = FacingAdjusted(startOffset, facingRight, mirrorXForLeft);
-                bookOffset = FacingAdjusted(endOffset, facingRight, mirrorXForLeft);
+                float sx = GetMirrorSign(facingRight);
+                behindOffset = new CEVec3(startOffset.x * sx, startOffset.y, startOffset.z);
+                CEVec3 e = GetEndOffsetCanonical();
+                bookOffset = new CEVec3(e.x * sx, e.y, e.z);
             }
+        }
+
+        private static float SignNonZero(float v)
+        {
+            return v < 0.0f ? -1.0f : 1.0f;
+        }
+
+        private static float AbsNonZero(float v)
+        {
+            float a = Math.Abs(v);
+            return a < 0.0001f ? 1.0f : a;
+        }
+
+        private void SetGlowLocalPosFromWorldOffset(CEVec3 worldOffset, CEVec3 parentWorldPos, CEVec2 parentSize, float childWorldZ)
+        {
+            if (!InternalCalls.EntityHasParent(glowEntity.ID)) return;
+
+            float signX = SignNonZero(parentSize.x);
+            float denomX = AbsNonZero(parentSize.x);
+            float denomY = AbsNonZero(parentSize.y);
+
+            CEVec3 local = new CEVec3(
+                (worldOffset.x * signX) / denomX,
+                worldOffset.y / denomY,
+                followZ ? worldOffset.z : (childWorldZ - parentWorldPos.z)
+            );
+
+            InternalCalls.HierarchySetLocalPos(glowEntity.ID, ref local);
         }
 
         private static bool NearlyEqual(CEVec3 a, CEVec3 b, float eps)
@@ -348,13 +403,23 @@ namespace CrashoutsEngine
 
             if (snapStartToEnd)
             {
-                startOffset = endOffset;
+                startOffset = GetEndOffsetCanonical();
                 snapStartToEnd = false;
             }
             if (snapEndToStart)
             {
-                endOffset = startOffset;
+                SetEndOffsetCanonical(startOffset);
                 snapEndToStart = false;
+            }
+            if (snapAirToGround)
+            {
+                endOffsetAir = endOffset;
+                snapAirToGround = false;
+            }
+            if (snapGroundToAir)
+            {
+                endOffset = endOffsetAir;
+                snapGroundToAir = false;
             }
 
             TryBindHandleEntities();
@@ -410,6 +475,7 @@ namespace CrashoutsEngine
 
             CEVec3 p = playerTf.Position;
             CEVec3 g = glowTf.Position;
+            CEVec2 parentSize = playerTf.Size;
 
             if (useDragHandleEntities && (startHandleTf != null || endHandleTf != null || lineShape != null))
             {
@@ -432,7 +498,7 @@ namespace CrashoutsEngine
                 {
                     CEVec3 cur = endHandleTf.Position;
                     bool moved = lmbDown && !NearlyEqual(cur, lastEndHandlePos, eps);
-                    if (moved) endOffset = ToCanonicalOffset(cur, p, facingRight);
+                    if (moved) SetEndOffsetCanonical(ToCanonicalOffset(cur, p, facingRight));
                     else endHandleTf.Position = desiredEndWorld;
                     lastEndHandlePos = endHandleTf.Position;
                 }
@@ -450,6 +516,8 @@ namespace CrashoutsEngine
                     lineShape.P2 = bookOffset;
                 }
             }
+
+            SetGlowLocalPosFromWorldOffset(offset, p, parentSize, g.z);
 
             glowTf.Position = new CEVec3(
                 p.x + offset.x,
