@@ -727,7 +727,6 @@ void Update(double const& dt) {
         // Freeze gameplay, but still allow editor camera to move
         physicsSystem.Update(0.f);
         InputManager::ClearInputs();
-        return;
     }
 
     // Process Game Camera

@@ -11,6 +11,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "physicsmanager.h"
 #include "jobsystem.h"
 #include "frameratecontroller.h"
+#include "performanceSystem.h"
+#include "performanceViewer.h"
 #include "hierarchycomponent.h"
 #include "activecomponent.h"
 #include "collidereventmanager.h"
@@ -303,7 +305,7 @@ namespace Physics {
 			return;
 		}
 
-		float e{ min(rigidBody1->GetCoeff(), rigidBody2->GetCoeff()) }; /*COEFFICIENT OF RESTITUTION*/
+		float e{ std::min(rigidBody1->GetCoeff(), rigidBody2->GetCoeff()) }; /*COEFFICIENT OF RESTITUTION*/
 		float numerator{ -(1.f + e) * velAlongNormal };
 
 		float j = numerator / sumInvMass;
@@ -386,7 +388,7 @@ namespace Physics {
 			return;
 		}
 
-		float e{ max(coeff1, coeff2) }; /*COEFFICIENT OF RESTITUTION*/
+		float e{ std::max(coeff1, coeff2) }; /*COEFFICIENT OF RESTITUTION*/
 
 		// Calculate how much velocity gravity added this frame.
 		float gravityLen = CEMath::Length(PhysicsHandler::GetGravity()); // Assuming you have a Length() helper
@@ -503,7 +505,7 @@ namespace Physics {
 
 		//double simDt = isSimulating ? fixedDT : 0.0;
 
-		const int SUB_STEPS = 4;
+		const int SUB_STEPS = FrameRateController::GetInstance().GetMaxPhysicsSteps();
 		double subDt = (isSimulating ? fixedDT : 0.0) / SUB_STEPS;
 		double fullDt = isSimulating ? fixedDT : 0.0;
 
@@ -633,6 +635,7 @@ namespace Physics {
 
 			// Detect collisions
 			{
+				FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Collision");
 				// Determine state for collision
 				Collision::EngineState physState = isSimulating ? Collision::EngineState::PLAY : Collision::EngineState::STOP;
 
@@ -643,46 +646,49 @@ namespace Physics {
 			// Get collision data from handler
 			const auto& events = Collision::CollisionHandler::GetInstance().GetFrameCollisions();
 
-			/*IMPULSE RESOLUTION*/
-			for (Collision::CollisionEvent const& evnt : events) {
+			{
+				FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "Impulse");
+				/*IMPULSE RESOLUTION*/
+				for (Collision::CollisionEvent const& evnt : events) {
 
-				// Check C# logic via the manager
-				bool allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity1, evnt.entity2);
+					// Check C# logic via the manager
+					bool allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity1, evnt.entity2);
 
-				// Check the other way too
-				if (allowCollision) {
-					allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity2, evnt.entity1);
-				}
+					// Check the other way too
+					if (allowCollision) {
+						allowCollision = CrashoutsEngine::CollisionEventManager::GetInstance().CheckPreSolve(evnt.entity2, evnt.entity1);
+					}
 
-				if (!allowCollision) continue;
+					if (!allowCollision) continue;
 
-				Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
-				Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
+					Component::RigidBodyComponent* rigidBody1{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity1) };
+					Component::RigidBodyComponent* rigidBody2{ globalECS.GetComponent<Component::RigidBodyComponent>(evnt.entity2) };
 
-				Component::ColliderComponent* col1 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1);
-				Component::ColliderComponent* col2 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2);
+					Component::ColliderComponent* col1 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity1);
+					Component::ColliderComponent* col2 = globalECS.GetComponent<Component::ColliderComponent>(evnt.entity2);
 
-				bool isContinuous1 = col1 ? col1->collider->isContinuous : false;
-				bool isContinuous2 = col2 ? col2->collider->isContinuous : false;
+					bool isContinuous1 = col1 ? col1->collider->isContinuous : false;
+					bool isContinuous2 = col2 ? col2->collider->isContinuous : false;
 
-				// On sub-steps 1, 2, and 3, IGNORE collisions between two normal objects!
-				// They already checked for collisions on sub-step 0.
-				if (sub > 0 && !isContinuous1 && !isContinuous2) {
-					continue;
-				}
+					// On sub-steps 1, 2, and 3, IGNORE collisions between two normal objects!
+					// They already checked for collisions on sub-step 0.
+					if (sub > 0 && !isContinuous1 && !isContinuous2) {
+						continue;
+					}
 
-				if ((col1 && col1->collider->isTrigger) || (col2 && col2->collider->isTrigger)) {
-					continue;
-				}
+					if ((col1 && col1->collider->isTrigger) || (col2 && col2->collider->isTrigger)) {
+						continue;
+					}
 
-				bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
-				bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
+					bool isDynamic1 = rigidBody1 && rigidBody1->getMass();
+					bool isDynamic2 = rigidBody2 && rigidBody2->getMass();
 
-				if (!isDynamic1 && !isDynamic2) continue;
+					if (!isDynamic1 && !isDynamic2) continue;
 
-				if (isSimulating) {
-					PositionCorrection(evnt, globalECS);
-					ApplyRotationalImpulse(evnt, globalECS, (float)subDt);
+					if (isSimulating) {
+						PositionCorrection(evnt, globalECS);
+						ApplyRotationalImpulse(evnt, globalECS, (float)subDt);
+					}
 				}
 			}
 		}

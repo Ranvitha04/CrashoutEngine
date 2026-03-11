@@ -1239,13 +1239,28 @@ namespace UI {
 
 		Collision::CollisionHandler& collisionHandler{ Collision::CollisionHandler::GetInstance() };
 
-		f32 newMin[2]{ collisionHandler.quadTree.boundary.min.x, collisionHandler.quadTree.boundary.min.y };
-		f32 newMax[2]{ collisionHandler.quadTree.boundary.max.x, collisionHandler.quadTree.boundary.max.y };
+		f32 newMin[2]{ collisionHandler.staticQuadTree.boundary.min.x, collisionHandler.staticQuadTree.boundary.min.y };
+		f32 newMax[2]{ collisionHandler.staticQuadTree.boundary.max.x, collisionHandler.staticQuadTree.boundary.max.y };
 
+		// 1. Track if either slider was moved
+		bool boundsChanged = false;
 		if (ImGui::DragFloat2("Min", newMin)) {
-			collisionHandler.quadTree.Resize(Collision::AABBRect{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} });
-		} if (ImGui::DragFloat2("Max", newMax)) {
-			collisionHandler.quadTree.Resize(Collision::AABBRect{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} });
+			boundsChanged = true;
+		}
+		if (ImGui::DragFloat2("Max", newMax)) {
+			boundsChanged = true;
+		}
+
+		// 2. If they changed, apply the resize to BOTH trees
+		if (boundsChanged) {
+			Collision::AABBRect newBounds{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} };
+
+			// Resize both so they match perfectly
+			collisionHandler.staticQuadTree.Resize(newBounds);
+			collisionHandler.dynamicQuadTree.Resize(newBounds);
+
+			// Tell the engine to rebuild the static tree with the new size next frame!
+			collisionHandler.isStaticDirty = true;
 		}
 
 		// When a way to implement the velocity line happens

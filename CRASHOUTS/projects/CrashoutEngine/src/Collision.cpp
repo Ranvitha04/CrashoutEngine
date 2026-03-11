@@ -24,6 +24,7 @@ All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â�
 #include "colliders.h"
 #include "jobsystem.h"
 #include "performanceSystem.h"
+#include "frameratecontroller.h"
 #include <unordered_map>
 #include <unordered_set>
 
@@ -117,17 +118,26 @@ namespace Collision {
 		return supportPoint;
 	}
 
-	bool CollisionHandler::RaycastAgainstList(CEVec3 start, CEVec3 end, const std::vector<CrashoutsEngine::Entity>& candidates, CEVec3& outPoint, CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity, CrashoutsEngine::Entity ignoredParent) {
+	bool CollisionHandler::RaycastAgainstList(CEVec3 start, CEVec3 end, const std::vector<CrashoutsEngine::Entity>& candidates, CEVec3& outPoint,
+		CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity, CrashoutsEngine::Entity ignoredParent) {
+
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
-		LineSegment rayLine(start, end);
-		rayLine.UpdateCollider(CEVec3{ 0.f, 0.f, 0.f });
+		thread_local std::unique_ptr<Collider> tl_rayCollider = std::make_unique<LineSegment>(CEVec3{ 0.f,0.f,0.f }, CEVec3{ 0.f,0.f,0.f });
+
+		LineSegment* rayLine = static_cast<LineSegment*>(tl_rayCollider.get());
+		rayLine->p1 = start;
+		rayLine->p2 = end;
+		rayLine->UpdateCollider(CEVec3{ 0.f, 0.f, 0.f });
 
 		float closestDistSq = std::numeric_limits<float>::max();
 		bool hitFound = false;
 
-		std::unique_ptr<Collider> rayCollider = std::make_unique<LineSegment>(rayLine);
-		CollisionProps rayProps{ rayCollider, CEVec3{0,0,0}, CEVec3{0,0,0} };
+		const CEVec3 kZeroVelocity{ 0.f, 0.f, 0.f };
+		CollisionProps rayProps{ tl_rayCollider, kZeroVelocity, kZeroVelocity };
+
+		// Pre-calculate the ray's direction for the fast AABB check
+		CEVec3 dir = end - start;
 
 		for (CrashoutsEngine::Entity const& entity : candidates) {
 			if (!IsEntityActive(globalECS, entity)) continue;
@@ -141,30 +151,64 @@ namespace Collision {
 			}
 
 			auto* colliderComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
-			if (!colliderComp || !colliderComp->collider) continue;
-			if (colliderComp->collider->isTrigger) continue;
-			if (!colliderComp->collider->enabled) continue;
+			if (!colliderComp || !colliderComp->collider || colliderComp->collider->isTrigger || !colliderComp->collider->enabled) continue;
 
 			auto* transformComp = globalECS.GetComponent<Component::TransformComponent>(entity);
 			if (!transformComp) continue;
 
-			switch (colliderComp->collider->type) {
-			case ColliderType::LINE:
-			case ColliderType::AABB:
-			case ColliderType::CIRCLE:
-				colliderComp->collider->UpdateCollider(transformComp->position);
-				break;
-			case ColliderType::OBB:
-			case ColliderType::POLYGON:
-			case ColliderType::TRIANGLE:
-				colliderComp->collider->UpdateCollider(transformComp->position);
-				colliderComp->collider->UpdateRotation(transformComp->rotation);
-				break;
-			default:
-				break;
+			// ==============================================================
+			// OPTIMIZATION: PER-RAY AABB BROADPHASE
+			// If the ray completely misses the object's general bounding box,
+			// we skip the expensive polygon math entirely!
+			// ==============================================================
+			AABBRect entityAABB = GetAABB(*colliderComp->collider, transformComp->position);
+
+			float tmin = 0.0f;
+			float tmax = 1.0f;
+
+			if (std::abs(dir.x) > 1e-6f) {
+				float inv = 1.0f / dir.x;
+				float t1 = (entityAABB.min.x - start.x) * inv;
+				float t2 = (entityAABB.max.x - start.x) * inv;
+				if (t1 > t2) std::swap(t1, t2);
+				tmin = std::max(tmin, t1);
+				tmax = std::min(tmax, t2);
+				if (tmin > tmax) continue; // MISS! Ray completely missed the box on X axis.
+			}
+			else if (start.x < entityAABB.min.x || start.x > entityAABB.max.x) {
+				continue; // MISS!
 			}
 
-			CEVec3 vel{ 0,0,0 };
+			if (std::abs(dir.y) > 1e-6f) {
+				float inv = 1.0f / dir.y;
+				float t1 = (entityAABB.min.y - start.y) * inv;
+				float t2 = (entityAABB.max.y - start.y) * inv;
+				if (t1 > t2) std::swap(t1, t2);
+				tmin = std::max(tmin, t1);
+				tmax = std::min(tmax, t2);
+				if (tmin > tmax) continue; // MISS! Ray completely missed the box on Y axis.
+			}
+			else if (start.y < entityAABB.min.y || start.y > entityAABB.max.y) {
+				continue; // MISS!
+			}
+
+			// If the object is an AABB, we just accidentally calculated the exact hit point!
+			// No need to do any more math, just register the hit.
+			if (colliderComp->collider->type == ColliderType::AABB) {
+				float distSq = CEMath::LengthSq(dir) * (tmin * tmin);
+				if (distSq < closestDistSq) {
+					closestDistSq = distSq;
+					outEntity = entity;
+					outPoint = start + dir * tmin;
+					hitFound = true;
+				}
+				continue;
+			}
+
+			// ==============================================================
+			// NARROWPHASE (Only happens if the ray passed the AABB check!)
+			// ==============================================================
+			CEVec3 vel = kZeroVelocity;
 			if (globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
 				vel = globalECS.GetComponent<Component::RigidBodyComponent>(entity)->GetVelocity();
 			}
@@ -1081,6 +1125,8 @@ namespace Collision {
 
 	/*----------------COLLISIONHANDLER CLASS DEFINITIONS--------------------------------------------------------*/
 
+/*----------------COLLISIONHANDLER CLASS DEFINITIONS--------------------------------------------------------*/
+
 	CollisionHandler::CollisionHandler() : Messaging::Observable{}, collideFuncts{}
 	{
 		int circle = static_cast<int>(ColliderType::CIRCLE);
@@ -1089,47 +1135,43 @@ namespace Collision {
 		int line = static_cast<int>(ColliderType::LINE);
 		int poly = static_cast<int>(ColliderType::POLYGON);
 
-		quadTree.Resize(AABBRect{ CEVec3{-2000.f, -2000.f, 0.f}, CEVec3{2000.f, 2000.f, 0.f} });
+		// Initialize BOTH trees
+		staticQuadTree.Resize(AABBRect{ CEVec3{-2000.f, -2000.f, 0.f}, CEVec3{2000.f, 2000.f, 0.f} });
+		dynamicQuadTree.Resize(AABBRect{ CEVec3{-2000.f, -2000.f, 0.f}, CEVec3{2000.f, 2000.f, 0.f} });
+		isStaticDirty = true;
+		lastStaticCount = 0;
 
-		/*Fill in the table of collisions, e.g collideFuncts[0] will be ColliderType::CIRCLE TO ColliderType::CIRCLE collision (2 total collider types will have 2^2 permutations(different types of collisions possible) ) */
-
-		// Circle vs Circle
+		/*Fill in the table of collisions*/
 		collideFuncts[circle * SHAPE_COUNT + circle] = CircleToCircleCollision;
 
 		collideFuncts[circle * SHAPE_COUNT + line] = CircleToLineCollision;
 		collideFuncts[line * SHAPE_COUNT + circle] = CircleToLineCollision;
 
-		// AABB vs AABB
 		collideFuncts[aabb * SHAPE_COUNT + aabb] = AABBToAABBCollision;
 
 		collideFuncts[aabb * SHAPE_COUNT + line] = AABBToLineCollision;
 		collideFuncts[line * SHAPE_COUNT + aabb] = AABBToLineCollision;
 
-		// Circle vs AABB (Circle is 0, AABB is 1. 0 < 1, so index is 0 * N + 1)
 		collideFuncts[circle * SHAPE_COUNT + aabb] = CircleToAABBCollision;
 
-		// AABB vs Polygon (AABB is 1, Poly is 4. 1 < 4)
 		collideFuncts[aabb * SHAPE_COUNT + poly] = AABBToPolygonCollision;
-		collideFuncts[aabb * SHAPE_COUNT + obb] = AABBToPolygonCollision; // AABB vs OBB uses Poly logic
+		collideFuncts[aabb * SHAPE_COUNT + obb] = AABBToPolygonCollision;
 
-		// Circle vs Polygon (Circle is 0, Poly is 4. 0 < 4)
 		collideFuncts[circle * SHAPE_COUNT + poly] = CircleToPolygonCollision;
-		collideFuncts[circle * SHAPE_COUNT + obb] = CircleToPolygonCollision; // Circle vs OBB uses Poly logic
+		collideFuncts[circle * SHAPE_COUNT + obb] = CircleToPolygonCollision;
 
 		collideFuncts[line * SHAPE_COUNT + poly] = PolygonToLineCollision;
-		collideFuncts[line * SHAPE_COUNT + obb] = PolygonToLineCollision; // Line vs OBB uses Poly logic
+		collideFuncts[line * SHAPE_COUNT + obb] = PolygonToLineCollision;
 
-		// Line vs Line
 		collideFuncts[line * SHAPE_COUNT + line] = LineToLineCollision;
 
-		// Polygon vs Polygon (and OBB vs OBB, and Mixed)
 		collideFuncts[poly * SHAPE_COUNT + poly] = PolygonToPolygonCollision;
 		collideFuncts[obb * SHAPE_COUNT + obb] = PolygonToPolygonCollision;
 		collideFuncts[poly * SHAPE_COUNT + obb] = PolygonToPolygonCollision;
 		collideFuncts[obb * SHAPE_COUNT + poly] = PolygonToPolygonCollision;
-
 	}
 
+	// SIGNATURE UPDATED
 	void CollisionHandler::Update([[maybe_unused]] double deltaTime, EngineState state, int subStepIndex) {
 
 		FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "CollisionDetection");
@@ -1137,138 +1179,166 @@ namespace Collision {
 
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
-		// 1. Get ALL entities with Colliders
 		std::vector<CrashoutsEngine::Entity> colliderEntities =
 			globalECS.GetComponentArray<Component::ColliderComponent>().indexToEntity;
 
-		std::unordered_map<CrashoutsEngine::Entity, EntityCollisionCache> entityCache;
-		entityCache.reserve(colliderEntities.size());
+		static std::vector<CrashoutsEngine::Entity> dynamicEntities;
+		static std::vector<CrashoutsEngine::Entity> staticEntities;
+
+		static std::unordered_set<ContactPair, ContactPairHash> lastFramePairs;
+		static std::unordered_set<ContactPair, ContactPairHash> currentFramePairs;
 
 		if (subStepIndex == 0) {
 			if (state == EngineState::STOP) {
 				lastFrameCollision.clear();
 			}
-			currentFrameCollision.clear(); // Fresh start for this frame's accumulation
+			currentFrameCollision.clear();
 		}
 
-		std::unordered_set<ContactPair, ContactPairHash> lastFramePairs;
-		lastFramePairs.reserve(lastFrameCollision.size());
+		lastFramePairs.clear();
 		for (ContactInformation const& info : lastFrameCollision) {
 			lastFramePairs.insert(info.contacts);
 		}
 
-		std::unordered_set<ContactPair, ContactPairHash> currentFramePairs;
-		currentFramePairs.reserve(currentFrameCollision.size());
+		currentFramePairs.clear();
 		for (ContactInformation const& info : currentFrameCollision) {
 			currentFramePairs.insert(info.contacts);
 		}
 
 		// --- SPLIT STATIC AND DYNAMIC LISTS ---
-		std::vector<CrashoutsEngine::Entity> dynamicEntities;
-		std::vector<CrashoutsEngine::Entity> staticEntities;
-		dynamicEntities.reserve(colliderEntities.size());
-		staticEntities.reserve(colliderEntities.size());
+		// We only evaluate static objects on Substep 0. Dynamic objects must be grabbed every substep.
+		if (subStepIndex == 0 || state == EngineState::STOP) {
+			dynamicEntities.clear();
+			staticEntities.clear();
 
-		for (CrashoutsEngine::Entity& entity : colliderEntities) {
-			if (!IsEntityActive(globalECS, entity)) continue;
+			for (CrashoutsEngine::Entity& entity : colliderEntities) {
+				if (!IsEntityActive(globalECS, entity)) continue;
 
-			auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
-			if (!collider || !collider->collider || !collider->collider->enabled) continue;
+				auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
+				if (!collider || !collider->collider || !collider->collider->enabled) continue;
 
-			auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
-			if (!transform) continue;
+				auto* transform = globalECS.GetComponent<Component::TransformComponent>(entity);
+				if (!transform) continue;
 
-			auto* rb = globalECS.GetComponent<Component::RigidBodyComponent>(entity);
+				auto* rb = globalECS.GetComponent<Component::RigidBodyComponent>(entity);
+				bool isDynamic = rb && rb->getMass() != 0.0f;
 
-			// Check if it has mass (is moving)
-			bool isDynamic = rb && rb->getMass() != 0.0f;
-			entityCache.emplace(entity, EntityCollisionCache{ collider, transform, rb, isDynamic });
-
-			if (isDynamic) {
-				dynamicEntities.push_back(entity);
+				if (isDynamic) {
+					dynamicEntities.push_back(entity);
+				}
+				else {
+					staticEntities.push_back(entity);
+					// Update static transforms only once per frame
+					collider->collider->UpdateCollider(transform->position);
+					collider->collider->UpdateRotation(transform->rotation);
+				}
 			}
-			else {
-				staticEntities.push_back(entity);
-
-				// Since it's static, force its collider to match its transform!
-				collider->collider->UpdateCollider(transform->position);
-				collider->collider->UpdateRotation(transform->rotation);
+		}
+		else {
+			// Fast-path for sub-steps: just grab the dynamic ones!
+			dynamicEntities.clear();
+			for (CrashoutsEngine::Entity& entity : colliderEntities) {
+				if (!IsEntityActive(globalECS, entity)) continue;
+				auto* rb = globalECS.GetComponent<Component::RigidBodyComponent>(entity);
+				if (rb && rb->getMass() != 0.0f) {
+					auto* collider = globalECS.GetComponent<Component::ColliderComponent>(entity);
+					if (collider && collider->collider && collider->collider->enabled) {
+						dynamicEntities.push_back(entity);
+					}
+				}
 			}
 		}
 
-		/*BROADPHASE*/
-		// 2. Rebuild the QuadTree EVERY sub-step with ALL objects!
-		// Because dynamic objects move during sub-steps, the tree must be updated 
-		// so queries in sub-steps 1, 2, and 3 remain accurate.
-		quadTree.Clear();
-
-		for (CrashoutsEngine::Entity& staticEnt : staticEntities) {
-			quadTree.Insert(staticEnt);
+		/*BROADPHASE DUAL QUADTREE*/
+		// 1. Rebuild STATIC tree safely ONCE per frame (Substep 0)
+		if (subStepIndex == 0 || state == EngineState::STOP) {
+			staticQuadTree.Clear();
+			for (CrashoutsEngine::Entity& staticEnt : staticEntities) {
+				staticQuadTree.Insert(staticEnt);
+			}
 		}
+
+		// 2. Rebuild DYNAMIC tree EVERY sub-step
+		dynamicQuadTree.Clear();
 		for (CrashoutsEngine::Entity& dynamicEnt : dynamicEntities) {
-			quadTree.Insert(dynamicEnt);
+			dynamicQuadTree.Insert(dynamicEnt);
 		}
 
 		/*DETECT COLLISION*/
 		unsigned int numThreads = CrashoutsEngine::JobSystem::Get().GetThreadCount();
 		if (numThreads == 0) numThreads = 1;
-		std::vector<ThreadResult> threadResults(numThreads);
 
-		// 3. ONLY LOOP OVER DYNAMIC ENTITIES!
+		static std::vector<ThreadResult> threadResults;
+		if (threadResults.size() < numThreads) threadResults.resize(numThreads);
+
+		for (auto& res : threadResults) {
+			res.events.clear();
+			res.contacts.clear();
+			res.messages.clear();
+		}
+
 		CrashoutsEngine::JobSystem::Get().ParallelFor((unsigned int)dynamicEntities.size(), [&](unsigned int start, unsigned int end) {
 			unsigned int threadIdx = start / (std::max(1u, (unsigned int)dynamicEntities.size() / numThreads));
 			if (threadIdx >= numThreads) threadIdx = numThreads - 1;
 			auto& result = threadResults[threadIdx];
 
 			std::vector<CrashoutsEngine::Entity> localCollidableObjects;
-			localCollidableObjects.reserve(128); // Pre-allocate memory to prevent heap reallocations!
+			localCollidableObjects.reserve(128);
 
 			for (unsigned int i = start; i < end; ++i) {
 				CrashoutsEngine::Entity entity1 = dynamicEntities[i];
-				auto cache1It = entityCache.find(entity1);
-				if (cache1It == entityCache.end()) continue;
-				EntityCollisionCache const& entity1Cache = cache1It->second;
 
-				Component::ColliderComponent* collider1 = entity1Cache.collider;
-				Component::TransformComponent* transform1 = entity1Cache.transform;
-				Component::RigidBodyComponent* rb1 = entity1Cache.rigidBody;
+				Component::ColliderComponent* collider1 = globalECS.GetComponent<Component::ColliderComponent>(entity1);
+				Component::TransformComponent* transform1 = globalECS.GetComponent<Component::TransformComponent>(entity1);
+				Component::RigidBodyComponent* rb1 = globalECS.GetComponent<Component::RigidBodyComponent>(entity1);
 
-				// --- SKIP LOGIC FOR CCD ---
-				// If we are on sub-step 1, 2, or 3, AND this dynamic object is NOT continuous, skip it!
 				if (subStepIndex > 0 && !collider1->collider->isContinuous) {
 					continue;
 				}
 
-				// Query the QuadTree for ALL objects (Static AND Dynamic) near this entity
+				// --- QUERY BOTH TREES WITH VELOCITY EXPANSION ---
 				localCollidableObjects.clear();
 				AABBRect region = GetAABB(*(collider1->collider), transform1->position);
-				quadTree.Query(region, localCollidableObjects);
 
-				// DELETED the brute-force N^2 loop over dynamicEntities! 
-				// The QuadTree handles finding nearby dynamic objects now.
+				// Stretch the query box so fast objects don't skip over thin walls!
+				if (rb1) {
+					int totalSubSteps = FrameRateController::GetInstance().GetMaxPhysicsSteps();
+					float dtToUse = collider1->collider->isContinuous ? (float)(deltaTime / totalSubSteps) : (float)deltaTime;
+					CEVec3 velDelta = rb1->GetVelocity() * dtToUse;
+
+					if (velDelta.x > 0.0f) region.max.x += velDelta.x;
+					else region.min.x += velDelta.x;
+
+					if (velDelta.y > 0.0f) region.max.y += velDelta.y;
+					else region.min.y += velDelta.y;
+				}
+
+				staticQuadTree.Query(region, localCollidableObjects);
+				dynamicQuadTree.Query(region, localCollidableObjects);
 
 				// NARROW PHASE COLLISION CHECK
 				for (CrashoutsEngine::Entity const& entity2 : localCollidableObjects) {
-					// Prevent checking an object against itself
 					if (entity1 == entity2) continue;
 
-					auto cache2It = entityCache.find(entity2);
-					if (cache2It == entityCache.end()) continue;
-					EntityCollisionCache const& entity2Cache = cache2It->second;
+					Component::ColliderComponent* collider2 = globalECS.GetComponent<Component::ColliderComponent>(entity2);
+					if (!collider2 || !collider2->collider || !collider2->collider->enabled) continue;
 
-					// Prevent child/parent collisions
+					Component::TransformComponent* transform2 = globalECS.GetComponent<Component::TransformComponent>(entity2);
+					if (!transform2) continue;
+
+					Component::RigidBodyComponent* rb2 = globalECS.GetComponent<Component::RigidBodyComponent>(entity2);
+					bool isDynamic2 = rb2 && rb2->getMass() != 0.0f;
+
 					if (CrashoutsEngine::IsAlreadyChildOf(globalECS, entity1, entity2) ||
 						CrashoutsEngine::IsAlreadyChildOf(globalECS, entity2, entity1)) continue;
 
-					// If both are Dynamic, enforce an ID order to prevent A->B and B->A double checks.
-					// If entity2 is Static, we ALWAYS want to check it, regardless of ID order!
-					if (entity2Cache.isDynamic && entity1 > entity2) {
-						continue;
+					if (isDynamic2) {
+						bool entity2Initiates = (subStepIndex == 0 || collider2->collider->isContinuous);
+						if (entity2Initiates && entity1 > entity2) {
+							continue;
+						}
 					}
 
-					Component::ColliderComponent* collider2 = entity2Cache.collider;
-					Component::TransformComponent* transform2 = entity2Cache.transform;
-					Component::RigidBodyComponent* rb2 = entity2Cache.rigidBody;
 					FunctionDispatchType dispatch = callCollFunct(collider1->collider->type, collider2->collider->type);
 					if (!dispatch) continue;
 
@@ -1286,10 +1356,8 @@ namespace Collision {
 					);
 
 					if (collisionManifold.collisionOccured) {
-						// Populate master list
 						result.events.push_back(CollisionEvent{ collisionManifold, entity1, entity2 });
 
-						// Gameplay messaging only when in play mode
 						if (state == EngineState::PLAY) {
 							bool isTriggerInteraction = collider1->collider->isTrigger || collider2->collider->isTrigger;
 
@@ -1313,13 +1381,10 @@ namespace Collision {
 			}
 			});
 
-		// Merge results back to main thread
 		for (auto& res : threadResults) {
-			// Physics needs these immediately
 			m_FrameCollisions.insert(m_FrameCollisions.end(), res.events.begin(), res.events.end());
 
 			if (state == EngineState::PLAY) {
-				// Accumulate contacts, ensuring we only fire Enter/Stay ONCE per macro-frame!
 				for (size_t i = 0; i < res.contacts.size(); ++i) {
 					ContactPair pair = res.contacts[i].contacts;
 
@@ -1334,11 +1399,11 @@ namespace Collision {
 			}
 		}
 
+		int totalSubSteps = FrameRateController::GetInstance().GetMaxPhysicsSteps();
+
 		if (state == EngineState::PLAY) {
-			// --- DEFER EXITS ---
-			// ONLY evaluate Exits on the FINAL sub-step (index 3). 
-			// This prevents non-CCD objects from instantly "exiting" on sub-step 1!
-			if (subStepIndex == 3) {
+			// DEFER EXITS
+			if (subStepIndex == totalSubSteps - 1) {
 				for (ContactInformation const& contactInfo : lastFrameCollision) {
 					if (currentFramePairs.find(contactInfo.contacts) == currentFramePairs.end()) {
 
@@ -1369,10 +1434,7 @@ namespace Collision {
 			lastFrameCollision.clear();
 		}
 
-		// --- RESTORE DEBUG RENDERING ---
-		// If this is the final sub-step, repopulate m_FrameCollisions with the ENTIRE macro-frame's 
-		// accumulation so the Debug Renderer correctly colors all hits red!
-		if (subStepIndex == 3) {
+		if (subStepIndex == totalSubSteps - 1) {
 			m_FrameCollisions.clear();
 			for (auto& info : currentFrameCollision) {
 				m_FrameCollisions.push_back(CollisionEvent{ info.colManifold, info.contacts.first, info.contacts.second });
@@ -1381,117 +1443,15 @@ namespace Collision {
 	}
 
 	FunctionDispatchType CollisionHandler::callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2) {
-
-		/*Swap the type according to enum order, e.g function exists for circle to aabb but not aabb to circle*/
 		if (type1 > type2) {
 			std::swap(type1, type2);
 		}
-
 		int idx1{ static_cast<int>(type1) };
 		int idx2{ static_cast<int>(type2) };
-		//std::cout << " size of collidefuncts is " << collideFuncts.size() << std::endl;
 		return collideFuncts[idx1 * SHAPE_COUNT + idx2];
 	}
 
 	bool CollisionHandler::Raycast(CEVec3 start, CEVec3 end, CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity) {
-		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
-
-		// Create a Line Segment Collider use local points as start/end, and position at 0,0,0
-		LineSegment rayLine(start, end);
-		rayLine.UpdateCollider(CEVec3{ 0.f, 0.f, 0.f }); // Initialize worldP1/P2
-
-		// Query QuadTree to calculate AABB of the line for QuadTree query rahhhhhhhh
-		CEVec3 min, max;
-		// Use World Points
-		CEVec3 pts[2] = { rayLine.GetWorldP1(), rayLine.GetWorldP2() };
-		min.x = std::min(pts[0].x, pts[1].x);
-		min.y = std::min(pts[0].y, pts[1].y);
-		min.z = 0.0f;
-		max.x = std::max(pts[0].x, pts[1].x);
-		max.y = std::max(pts[0].y, pts[1].y);
-		max.z = 0.0f;
-
-		// Expand AABB slightly to ensure we catch border cases
-		CEVec3 padding{ 5.0f, 5.0f, 0.0f }; // Increase padding slightly
-		min = min - padding;
-		max = max + padding;
-
-		AABBRect region(min, max);
-		std::vector<CrashoutsEngine::Entity> candidates;
-		candidates.reserve(128);
-		quadTree.Query(region, candidates);
-
-		// Check Collisions
-		float closestDistSq = std::numeric_limits<float>::max();
-		bool hitFound = false;
-
-		std::unique_ptr<Collider> rayCollider = std::make_unique<LineSegment>(rayLine);
-
-		CollisionProps rayProps{ rayCollider, CEVec3{0,0,0}, CEVec3{0,0,0} };
-
-		for (CrashoutsEngine::Entity const& entity : candidates) {
-			if (!IsEntityActive(globalECS, entity)) continue;
-			if (entity == ignoredEntity) continue;
-
-			// Do not raycast against Triggers
-			auto* colliderComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
-			if (!colliderComp || !colliderComp->collider) continue;
-			if (colliderComp->collider->isTrigger) continue;
-			if (!colliderComp->collider->enabled) continue;
-
-			auto* transformComp = globalECS.GetComponent<Component::TransformComponent>(entity);
-			if (!transformComp) continue;
-
-			switch (colliderComp->collider->type) {
-			case ColliderType::LINE:
-			case ColliderType::AABB:
-			case ColliderType::CIRCLE:
-				colliderComp->collider->UpdateCollider(transformComp->position);
-				break;
-			case ColliderType::OBB: {
-				colliderComp->collider->UpdateCollider(transformComp->position);
-				colliderComp->collider->UpdateRotation(transformComp->rotation);
-				break;
-			}
-			case ColliderType::POLYGON:
-			case ColliderType::TRIANGLE: {
-				colliderComp->collider->UpdateCollider(transformComp->position);
-				colliderComp->collider->UpdateRotation(transformComp->rotation);
-				break;
-			}
-			default:
-				break;
-			}
-
-			CEVec3 vel{ 0,0,0 };
-			if (globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
-				vel = globalECS.GetComponent<Component::RigidBodyComponent>(entity)->GetVelocity();
-			}
-
-			CollisionProps targetProps{ colliderComp->collider, vel, transformComp->position };
-
-			auto colFunc = callCollFunct(ColliderType::LINE, colliderComp->collider->type);
-			if (!colFunc) continue;
-
-			CollisionManifold manifold = colFunc(rayProps, targetProps);
-
-			if (manifold.collisionOccured) {
-				// Find distance to start point
-				float distSq = CEMath::LengthSq(manifold.contactPoints[0] - start);
-
-				if (distSq < closestDistSq) {
-					closestDistSq = distSq;
-					outEntity = entity;
-					hitFound = true;
-				}
-			}
-		}
-
-		return hitFound;
-	}
-
-bool CollisionHandler::RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, CrashoutsEngine::Entity& outEntity,
-	CrashoutsEngine::Entity ignoredEntity, CrashoutsEngine::Entity ignoredParent) {
 		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
 
 		LineSegment rayLine(start, end);
@@ -1513,7 +1473,96 @@ bool CollisionHandler::RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, Cr
 		AABBRect region(min, max);
 		std::vector<CrashoutsEngine::Entity> candidates;
 		candidates.reserve(128);
-		quadTree.Query(region, candidates);
+
+		// --- QUERY BOTH TREES ---
+		QueryTrees(region, candidates);
+
+		float closestDistSq = std::numeric_limits<float>::max();
+		bool hitFound = false;
+
+		std::unique_ptr<Collider> rayCollider = std::make_unique<LineSegment>(rayLine);
+
+		CollisionProps rayProps{ rayCollider, CEVec3{0,0,0}, CEVec3{0,0,0} };
+
+		for (CrashoutsEngine::Entity const& entity : candidates) {
+			if (!IsEntityActive(globalECS, entity)) continue;
+			if (entity == ignoredEntity) continue;
+
+			auto* colliderComp = globalECS.GetComponent<Component::ColliderComponent>(entity);
+			if (!colliderComp || !colliderComp->collider) continue;
+			if (colliderComp->collider->isTrigger) continue;
+			if (!colliderComp->collider->enabled) continue;
+
+			auto* transformComp = globalECS.GetComponent<Component::TransformComponent>(entity);
+			if (!transformComp) continue;
+
+			switch (colliderComp->collider->type) {
+			case ColliderType::LINE:
+			case ColliderType::AABB:
+			case ColliderType::CIRCLE:
+				colliderComp->collider->UpdateCollider(transformComp->position);
+				break;
+			case ColliderType::OBB:
+			case ColliderType::POLYGON:
+			case ColliderType::TRIANGLE:
+				colliderComp->collider->UpdateCollider(transformComp->position);
+				colliderComp->collider->UpdateRotation(transformComp->rotation);
+				break;
+			default:
+				break;
+			}
+
+			CEVec3 vel{ 0,0,0 };
+			if (globalECS.HasComponent<Component::RigidBodyComponent>(entity)) {
+				vel = globalECS.GetComponent<Component::RigidBodyComponent>(entity)->GetVelocity();
+			}
+
+			CollisionProps targetProps{ colliderComp->collider, vel, transformComp->position };
+
+			auto colFunc = callCollFunct(ColliderType::LINE, colliderComp->collider->type);
+			if (!colFunc) continue;
+
+			CollisionManifold manifold = colFunc(rayProps, targetProps);
+
+			if (manifold.collisionOccured) {
+				float distSq = CEMath::LengthSq(manifold.contactPoints[0] - start);
+				if (distSq < closestDistSq) {
+					closestDistSq = distSq;
+					outEntity = entity;
+					hitFound = true;
+				}
+			}
+		}
+
+		return hitFound;
+	}
+
+	bool CollisionHandler::RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, CrashoutsEngine::Entity& outEntity,
+		CrashoutsEngine::Entity ignoredEntity, CrashoutsEngine::Entity ignoredParent) {
+		CrashoutsEngine::ECS& globalECS = *(CrashoutsEngine::ECS::getInstance());
+
+		LineSegment rayLine(start, end);
+		rayLine.UpdateCollider(CEVec3{ 0.f, 0.f, 0.f });
+
+		CEVec3 min, max;
+		CEVec3 pts[2] = { rayLine.GetWorldP1(), rayLine.GetWorldP2() };
+		min.x = std::min(pts[0].x, pts[1].x);
+		min.y = std::min(pts[0].y, pts[1].y);
+		min.z = 0.0f;
+		max.x = std::max(pts[0].x, pts[1].x);
+		max.y = std::max(pts[0].y, pts[1].y);
+		max.z = 0.0f;
+
+		CEVec3 padding{ 5.0f, 5.0f, 0.0f };
+		min = min - padding;
+		max = max + padding;
+
+		AABBRect region(min, max);
+		std::vector<CrashoutsEngine::Entity> candidates;
+		candidates.reserve(128);
+
+		// --- QUERY BOTH TREES ---
+		QueryTrees(region, candidates);
 
 		float closestDistSq = std::numeric_limits<float>::max();
 		bool hitFound = false;
@@ -1546,17 +1595,12 @@ bool CollisionHandler::RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, Cr
 			case ColliderType::CIRCLE:
 				colliderComp->collider->UpdateCollider(transformComp->position);
 				break;
-			case ColliderType::OBB: {
-				colliderComp->collider->UpdateCollider(transformComp->position);
-				colliderComp->collider->UpdateRotation(transformComp->rotation);
-				break;
-			}
+			case ColliderType::OBB:
 			case ColliderType::POLYGON:
-			case ColliderType::TRIANGLE: {
+			case ColliderType::TRIANGLE:
 				colliderComp->collider->UpdateCollider(transformComp->position);
 				colliderComp->collider->UpdateRotation(transformComp->rotation);
 				break;
-			}
 			default:
 				break;
 			}
