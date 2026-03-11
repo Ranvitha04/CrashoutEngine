@@ -86,6 +86,10 @@ namespace UI {
             nodeObj.AddMember("scriptName", Value(n.scriptName.c_str(), a), a);
             nodeObj.AddMember("functionName", Value(n.functionName.c_str(), a), a);
             nodeObj.AddMember("waitTime", n.waitTime, a);
+            nodeObj.AddMember("boolValue", n.boolValue, a);
+            nodeObj.AddMember("intValue", n.intValue, a);
+            nodeObj.AddMember("floatValue", n.floatValue, a);
+            nodeObj.AddMember("variableName", Value(n.variableName.c_str(), a), a);
 
             nodesArr.PushBack(nodeObj, a);
         }
@@ -269,6 +273,17 @@ namespace UI {
 
                 if (nodeObj.HasMember("waitTime") && nodeObj["waitTime"].IsNumber())
                     node.waitTime = nodeObj["waitTime"].GetFloat();
+                if (nodeObj.HasMember("boolValue") && nodeObj["boolValue"].IsBool())
+                    node.boolValue = nodeObj["boolValue"].GetBool();
+
+                if (nodeObj.HasMember("intValue") && nodeObj["intValue"].IsInt())
+                    node.intValue = nodeObj["intValue"].GetInt();
+
+                if (nodeObj.HasMember("floatValue") && nodeObj["floatValue"].IsNumber())
+                    node.floatValue = nodeObj["floatValue"].GetFloat();
+
+                if (nodeObj.HasMember("variableName") && nodeObj["variableName"].IsString())
+                    node.variableName = nodeObj["variableName"].GetString();
 
                 graph.nodes.push_back(node);
             }

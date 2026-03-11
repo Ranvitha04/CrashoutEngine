@@ -382,13 +382,17 @@ namespace {
 
 		void add(ECS& ecs, Entity e) override {
 			if (!has(ecs, e)) {
-				ecs.AddComponent<Component::VisualScriptComponent>(e);
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::VisualScriptComponent>>(e)
+				);
 			}
 		}
 
 		void remove(ECS& ecs, Entity e) override {
 			if (has(ecs, e)) {
-				ecs.RemoveComponent<Component::VisualScriptComponent>(e);
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::VisualScriptComponent>>(e)
+				);
 			}
 		}
 
@@ -444,7 +448,6 @@ namespace {
 				}
 			}
 		}
-
 	};
 	/*!
 	@brief Unified adapter for editing core entity properties (Name, UUID, Active, Tag, Layer).

@@ -21,6 +21,7 @@ std::shared_ptr<UI::VisualScriptingGraph> GetOrLoadGraph(const std::string& path
 namespace
  {   
     std::unordered_map<std::string, std::shared_ptr<UI::VisualScriptingGraph>> g_visualScriptCache;
+
     UI::VSNode* FindNodeById(UI::VisualScriptingGraph& graph, int id)
     {
         for (auto& node : graph.nodes) {
@@ -28,6 +29,34 @@ namespace
                 return &node;
         }
         return nullptr;
+    }
+
+    static bool EvaluateBoolNode(ECS& ecs, Entity e, Component::VisualScriptComponent& comp,
+        UI::VisualScriptingGraph& graph, int nodeId, bool& outValue)
+    {
+        UI::VSNode* node = FindNodeById(graph, nodeId);
+        if (!node)
+            return false;
+
+        switch (node->type)
+        {
+        case UI::VSNodeType::BoolConstant:
+            outValue = node->boolValue;
+            return true;
+
+        case UI::VSNodeType::GetVariable:
+        {
+            auto it = comp.boolVariables.find(node->variableName);
+            if (it == comp.boolVariables.end())
+                return false;
+
+            outValue = it->second;
+            return true;
+        }
+
+        default:
+            return false;
+        }
     }
 
     UI::VSNode* FindStartNode(UI::VisualScriptingGraph& graph)
@@ -243,7 +272,21 @@ void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& c
         case UI::VSNodeType::Start:
         {
             std::cout << "[VisualScript] Start node hit\n";
+
+            for (const auto& link : graph.links)
+            {
+                if (link.fromNode == current->id)
+                {
+                    std::cout << "[VisualScript] Start outgoing link: fromNode=" << link.fromNode
+                        << " fromPin=" << link.fromPin
+                        << " toNode=" << link.toNode
+                        << " toPin=" << link.toPin << "\n";
+                }
+            }
+
             UI::VSNode* next = FindNextNode(graph, current->id, 0);
+            std::cout << "[VisualScript] Start next = " << (next ? next->id : 0) << "\n";
+
             comp.currentNodeId = next ? next->id : 0;
             break;
         }
@@ -294,17 +337,40 @@ void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& c
         case UI::VSNodeType::Branch:
         {
             bool condition = false;
+            bool gotCondition = false;
 
-            if (!GetMonoBoolProperty(ecs, e, "PlayerMovement", "IsGrounded", condition))
+            for (const auto& link : graph.links)
             {
-                std::cout << "[VisualScript] Branch condition fallback used on entity " << e << "\n";
+                if (link.toNode == current->id)
+                {
+                    std::cout << "[VisualScript] Branch incoming link: fromNode=" << link.fromNode
+                        << " fromPin=" << link.fromPin
+                        << " toNode=" << link.toNode
+                        << " toPin=" << link.toPin << "\n";
+
+                    gotCondition = EvaluateBoolNode(ecs, e, comp, graph, link.fromNode, condition);
+                    if (gotCondition)
+                    {
+                        std::cout << "[VisualScript] Branch got condition from node "
+                            << link.fromNode << " value=" << (condition ? "true" : "false") << "\n";
+                        break;
+                    }
+                }
+            }
+
+            if (!gotCondition)
+            {
+                std::cout << "[VisualScript] Branch did NOT get connected bool, using fallback IsGrounded\n";
+
+                if (!GetMonoBoolProperty(ecs, e, "PlayerMovement", "IsGrounded", condition))
+                {
+                    std::cout << "[VisualScript] Failed to read IsGrounded too\n";
+                }
             }
 
             UI::VSNode* next = FindNextNode(graph, current->id, condition ? 1 : 2);
             if (!next)
-            {
                 next = FindNextNode(graph, current->id, 0);
-            }
 
             comp.currentNodeId = next ? next->id : 0;
             break;

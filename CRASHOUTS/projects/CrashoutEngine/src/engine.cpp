@@ -63,7 +63,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 #include "jobsystem.h"
 #include <iostream>
-
+#include "visualscriptsystem.h"
+#include "visualscriptcomponent.h"
 #include "frameratecontroller.h"
 #include "registergamestate.h"
 #include "settings.h"
@@ -557,7 +558,10 @@ void Update(double const& dt) {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "LeaderboardUpdate");
             CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, false);
         }
-
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "VisualScriptUpdate");
+            UpdateVisualScripts(ecs, (float)dt);
+        }
         //fixed Update please work
         int steps = FrameRateController::GetInstance().StepCount();
 

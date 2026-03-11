@@ -1844,6 +1844,11 @@ namespace UI {
 				case VSNodeType::Wait:       return "Wait";
 				case VSNodeType::Branch:     return "Branch";
 				case VSNodeType::ScriptCall: return "ScriptCall";
+				case VSNodeType::BoolConstant: return "BoolConstant";
+				case VSNodeType::GetVariable:  return "GetVariable";
+				case VSNodeType::SetVariable:  return "SetVariable";
+				case VSNodeType::IntConstant:  return "IntConstant";
+				case VSNodeType::FloatConstant:return "FloatConstant";
 				default:                     return "Unknown";
 				}
 			};
@@ -1895,6 +1900,29 @@ namespace UI {
 					node.pos = localPos;
 					node.size = size;
 					node.waitTime = 1.0f;
+					if (type == VSNodeType::BoolConstant)
+					{
+						VSPin outPin;
+						outPin.id = graph.nextPinId++;
+						outPin.name = "Value";
+						outPin.kind = VSPinKind::Output;
+						outPin.type = VSDataType::Bool;
+						node.outputs.push_back(outPin);
+
+						node.size = ImVec2(180.0f, 90.0f);
+					}
+					else if (type == VSNodeType::Branch)
+					{
+						if (node.inputs.empty())
+						{
+							VSPin inPin;
+							inPin.id = graph.nextPinId++;
+							inPin.name = "Condition";
+							inPin.kind = VSPinKind::Input;
+							inPin.type = VSDataType::Bool;
+							node.inputs.push_back(inPin);
+						}
+					}
 					UndoManager::GetInstance().AddCommand(
 						std::make_unique<CreateVSNodeCommand>(graph, node)
 				);
@@ -1906,6 +1934,7 @@ namespace UI {
 			if (ImGui::MenuItem("Add Wait Node"))        addNode(VSNodeType::Wait, "Wait");
 			if (ImGui::MenuItem("Add Branch Node"))      addNode(VSNodeType::Branch, "Branch");
 			if (ImGui::MenuItem("Add Script Call Node")) addNode(VSNodeType::ScriptCall, "ScriptCall", ImVec2(180.0f, 90.0f));
+			if (ImGui::MenuItem("Add Bool Constant Node")) addNode(VSNodeType::BoolConstant, "Bool Constant", ImVec2(180.0f, 90.0f));
 
 			ImGui::EndPopup();
 		}
@@ -2262,7 +2291,40 @@ namespace UI {
 
 					ImGui::PopID();
 				}
+				if (selected->type == VSNodeType::BoolConstant)
+				{
+					if (ImGui::Checkbox("Bool Value", &selected->boolValue))
+					{
+						changed = true;
 
+						auto* ecs = CrashoutsEngine::ECS::getInstance();
+						UI::UIState* uiState = UI::GetUIState();
+
+						if (ecs && uiState)
+						{
+							auto& arr = ecs->GetComponentArray<Component::VisualScriptComponent>();
+
+							for (size_t i = 0; i < arr.dense.size(); ++i)
+							{
+								auto* vs = arr.dense[i];
+								if (!vs) continue;
+
+								if (vs->graphPath == uiState->openedVisualScriptPath && vs->graph)
+								{
+									for (auto& runtimeNode : vs->graph->nodes)
+									{
+										if (runtimeNode.id == selected->id &&
+											runtimeNode.type == UI::VSNodeType::BoolConstant)
+										{
+											runtimeNode.boolValue = selected->boolValue;
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 				if (selected->type == VSNodeType::Wait)
 				{
 					if (ImGui::DragFloat("Wait Time", &selected->waitTime, 0.1f, 0.0f, 100.0f))

@@ -38,7 +38,12 @@ namespace UI {
         Attack,
         Wait,
         Branch,
-        ScriptCall
+        ScriptCall,
+        BoolConstant,
+        IntConstant,
+        FloatConstant,
+        GetVariable,
+        SetVariable
     };
 
     enum class VSPinKind
@@ -81,6 +86,10 @@ namespace UI {
         std::string functionName;
 
         float waitTime = 1.0f;
+        bool boolValue = false;
+        int intValue = 0;
+        float floatValue = 0.0f;
+        std::string variableName;
     };
 
     struct VSLink
@@ -127,7 +136,10 @@ namespace UI {
 
         VisualScriptingGraph visualGraph;
         bool drawGameDebug = false;
-
+        bool boolValue = false;
+        int intValue = 0;
+        float floatValue = 0.0f;
+        std::string variableName;
         std::string openedVisualScriptPath;
         bool openVisualScriptPanel{ false };
     };

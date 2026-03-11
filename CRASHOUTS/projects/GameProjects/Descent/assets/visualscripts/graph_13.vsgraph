@@ -16,33 +16,77 @@
             "outputs": [],
             "scriptName": "",
             "functionName": "",
-            "waitTime": 1.0
+            "waitTime": 1.0,
+            "boolValue": false,
+            "intValue": 0,
+            "floatValue": 0.0,
+            "variableName": ""
         },
         {
             "id": 2,
+            "type": 6,
+            "title": "Bool Constant",
+            "pos": {
+                "x": 325.0,
+                "y": 379.0
+            },
+            "size": {
+                "x": 180.0,
+                "y": 90.0
+            },
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 3,
+                    "name": "Value",
+                    "kind": 1,
+                    "type": 1
+                }
+            ],
+            "scriptName": "",
+            "functionName": "",
+            "waitTime": 1.0,
+            "boolValue": false,
+            "intValue": 0,
+            "floatValue": 0.0,
+            "variableName": ""
+        },
+        {
+            "id": 3,
             "type": 4,
             "title": "Branch",
             "pos": {
-                "x": 438.0,
-                "y": 334.0
+                "x": 707.0,
+                "y": 358.0
             },
             "size": {
                 "x": 140.0,
                 "y": 70.0
             },
-            "inputs": [],
+            "inputs": [
+                {
+                    "id": 4,
+                    "name": "Condition",
+                    "kind": 0,
+                    "type": 1
+                }
+            ],
             "outputs": [],
             "scriptName": "",
             "functionName": "",
-            "waitTime": 1.0
+            "waitTime": 1.0,
+            "boolValue": false,
+            "intValue": 0,
+            "floatValue": 0.0,
+            "variableName": ""
         },
         {
-            "id": 3,
+            "id": 4,
             "type": 5,
             "title": "ScriptCall",
             "pos": {
-                "x": 768.0,
-                "y": 246.0
+                "x": 939.0,
+                "y": 441.0
             },
             "size": {
                 "x": 180.0,
@@ -52,15 +96,19 @@
             "outputs": [],
             "scriptName": "PlayerMovement",
             "functionName": "VS_Grounded",
-            "waitTime": 1.0
+            "waitTime": 1.0,
+            "boolValue": false,
+            "intValue": 0,
+            "floatValue": 0.0,
+            "variableName": ""
         },
         {
-            "id": 4,
+            "id": 5,
             "type": 5,
             "title": "ScriptCall",
             "pos": {
-                "x": 846.0,
-                "y": 432.0
+                "x": 930.0,
+                "y": 230.0
             },
             "size": {
                 "x": 180.0,
@@ -70,29 +118,39 @@
             "outputs": [],
             "scriptName": "PlayerMovement",
             "functionName": "VS_Airborne",
-            "waitTime": 1.0
+            "waitTime": 1.0,
+            "boolValue": false,
+            "intValue": 0,
+            "floatValue": 0.0,
+            "variableName": ""
         }
     ],
     "links": [
         {
-            "fromNode": 2,
-            "fromPin": 1,
+            "fromNode": 1,
+            "fromPin": 0,
             "toNode": 3,
             "toPin": 0
         },
         {
             "fromNode": 2,
-            "fromPin": 2,
+            "fromPin": 0,
+            "toNode": 3,
+            "toPin": 0
+        },
+        {
+            "fromNode": 3,
+            "fromPin": 1,
             "toNode": 4,
             "toPin": 0
         },
         {
-            "fromNode": 1,
-            "fromPin": 0,
-            "toNode": 2,
+            "fromNode": 3,
+            "fromPin": 2,
+            "toNode": 5,
             "toPin": 0
         }
     ],
-    "nextNodeId": 5,
-    "nextPinId": 1
+    "nextNodeId": 6,
+    "nextPinId": 5
 }
