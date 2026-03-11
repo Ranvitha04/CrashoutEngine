@@ -40,6 +40,7 @@ namespace CrashoutsEngine
 
         [SerializeField] public bool overrideStartEnd = false;
         [SerializeField] public bool mirrorXForLeft = true;
+        [SerializeField] public bool lockEndToBookCenter = true;
         [SerializeField] public CEVec3 startOffset = new CEVec3(-30.0f, -5.0f, 0.0f);
         [SerializeField] public CEVec3 endOffset = new CEVec3(30.0f, 0.0f, 0.0f);
 
@@ -139,6 +140,11 @@ namespace CrashoutsEngine
             bookOffset = facingRight
                 ? (isSwitchClip ? offsetRightSwitch : offsetRight)
                 : (isSwitchClip ? offsetLeftSwitch : offsetLeft);
+
+            if (lockEndToBookCenter)
+            {
+                bookOffset = FacingAdjusted(endOffset, facingRight, mirrorXForLeft);
+            }
 
             if (overrideStartEnd)
             {
