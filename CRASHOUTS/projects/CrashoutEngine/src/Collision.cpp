@@ -324,9 +324,9 @@ namespace Collision {
 
 		CollisionManifold result{ .collisionOccured = false };
 
-		Circle const& sphere1Temp = dynamic_cast<Circle const&>(*(coll1.collider));
+		Circle const& sphere1Temp = static_cast<Circle const&>(*(coll1.collider));
 
-		Circle const& sphere2Temp = dynamic_cast<Circle const&>(*(coll2.collider));
+		Circle const& sphere2Temp = static_cast<Circle const&>(*(coll2.collider));
 
 		float totalRadius{ sphere1Temp.radius + sphere2Temp.radius };
 		CEVec3 circ1ToCirc2{ coll2.position - coll1.position };
@@ -354,8 +354,8 @@ namespace Collision {
 
 		CollisionManifold result{ .collisionOccured = false };
 
-		AABBRect const& aabb1Temp = dynamic_cast<AABBRect const&>(*(coll1.collider));
-		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(coll2.collider));
+		AABBRect const& aabb1Temp = static_cast<AABBRect const&>(*(coll1.collider));
+		AABBRect const& aabb2Temp = static_cast<AABBRect const&>(*(coll2.collider));
 
 		CEVec3 posDelta{ (coll2.position + aabb2Temp.offset) - (coll1.position + aabb1Temp.offset) }; /*Vector showing distance + the direction*/
 
@@ -409,9 +409,9 @@ namespace Collision {
 		CollisionProps const* polygonPtr1{ &coll1 };
 		CollisionProps const* polygonPtr2{ &coll2 };
 
-		Polygon const& polygon1 = dynamic_cast<Polygon const&>(*(polygonPtr1->collider));
+		Polygon const& polygon1 = static_cast<Polygon const&>(*(polygonPtr1->collider));
 
-		Polygon const& polygon2 = dynamic_cast<Polygon const&>(*(polygonPtr2->collider));
+		Polygon const& polygon2 = static_cast<Polygon const&>(*(polygonPtr2->collider));
 
 		Contact contactA{ getContactPoint(polygon1, polygon2) };
 		if (!contactA) return result;
@@ -451,8 +451,8 @@ namespace Collision {
 			swapped = true;
 		}
 
-		Circle const& circle = dynamic_cast<Circle const&>(*(spherePtr->collider));
-		Polygon const& polygon = dynamic_cast<Polygon const&>(*(polygonPtr->collider));
+		Circle const& circle = static_cast<Circle const&>(*(spherePtr->collider));
+		Polygon const& polygon = static_cast<Polygon const&>(*(polygonPtr->collider));
 
 		// SAT IMPLEMENTATION (Replaces Edge/Corner helper logic for robustness)
 		float minOverlap = std::numeric_limits<float>::max();
@@ -567,8 +567,8 @@ namespace Collision {
 			swapped = true;
 		}
 
-		Circle const& sphere1Temp = dynamic_cast<Circle const&>(*(spherePtr->collider));
-		AABBRect const& aabb2Temp = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
+		Circle const& sphere1Temp = static_cast<Circle const&>(*(spherePtr->collider));
+		AABBRect const& aabb2Temp = static_cast<AABBRect const&>(*(aabbPtr->collider));
 
 		// Apply Offsets (Use the collider's effective center, not just entity position)
 		CEVec3 spherePos = spherePtr->position + sphere1Temp.offset;
@@ -651,8 +651,8 @@ namespace Collision {
 			swapped = true;
 		}
 
-		Circle const& circle = dynamic_cast<Circle const&>(*(circlePtr->collider));
-		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
+		Circle const& circle = static_cast<Circle const&>(*(circlePtr->collider));
+		LineSegment const& line = static_cast<LineSegment const&>(*(linePtr->collider));
 
 		// Find closest point on line segment to circle
 		CEVec3 closest = ClosestPointOnSegment(line.GetWorldP1(), line.GetWorldP2(), circle.position);
@@ -697,8 +697,8 @@ namespace Collision {
 			swapped = true;
 		}
 
-		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
-		Polygon const& existingPoly = dynamic_cast<Polygon const&>(*(polyPtr->collider));
+		AABBRect const& aabb = static_cast<AABBRect const&>(*(aabbPtr->collider));
+		Polygon const& existingPoly = static_cast<Polygon const&>(*(polyPtr->collider));
 
 		// Cannot use aabb.min/max directly if they are local. We use Position +/- Extents
 		CEVec3 aabbPos = aabbPtr->position + aabb.offset;
@@ -757,8 +757,8 @@ namespace Collision {
 			swapped = true;
 		}
 
-		Polygon const& poly = dynamic_cast<Polygon const&>(*(polyPtr->collider));
-		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
+		Polygon const& poly = static_cast<Polygon const&>(*(polyPtr->collider));
+		LineSegment const& line = static_cast<LineSegment const&>(*(linePtr->collider));
 
 		f32 minOverlap = std::numeric_limits<f32>::max();
 		CEVec3 bestAxis{ 0.f, 0.f, 0.f };
@@ -892,8 +892,8 @@ namespace Collision {
 		CollisionProps const* aabbPtr = swapped ? &coll2 : &coll1;
 		CollisionProps const* linePtr = swapped ? &coll1 : &coll2;
 
-		AABBRect const& aabb = dynamic_cast<AABBRect const&>(*(aabbPtr->collider));
-		LineSegment const& line = dynamic_cast<LineSegment const&>(*(linePtr->collider));
+		AABBRect const& aabb = static_cast<AABBRect const&>(*(aabbPtr->collider));
+		LineSegment const& line = static_cast<LineSegment const&>(*(linePtr->collider));
 
 		// 2. Extract Data
 		CEVec3 aabbCenter = aabbPtr->position + aabb.offset;
@@ -964,8 +964,8 @@ namespace Collision {
 	CollisionManifold CollisionHandler::LineToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2) {
 		CollisionManifold result{ .collisionOccured = false };
 
-		LineSegment const& line1 = dynamic_cast<LineSegment const&>(*(coll1.collider));
-		LineSegment const& line2 = dynamic_cast<LineSegment const&>(*(coll2.collider));
+		LineSegment const& line1 = static_cast<LineSegment const&>(*(coll1.collider));
+		LineSegment const& line2 = static_cast<LineSegment const&>(*(coll2.collider));
 
 		CEVec3 p1 = line1.GetWorldP1();
 		CEVec3 p2 = line1.GetWorldP2();
