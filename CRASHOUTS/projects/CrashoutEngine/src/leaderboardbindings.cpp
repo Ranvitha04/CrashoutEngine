@@ -27,10 +27,10 @@ namespace {
         mono_free(nameCStr);
 
         // Define your Single Source of Truth here! 
-        std::string backendUrl = "http://104.214.187.128";
+        std::string backendUrl = CrashoutsEngine::kDefaultLeaderboardBaseUrl;
 
         // Instantiate the service and submit asynchronously
-        LeaderboardService svc(backendUrl);
+        LeaderboardService svc(backendUrl, CrashoutsEngine::kDefaultLeaderboardApiKey);
 
         svc.SubmitScoreAsync(name, score);
     }

@@ -433,6 +433,7 @@ namespace CrashoutsEngine {
 				const auto& c = *gECS.GetComponent<Component::LeaderboardComponent>(id);
 				rapidjson::Value val(rapidjson::kObjectType);
 				val.AddMember("baseUrl", rapidjson::Value(c.baseUrl.c_str(), allocator), allocator);
+				val.AddMember("apiKey", rapidjson::Value(c.apiKey.c_str(), allocator), allocator);
 				val.AddMember("limit", c.limit, allocator);
 				val.AddMember("sortBy", rapidjson::Value(c.sortBy.c_str(), allocator), allocator);
 				val.AddMember("sortOrder", rapidjson::Value(c.sortOrder.c_str(), allocator), allocator);
@@ -1087,6 +1088,7 @@ namespace CrashoutsEngine {
 				const auto& v = entityValue[Keys::LEADERBOARD_COMPONENT];
 				auto& c = gECS.AddComponent<Component::LeaderboardComponent>(newEntity);
 				c.baseUrl = GetString(v, "baseUrl", c.baseUrl.c_str());
+				c.apiKey = GetString(v, "apiKey", c.apiKey.c_str());
 				c.limit = GetInt(v, "limit", c.limit);
 				c.sortBy = GetString(v, "sortBy", c.sortBy.c_str());
 				c.sortOrder = GetString(v, "sortOrder", c.sortOrder.c_str());
