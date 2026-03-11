@@ -61,6 +61,7 @@ All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â�
 #include "checkpointcomponent.h"
 #include "triggercomponent.h"
 #include "transformentitycommand.h"
+#include "visualscriptcomponent.h"
 // FOR GAME GUI
 #include "buttoncomponent.h"
 #include "guicomponent.h"
@@ -401,10 +402,29 @@ namespace {
 			UIHelpers::DrawUndoableString("Graph Path", vs->graphPath);
 
 			if (ImGui::Button("New Graph")) {
-				vs->graphPath = "assets/visualscripts/graph_" + std::to_string(e) + ".vsgraph";
+				vs->graphPath = "../../projects/GameProjects/Descent/assets/visualscripts/graph_" + std::to_string(e) + ".vsgraph";
+
+				vs->graphLoaded = false;
+				vs->graph.reset();
+				vs->currentNodeId = 0;
+				vs->waitTimer = 0.0f;
+
 				if (UI::UIState* ui = UI::GetUIState()) {
 					ui->openedVisualScriptPath = vs->graphPath;
+
 					UI::ClearVisualScriptingGraph();
+					UI::VisualScriptingGraph& g = UI::GetVisualScriptingGraph();
+
+					UI::VSNode startNode;
+					startNode.id = g.nextNodeId++;
+					startNode.type = UI::VSNodeType::Start;
+					startNode.title = "Start";
+					startNode.pos = ImVec2(100.0f, 100.0f);
+					startNode.size = ImVec2(140.0f, 70.0f);
+					startNode.waitTime = 1.0f;
+
+					g.nodes.push_back(startNode);
+
 					ui->showVisualScripting = true;
 				}
 			}
@@ -412,6 +432,11 @@ namespace {
 			ImGui::SameLine();
 
 			if (ImGui::Button("Open Graph")) {
+				vs->graphLoaded = false;
+				vs->graph.reset();
+				vs->currentNodeId = 0;
+				vs->waitTimer = 0.0f;
+
 				if (UI::UIState* ui = UI::GetUIState()) {
 					ui->openedVisualScriptPath = vs->graphPath;
 					UI::LoadVisualScriptingGraph(vs->graphPath, UI::GetVisualScriptingGraph());

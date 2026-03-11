@@ -70,7 +70,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <filesystem>
 
 #include "imgui_internal.h"
-
+#include "visualscriptsystem.h"
+#include "visualscriptcomponent.h"
 // For getting folder path in windows
 #include "ShlObj_core.h"
 
@@ -538,6 +539,7 @@ void Update(double const& dt) {
         KeyframeUnity::UpdateAll(ecs, (float)dt);
         CrashoutsEngine::VideoSystem::Update((float)dt);
         CrashoutsEngine::ScriptSystem::UpdateAll();
+        UpdateVisualScripts(ecs, (float)dt);
         CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, false);
 
         //fixed Update please work

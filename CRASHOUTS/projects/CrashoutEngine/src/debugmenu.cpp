@@ -315,10 +315,6 @@ namespace UI { // --------------------------------------------------------------
 		}
 	}
      
-	VisualScriptingGraph& GetVisualScriptingGraph()
-	{
-		return s_VisualGraph;
-	}
 	static const char* ToString(VSNodeType type)
 	{
 		switch (type) {
@@ -342,134 +338,7 @@ namespace UI { // --------------------------------------------------------------
 		if (s == "ScriptCall") return VSNodeType::ScriptCall;
 		return VSNodeType::Start;
 	}
-
-	bool SaveVisualScriptingGraph(const std::string& path, const VisualScriptingGraph& graph)
-	{
-		std::ofstream file(path);
-		if (!file.is_open())
-			return false;
-
-		file << "nextNodeId " << graph.nextNodeId << "\n";
-		file << "nodes " << graph.nodes.size() << "\n";
-
-		for (const auto& node : graph.nodes) {
-			file << node.id << "|"
-				<< ToString(node.type) << "|"
-				<< node.title << "|"
-				<< node.pos.x << "|"
-				<< node.pos.y << "|"
-				<< node.size.x << "|"
-				<< node.size.y << "|"
-				<< node.scriptName << "|"
-				<< node.functionName << "\n";
-		}
-
-		file << "links " << graph.links.size() << "\n";
-
-		for (const auto& link : graph.links) {
-			file << link.fromNode << "|"
-				<< link.toNode << "|"
-				<< link.fromPin << "\n";
-		}
-
-		return true;
-	}
-
-	bool LoadVisualScriptingGraph(const std::string& path, VisualScriptingGraph& graph)
-	{
-		std::ifstream file(path);
-		if (!file.is_open())
-			return false;
-
-		graph.nodes.clear();
-		graph.links.clear();
-		graph.nextNodeId = 1;
-
-		std::string label;
-		size_t count = 0;
-
-		file >> label >> graph.nextNodeId;
-		if (!file || label != "nextNodeId")
-			return false;
-
-		file >> label >> count;
-		if (!file || label != "nodes")
-			return false;
-
-		file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-		for (size_t i = 0; i < count; ++i) {
-			std::string line;
-			std::getline(file, line);
-			if (line.empty()) {
-				--i;
-				continue;
-			}
-
-			std::stringstream ss(line);
-			std::string part;
-			std::vector<std::string> parts;
-
-			while (std::getline(ss, part, '|'))
-				parts.push_back(part);
-
-			if (parts.size() < 9)
-				return false;
-
-			VSNode node;
-			node.id = std::stoi(parts[0]);
-			node.type = VSNodeTypeFromString(parts[1]);
-			node.title = parts[2];
-			node.pos.x = std::stof(parts[3]);
-			node.pos.y = std::stof(parts[4]);
-			node.size.x = std::stof(parts[5]);
-			node.size.y = std::stof(parts[6]);
-			node.scriptName = parts[7];
-			node.functionName = parts[8];
-
-			graph.nodes.push_back(node);
-		}
-
-		file >> label >> count;
-		if (!file || label != "links")
-			return false;
-
-		file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-		for (size_t i = 0; i < count; ++i) {
-			std::string line;
-			std::getline(file, line);
-			if (line.empty()) {
-				--i;
-				continue;
-			}
-
-			std::stringstream ss(line);
-			std::string part;
-			std::vector<std::string> parts;
-
-			while (std::getline(ss, part, '|'))
-				parts.push_back(part);
-
-			if (parts.size() < 3)
-				return false;
-
-			VSLink link;
-			link.fromNode = std::stoi(parts[0]);
-			link.toNode = std::stoi(parts[1]);
-			link.fromPin = std::stoi(parts[2]);
-
-			graph.links.push_back(link);
-		}
-
-		return true;
-	}
-	void ClearVisualScriptingGraph()
-	{
-		s_VisualGraph.nodes.clear();
-		s_VisualGraph.links.clear();
-		s_VisualGraph.nextNodeId = 1;
-	}
+	
 	/*!
 	 @brief Renders all panels and overlays in a single call.
 	 @param profiler Frame profiler reference.

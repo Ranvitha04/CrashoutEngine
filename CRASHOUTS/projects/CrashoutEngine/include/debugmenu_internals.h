@@ -50,6 +50,7 @@ All content © 2025 DigiPen Institute of Technology Singapore. All rights reserve
 #include "activecomponent.h"
 #include "tagcomponent.h"
 #include "hierarchy.h"
+#include "visualscriptcomponent.h" 
 
 // --- 5. Systems & Managers ---
 #include "physicsmanager.h"

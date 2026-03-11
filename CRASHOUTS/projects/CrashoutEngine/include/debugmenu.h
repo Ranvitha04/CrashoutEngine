@@ -8,7 +8,6 @@
             declarations for initialization, shutdown, rendering, and debugging
             panels, as well as a UI state structure to manage panel toggles.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -16,29 +15,22 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 ----------------------------------------------------------------------------- */
 #pragma once
 #include <GLFW/glfw3.h>
+#include <imgui.h>
 #include <vector>
 #include <string>
-
-// -----------------------------------------------------------------------------
-// Forward declarations
-// -----------------------------------------------------------------------------
-/*!
- @class FrameProfiler
- @brief Forward declaration for the engine's frame profiler.
- @details
- Used to collect timing and performance statistics per frame.
- The full definition is provided in the performance profiling module.
-*/
 class FrameProfiler;
-namespace CrashoutsEngine { 
+
+namespace CrashoutsEngine {
     class ECS;
     using Entity = unsigned;
 }
+
 namespace Physics { class PhysicsHandler; }
 namespace Collision { struct CollisionEvent; }
 namespace DebugReflection { class PanelRegistry; }
 
 namespace UI {
+
     enum class VSNodeType
     {
         Start = 0,
@@ -49,23 +41,54 @@ namespace UI {
         ScriptCall
     };
 
+    enum class VSPinKind
+    {
+        Input = 0,
+        Output
+    };
+
+    enum class VSDataType
+    {
+        Exec = 0,
+        Bool,
+        Int,
+        Float,
+        String,
+        Entity,
+        Vec3
+    };
+
+    struct VSPin
+    {
+        int id = 0;
+        std::string name;
+        VSPinKind kind = VSPinKind::Input;
+        VSDataType type = VSDataType::Exec;
+    };
+
     struct VSNode
     {
         int id = 0;
         VSNodeType type = VSNodeType::Start;
         std::string title;
         ImVec2 pos{ 0.0f, 0.0f };
-        ImVec2 size{ 140.0f, 70.0f };
+        ImVec2 size{ 160.0f, 90.0f };
+
+        std::vector<VSPin> inputs;
+        std::vector<VSPin> outputs;
 
         std::string scriptName;
         std::string functionName;
+
+        float waitTime = 1.0f;
     };
 
     struct VSLink
     {
         int fromNode = 0;
+        int fromPin = 0;
         int toNode = 0;
-        int fromPin = 0; // 0 = normal/only output, 1 = True, 2 = False
+        int toPin = 0;
     };
 
     struct VisualScriptingGraph
@@ -73,12 +96,11 @@ namespace UI {
         std::vector<VSNode> nodes;
         std::vector<VSLink> links;
         int nextNodeId = 1;
+        int nextPinId = 1;
     };
-    /*!
-    @struct UIState
-    @brief Stores runtime toggles and layout states for the UI.
-    */
-    struct UIState {
+
+    struct UIState
+    {
         bool lockLayout = false;
         bool showPerf = false;
         bool showConsole = true;
@@ -95,80 +117,44 @@ namespace UI {
         bool showProjectManager = true;
 
         bool freezeOnCollision = false;
-        bool showAnimation = true; 
+        bool showAnimation = true;
         bool showSpriteSheet = true;
         bool showVisualScripting = false;
-        bool drawAllColliders = false;   // draw wireframes for every collider, not just colliding ones
-        bool drawVelocities = false;    // draw velocity arrows if RigidBodyComponent exists
-        float overlayThickness = .35f;  // line thickness for wireframes
-        float fontScale = 1.0f;         // Set the font scale
+        bool drawAllColliders = false;
+        bool drawVelocities = false;
+        float overlayThickness = .35f;
+        float fontScale = 1.0f;
+
         VisualScriptingGraph visualGraph;
-        bool drawGameDebug = false;     // Toggle for script-based debug drawing (circles/lines)
+        bool drawGameDebug = false;
+
         std::string openedVisualScriptPath;
-  
         bool openVisualScriptPanel{ false };
-
     };
+
     UIState* GetUIState();
-    // -- Lifecycle ----------------------------------------------------
 
-    /*!
-    @brief Initializes ImGui with a GLFW window.
-    @param window Pointer to the GLFW window handle.
-    */
-    void Init(GLFWwindow* window, UI::UIState& uiState);
-
-    /*!
-    @brief Helper to check if script debug drawing is enabled.
-    */
+    void Init(GLFWwindow* window, UIState& uiState);
     bool IsGameDebugDrawEnabled();
-    
-    /*!
-    @brief Shuts down ImGui and releases resources.
-    */
-    void Shutdown(UI::UIState& uiState);
+    void Shutdown(UIState& uiState);
 
-    // -- Rendering entry points ---------------------------------------
-
-    /*!
-    @brief Renders the entire debug menu in one call.
-    @param profiler Frame profiler for performance data.
-    @param ecs Reference to ECS system.
-    @param phys Reference to PhysicsHandler.
-    @param entities List of entities currently tracked.
-    @param selected Currently selected entity.
-    */
     void Render(FrameProfiler& profiler, CrashoutsEngine::Entity& selected, UIState& ui);
-
-    // -- Helper Functions ---------------------------------------------
-    /*!
-    @brief Starts a new ImGui frame. Must be called once per frame before rendering.
-    */
     void BeginFrame();
-    /*!
-    @brief Ends the current ImGui frame and submits draw data.
-    */
     void EndFrame();
 
-    /*!
-     @brief Renders the debugmenu panel.
-     @param ui UI state toggles.
-    */
     void RenderDebugMenuBar(UIState& ui);
+    void RenderAll(FrameProfiler& profiler,
+        UIState& ui,
+        CrashoutsEngine::ECS& ecs,
+        std::vector<CrashoutsEngine::Entity>& entities,
+        CrashoutsEngine::Entity& selected);
 
-    /*!
-    @brief Renders all UI panels and overlays in sequence.
-    @param profiler Frame profiler reference.
-    @param ecs ECS reference.
-    @param phys Physics handler reference.
-    @param ui UI state toggles.
-    @param entities List of ECS entities.
-    @param selected Currently selected entity.
-    */
-    void RenderAll(FrameProfiler& profiler, UIState& ui, CrashoutsEngine::ECS& ecs, std::vector<CrashoutsEngine::Entity>& entities, CrashoutsEngine::Entity& selected);
     VisualScriptingGraph& GetVisualScriptingGraph();
     void ClearVisualScriptingGraph();
-    void SetDarkGrayTheme();
+
     bool SaveVisualScriptingGraph(const std::string& path, const VisualScriptingGraph& graph);
     bool LoadVisualScriptingGraph(const std::string& path, VisualScriptingGraph& graph);
+
+    void SetDarkGrayTheme();
+
 } // namespace UI
