@@ -24,6 +24,7 @@ All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â�
 #include "colliders.h"
 #include "jobsystem.h"
 #include "performanceSystem.h"
+#include "frameratecontroller.h"
 #include <unordered_map>
 #include <unordered_set>
 
@@ -1338,7 +1339,7 @@ namespace Collision {
 			// --- DEFER EXITS ---
 			// ONLY evaluate Exits on the FINAL sub-step (index 3). 
 			// This prevents non-CCD objects from instantly "exiting" on sub-step 1!
-			if (subStepIndex == 3) {
+			if (subStepIndex == FrameRateController::GetInstance().GetMaxPhysicsSteps() - 1) {
 				for (ContactInformation const& contactInfo : lastFrameCollision) {
 					if (currentFramePairs.find(contactInfo.contacts) == currentFramePairs.end()) {
 
@@ -1372,7 +1373,7 @@ namespace Collision {
 		// --- RESTORE DEBUG RENDERING ---
 		// If this is the final sub-step, repopulate m_FrameCollisions with the ENTIRE macro-frame's 
 		// accumulation so the Debug Renderer correctly colors all hits red!
-		if (subStepIndex == 3) {
+		if (subStepIndex == FrameRateController::GetInstance().GetMaxPhysicsSteps() - 1) {
 			m_FrameCollisions.clear();
 			for (auto& info : currentFrameCollision) {
 				m_FrameCollisions.push_back(CollisionEvent{ info.colManifold, info.contacts.first, info.contacts.second });
