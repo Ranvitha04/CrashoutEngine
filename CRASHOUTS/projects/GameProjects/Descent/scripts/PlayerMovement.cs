@@ -73,15 +73,11 @@ namespace CrashoutsEngine
         private const float FIXED_TIMESTEP = 0.02f;
 
         public bool alive = true;
-        public bool isPaused = false;
-
         private bool isDying = false;
+        [SerializeField] private float deathDelay = 1.0f;
         private float deathTimer = 0.0f;
-        [SerializeField] private float normalDeathDelay = 2.0f;
-        [SerializeField] private float lightDeathDelay = 2.0f;
-        [SerializeField] private string normalDeathAnimName = "playerDeathNoBook";
-        [SerializeField] private string lightDeathAnimName = "playerDeath";
-    
+        [SerializeField] private string deathAnimName = "playerDeath";
+        public bool isPaused = false; 
         private static CEVec3 respawnPos;
         private static float checkpointEnergy = 100.0f;
         public static string lastLevelName = "";
@@ -536,23 +532,22 @@ namespace CrashoutsEngine
             landingDustTimer = dustBurstDuration; 
         }
         //Death Anim
-       private void HandleDeath()
-{
-    if (isDying) return;
+        private void HandleDeath()
+        {
+            if (isDying) return;
 
-    alive = false;
-    isDying = true;
-    rb.LinearVelocity = new CEVec3(0, 0, 0);
+            alive = false;
+            isDying = true;
+            deathTimer = deathDelay;
 
-    string deathClip = isLight ? lightDeathAnimName : normalDeathAnimName;
-    deathTimer = isLight ? lightDeathDelay : normalDeathDelay;
+            rb.LinearVelocity = new CEVec3(0, 0, 0);
 
-    if (anim != null)
-    {
-        anim.Play(deathClip, true);
-        currentAnimState = deathClip;
-    }
-}
+            if (anim != null)
+            {
+                anim.Play(deathAnimName, true);
+                currentAnimState = deathAnimName;
+            }
+        }
         //Testing VSnode
         public void VS_Grounded()
         {
