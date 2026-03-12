@@ -1270,7 +1270,7 @@ namespace Collision {
 		std::vector<ThreadResult> threadResults(numThreads);
 		std::mutex threadResultsMutex;
 
-		static std::vector<ThreadResult> threadResults;
+		//static std::vector<ThreadResult> threadResults;
 		if (threadResults.size() < numThreads) threadResults.resize(numThreads);
 
 		for (auto& res : threadResults) {
