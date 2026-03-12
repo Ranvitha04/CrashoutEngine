@@ -1025,12 +1025,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -7.892475128173828,
+                    "x": 0.0,
                     "y": -10.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 280.0,
+                    "x": 263.0,
                     "y": 60.0
                 }
             },
@@ -1042,13 +1042,13 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
+                "textureName": "UI/button.png",
                 "uvSize": {
-                    "x": 0.3333333432674408,
-                    "y": 0.3333333432674408
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.6666666865348816,
+                    "x": 0.0,
                     "y": 0.0
                 },
                 "color": {
@@ -1168,51 +1168,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "keyframe_animator": {
-                "current": "death_anim",
-                "t": 57.8659553527832,
-                "playing": true,
-                "clips": [
-                    {
-                        "name": "death_anim",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 280.0,
-                        "targetHeight": 60.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
             }
         },
         {
