@@ -4,11 +4,6 @@
         {
             "texAssetName": "spritesheet\\spikes updated\\spikes updated_00.png",
             "colliderType": "ColliderType::AABB",
-            "ruleBitMap": 1
-        },
-        {
-            "texAssetName": "missing.png",
-            "colliderType": "ColliderType::AABB",
             "ruleBitMap": 0
         }
     ]

@@ -2289,6 +2289,10 @@
             "path": "Platform"
         },
         {
+            "name": "Spike",
+            "path": "Spike"
+        },
+        {
             "name": "Rock_Door",
             "path": "Rock_Door"
         }
