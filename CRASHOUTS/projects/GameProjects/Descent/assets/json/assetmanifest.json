@@ -307,6 +307,10 @@
             "path": "Character/DeathAnimBook/Light Death spritesheet.png"
         },
         {
+            "name": "spikes updated",
+            "path": "Tileset/spikes updated.png"
+        },
+        {
             "name": "Normal Death spritesheet_04",
             "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_04.png"
         },
@@ -333,6 +337,10 @@
         {
             "name": "bg 2 p1",
             "path": "backgrounds/bg 2 p1.png"
+        },
+        {
+            "name": "spikes updated_17",
+            "path": "spritesheet/spikes updated/spikes updated_17.png"
         },
         {
             "name": "Switch State Idle ",
@@ -623,6 +631,10 @@
             "path": "Cutscenes/Cutscene_2.png"
         },
         {
+            "name": "spikes updated_20",
+            "path": "spritesheet/spikes updated/spikes updated_20.png"
+        },
+        {
             "name": "Normal Death spritesheet",
             "path": "Character/NormalDeathAnim/Normal Death spritesheet.png"
         },
@@ -673,6 +685,10 @@
         {
             "name": "Monsters(4)",
             "path": "Monsters/Monsters(4).png"
+        },
+        {
+            "name": "spikes updated_15",
+            "path": "spritesheet/spikes updated/spikes updated_15.png"
         },
         {
             "name": "Monsters(5)",
@@ -775,16 +791,32 @@
             "path": "Monsters/Monsters_9.png"
         },
         {
+            "name": "spikes updated_07",
+            "path": "spritesheet/spikes updated/spikes updated_07.png"
+        },
+        {
             "name": "Pick1",
             "path": "Monsters/Pick1.png"
+        },
+        {
+            "name": "spikes updated_04",
+            "path": "spritesheet/spikes updated/spikes updated_04.png"
         },
         {
             "name": "Pick2",
             "path": "Monsters/Pick2.png"
         },
         {
+            "name": "spikes updated_05",
+            "path": "spritesheet/spikes updated/spikes updated_05.png"
+        },
+        {
             "name": "Pick3",
             "path": "Monsters/Pick3.png"
+        },
+        {
+            "name": "spikes updated_02",
+            "path": "spritesheet/spikes updated/spikes updated_02.png"
         },
         {
             "name": "Pick4",
@@ -1703,6 +1735,174 @@
             "path": "spritesheet/spikes/spikes_31.png"
         },
         {
+            "name": "Energy Ball spritesheet",
+            "path": "UI/Energy Ball/Energy Ball spritesheet.png"
+        },
+        {
+            "name": "spikes updated_00",
+            "path": "spritesheet/spikes updated/spikes updated_00.png"
+        },
+        {
+            "name": "updated settings",
+            "path": "UI/settings/updated settings.png"
+        },
+        {
+            "name": "spikes updated_01",
+            "path": "spritesheet/spikes updated/spikes updated_01.png"
+        },
+        {
+            "name": "spikes updated_03",
+            "path": "spritesheet/spikes updated/spikes updated_03.png"
+        },
+        {
+            "name": "spikes updated_06",
+            "path": "spritesheet/spikes updated/spikes updated_06.png"
+        },
+        {
+            "name": "Bar_Area",
+            "path": "UI/Bar_Area.png"
+        },
+        {
+            "name": "spikes updated_08",
+            "path": "spritesheet/spikes updated/spikes updated_08.png"
+        },
+        {
+            "name": "spikes updated_09",
+            "path": "spritesheet/spikes updated/spikes updated_09.png"
+        },
+        {
+            "name": "spikes updated_10",
+            "path": "spritesheet/spikes updated/spikes updated_10.png"
+        },
+        {
+            "name": "spikes updated_11",
+            "path": "spritesheet/spikes updated/spikes updated_11.png"
+        },
+        {
+            "name": "spikes updated_12",
+            "path": "spritesheet/spikes updated/spikes updated_12.png"
+        },
+        {
+            "name": "spikes updated_13",
+            "path": "spritesheet/spikes updated/spikes updated_13.png"
+        },
+        {
+            "name": "spikes updated_14",
+            "path": "spritesheet/spikes updated/spikes updated_14.png"
+        },
+        {
+            "name": "spikes updated_16",
+            "path": "spritesheet/spikes updated/spikes updated_16.png"
+        },
+        {
+            "name": "spikes updated_18",
+            "path": "spritesheet/spikes updated/spikes updated_18.png"
+        },
+        {
+            "name": "Middle",
+            "path": "Test/Middle.png"
+        },
+        {
+            "name": "spikes updated_19",
+            "path": "spritesheet/spikes updated/spikes updated_19.png"
+        },
+        {
+            "name": "spikes updated_21",
+            "path": "spritesheet/spikes updated/spikes updated_21.png"
+        },
+        {
+            "name": "spikes updated_22",
+            "path": "spritesheet/spikes updated/spikes updated_22.png"
+        },
+        {
+            "name": "spikes updated_23",
+            "path": "spritesheet/spikes updated/spikes updated_23.png"
+        },
+        {
+            "name": "key_E",
+            "path": "UI/Tutorial/key_E.png"
+        },
+        {
+            "name": "spikes updated_24",
+            "path": "spritesheet/spikes updated/spikes updated_24.png"
+        },
+        {
+            "name": "spikes updated_25",
+            "path": "spritesheet/spikes updated/spikes updated_25.png"
+        },
+        {
+            "name": "spikes updated_26",
+            "path": "spritesheet/spikes updated/spikes updated_26.png"
+        },
+        {
+            "name": "spikes updated_27",
+            "path": "spritesheet/spikes updated/spikes updated_27.png"
+        },
+        {
+            "name": "spikes updated_28",
+            "path": "spritesheet/spikes updated/spikes updated_28.png"
+        },
+        {
+            "name": "spikes updated_29",
+            "path": "spritesheet/spikes updated/spikes updated_29.png"
+        },
+        {
+            "name": "spikes updated_30",
+            "path": "spritesheet/spikes updated/spikes updated_30.png"
+        },
+        {
+            "name": "spikes updated_31",
+            "path": "spritesheet/spikes updated/spikes updated_31.png"
+        },
+        {
+            "name": "spikes updated_32",
+            "path": "spritesheet/spikes updated/spikes updated_32.png"
+        },
+        {
+            "name": "spikes updated_33",
+            "path": "spritesheet/spikes updated/spikes updated_33.png"
+        },
+        {
+            "name": "spikes updated_34",
+            "path": "spritesheet/spikes updated/spikes updated_34.png"
+        },
+        {
+            "name": "spikes updated_35",
+            "path": "spritesheet/spikes updated/spikes updated_35.png"
+        },
+        {
+            "name": "spikes updated_36",
+            "path": "spritesheet/spikes updated/spikes updated_36.png"
+        },
+        {
+            "name": "spikes updated_37",
+            "path": "spritesheet/spikes updated/spikes updated_37.png"
+        },
+        {
+            "name": "spikes updated_38",
+            "path": "spritesheet/spikes updated/spikes updated_38.png"
+        },
+        {
+            "name": "spikes updated_39",
+            "path": "spritesheet/spikes updated/spikes updated_39.png"
+        },
+        {
+            "name": "spikes updated_40",
+            "path": "spritesheet/spikes updated/spikes updated_40.png"
+        },
+        {
+            "name": "spikes updated_41",
+            "path": "spritesheet/spikes updated/spikes updated_41.png"
+        },
+        {
+            "name": "spikes updated_42",
+            "path": "spritesheet/spikes updated/spikes updated_42.png"
+        },
+        {
+            "name": "spikes updated_43",
+            "path": "spritesheet/spikes updated/spikes updated_43.png"
+        },
+        {
             "name": "Switch-State-SpriteSheet_00",
             "path": "spritesheet/Switch-State-SpriteSheet/Switch-State-SpriteSheet_00.png"
         },
@@ -1743,10 +1943,6 @@
             "path": "Test/Left.png"
         },
         {
-            "name": "Middle",
-            "path": "Test/Middle.png"
-        },
-        {
             "name": "Top",
             "path": "Test/Top.png"
         },
@@ -1763,20 +1959,12 @@
             "path": "Tileset/spikes.png"
         },
         {
-            "name": "Bar_Area",
-            "path": "UI/Bar_Area.png"
-        },
-        {
             "name": "Emp 4",
             "path": "UI/Energy Ball/Emp 4.png"
         },
         {
             "name": "Emp 5",
             "path": "UI/Energy Ball/Emp 5.png"
-        },
-        {
-            "name": "Energy Ball spritesheet",
-            "path": "UI/Energy Ball/Energy Ball spritesheet.png"
         },
         {
             "name": "Game Over",
@@ -1823,10 +2011,6 @@
             "path": "UI/settings/updated settings large.png"
         },
         {
-            "name": "updated settings",
-            "path": "UI/settings/updated settings.png"
-        },
-        {
             "name": "Title",
             "path": "UI/Title.png"
         },
@@ -1841,10 +2025,6 @@
         {
             "name": "fourth",
             "path": "UI/Tutorial/fourth.png"
-        },
-        {
-            "name": "key_E",
-            "path": "UI/Tutorial/key_E.png"
         },
         {
             "name": "key_S",
