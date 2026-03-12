@@ -15750,6 +15750,10 @@
                 "renderSelf": false,
                 "renderBehind": false,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 0.5607843399047852,
                     "y": 0.19607843458652497,
@@ -24164,15 +24168,102 @@
                             "dialogueCooldown": 1.0,
                             "isDialogueActive": false,
                             "facingRight": true,
+                            "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 87.5,
                             "MaxEnergy": 100.0,
                             "alive": true,
-                            "deathDelay": 1.0,
-                            "deathAnimName": "playerDeath",
                             "isPaused": false,
                             "reloadOnDeath": false,
                             "reloadSceneName": "",
                             "gameOverSceneName": "Defeat"
+                        }
+                    },
+                    {
+                        "className": "PlayerBookGlowController",
+                        "fields": {
+                            "bookGlowEntityName": "PlayerBookGlow",
+                            "onlyGlowInLightMode": false,
+                            "followZ": false,
+                            "useAngledPath": false,
+                            "pathFirstPortion": 24.75,
+                            "pathAngleDeg": 0.0,
+                            "pathDistance": 50.900001525878909,
+                            "moveSpeed": 1.0,
+                            "useAlphaTransition": true,
+                            "alphaStart": 0.0,
+                            "alphaEnd": 1.0,
+                            "alphaSpeed": 0.4000000059604645,
+                            "forceShowStart": false,
+                            "forceShowEnd": false,
+                            "showOffsetGizmos": false,
+                            "useDragHandleEntities": false,
+                            "startHandleEntityName": "BookGlow_StartHandle",
+                            "endHandleEntityName": "BookGlow_EndHandle",
+                            "lineEntityName": "BookGlow_PathLine",
+                            "handleRadius": 14.0,
+                            "lineThickness": 4.0,
+                            "finalizeAndDisableHandles": false,
+                            "hideHandleEntitiesWhenDisabled": true,
+                            "snapStartToEnd": false,
+                            "snapEndToStart": false,
+                            "overrideStartEnd": true,
+                            "mirrorXForLeft": true,
+                            "lockEndToBookCenter": true,
+                            "useAirEndOffset": true,
+                            "startOffset": {
+                                "x": -1.7999687194824219,
+                                "y": -15.700160026550293,
+                                "z": 0.0
+                            },
+                            "endOffset": {
+                                "x": 33.70000076293945,
+                                "y": -12.199999809265137,
+                                "z": 0.0
+                            },
+                            "endOffsetAir": {
+                                "x": 31.299999237060548,
+                                "y": 5.800000190734863,
+                                "z": 0.0
+                            },
+                            "snapAirToGround": false,
+                            "snapGroundToAir": false,
+                            "offsetBehindRight": {
+                                "x": -30.0,
+                                "y": -5.0,
+                                "z": 0.0
+                            },
+                            "offsetBehindLeft": {
+                                "x": 30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetRight": {
+                                "x": 27.0,
+                                "y": -5.300000190734863,
+                                "z": 0.0
+                            },
+                            "offsetLeft": {
+                                "x": -30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetRightSwitch": {
+                                "x": 30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetLeftSwitch": {
+                                "x": -30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "previewEnabled": false,
+                            "previewSwitchT01": 0.0,
+                            "previewStartIsLight": false,
+                            "previewTargetIsLight": true,
+                            "previewFacingRight": true,
+                            "previewUseSwitchClip": true,
+                            "previewForceVisible": true
                         }
                     }
                 ]
@@ -24223,17 +24314,21 @@
             },
             "light": {
                 "active": true,
-                "intensity": 0.25,
-                "radius": 129.0,
-                "affectBloom": false,
+                "intensity": 0.15000000596046449,
+                "radius": 70.0,
+                "affectBloom": true,
                 "useTransform": true,
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 0.9058823585510254,
+                    "y": 0.7921568751335144,
+                    "z": 0.7921568751335144
                 },
                 "position": {
                     "x": 0.0,
@@ -24250,6 +24345,37 @@
                 "t": 0.28333336114883425,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -24303,7 +24429,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -24317,14 +24443,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -24386,37 +24512,6 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerIdle",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
@@ -24468,49 +24563,49 @@
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.0625,
+                                        "t": 0.25,
                                         "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.125,
+                                        "t": 0.5,
                                         "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.1875,
+                                        "t": 0.75,
                                         "v": 3.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.25,
+                                        "t": 1.0,
                                         "v": 4.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.3125,
+                                        "t": 1.25,
                                         "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.375,
+                                        "t": 1.5,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.4375,
+                                        "t": 1.75,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
@@ -24541,49 +24636,49 @@
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.0625,
+                                        "t": 0.25,
                                         "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.125,
+                                        "t": 0.5,
                                         "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.1875,
+                                        "t": 0.75,
                                         "v": 3.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.25,
+                                        "t": 1.0,
                                         "v": 4.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.3125,
+                                        "t": 1.25,
                                         "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.375,
+                                        "t": 1.5,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.4375,
+                                        "t": 1.75,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
@@ -24678,166 +24773,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerDeath",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\DeathAnimBook\\Light Death spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.0625,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.125,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.1875,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.3125,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.375,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.4375,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerDeathNoBook",
-                        "wrap": 1,
-                        "textureAsset": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.0625,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.125,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.1875,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.3125,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.375,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.4375,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 7.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -27107,6 +27042,30 @@
                     }
                 ]
             },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -27477,6 +27436,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -28459,6 +28442,10 @@
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 0.7941176891326904,
                     "y": 1.0,
@@ -28664,6 +28651,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -28879,6 +28890,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -31906,12 +31941,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1496.294189453125,
+                    "x": 1501.1942138671876,
                     "y": -475.150390625,
                     "z": 51.0
                 },
                 "max": {
-                    "x": 1526.09423828125,
+                    "x": 1521.1942138671876,
                     "y": -454.7503662109375,
                     "z": 51.0
                 }
@@ -32094,44 +32129,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -32184,7 +32181,7 @@
                         ]
                     },
                     {
-                        "name": "slimeStunned",
+                        "name": "slimeWalk",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -32198,14 +32195,21 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32237,6 +32241,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32507,12 +32542,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 10.294239044189454,
+                    "x": 15.194263458251954,
                     "y": -472.150390625,
                     "z": 51.0
                 },
                 "max": {
-                    "x": 40.09428787231445,
+                    "x": 35.19426345825195,
                     "y": -451.7503662109375,
                     "z": 51.0
                 }
@@ -32695,6 +32730,44 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -32747,7 +32820,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -32761,21 +32834,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32807,37 +32873,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -33284,6 +33319,244 @@
                 "localScale": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "PlayerBookGlow",
+            "uuid": 11223344556677890112,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -154.26255798339845,
+                    "y": -164.2870330810547,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 273.8399963378906,
+                    "y": 44.5
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Icon.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.20441991090774537,
+                    "y": 0.20441991090774537,
+                    "z": 0.20441991090774537,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.550000011920929,
+                "radius": 31.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.8823529481887817,
+                    "y": 0.08650518953800202,
+                    "z": 0.08650518953800202
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 17142618762681968282,
+                "localPos": {
+                    "x": 0.23245151340961457,
+                    "y": -0.057221680879592898,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.9559999704360963,
+                    "y": 0.4449999928474426
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "SlimeLight",
+            "uuid": 17744916967257968047,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1507.4713134765626,
+                    "y": -465.7986145019531,
+                    "z": 0.7333488464355469
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.5,
+                "radius": 23.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.9852941036224365,
+                    "y": 0.5192113518714905,
+                    "z": 0.05312861502170563
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 7849124200209266035,
+                "localPos": {
+                    "x": 0.05703677609562874,
+                    "y": -0.08819936215877533,
+                    "z": -50.26665115356445
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": -0.01886792480945587,
+                    "y": 0.020283976569771768
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "SlimeLight",
+            "uuid": 17744916967257968048,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 21.4713134765625,
+                    "y": -462.7986145019531,
+                    "z": 0.7333488464355469
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.5,
+                "radius": 23.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.9852941036224365,
+                    "y": 0.5192113518714905,
+                    "z": 0.05312861502170563
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 11749515231721264001,
+                "localPos": {
+                    "x": 0.05703677609562874,
+                    "y": -0.08819936215877533,
+                    "z": -50.26665115356445
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": -0.01886792480945587,
+                    "y": 0.020283976569771768
                 },
                 "inheritColor": false,
                 "colorMul": {

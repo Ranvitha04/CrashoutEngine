@@ -19,6 +19,26 @@
                     "y": 1.0
                 }
             },
+            "light": {
+                "active": true,
+                "intensity": 1.0,
+                "radius": 200.0,
+                "affectBloom": true,
+                "useTransform": false,
+                "renderSelf": false,
+                "renderBehind": false,
+                "ignoreParentOccluders": true,
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "tilemap": {
                 "tileSize": 32,
                 "excludeOuterBoundary": true,
@@ -16481,10 +16501,14 @@
                 "intensity": 1.5,
                 "radius": 39.0,
                 "affectBloom": true,
-                "useTransform": false,
+                "useTransform": true,
                 "renderSelf": false,
                 "renderBehind": false,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 0.5607843399047852,
                     "y": 0.19607843458652497,
@@ -16539,7 +16563,7 @@
                     {
                         "x": -5,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -5,
@@ -16549,7 +16573,7 @@
                     {
                         "x": -4,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -4,
@@ -16564,7 +16588,7 @@
                     {
                         "x": -3,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -3,
@@ -16579,7 +16603,7 @@
                     {
                         "x": -2,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -2,
@@ -16594,7 +16618,7 @@
                     {
                         "x": -1,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -1,
@@ -16634,7 +16658,12 @@
                     {
                         "x": 1,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": -15,
+                        "asset": ""
                     },
                     {
                         "x": 1,
@@ -16654,7 +16683,7 @@
                     {
                         "x": 2,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 3,
@@ -16664,7 +16693,7 @@
                     {
                         "x": 3,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 4,
@@ -16679,7 +16708,7 @@
                     {
                         "x": 4,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 4,
@@ -16704,7 +16733,7 @@
                     {
                         "x": 5,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 5,
@@ -16729,7 +16758,7 @@
                     {
                         "x": 6,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 6,
@@ -16754,7 +16783,7 @@
                     {
                         "x": 7,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 7,
@@ -16784,7 +16813,7 @@
                     {
                         "x": 8,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 8,
@@ -16809,7 +16838,7 @@
                     {
                         "x": 9,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 9,
@@ -16844,7 +16873,7 @@
                     {
                         "x": 10,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 10,
@@ -16869,7 +16898,7 @@
                     {
                         "x": 11,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 11,
@@ -16884,7 +16913,7 @@
                     {
                         "x": 12,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 12,
@@ -16904,7 +16933,7 @@
                     {
                         "x": 13,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 13,
@@ -16914,7 +16943,7 @@
                     {
                         "x": 13,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 13,
@@ -16934,7 +16963,7 @@
                     {
                         "x": 14,
                         "y": -25,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 14,
@@ -16944,7 +16973,7 @@
                     {
                         "x": 14,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 14,
@@ -16963,18 +16992,13 @@
                     },
                     {
                         "x": 15,
-                        "y": -24,
-                        "asset": "tilemaps/Lava_Platform"
-                    },
-                    {
-                        "x": 15,
                         "y": -17,
                         "asset": ""
                     },
                     {
                         "x": 15,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 15,
@@ -16994,7 +17018,7 @@
                     {
                         "x": 16,
                         "y": -24,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 16,
@@ -17004,7 +17028,7 @@
                     {
                         "x": 16,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 16,
@@ -17014,7 +17038,7 @@
                     {
                         "x": 17,
                         "y": -24,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 17,
@@ -17024,7 +17048,7 @@
                     {
                         "x": 17,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 17,
@@ -17034,7 +17058,7 @@
                     {
                         "x": 18,
                         "y": -25,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 18,
@@ -17044,7 +17068,7 @@
                     {
                         "x": 18,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 18,
@@ -17054,12 +17078,12 @@
                     {
                         "x": 19,
                         "y": -25,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 19,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 19,
@@ -17104,7 +17128,7 @@
                     {
                         "x": 23,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 23,
@@ -17119,7 +17143,7 @@
                     {
                         "x": 24,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 24,
@@ -17134,7 +17158,7 @@
                     {
                         "x": 25,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 26,
@@ -17144,7 +17168,7 @@
                     {
                         "x": 26,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 27,
@@ -17154,12 +17178,12 @@
                     {
                         "x": 27,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 28,
                         "y": -23,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 28,
@@ -17169,12 +17193,12 @@
                     {
                         "x": 28,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 29,
                         "y": -23,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 29,
@@ -24747,6 +24771,7 @@
                             "dialogueCooldown": 1.0,
                             "isDialogueActive": false,
                             "facingRight": true,
+                            "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 87.5,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -24756,6 +24781,94 @@
                             "reloadOnDeath": false,
                             "reloadSceneName": "",
                             "gameOverSceneName": "Defeat"
+                        }
+                    },
+                    {
+                        "className": "PlayerBookGlowController",
+                        "fields": {
+                            "bookGlowEntityName": "PlayerBookGlow",
+                            "onlyGlowInLightMode": false,
+                            "followZ": false,
+                            "useAngledPath": false,
+                            "pathFirstPortion": 24.75,
+                            "pathAngleDeg": 0.0,
+                            "pathDistance": 50.900001525878909,
+                            "moveSpeed": 1.0,
+                            "useAlphaTransition": true,
+                            "alphaStart": 0.0,
+                            "alphaEnd": 1.0,
+                            "alphaSpeed": 0.4000000059604645,
+                            "forceShowStart": false,
+                            "forceShowEnd": false,
+                            "showOffsetGizmos": false,
+                            "useDragHandleEntities": false,
+                            "startHandleEntityName": "BookGlow_StartHandle",
+                            "endHandleEntityName": "BookGlow_EndHandle",
+                            "lineEntityName": "BookGlow_PathLine",
+                            "handleRadius": 14.0,
+                            "lineThickness": 4.0,
+                            "finalizeAndDisableHandles": false,
+                            "hideHandleEntitiesWhenDisabled": true,
+                            "snapStartToEnd": false,
+                            "snapEndToStart": false,
+                            "overrideStartEnd": true,
+                            "mirrorXForLeft": true,
+                            "lockEndToBookCenter": true,
+                            "useAirEndOffset": true,
+                            "startOffset": {
+                                "x": -1.7999687194824219,
+                                "y": -15.700160026550293,
+                                "z": 0.0
+                            },
+                            "endOffset": {
+                                "x": 33.70000076293945,
+                                "y": -12.199999809265137,
+                                "z": 0.0
+                            },
+                            "endOffsetAir": {
+                                "x": 31.299999237060548,
+                                "y": 5.800000190734863,
+                                "z": 0.0
+                            },
+                            "snapAirToGround": false,
+                            "snapGroundToAir": false,
+                            "offsetBehindRight": {
+                                "x": -30.0,
+                                "y": -5.0,
+                                "z": 0.0
+                            },
+                            "offsetBehindLeft": {
+                                "x": 30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetRight": {
+                                "x": 27.0,
+                                "y": -5.300000190734863,
+                                "z": 0.0
+                            },
+                            "offsetLeft": {
+                                "x": -30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetRightSwitch": {
+                                "x": 30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetLeftSwitch": {
+                                "x": -30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "previewEnabled": false,
+                            "previewSwitchT01": 0.0,
+                            "previewStartIsLight": false,
+                            "previewTargetIsLight": true,
+                            "previewFacingRight": true,
+                            "previewUseSwitchClip": true,
+                            "previewForceVisible": true
                         }
                     }
                 ]
@@ -24806,17 +24919,21 @@
             },
             "light": {
                 "active": true,
-                "intensity": 0.25,
-                "radius": 129.0,
-                "affectBloom": false,
+                "intensity": 0.15000000596046449,
+                "radius": 70.0,
+                "affectBloom": true,
                 "useTransform": true,
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 0.9058823585510254,
+                    "y": 0.7921568751335144,
+                    "z": 0.7921568751335144
                 },
                 "position": {
                     "x": 0.0,
@@ -27274,6 +27391,30 @@
                     }
                 ]
             },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -27644,6 +27785,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -28626,6 +28791,10 @@
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 0.7941176891326904,
                     "y": 1.0,
@@ -28831,6 +29000,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -29046,6 +29239,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -34607,3503 +34824,462 @@
         },
         {
             "active": true,
-            "name": "Spike",
-            "uuid": 9706003502931886001,
+            "name": "Spike_TileMap",
+            "uuid": 1495962670491379335,
             "tag": {
-                "tagMask": 4
+                "tagMask": 6
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
                     "x": 1.0,
                     "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
                 }
             },
-            "script": {
-                "scripts": [
+            "tilemap": {
+                "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
+                "activeAsset": "tilemaps/Spike",
+                "tileAssetNames": [
+                    "Spike"
+                ],
+                "gridData": [
                     {
-                        "className": "PlayerController"
+                        "x": -8,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -8,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -7,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -7,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -6,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -6,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -5,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -4,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -4,
+                        "y": 6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -3,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -3,
+                        "y": 6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -2,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -2,
+                        "y": 6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -1,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -1,
+                        "y": 6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 0,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 0,
+                        "y": 5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 1,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 1,
+                        "y": 5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 4,
+                        "y": -22,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 4,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 5,
+                        "y": -23,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 5,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 6,
+                        "y": -23,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 6,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 7,
+                        "y": -23,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 7,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 8,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 8,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 9,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 9,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 10,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 10,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 12,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 12,
+                        "y": 1,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 13,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 13,
+                        "y": 1,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 14,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 14,
+                        "y": 0,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 15,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 15,
+                        "y": 0,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 16,
+                        "y": 0,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 17,
+                        "y": 2,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 18,
+                        "y": 5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 19,
+                        "y": 5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 20,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 21,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 21,
+                        "y": -8,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 22,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 23,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 24,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 25,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 26,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 27,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 27,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 28,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 29,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 30,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 31,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 31,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 32,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 32,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 33,
+                        "y": -18,
+                        "asset": ""
+                    },
+                    {
+                        "x": 33,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 33,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 34,
+                        "y": -18,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 34,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 39,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 40,
+                        "y": -19,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 40,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 41,
+                        "y": -16,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 41,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 42,
+                        "y": -16,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 42,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 43,
+                        "y": 5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 47,
+                        "y": -19,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 48,
+                        "y": -19,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 49,
+                        "y": -19,
+                        "asset": "tilemaps/Spike"
                     }
                 ]
-            },
-            "parent": {
-                "parentUUID": 11123732819525830530,
-                "localPos": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 2877086568972289919,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -8.744033813476563,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11123732819525830530,
-                "localPos": {
-                    "x": -8.744033813476563,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer",
-            "uuid": 11123732819525830530,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 8839894191328305890,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_06.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11123732819525830530,
-                "localPos": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 2570913048716577392,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -125.33296203613281,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11123732819525830530,
-                "localPos": {
-                    "x": -125.33296203613281,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 9794172222349934445,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -85.72184753417969,
-                    "y": 213.38438415527345,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_03.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11123732819525830530,
-                "localPos": {
-                    "x": -85.72184753417969,
-                    "y": 213.38438415527345,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer2",
-            "uuid": 6047897824774454637,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 130.64137268066407,
-                    "y": -31.534156799316408,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 2367610828063190053,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 25.29735565185547,
-                    "y": 179.73370361328126,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 6047897824774454637,
-                "localPos": {
-                    "x": -105.3440170288086,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 14860852604422999215,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 5.30841064453125,
-                    "y": 179.73370361328126,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 6047897824774454637,
-                "localPos": {
-                    "x": -125.33296203613281,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer",
-            "uuid": 2836637113692160768,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 253.61959838867188,
-                    "y": 35.733680725097659,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 1332177657121756072,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 205.3372802734375,
-                    "y": 247.00152587890626,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 2836637113692160768,
-                "localPos": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 9555289515780603929,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 248.4225616455078,
-                    "y": 247.00152587890626,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 2836637113692160768,
-                "localPos": {
-                    "x": -5.1970367431640629,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 13375798724836085125,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 190.9997100830078,
-                    "y": 248.10275268554688,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_06.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 2836637113692160768,
-                "localPos": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 8034423567428319079,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 128.28663635253907,
-                    "y": 247.00152587890626,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 2836637113692160768,
-                "localPos": {
-                    "x": -125.33296203613281,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 9573824729539124225,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 167.92953491210938,
-                    "y": 247.00152587890626,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_03.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 2836637113692160768,
-                "localPos": {
-                    "x": -85.6900634765625,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 14849229374469713570,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 267.1141662597656,
-                    "y": 247.00152587890626,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 2836637113692160768,
-                "localPos": {
-                    "x": 13.49456787109375,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer2",
-            "uuid": 11933117594722857839,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 421.581298828125,
-                    "y": -57.183677673339847,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 5436508812035417620,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 316.2372741699219,
-                    "y": 154.08416748046876,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11933117594722857839,
-                "localPos": {
-                    "x": -105.3440170288086,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 16233178366529143325,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 296.24835205078127,
-                    "y": 154.08416748046876,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11933117594722857839,
-                "localPos": {
-                    "x": -125.33296203613281,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer2",
-            "uuid": 11320884278430674029,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 526.2166748046875,
-                    "y": -158.27212524414063,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 14654675553854134146,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 420.8726501464844,
-                    "y": 52.9957275390625,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11320884278430674029,
-                "localPos": {
-                    "x": -105.3440170288086,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 12752958957012395611,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 400.88372802734377,
-                    "y": 52.9957275390625,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11320884278430674029,
-                "localPos": {
-                    "x": -125.33296203613281,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer",
-            "uuid": 10838045705373364488,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 539.137451171875,
-                    "y": -188.87582397460938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 3152194672676297756,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 476.517578125,
-                    "y": 23.493240356445314,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_06.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 10838045705373364488,
-                "localPos": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 12123421117299924482,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 490.8551330566406,
-                    "y": 22.39202880859375,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PlayerController"
-                    }
-                ]
-            },
-            "parent": {
-                "parentUUID": 10838045705373364488,
-                "localPos": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 16295209058198524815,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 530.3934326171875,
-                    "y": 22.39202880859375,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 10838045705373364488,
-                "localPos": {
-                    "x": -8.744033813476563,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer2",
-            "uuid": 9826683100681439741,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 674.30224609375,
-                    "y": -129.00970458984376,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 9653972180967076071,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 552.9968872070313,
-                    "y": 82.25814819335938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 9826683100681439741,
-                "localPos": {
-                    "x": -121.30535888671875,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer2",
-            "uuid": 17782326783580921094,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 716.1300048828125,
-                    "y": -31.663291931152345,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 8178683967916592291,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 610.7860107421875,
-                    "y": 179.60455322265626,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 17782326783580921094,
-                "localPos": {
-                    "x": -105.3440170288086,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 1070121208035397940,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 590.7970581054688,
-                    "y": 179.60455322265626,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 17782326783580921094,
-                "localPos": {
-                    "x": -125.33296203613281,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer2",
-            "uuid": 11430732391830441476,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 763.357666015625,
-                    "y": 33.0067138671875,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 16265053074006519859,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 642.0523071289063,
-                    "y": 244.27456665039063,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11430732391830441476,
-                "localPos": {
-                    "x": -121.30535888671875,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer",
-            "uuid": 11975103594784392380,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1339.522216796875,
-                    "y": -62.377052307128909,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 12016634872829593581,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1291.2398681640626,
-                    "y": 148.89080810546876,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PlayerController"
-                    }
-                ]
-            },
-            "parent": {
-                "parentUUID": 11975103594784392380,
-                "localPos": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 11264242466846148716,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1330.7781982421876,
-                    "y": 148.89080810546876,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11975103594784392380,
-                "localPos": {
-                    "x": -8.744033813476563,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 9678901669681646723,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1276.90234375,
-                    "y": 149.99200439453126,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_06.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11975103594784392380,
-                "localPos": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer2",
-            "uuid": 12297036691015380058,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1504.5811767578126,
-                    "y": -30.167724609375,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 5847388195993888265,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1383.27587890625,
-                    "y": 181.10012817382813,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 12297036691015380058,
-                "localPos": {
-                    "x": -121.30535888671875,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 6242314505787278288,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 5.30841064453125,
-                    "y": -264.40692138671877,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 845689253662023578,
-                "localPos": {
-                    "x": 5.30841064453125,
-                    "y": 149.5889892578125,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer",
-            "uuid": 845689253662023578,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": -413.99591064453127,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 5386968238135320447,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -48.282318115234378,
-                    "y": -202.72805786132813,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PlayerController"
-                    }
-                ]
-            },
-            "parent": {
-                "parentUUID": 845689253662023578,
-                "localPos": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 16087755835000822918,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -8.744033813476563,
-                    "y": -202.72805786132813,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 845689253662023578,
-                "localPos": {
-                    "x": -8.744033813476563,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 4513913104934254526,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -62.61988830566406,
-                    "y": -201.62684631347657,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_06.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 845689253662023578,
-                "localPos": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 11078604991251765677,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -125.33296203613281,
-                    "y": -202.72805786132813,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 845689253662023578,
-                "localPos": {
-                    "x": -125.33296203613281,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 13726094357701672,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -85.72184753417969,
-                    "y": -200.6115264892578,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_03.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 845689253662023578,
-                "localPos": {
-                    "x": -85.72184753417969,
-                    "y": 213.38438415527345,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer",
-            "uuid": 15280797739322253573,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -133.6320037841797,
-                    "y": -413.99591064453127,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 562818339643744418,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -181.91432189941407,
-                    "y": -202.72805786132813,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PlayerController"
-                    }
-                ]
-            },
-            "parent": {
-                "parentUUID": 15280797739322253573,
-                "localPos": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 282626786972565277,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -142.37603759765626,
-                    "y": -202.72805786132813,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 15280797739322253573,
-                "localPos": {
-                    "x": -8.744033813476563,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 11255090243368406592,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -196.25189208984376,
-                    "y": -201.62684631347657,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_06.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 15280797739322253573,
-                "localPos": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 15077798722809429729,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -258.9649658203125,
-                    "y": -202.72805786132813,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 15280797739322253573,
-                "localPos": {
-                    "x": -125.33296203613281,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 3110846937668335775,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -219.35385131835938,
-                    "y": -200.6115264892578,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_03.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 15280797739322253573,
-                "localPos": {
-                    "x": -85.72184753417969,
-                    "y": 213.38438415527345,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Tile (x:1,y:-16)",
-            "uuid": 4037298081918223633,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 48.0,
-                    "y": -496.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 32.0,
-                    "y": 32.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet\\lava platform\\lava platform_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "light": {
-                "active": true,
-                "intensity": 1.5,
-                "radius": 39.0,
-                "affectBloom": true,
-                "useTransform": true,
-                "renderSelf": true,
-                "renderBehind": false,
-                "ignoreParentOccluders": true,
-                "color": {
-                    "x": 0.5607843399047852,
-                    "y": 0.19607843458652497,
-                    "z": 0.11372549086809159
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 13809352314349269047,
-                "localPos": {
-                    "x": 48.0,
-                    "y": -496.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 32.0,
-                    "y": 32.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             },
             "layer": {
                 "layerName": "Default",
-                "z": 2
+                "z": 1
             }
         },
         {
             "active": true,
-            "name": "SpikeContainer",
-            "uuid": 13294452289752775966,
+            "name": "SpikeGround_TileMap",
+            "uuid": 2731264537872538826,
             "tag": {
-                "tagMask": 0
+                "tagMask": 6
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 539.137451171875,
-                    "y": -478.78106689453127,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
@@ -38111,1161 +35287,221 @@
                     "y": 1.0
                 }
             },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 13163684400175248095,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 476.517578125,
-                    "y": -266.4119873046875,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_06.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 13294452289752775966,
-                "localPos": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 3484114250597228926,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 490.8551330566406,
-                    "y": -267.5132141113281,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
+            "tilemap": {
+                "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
+                "activeAsset": "tilemaps/Spike_Ground",
+                "tileAssetNames": [
+                    "Spike_Ground"
+                ],
+                "gridData": [
                     {
-                        "className": "PlayerController"
+                        "x": -5,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": -4,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": -3,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": -2,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": -1,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 1,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 2,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 3,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 4,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 5,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 6,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 7,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 8,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 9,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 10,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 11,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 12,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 13,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 13,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 14,
+                        "y": -25,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 14,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 15,
+                        "y": -24,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 15,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 16,
+                        "y": -24,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 16,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 17,
+                        "y": -24,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 17,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 18,
+                        "y": -25,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 18,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 19,
+                        "y": -25,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 19,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 22,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 23,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 24,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 25,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 26,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 27,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 28,
+                        "y": -23,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 28,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 29,
+                        "y": -23,
+                        "asset": "tilemaps/Spike_Ground"
                     }
                 ]
             },
-            "parent": {
-                "parentUUID": 13294452289752775966,
-                "localPos": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
             "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 4399907256001006110,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 530.3934326171875,
-                    "y": -267.5132141113281,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 13294452289752775966,
-                "localPos": {
-                    "x": -8.744033813476563,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 5880120687645730779,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 675.8139038085938,
-                    "y": -231.92495727539063,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 5288036060104402432,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 710.0885009765625,
-                    "y": -200.50660705566407,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer",
-            "uuid": 7136160837864767250,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1109.5245361328126,
-                    "y": -415.9272155761719,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 14256779862051764619,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1061.2421875,
-                    "y": -204.65936279296876,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PlayerController"
-                    }
-                ]
-            },
-            "parent": {
-                "parentUUID": 7136160837864767250,
-                "localPos": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 14614441533701241485,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1100.780517578125,
-                    "y": -204.65936279296876,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 7136160837864767250,
-                "localPos": {
-                    "x": -8.744033813476563,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 7155378681083030619,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1046.9046630859376,
-                    "y": -203.5581512451172,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_06.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 7136160837864767250,
-                "localPos": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer",
-            "uuid": 15345039285093690161,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1081.0125732421876,
-                    "y": -733.3621215820313,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 16447989361478958557,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1032.730224609375,
-                    "y": -522.09423828125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PlayerController"
-                    }
-                ]
-            },
-            "parent": {
-                "parentUUID": 15345039285093690161,
-                "localPos": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 16641308398399377129,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1072.2685546875,
-                    "y": -522.09423828125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 15345039285093690161,
-                "localPos": {
-                    "x": -8.744033813476563,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 9915676104344409575,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1018.3927001953125,
-                    "y": -520.9930419921875,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_06.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 15345039285093690161,
-                "localPos": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "SpikeContainer",
-            "uuid": 6368270355651136762,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 985.972412109375,
-                    "y": -733.3621215820313,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 18288049285718405150,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 937.6900634765625,
-                    "y": -522.09423828125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_04.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "PlayerController"
-                    }
-                ]
-            },
-            "parent": {
-                "parentUUID": 6368270355651136762,
-                "localPos": {
-                    "x": -48.282318115234378,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 11160249621628342820,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 977.2283935546875,
-                    "y": -522.09423828125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_00.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 6368270355651136762,
-                "localPos": {
-                    "x": -8.744033813476563,
-                    "y": 211.26785278320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "Spike",
-            "uuid": 7190590819715093927,
-            "tag": {
-                "tagMask": 4
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 923.3525390625,
-                    "y": -520.9930419921875,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 40.0,
-                    "y": 25.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "spritesheet/spikes/spikes_06.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 6368270355651136762,
-                "localPos": {
-                    "x": -62.61988830566406,
-                    "y": 212.3690643310547,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 40.0,
-                    "y": 25.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 100
+                "layerName": "Default",
+                "z": 1
             }
         }
     ],
@@ -39310,36 +35546,8 @@
         }
     },
     "VisualScripting": {
-        "nextNodeId": 4,
-        "nodes": [
-            {
-                "id": 1,
-                "type": 0,
-                "title": "Start",
-                "x": 100.0,
-                "y": 100.0,
-                "w": 140.0,
-                "h": 70.0
-            },
-            {
-                "id": 2,
-                "type": 4,
-                "title": "Branch",
-                "x": 614.0,
-                "y": 333.0,
-                "w": 180.0,
-                "h": 100.0
-            },
-            {
-                "id": 3,
-                "type": 5,
-                "title": "ScriptCall",
-                "x": 364.0,
-                "y": 102.0,
-                "w": 140.0,
-                "h": 70.0
-            }
-        ],
+        "nextNodeId": 1,
+        "nodes": [],
         "links": []
     }
 }

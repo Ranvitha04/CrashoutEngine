@@ -1001,7 +1001,7 @@
                         "fields": {
                             "StartBtn": 12,
                             "SettingsBtn": 4,
-                            "CloseBtn": 0,
+                            "CloseBtn": 11,
                             "QuitBtn": 2,
                             "QuitCheckPanel": 6,
                             "YesBtn": 9,
