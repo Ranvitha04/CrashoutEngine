@@ -303,6 +303,14 @@
             "path": "backgrounds/bg2 base.png"
         },
         {
+            "name": "Light Death spritesheet",
+            "path": "Character/DeathAnimBook/Light Death spritesheet.png"
+        },
+        {
+            "name": "Normal Death spritesheet_04",
+            "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_04.png"
+        },
+        {
             "name": "bg 1 pillar 2",
             "path": "backgrounds/bg 1 pillar 2.png"
         },
@@ -551,18 +559,6 @@
             "path": "Character/New Artstyle/Fall spritesheet.png"
         },
         {
-            "name": "Rock_13",
-            "path": "spritesheet/Rock/Rock_13.png"
-        },
-        {
-            "name": "Darker Platform_05",
-            "path": "spritesheet/Darker Platform/Darker Platform_05.png"
-        },
-        {
-            "name": "Monsters(4)",
-            "path": "Monsters/Monsters(4).png"
-        },
-        {
             "name": "6",
             "path": "Character/New Artstyle/Run/6.png"
         },
@@ -623,6 +619,14 @@
             "path": "Monsters/Monsters(3).png"
         },
         {
+            "name": "Cutscene_2",
+            "path": "Cutscenes/Cutscene_2.png"
+        },
+        {
+            "name": "Normal Death spritesheet",
+            "path": "Character/NormalDeathAnim/Normal Death spritesheet.png"
+        },
+        {
             "name": "lava platform_36",
             "path": "spritesheet/lava platform/lava platform_36.png"
         },
@@ -633,10 +637,6 @@
         {
             "name": "Cutscene_1",
             "path": "Cutscenes/Cutscene_1.png"
-        },
-        {
-            "name": "Cutscene_2",
-            "path": "Cutscenes/Cutscene_2.png"
         },
         {
             "name": "Cutscene_3",
@@ -661,6 +661,18 @@
         {
             "name": "Monsters(1)",
             "path": "Monsters/Monsters(1).png"
+        },
+        {
+            "name": "Rock_13",
+            "path": "spritesheet/Rock/Rock_13.png"
+        },
+        {
+            "name": "Darker Platform_05",
+            "path": "spritesheet/Darker Platform/Darker Platform_05.png"
+        },
+        {
+            "name": "Monsters(4)",
+            "path": "Monsters/Monsters(4).png"
         },
         {
             "name": "Monsters(5)",
@@ -1359,6 +1371,46 @@
             "path": "spritesheet/lava platform/lava platform_43.png"
         },
         {
+            "name": "Normal Death spritesheet_00",
+            "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_00.png"
+        },
+        {
+            "name": "Normal Death spritesheet_01",
+            "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_01.png"
+        },
+        {
+            "name": "pause quit text",
+            "path": "UI/pause quit text.png"
+        },
+        {
+            "name": "Normal Death spritesheet_02",
+            "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_02.png"
+        },
+        {
+            "name": "Normal Death spritesheet_03",
+            "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_03.png"
+        },
+        {
+            "name": "Normal Death spritesheet_05",
+            "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_05.png"
+        },
+        {
+            "name": "team logo",
+            "path": "UI/team logo.png"
+        },
+        {
+            "name": "Normal Death spritesheet_06",
+            "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_06.png"
+        },
+        {
+            "name": "Normal Death spritesheet_07",
+            "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_07.png"
+        },
+        {
+            "name": "Normal Death spritesheet_08",
+            "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_08.png"
+        },
+        {
             "name": "Platform_00",
             "path": "spritesheet/Platform/Platform_00.png"
         },
@@ -1743,10 +1795,6 @@
             "path": "UI/mana UI single.png"
         },
         {
-            "name": "pause quit text",
-            "path": "UI/pause quit text.png"
-        },
-        {
             "name": "pause settings text",
             "path": "UI/pause settings text.png"
         },
@@ -1777,10 +1825,6 @@
         {
             "name": "updated settings",
             "path": "UI/settings/updated settings.png"
-        },
-        {
-            "name": "team logo",
-            "path": "UI/team logo.png"
         },
         {
             "name": "Title",
@@ -2079,6 +2123,10 @@
         {
             "name": "graph_12",
             "path": "graph_12.vsgraph"
+        },
+        {
+            "name": "graph_8",
+            "path": "graph_8.vsgraph"
         },
         {
             "name": "graph_13",
