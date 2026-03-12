@@ -74,9 +74,12 @@ namespace CrashoutsEngine
 
         public bool alive = true;
         private bool isDying = false;
-        [SerializeField] private float deathDelay = 1.0f;
         private float deathTimer = 0.0f;
-        [SerializeField] private string deathAnimName = "playerDeath";
+        [SerializeField] private string normalDeathAnimName = "playerDeathNoBook";
+        [SerializeField] private string changedMassDeathAnimName = "playerDeath";
+
+        [SerializeField] private float normalDeathDelay = 2.0f;
+        [SerializeField] private float changedMassDeathDelay = 2.0f;
         public bool isPaused = false; 
         private static CEVec3 respawnPos;
         private static float checkpointEnergy = 100.0f;
@@ -538,14 +541,15 @@ namespace CrashoutsEngine
 
             alive = false;
             isDying = true;
-            deathTimer = deathDelay;
-
             rb.LinearVelocity = new CEVec3(0, 0, 0);
+
+            string deathClip = isLight ? normalDeathAnimName : changedMassDeathAnimName;
+            deathTimer = isLight ? changedMassDeathDelay : normalDeathDelay;
 
             if (anim != null)
             {
-                anim.Play(deathAnimName, true);
-                currentAnimState = deathAnimName;
+                anim.Play(deathClip, true);
+                currentAnimState = deathClip;
             }
         }
         //Testing VSnode

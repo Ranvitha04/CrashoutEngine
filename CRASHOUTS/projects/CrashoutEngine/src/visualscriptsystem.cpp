@@ -662,7 +662,7 @@ void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& c
 
             for (const auto& link : graph.links)
             {
-                if (link.fromNode == current->id)
+                if (link.toNode == current->id && link.toPin == 1)
                 {
                     std::cout << "[VisualScript] Start outgoing link: fromNode=" << link.fromNode
                         << " fromPin=" << link.fromPin

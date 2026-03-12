@@ -315,7 +315,7 @@ namespace UI { // --------------------------------------------------------------
 		}
 	}
      
-	static const char* ToString(VSNodeType type)
+	[[maybe_unused]] static const char* ToString(VSNodeType type)
 	{
 		switch (type) {
 		case VSNodeType::Start:      return "Start";
@@ -328,7 +328,7 @@ namespace UI { // --------------------------------------------------------------
 		}
 	}
 
-	static VSNodeType VSNodeTypeFromString(const std::string& s)
+	[[maybe_unused]] static VSNodeType VSNodeTypeFromString(const std::string& s)
 	{
 		if (s == "Start")      return VSNodeType::Start;
 		if (s == "Move")       return VSNodeType::Move;

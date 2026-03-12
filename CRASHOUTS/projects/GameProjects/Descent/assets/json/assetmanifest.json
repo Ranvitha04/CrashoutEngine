@@ -307,6 +307,10 @@
             "path": "Character/DeathAnimBook/Light Death spritesheet.png"
         },
         {
+            "name": "spikes updated",
+            "path": "Tileset/spikes updated.png"
+        },
+        {
             "name": "Normal Death spritesheet_04",
             "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_04.png"
         },
