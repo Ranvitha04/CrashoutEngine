@@ -1796,10 +1796,19 @@ namespace UI {
 				return ImVec2(minP.x + node.size.x, minP.y + node.size.y);
 			};
 
-		auto getInputPinPos = [&](const VSNode& node)
+		auto getInputPinPos = [&](const VSNode& node, int pinIndex)
 			{
 				ImVec2 minP = getNodeRectMin(node);
-				return ImVec2(minP.x, minP.y + node.size.y * 0.5f);
+
+				int inputCount = (int)node.inputs.size();
+				if (inputCount <= 0)
+					return ImVec2(minP.x, minP.y + node.size.y * 0.5f);
+
+				if (inputCount == 1)
+					return ImVec2(minP.x, minP.y + node.size.y * 0.5f);
+
+				float spacing = node.size.y / float(inputCount + 1);
+				return ImVec2(minP.x, minP.y + spacing * float(pinIndex + 1));
 			};
 
 		auto getOutputPinPos = [&](const VSNode& node, int pinIndex)
@@ -1808,13 +1817,21 @@ namespace UI {
 
 				if (node.type == VSNodeType::Branch)
 				{
-					if (pinIndex == 1)
+					if (pinIndex == 0)
 						return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.30f);
-					if (pinIndex == 2)
+					if (pinIndex == 1)
 						return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.70f);
 				}
 
-				return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.5f);
+				int outputCount = (int)node.outputs.size();
+				if (outputCount <= 0)
+					return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.5f);
+
+				if (outputCount == 1)
+					return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.5f);
+
+				float spacing = node.size.y / float(outputCount + 1);
+				return ImVec2(minP.x + node.size.x, minP.y + spacing * float(pinIndex + 1));
 			};
 
 		auto findNodeById = [&](int id) -> VSNode*
@@ -1838,18 +1855,228 @@ namespace UI {
 			{
 				switch (type)
 				{
-				case VSNodeType::Start:      return "Start";
-				case VSNodeType::Move:       return "Move";
-				case VSNodeType::Attack:     return "Attack";
-				case VSNodeType::Wait:       return "Wait";
-				case VSNodeType::Branch:     return "Branch";
-				case VSNodeType::ScriptCall: return "ScriptCall";
+				case VSNodeType::Start:        return "Start";
+				case VSNodeType::Move:         return "Move";
+				case VSNodeType::Attack:       return "Attack";
+				case VSNodeType::Wait:         return "Wait";
+				case VSNodeType::Branch:       return "Branch";
+				case VSNodeType::ScriptCall:   return "ScriptCall";
 				case VSNodeType::BoolConstant: return "BoolConstant";
-				case VSNodeType::GetVariable:  return "GetVariable";
-				case VSNodeType::SetVariable:  return "SetVariable";
 				case VSNodeType::IntConstant:  return "IntConstant";
 				case VSNodeType::FloatConstant:return "FloatConstant";
-				default:                     return "Unknown";
+				case VSNodeType::GetVariable:  return "GetVariable";
+				case VSNodeType::SetVariable:  return "SetVariable";
+				case VSNodeType::Add:          return "Add";
+				case VSNodeType::Subtract:     return "Subtract";
+				case VSNodeType::Multiply:     return "Multiply";
+				case VSNodeType::Divide:       return "Divide";
+				case VSNodeType::Equal:        return "Equal";
+				case VSNodeType::NotEqual:     return "NotEqual";
+				case VSNodeType::GreaterThan:  return "GreaterThan";
+				case VSNodeType::LessThan:     return "LessThan";
+				case VSNodeType::GreaterEqual: return "GreaterEqual";
+				case VSNodeType::LessEqual:    return "LessEqual";
+				case VSNodeType::And:          return "And";
+				case VSNodeType::Or:           return "Or";
+				case VSNodeType::Not:          return "Not";
+				default:                       return "Unknown";
+				}
+			};
+
+		auto rebuildNodePins = [&](VSNode& node)
+			{
+				node.inputs.clear();
+				node.outputs.clear();
+
+				switch (node.type)
+				{
+				case VSNodeType::Start:
+				case VSNodeType::Move:
+				case VSNodeType::Attack:
+				case VSNodeType::Wait:
+				case VSNodeType::ScriptCall:
+				case VSNodeType::GetVariable:
+				case VSNodeType::SetVariable:
+				{
+					VSPin outPin;
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Next";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Exec;
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(140.0f, 70.0f);
+					break;
+				}
+
+				case VSNodeType::BoolConstant:
+				{
+					VSPin outPin;
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Value";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Bool;
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 90.0f);
+					break;
+				}
+
+				case VSNodeType::IntConstant:
+				{
+					VSPin outPin;
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Value";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Int;
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 90.0f);
+					break;
+				}
+
+				case VSNodeType::FloatConstant:
+				{
+					VSPin outPin;
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Value";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Float;
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 90.0f);
+					break;
+				}
+
+				case VSNodeType::Branch:
+				{
+					VSPin inPin;
+					inPin.id = graph.nextPinId++;
+					inPin.name = "Condition";
+					inPin.kind = VSPinKind::Input;
+					inPin.type = VSDataType::Bool;
+					node.inputs.push_back(inPin);
+
+					VSPin truePin;
+					truePin.id = graph.nextPinId++;
+					truePin.name = "True";
+					truePin.kind = VSPinKind::Output;
+					truePin.type = VSDataType::Exec;
+					node.outputs.push_back(truePin);
+
+					VSPin falsePin;
+					falsePin.id = graph.nextPinId++;
+					falsePin.name = "False";
+					falsePin.kind = VSPinKind::Output;
+					falsePin.type = VSDataType::Exec;
+					node.outputs.push_back(falsePin);
+
+					node.size = ImVec2(180.0f, 100.0f);
+					break;
+				}
+
+				case VSNodeType::Add:
+				case VSNodeType::Subtract:
+				case VSNodeType::Multiply:
+				case VSNodeType::Divide:
+				{
+					VSPin inA, inB, outPin;
+					inA.id = graph.nextPinId++;
+					inA.name = "A";
+					inA.kind = VSPinKind::Input;
+					inA.type = VSDataType::Float;
+
+					inB.id = graph.nextPinId++;
+					inB.name = "B";
+					inB.kind = VSPinKind::Input;
+					inB.type = VSDataType::Float;
+
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Result";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Float;
+
+					node.inputs.push_back(inA);
+					node.inputs.push_back(inB);
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 100.0f);
+					break;
+				}
+
+				case VSNodeType::Equal:
+				case VSNodeType::NotEqual:
+				case VSNodeType::GreaterThan:
+				case VSNodeType::LessThan:
+				case VSNodeType::GreaterEqual:
+				case VSNodeType::LessEqual:
+				{
+					VSPin inA, inB, outPin;
+					inA.id = graph.nextPinId++;
+					inA.name = "A";
+					inA.kind = VSPinKind::Input;
+					inA.type = VSDataType::Float;
+
+					inB.id = graph.nextPinId++;
+					inB.name = "B";
+					inB.kind = VSPinKind::Input;
+					inB.type = VSDataType::Float;
+
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Result";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Bool;
+
+					node.inputs.push_back(inA);
+					node.inputs.push_back(inB);
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 100.0f);
+					break;
+				}
+
+				case VSNodeType::And:
+				case VSNodeType::Or:
+				{
+					VSPin inA, inB, outPin;
+					inA.id = graph.nextPinId++;
+					inA.name = "A";
+					inA.kind = VSPinKind::Input;
+					inA.type = VSDataType::Bool;
+
+					inB.id = graph.nextPinId++;
+					inB.name = "B";
+					inB.kind = VSPinKind::Input;
+					inB.type = VSDataType::Bool;
+
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Result";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Bool;
+
+					node.inputs.push_back(inA);
+					node.inputs.push_back(inB);
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 100.0f);
+					break;
+				}
+
+				case VSNodeType::Not:
+				{
+					VSPin inA, outPin;
+					inA.id = graph.nextPinId++;
+					inA.name = "A";
+					inA.kind = VSPinKind::Input;
+					inA.type = VSDataType::Bool;
+
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Result";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Bool;
+
+					node.inputs.push_back(inA);
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 90.0f);
+					break;
+				}
+
+				default:
+					node.size = ImVec2(140.0f, 70.0f);
+					break;
 				}
 			};
 
@@ -1891,50 +2118,47 @@ namespace UI {
 				popupMouse.y - canvasPos.y
 			);
 
-			auto addNode = [&](VSNodeType type, const char* title, ImVec2 size = ImVec2(140.0f, 70.0f))
+			auto addNode = [&](VSNodeType type, const char* title)
 				{
-					VSNode node;
+					VSNode node{};
 					node.id = nextNodeId++;
 					node.type = type;
 					node.title = title;
 					node.pos = localPos;
-					node.size = size;
 					node.waitTime = 1.0f;
-					if (type == VSNodeType::BoolConstant)
-					{
-						VSPin outPin;
-						outPin.id = graph.nextPinId++;
-						outPin.name = "Value";
-						outPin.kind = VSPinKind::Output;
-						outPin.type = VSDataType::Bool;
-						node.outputs.push_back(outPin);
 
-						node.size = ImVec2(180.0f, 90.0f);
-					}
-					else if (type == VSNodeType::Branch)
-					{
-						if (node.inputs.empty())
-						{
-							VSPin inPin;
-							inPin.id = graph.nextPinId++;
-							inPin.name = "Condition";
-							inPin.kind = VSPinKind::Input;
-							inPin.type = VSDataType::Bool;
-							node.inputs.push_back(inPin);
-						}
-					}
+					rebuildNodePins(node);
+
 					UndoManager::GetInstance().AddCommand(
 						std::make_unique<CreateVSNodeCommand>(graph, node)
-				);
+					);
+
+					selectedNode = node.id;
+					inspectorNodeId = node.id;
 				};
 
-			if (ImGui::MenuItem("Add Start Node"))       addNode(VSNodeType::Start, "Start");
-			if (ImGui::MenuItem("Add Move Node"))        addNode(VSNodeType::Move, "Move");
-			if (ImGui::MenuItem("Add Attack Node"))      addNode(VSNodeType::Attack, "Attack");
-			if (ImGui::MenuItem("Add Wait Node"))        addNode(VSNodeType::Wait, "Wait");
-			if (ImGui::MenuItem("Add Branch Node"))      addNode(VSNodeType::Branch, "Branch");
-			if (ImGui::MenuItem("Add Script Call Node")) addNode(VSNodeType::ScriptCall, "ScriptCall", ImVec2(180.0f, 90.0f));
-			if (ImGui::MenuItem("Add Bool Constant Node")) addNode(VSNodeType::BoolConstant, "Bool Constant", ImVec2(180.0f, 90.0f));
+			if (ImGui::MenuItem("Add Start Node"))          addNode(VSNodeType::Start, "Start");
+			if (ImGui::MenuItem("Add Move Node"))           addNode(VSNodeType::Move, "Move");
+			if (ImGui::MenuItem("Add Attack Node"))         addNode(VSNodeType::Attack, "Attack");
+			if (ImGui::MenuItem("Add Wait Node"))           addNode(VSNodeType::Wait, "Wait");
+			if (ImGui::MenuItem("Add Branch Node"))         addNode(VSNodeType::Branch, "Branch");
+			if (ImGui::MenuItem("Add Script Call Node"))    addNode(VSNodeType::ScriptCall, "ScriptCall");
+			if (ImGui::MenuItem("Add Bool Constant Node"))  addNode(VSNodeType::BoolConstant, "BoolConstant");
+			if (ImGui::MenuItem("Add Int Constant Node"))   addNode(VSNodeType::IntConstant, "IntConstant");
+			if (ImGui::MenuItem("Add Float Constant Node")) addNode(VSNodeType::FloatConstant, "FloatConstant");
+			if (ImGui::MenuItem("Add Add Node"))            addNode(VSNodeType::Add, "Add");
+			if (ImGui::MenuItem("Add Subtract Node"))       addNode(VSNodeType::Subtract, "Subtract");
+			if (ImGui::MenuItem("Add Multiply Node"))       addNode(VSNodeType::Multiply, "Multiply");
+			if (ImGui::MenuItem("Add Divide Node"))         addNode(VSNodeType::Divide, "Divide");
+			if (ImGui::MenuItem("Add Equal Node"))          addNode(VSNodeType::Equal, "Equal");
+			if (ImGui::MenuItem("Add Not Equal Node"))      addNode(VSNodeType::NotEqual, "NotEqual");
+			if (ImGui::MenuItem("Add Greater Than Node"))   addNode(VSNodeType::GreaterThan, "GreaterThan");
+			if (ImGui::MenuItem("Add Less Than Node"))      addNode(VSNodeType::LessThan, "LessThan");
+			if (ImGui::MenuItem("Add Greater Equal Node"))  addNode(VSNodeType::GreaterEqual, "GreaterEqual");
+			if (ImGui::MenuItem("Add Less Equal Node"))     addNode(VSNodeType::LessEqual, "LessEqual");
+			if (ImGui::MenuItem("Add And Node"))            addNode(VSNodeType::And, "And");
+			if (ImGui::MenuItem("Add Or Node"))             addNode(VSNodeType::Or, "Or");
+			if (ImGui::MenuItem("Add Not Node"))            addNode(VSNodeType::Not, "Not");
 
 			ImGui::EndPopup();
 		}
@@ -1986,39 +2210,19 @@ namespace UI {
 			bool pinHandled = false;
 			for (int i = (int)nodes.size() - 1; i >= 0; --i)
 			{
-				if (nodes[i].type == VSNodeType::Branch)
+				for (int outIndex = 0; outIndex < (int)nodes[i].outputs.size(); ++outIndex)
 				{
-					ImVec2 truePin = getOutputPinPos(nodes[i], 1);
-					ImVec2 falsePin = getOutputPinPos(nodes[i], 2);
-
-					if (isMouseNearPoint(truePin, 8.0f))
+					ImVec2 outPin = getOutputPinPos(nodes[i], outIndex);
+					if (isMouseNearPoint(outPin, 8.0f))
 					{
 						creatingLink = true;
 						linkStartNode = nodes[i].id;
-						linkStartPin = 1;
-						pinHandled = true;
-						break;
-					}
-
-					if (isMouseNearPoint(falsePin, 8.0f))
-					{
-						creatingLink = true;
-						linkStartNode = nodes[i].id;
-						linkStartPin = 2;
+						linkStartPin = outIndex;
 						pinHandled = true;
 						break;
 					}
 				}
-
-				ImVec2 outPin = getOutputPinPos(nodes[i], 0);
-				if (isMouseNearPoint(outPin, 8.0f))
-				{
-					creatingLink = true;
-					linkStartNode = nodes[i].id;
-					linkStartPin = 0;
-					pinHandled = true;
-					break;
-				}
+				if (pinHandled) break;
 			}
 
 			if (!pinHandled)
@@ -2061,36 +2265,43 @@ namespace UI {
 				{
 					if (node.id == linkStartNode) continue;
 
-					ImVec2 inPin = getInputPinPos(node);
-					if (isMouseNearPoint(inPin, 8.0f))
+					for (int pinIndex = 0; pinIndex < (int)node.inputs.size(); ++pinIndex)
 					{
-						bool alreadyExists = false;
-						for (const auto& link : links)
+						ImVec2 inPin = getInputPinPos(node, pinIndex);
+						if (isMouseNearPoint(inPin, 8.0f))
 						{
-							if (link.fromNode == linkStartNode &&
-								link.fromPin == linkStartPin &&
-								link.toNode == node.id)
+							bool alreadyExists = false;
+							for (const auto& link : links)
 							{
-								alreadyExists = true;
-								break;
+								if (link.fromNode == linkStartNode &&
+									link.fromPin == linkStartPin &&
+									link.toNode == node.id &&
+									link.toPin == pinIndex)
+								{
+									alreadyExists = true;
+									break;
+								}
 							}
-						}
 
-						if (!alreadyExists)
-						{
-							VSLink link;
-							link.fromNode = linkStartNode;
-							link.fromPin = linkStartPin;
-							link.toNode = node.id;
-							link.toPin = 0;
-							UndoManager::GetInstance().AddCommand(
-								std::make_unique<CreateVSLinkCommand>(graph, link)
-							);
+							if (!alreadyExists)
+							{
+								VSLink link;
+								link.fromNode = linkStartNode;
+								link.fromPin = linkStartPin;
+								link.toNode = node.id;
+								link.toPin = pinIndex;
+
+								UndoManager::GetInstance().AddCommand(
+									std::make_unique<CreateVSLinkCommand>(graph, link)
+								);
+							}
+							goto done_linking;
 						}
-						break;
 					}
 				}
 			}
+
+		done_linking:
 			if (draggingNode != -1)
 			{
 				VSNode* node = findNodeById(draggingNode);
@@ -2135,7 +2346,7 @@ namespace UI {
 			if (!from || !to) continue;
 
 			ImVec2 p1 = getOutputPinPos(*from, link.fromPin);
-			ImVec2 p2 = getInputPinPos(*to);
+			ImVec2 p2 = getInputPinPos(*to, link.toPin);
 
 			draw->AddBezierCubic(
 				p1,
@@ -2179,38 +2390,31 @@ namespace UI {
 
 			draw->AddRectFilled(minP, maxP, fillColor, 8.0f);
 			draw->AddRect(minP, maxP, IM_COL32(255, 255, 255, 180), 8.0f);
-			draw->AddText(ImVec2(minP.x + 16.0f, minP.y + 24.0f), IM_COL32(255, 255, 255, 255), node.title.c_str());
+			draw->AddText(ImVec2(minP.x + 16.0f, minP.y + 20.0f), IM_COL32(255, 255, 255, 255), node.title.c_str());
+			draw->AddText(ImVec2(minP.x + 16.0f, minP.y + 40.0f), IM_COL32(200, 200, 220, 255), getTypeName(node.type));
 
-			ImVec2 inPin = getInputPinPos(node);
-			draw->AddCircleFilled(inPin, 6.0f, IM_COL32(180, 220, 255, 255));
-
-			if (node.type == VSNodeType::Branch)
+			for (int pinIndex = 0; pinIndex < (int)node.inputs.size(); ++pinIndex)
 			{
+				ImVec2 inPin = getInputPinPos(node, pinIndex);
+				draw->AddCircleFilled(inPin, 6.0f, IM_COL32(180, 220, 255, 255));
+
 				draw->AddText(
-					ImVec2(minP.x + 16.0f, minP.y + 44.0f),
-					IM_COL32(200, 255, 200, 255),
-					"Condition"
+					ImVec2(inPin.x + 10.0f, inPin.y - 8.0f),
+					IM_COL32(220, 220, 220, 255),
+					node.inputs[pinIndex].name.c_str()
 				);
-
-				ImVec2 truePin = getOutputPinPos(node, 1);
-				ImVec2 falsePin = getOutputPinPos(node, 2);
-
-				draw->AddCircleFilled(truePin, 6.0f, IM_COL32(120, 255, 120, 255));
-				draw->AddCircleFilled(falsePin, 6.0f, IM_COL32(255, 120, 120, 255));
-
-				draw->AddText(ImVec2(truePin.x - 42.0f, truePin.y - 8.0f), IM_COL32(220, 255, 220, 255), "True");
-				draw->AddText(ImVec2(falsePin.x - 45.0f, falsePin.y - 8.0f), IM_COL32(255, 220, 220, 255), "False");
 			}
-			else
-			{
-				draw->AddText(
-					ImVec2(minP.x + 16.0f, minP.y + 44.0f),
-					IM_COL32(200, 200, 220, 255),
-					getTypeName(node.type)
-				);
 
-				ImVec2 outPin = getOutputPinPos(node, 0);
+			for (int outIndex = 0; outIndex < (int)node.outputs.size(); ++outIndex)
+			{
+				ImVec2 outPin = getOutputPinPos(node, outIndex);
 				draw->AddCircleFilled(outPin, 6.0f, IM_COL32(255, 210, 100, 255));
+
+				draw->AddText(
+					ImVec2(outPin.x - 70.0f, outPin.y - 8.0f),
+					IM_COL32(220, 220, 220, 255),
+					node.outputs[outIndex].name.c_str()
+				);
 			}
 		}
 
@@ -2247,24 +2451,40 @@ namespace UI {
 				ImGui::Text("Node ID: %d", selected->id);
 
 				int nodeType = static_cast<int>(selected->type);
-				const char* typeNames[] = { "Start", "Move", "Attack", "Wait", "Branch", "ScriptCall" };
+				const char* typeNames[] = {
+					"Start",
+					"Move",
+					"Attack",
+					"Wait",
+					"Branch",
+					"ScriptCall",
+					"BoolConstant",
+					"IntConstant",
+					"FloatConstant",
+					"GetVariable",
+					"SetVariable",
+					"Add",
+					"Subtract",
+					"Multiply",
+					"Divide",
+					"Equal",
+					"NotEqual",
+					"GreaterThan",
+					"LessThan",
+					"GreaterEqual",
+					"LessEqual",
+					"And",
+					"Or",
+					"Not"
+				};
 
 				if (ImGui::Combo("Type", &nodeType, typeNames, IM_ARRAYSIZE(typeNames)))
 				{
 					selected->type = static_cast<VSNodeType>(nodeType);
+					rebuildNodePins(*selected);
+					selected->title = getTypeName(selected->type);
+					std::snprintf(nodeTitleBuffer, sizeof(nodeTitleBuffer), "%s", selected->title.c_str());
 					changed = true;
-
-					if (selected->title.empty() ||
-						selected->title == "Start" ||
-						selected->title == "Move" ||
-						selected->title == "Attack" ||
-						selected->title == "Wait" ||
-						selected->title == "Branch" ||
-						selected->title == "ScriptCall")
-					{
-						selected->title = getTypeName(selected->type);
-						std::snprintf(nodeTitleBuffer, sizeof(nodeTitleBuffer), "%s", selected->title.c_str());
-					}
 				}
 
 				if (selected->type == VSNodeType::ScriptCall)
@@ -2291,6 +2511,7 @@ namespace UI {
 
 					ImGui::PopID();
 				}
+
 				if (selected->type == VSNodeType::BoolConstant)
 				{
 					if (ImGui::Checkbox("Bool Value", &selected->boolValue))
@@ -2325,6 +2546,23 @@ namespace UI {
 						}
 					}
 				}
+
+				if (selected->type == VSNodeType::IntConstant)
+				{
+					if (ImGui::DragInt("Int Value", &selected->intValue, 1.0f))
+					{
+						changed = true;
+					}
+				}
+
+				if (selected->type == VSNodeType::FloatConstant)
+				{
+					if (ImGui::DragFloat("Float Value", &selected->floatValue, 0.1f))
+					{
+						changed = true;
+					}
+				}
+
 				if (selected->type == VSNodeType::Wait)
 				{
 					if (ImGui::DragFloat("Wait Time", &selected->waitTime, 0.1f, 0.0f, 100.0f))
@@ -2339,7 +2577,11 @@ namespace UI {
 					changed = true;
 				}
 
-				ImGui::DragFloat2("Position", &selected->pos.x, 1.0f);
+				if (ImGui::DragFloat2("Position", &selected->pos.x, 1.0f))
+				{
+					changed = true;
+				}
+
 				ImGui::Text("Size: %.1f x %.1f", selected->size.x, selected->size.y);
 
 				if (changed)

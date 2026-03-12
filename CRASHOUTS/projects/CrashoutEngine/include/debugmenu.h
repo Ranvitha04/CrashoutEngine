@@ -43,7 +43,20 @@ namespace UI {
         IntConstant,
         FloatConstant,
         GetVariable,
-        SetVariable
+        SetVariable,
+        Add,
+        Subtract,
+        Multiply,
+        Divide,
+        Equal,
+        NotEqual,
+        GreaterThan,
+        LessThan,
+        GreaterEqual,
+        LessEqual,
+        And,
+        Or,
+        Not
     };
 
     enum class VSPinKind

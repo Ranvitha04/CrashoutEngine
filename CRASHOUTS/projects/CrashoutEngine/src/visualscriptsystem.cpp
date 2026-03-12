@@ -30,7 +30,116 @@ namespace
         }
         return nullptr;
     }
+    static bool EvaluateFloatNode(CrashoutsEngine::ECS& ecs,
+        CrashoutsEngine::Entity e,
+        Component::VisualScriptComponent& comp,
+        UI::VisualScriptingGraph& graph,
+        int nodeId,
+        float& outValue)
+    {
+        UI::VSNode* node = FindNodeById(graph, nodeId);
+        if (!node) return false;
 
+        switch (node->type)
+        {
+        case UI::VSNodeType::FloatConstant:
+            outValue = node->floatValue;
+            return true;
+
+        case UI::VSNodeType::GetVariable:
+        {
+            auto it = comp.floatVariables.find(node->variableName);
+            if (it == comp.floatVariables.end())
+                return false;
+
+            outValue = it->second;
+            return true;
+        }
+
+        case UI::VSNodeType::Add:
+        {
+            float a = 0.0f, b = 0.0f;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = a + b;
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::Subtract:
+        {
+            float a = 0.0f, b = 0.0f;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = a - b;
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::Multiply:
+        {
+            float a = 0.0f, b = 0.0f;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = a * b;
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::Divide:
+        {
+            float a = 0.0f, b = 1.0f;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB && b != 0.0f) {
+                outValue = a / b;
+                return true;
+            }
+            return false;
+        }
+
+        default:
+            return false;
+        }
+    }
     static bool EvaluateBoolNode(ECS& ecs, Entity e, Component::VisualScriptComponent& comp,
         UI::VisualScriptingGraph& graph, int nodeId, bool& outValue)
     {
@@ -54,11 +163,289 @@ namespace
             return true;
         }
 
+        case UI::VSNodeType::And:
+        {
+            bool a = false, b = false;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateBoolNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateBoolNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = a && b;
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::Or:
+        {
+            bool a = false, b = false;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateBoolNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateBoolNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = a || b;
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::Not:
+        {
+            bool a = false;
+            bool gotA = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateBoolNode(ecs, e, comp, graph, link.fromNode, a);
+            }
+
+            if (gotA) {
+                outValue = !a;
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::Equal:
+        {
+            float a = 0.0f, b = 0.0f;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = (a == b);
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::NotEqual:
+        {
+            float a = 0.0f, b = 0.0f;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = (a != b);
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::GreaterThan:
+        {
+            float a = 0.0f, b = 0.0f;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = (a > b);
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::LessThan:
+        {
+            float a = 0.0f, b = 0.0f;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = (a < b);
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::GreaterEqual:
+        {
+            float a = 0.0f, b = 0.0f;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = (a >= b);
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::LessEqual:
+        {
+            float a = 0.0f, b = 0.0f;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateFloatNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = (a <= b);
+                return true;
+            }
+            return false;
+        }
+
         default:
             return false;
         }
     }
+    
+    static bool EvaluateIntNode(CrashoutsEngine::ECS& ecs,
+        CrashoutsEngine::Entity e,
+        Component::VisualScriptComponent& comp,
+        UI::VisualScriptingGraph& graph,
+        int nodeId,
+        int& outValue)
+    {
+        UI::VSNode* node = FindNodeById(graph, nodeId);
+        if (!node) return false;
 
+        switch (node->type)
+        {
+        case UI::VSNodeType::IntConstant:
+            outValue = node->intValue;
+            return true;
+
+        case UI::VSNodeType::Add:
+        {
+            int a = 0, b = 0;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateIntNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateIntNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = a + b;
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::Subtract:
+        {
+            int a = 0, b = 0;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateIntNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateIntNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = a - b;
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::Multiply:
+        {
+            int a = 0, b = 0;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateIntNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateIntNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB) {
+                outValue = a * b;
+                return true;
+            }
+            return false;
+        }
+
+        case UI::VSNodeType::Divide:
+        {
+            int a = 0, b = 1;
+            bool gotA = false, gotB = false;
+
+            for (const auto& link : graph.links)
+            {
+                if (link.toNode == node->id && link.toPin == 0)
+                    gotA = EvaluateIntNode(ecs, e, comp, graph, link.fromNode, a);
+                else if (link.toNode == node->id && link.toPin == 1)
+                    gotB = EvaluateIntNode(ecs, e, comp, graph, link.fromNode, b);
+            }
+
+            if (gotA && gotB && b != 0) {
+                outValue = a / b;
+                return true;
+            }
+            return false;
+        }
+
+        default:
+            return false;
+        }
+    }
     UI::VSNode* FindStartNode(UI::VisualScriptingGraph& graph)
     {
         for (auto& node : graph.nodes) {

@@ -2,7 +2,7 @@
 #include <string>
 #include "debugmenu.h"
 #include <memory>
-
+#include <unordered_map>
 namespace Component {
     struct VisualScriptComponent {
         bool enabled{ true };

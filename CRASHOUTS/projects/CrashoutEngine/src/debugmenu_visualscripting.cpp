@@ -285,7 +285,9 @@ namespace UI {
                 if (nodeObj.HasMember("variableName") && nodeObj["variableName"].IsString())
                     node.variableName = nodeObj["variableName"].GetString();
 
+
                 graph.nodes.push_back(node);
+
             }
         }
 
