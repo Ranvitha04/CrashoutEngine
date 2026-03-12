@@ -23,6 +23,8 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <cstdio>
 #include "createentitycommand.h"
 #include "createprefabcommand.h"
+#include "visualscriptcommands.h"
+#include "undomanager.h"
 using namespace CrashoutsEngine;
 using namespace Serialization;
 using namespace KeyframeUnity;
@@ -1239,13 +1241,28 @@ namespace UI {
 
 		Collision::CollisionHandler& collisionHandler{ Collision::CollisionHandler::GetInstance() };
 
-		f32 newMin[2]{ collisionHandler.quadTree.boundary.min.x, collisionHandler.quadTree.boundary.min.y };
-		f32 newMax[2]{ collisionHandler.quadTree.boundary.max.x, collisionHandler.quadTree.boundary.max.y };
+		f32 newMin[2]{ collisionHandler.staticQuadTree.boundary.min.x, collisionHandler.staticQuadTree.boundary.min.y };
+		f32 newMax[2]{ collisionHandler.staticQuadTree.boundary.max.x, collisionHandler.staticQuadTree.boundary.max.y };
 
+		// 1. Track if either slider was moved
+		bool boundsChanged = false;
 		if (ImGui::DragFloat2("Min", newMin)) {
-			collisionHandler.quadTree.Resize(Collision::AABBRect{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} });
-		} if (ImGui::DragFloat2("Max", newMax)) {
-			collisionHandler.quadTree.Resize(Collision::AABBRect{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} });
+			boundsChanged = true;
+		}
+		if (ImGui::DragFloat2("Max", newMax)) {
+			boundsChanged = true;
+		}
+
+		// 2. If they changed, apply the resize to BOTH trees
+		if (boundsChanged) {
+			Collision::AABBRect newBounds{ CEVec3{newMin[0], newMin[1], 0.f}, CEVec3{newMax[0], newMax[1], 0.f} };
+
+			// Resize both so they match perfectly
+			collisionHandler.staticQuadTree.Resize(newBounds);
+			collisionHandler.dynamicQuadTree.Resize(newBounds);
+
+			// Tell the engine to rebuild the static tree with the new size next frame!
+			collisionHandler.isStaticDirty = true;
 		}
 
 		// When a way to implement the velocity line happens
@@ -1663,9 +1680,13 @@ namespace UI {
 
 		ImGui::End();
 	}
-	//VISUAL SCRIPTING PANEL
+	void UI::RenderProjectManager(UIState& ui)
+	{
+		(void)ui;
+	}
 	void UI::RenderVisualScriptingPanel(UIState& ui)
 	{
+		static ImVec2 dragStartPos(0.0f, 0.0f);
 		if (!ui.showVisualScripting) return;
 
 		ScopedWindow w("Visual Scripting", LockFlags(ui.lockLayout));
@@ -1675,17 +1696,45 @@ namespace UI {
 		auto& links = graph.links;
 		auto& nextNodeId = graph.nextNodeId;
 
-		if (nodes.empty())
-		{
-			nodes.push_back({ 1, VSNodeType::Start,  "Start",  ImVec2(60.0f, 80.0f),  ImVec2(140.0f, 70.0f) });
-			nodes.push_back({ 2, VSNodeType::Move,   "Move",   ImVec2(320.0f, 80.0f), ImVec2(140.0f, 70.0f) });
-			nodes.push_back({ 3, VSNodeType::Attack, "Attack", ImVec2(580.0f, 80.0f), ImVec2(140.0f, 70.0f) });
+		ImGui::Text("Graph: %s", ui.openedVisualScriptPath.empty() ? "(none)" : ui.openedVisualScriptPath.c_str());
 
-			links.push_back({ 1, 2, 0 });
-			links.push_back({ 2, 3, 0 });
-
-			nextNodeId = 4;
+		if (ImGui::Button("Save Graph")) {
+			if (!ui.openedVisualScriptPath.empty()) {
+				if (!UI::SaveVisualScriptingGraph(ui.openedVisualScriptPath, graph)) {
+					ImGui::OpenPopup("VS Save Failed");
+				}
+			}
 		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Load Graph")) {
+			if (!ui.openedVisualScriptPath.empty()) {
+				UI::ClearVisualScriptingGraph();
+				if (!UI::LoadVisualScriptingGraph(ui.openedVisualScriptPath, UI::GetVisualScriptingGraph())) {
+					ImGui::OpenPopup("VS Load Failed");
+				}
+			}
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Close Graph")) {
+			ui.showVisualScripting = false;
+		}
+
+		if (ImGui::BeginPopupModal("VS Save Failed", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("Failed to save graph.");
+			if (ImGui::Button("OK")) ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+
+		if (ImGui::BeginPopupModal("VS Load Failed", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("Failed to load graph.");
+			if (ImGui::Button("OK")) ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+
 		static int contextNodeId = -1;
 		static int selectedNode = -1;
 		static int draggingNode = -1;
@@ -1696,24 +1745,11 @@ namespace UI {
 		static int linkStartNode = -1;
 		static int inspectorNodeId = -1;
 		static char nodeTitleBuffer[128] = "";
+
 		auto deleteNodeById = [&](int nodeId)
 			{
-				links.erase(
-					std::remove_if(links.begin(), links.end(),
-						[&](const VSLink& link)
-						{
-							return link.fromNode == nodeId || link.toNode == nodeId;
-						}),
-					links.end()
-				);
-
-				nodes.erase(
-					std::remove_if(nodes.begin(), nodes.end(),
-						[&](const VSNode& node)
-						{
-							return node.id == nodeId;
-						}),
-					nodes.end()
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<DeleteVSNodeCommand>(graph, nodeId)
 				);
 
 				if (selectedNode == nodeId) selectedNode = -1;
@@ -1724,6 +1760,7 @@ namespace UI {
 				inspectorNodeId = -1;
 				nodeTitleBuffer[0] = '\0';
 			};
+
 		ImGui::Checkbox("Show Grid", &showGrid);
 		ImGui::Separator();
 
@@ -1742,13 +1779,10 @@ namespace UI {
 		{
 			const float gridStep = 32.0f;
 			for (float x = canvasPos.x; x < canvasEnd.x; x += gridStep)
-			{
 				draw->AddLine(ImVec2(x, canvasPos.y), ImVec2(x, canvasEnd.y), IM_COL32(255, 255, 255, 20));
-			}
+
 			for (float y = canvasPos.y; y < canvasEnd.y; y += gridStep)
-			{
 				draw->AddLine(ImVec2(canvasPos.x, y), ImVec2(canvasEnd.x, y), IM_COL32(255, 255, 255, 20));
-			}
 		}
 
 		auto getNodeRectMin = [&](const VSNode& node)
@@ -1762,10 +1796,19 @@ namespace UI {
 				return ImVec2(minP.x + node.size.x, minP.y + node.size.y);
 			};
 
-		auto getInputPinPos = [&](const VSNode& node)
+		auto getInputPinPos = [&](const VSNode& node, int pinIndex)
 			{
 				ImVec2 minP = getNodeRectMin(node);
-				return ImVec2(minP.x, minP.y + node.size.y * 0.5f);
+
+				int inputCount = (int)node.inputs.size();
+				if (inputCount <= 0)
+					return ImVec2(minP.x, minP.y + node.size.y * 0.5f);
+
+				if (inputCount == 1)
+					return ImVec2(minP.x, minP.y + node.size.y * 0.5f);
+
+				float spacing = node.size.y / float(inputCount + 1);
+				return ImVec2(minP.x, minP.y + spacing * float(pinIndex + 1));
 			};
 
 		auto getOutputPinPos = [&](const VSNode& node, int pinIndex)
@@ -1774,14 +1817,21 @@ namespace UI {
 
 				if (node.type == VSNodeType::Branch)
 				{
-					if (pinIndex == 1) // True
+					if (pinIndex == 0)
 						return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.30f);
-					if (pinIndex == 2) // False
+					if (pinIndex == 1)
 						return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.70f);
 				}
 
-				
-				return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.5f);
+				int outputCount = (int)node.outputs.size();
+				if (outputCount <= 0)
+					return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.5f);
+
+				if (outputCount == 1)
+					return ImVec2(minP.x + node.size.x, minP.y + node.size.y * 0.5f);
+
+				float spacing = node.size.y / float(outputCount + 1);
+				return ImVec2(minP.x + node.size.x, minP.y + spacing * float(pinIndex + 1));
 			};
 
 		auto findNodeById = [&](int id) -> VSNode*
@@ -1800,16 +1850,233 @@ namespace UI {
 				float dy = mouse.y - p.y;
 				return (dx * dx + dy * dy) <= (radius * radius);
 			};
+
 		auto getTypeName = [](VSNodeType type) -> const char*
 			{
 				switch (type)
 				{
-				case VSNodeType::Start:  return "Start";
-				case VSNodeType::Move:   return "Move";
-				case VSNodeType::Attack: return "Attack";
-				case VSNodeType::Wait:   return "Wait";
-				case VSNodeType::Branch: return "Branch";
-				default:                 return "Unknown";
+				case VSNodeType::Start:        return "Start";
+				case VSNodeType::Move:         return "Move";
+				case VSNodeType::Attack:       return "Attack";
+				case VSNodeType::Wait:         return "Wait";
+				case VSNodeType::Branch:       return "Branch";
+				case VSNodeType::ScriptCall:   return "ScriptCall";
+				case VSNodeType::BoolConstant: return "BoolConstant";
+				case VSNodeType::IntConstant:  return "IntConstant";
+				case VSNodeType::FloatConstant:return "FloatConstant";
+				case VSNodeType::GetVariable:  return "GetVariable";
+				case VSNodeType::SetVariable:  return "SetVariable";
+				case VSNodeType::Add:          return "Add";
+				case VSNodeType::Subtract:     return "Subtract";
+				case VSNodeType::Multiply:     return "Multiply";
+				case VSNodeType::Divide:       return "Divide";
+				case VSNodeType::Equal:        return "Equal";
+				case VSNodeType::NotEqual:     return "NotEqual";
+				case VSNodeType::GreaterThan:  return "GreaterThan";
+				case VSNodeType::LessThan:     return "LessThan";
+				case VSNodeType::GreaterEqual: return "GreaterEqual";
+				case VSNodeType::LessEqual:    return "LessEqual";
+				case VSNodeType::And:          return "And";
+				case VSNodeType::Or:           return "Or";
+				case VSNodeType::Not:          return "Not";
+				default:                       return "Unknown";
+				}
+			};
+
+		auto rebuildNodePins = [&](VSNode& node)
+			{
+				node.inputs.clear();
+				node.outputs.clear();
+
+				switch (node.type)
+				{
+				case VSNodeType::Start:
+				case VSNodeType::Move:
+				case VSNodeType::Attack:
+				case VSNodeType::Wait:
+				case VSNodeType::ScriptCall:
+				case VSNodeType::GetVariable:
+				case VSNodeType::SetVariable:
+				{
+					VSPin outPin;
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Next";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Exec;
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(140.0f, 70.0f);
+					break;
+				}
+
+				case VSNodeType::BoolConstant:
+				{
+					VSPin outPin;
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Value";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Bool;
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 90.0f);
+					break;
+				}
+
+				case VSNodeType::IntConstant:
+				{
+					VSPin outPin;
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Value";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Int;
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 90.0f);
+					break;
+				}
+
+				case VSNodeType::FloatConstant:
+				{
+					VSPin outPin;
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Value";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Float;
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 90.0f);
+					break;
+				}
+
+				case VSNodeType::Branch:
+				{
+					VSPin inPin;
+					inPin.id = graph.nextPinId++;
+					inPin.name = "Condition";
+					inPin.kind = VSPinKind::Input;
+					inPin.type = VSDataType::Bool;
+					node.inputs.push_back(inPin);
+
+					VSPin truePin;
+					truePin.id = graph.nextPinId++;
+					truePin.name = "True";
+					truePin.kind = VSPinKind::Output;
+					truePin.type = VSDataType::Exec;
+					node.outputs.push_back(truePin);
+
+					VSPin falsePin;
+					falsePin.id = graph.nextPinId++;
+					falsePin.name = "False";
+					falsePin.kind = VSPinKind::Output;
+					falsePin.type = VSDataType::Exec;
+					node.outputs.push_back(falsePin);
+
+					node.size = ImVec2(180.0f, 100.0f);
+					break;
+				}
+
+				case VSNodeType::Add:
+				case VSNodeType::Subtract:
+				case VSNodeType::Multiply:
+				case VSNodeType::Divide:
+				{
+					VSPin inA, inB, outPin;
+					inA.id = graph.nextPinId++;
+					inA.name = "A";
+					inA.kind = VSPinKind::Input;
+					inA.type = VSDataType::Float;
+
+					inB.id = graph.nextPinId++;
+					inB.name = "B";
+					inB.kind = VSPinKind::Input;
+					inB.type = VSDataType::Float;
+
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Result";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Float;
+
+					node.inputs.push_back(inA);
+					node.inputs.push_back(inB);
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 100.0f);
+					break;
+				}
+
+				case VSNodeType::Equal:
+				case VSNodeType::NotEqual:
+				case VSNodeType::GreaterThan:
+				case VSNodeType::LessThan:
+				case VSNodeType::GreaterEqual:
+				case VSNodeType::LessEqual:
+				{
+					VSPin inA, inB, outPin;
+					inA.id = graph.nextPinId++;
+					inA.name = "A";
+					inA.kind = VSPinKind::Input;
+					inA.type = VSDataType::Float;
+
+					inB.id = graph.nextPinId++;
+					inB.name = "B";
+					inB.kind = VSPinKind::Input;
+					inB.type = VSDataType::Float;
+
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Result";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Bool;
+
+					node.inputs.push_back(inA);
+					node.inputs.push_back(inB);
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 100.0f);
+					break;
+				}
+
+				case VSNodeType::And:
+				case VSNodeType::Or:
+				{
+					VSPin inA, inB, outPin;
+					inA.id = graph.nextPinId++;
+					inA.name = "A";
+					inA.kind = VSPinKind::Input;
+					inA.type = VSDataType::Bool;
+
+					inB.id = graph.nextPinId++;
+					inB.name = "B";
+					inB.kind = VSPinKind::Input;
+					inB.type = VSDataType::Bool;
+
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Result";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Bool;
+
+					node.inputs.push_back(inA);
+					node.inputs.push_back(inB);
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 100.0f);
+					break;
+				}
+
+				case VSNodeType::Not:
+				{
+					VSPin inA, outPin;
+					inA.id = graph.nextPinId++;
+					inA.name = "A";
+					inA.kind = VSPinKind::Input;
+					inA.type = VSDataType::Bool;
+
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Result";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Bool;
+
+					node.inputs.push_back(inA);
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(180.0f, 90.0f);
+					break;
+				}
+
+				default:
+					node.size = ImVec2(140.0f, 70.0f);
+					break;
 				}
 			};
 
@@ -1819,6 +2086,7 @@ namespace UI {
 		bool mouseClicked = ImGui::IsMouseClicked(0);
 		bool mouseDown = ImGui::IsMouseDown(0);
 		bool mouseReleased = ImGui::IsMouseReleased(0);
+
 		if (canvasHovered && ImGui::IsMouseClicked(1))
 		{
 			contextNodeId = -1;
@@ -1839,9 +2107,7 @@ namespace UI {
 			}
 
 			if (contextNodeId == -1)
-			{
 				ImGui::OpenPopup("VSAddNodePopup");
-			}
 		}
 
 		if (ImGui::BeginPopup("VSAddNodePopup"))
@@ -1852,36 +2118,51 @@ namespace UI {
 				popupMouse.y - canvasPos.y
 			);
 
-			if (ImGui::MenuItem("Add Start Node"))
-			{
-				nodes.push_back({ nextNodeId++, VSNodeType::Start, "Start", localPos, ImVec2(140.0f, 70.0f) });
-			}
+			auto addNode = [&](VSNodeType type, const char* title)
+				{
+					VSNode node{};
+					node.id = nextNodeId++;
+					node.type = type;
+					node.title = title;
+					node.pos = localPos;
+					node.waitTime = 1.0f;
 
-			if (ImGui::MenuItem("Add Move Node"))
-			{
-				nodes.push_back({ nextNodeId++, VSNodeType::Move, "Move", localPos, ImVec2(140.0f, 70.0f) });
-			}
+					rebuildNodePins(node);
 
-			if (ImGui::MenuItem("Add Attack Node"))
-			{
-				nodes.push_back({ nextNodeId++, VSNodeType::Attack, "Attack", localPos, ImVec2(140.0f, 70.0f) });
-			}
+					UndoManager::GetInstance().AddCommand(
+						std::make_unique<CreateVSNodeCommand>(graph, node)
+					);
 
-			if (ImGui::MenuItem("Add Wait Node"))
-			{
-				nodes.push_back({ nextNodeId++, VSNodeType::Wait, "Wait", localPos, ImVec2(140.0f, 70.0f) });
-			}
+					selectedNode = node.id;
+					inspectorNodeId = node.id;
+				};
 
-			if (ImGui::MenuItem("Add Branch Node"))
-			{
-				nodes.push_back({ nextNodeId++, VSNodeType::Branch, "Branch", localPos, ImVec2(140.0f, 70.0f) });
-			}
-			if (ImGui::MenuItem("Add Script Call Node"))
-			{
-				nodes.push_back({ nextNodeId++, VSNodeType::ScriptCall, "ScriptCall", localPos, ImVec2(180.0f, 90.0f), "", "" });
-			}
+			if (ImGui::MenuItem("Add Start Node"))          addNode(VSNodeType::Start, "Start");
+			if (ImGui::MenuItem("Add Move Node"))           addNode(VSNodeType::Move, "Move");
+			if (ImGui::MenuItem("Add Attack Node"))         addNode(VSNodeType::Attack, "Attack");
+			if (ImGui::MenuItem("Add Wait Node"))           addNode(VSNodeType::Wait, "Wait");
+			if (ImGui::MenuItem("Add Branch Node"))         addNode(VSNodeType::Branch, "Branch");
+			if (ImGui::MenuItem("Add Script Call Node"))    addNode(VSNodeType::ScriptCall, "ScriptCall");
+			if (ImGui::MenuItem("Add Bool Constant Node"))  addNode(VSNodeType::BoolConstant, "BoolConstant");
+			if (ImGui::MenuItem("Add Int Constant Node"))   addNode(VSNodeType::IntConstant, "IntConstant");
+			if (ImGui::MenuItem("Add Float Constant Node")) addNode(VSNodeType::FloatConstant, "FloatConstant");
+			if (ImGui::MenuItem("Add Add Node"))            addNode(VSNodeType::Add, "Add");
+			if (ImGui::MenuItem("Add Subtract Node"))       addNode(VSNodeType::Subtract, "Subtract");
+			if (ImGui::MenuItem("Add Multiply Node"))       addNode(VSNodeType::Multiply, "Multiply");
+			if (ImGui::MenuItem("Add Divide Node"))         addNode(VSNodeType::Divide, "Divide");
+			if (ImGui::MenuItem("Add Equal Node"))          addNode(VSNodeType::Equal, "Equal");
+			if (ImGui::MenuItem("Add Not Equal Node"))      addNode(VSNodeType::NotEqual, "NotEqual");
+			if (ImGui::MenuItem("Add Greater Than Node"))   addNode(VSNodeType::GreaterThan, "GreaterThan");
+			if (ImGui::MenuItem("Add Less Than Node"))      addNode(VSNodeType::LessThan, "LessThan");
+			if (ImGui::MenuItem("Add Greater Equal Node"))  addNode(VSNodeType::GreaterEqual, "GreaterEqual");
+			if (ImGui::MenuItem("Add Less Equal Node"))     addNode(VSNodeType::LessEqual, "LessEqual");
+			if (ImGui::MenuItem("Add And Node"))            addNode(VSNodeType::And, "And");
+			if (ImGui::MenuItem("Add Or Node"))             addNode(VSNodeType::Or, "Or");
+			if (ImGui::MenuItem("Add Not Node"))            addNode(VSNodeType::Not, "Not");
+
 			ImGui::EndPopup();
 		}
+
 		if (ImGui::BeginPopup("VSNodeContextPopup"))
 		{
 			VSNode* contextNode = findNodeById(contextNodeId);
@@ -1901,7 +2182,9 @@ namespace UI {
 					copy.id = nextNodeId++;
 					copy.pos.x += 40.0f;
 					copy.pos.y += 40.0f;
-					nodes.push_back(copy);
+					UndoManager::GetInstance().AddCommand(
+						std::make_unique<CreateVSNodeCommand>(graph, copy)
+					);
 
 					contextNodeId = copy.id;
 					selectedNode = copy.id;
@@ -1918,52 +2201,30 @@ namespace UI {
 
 			ImGui::EndPopup();
 		}
-	
+
 		if (mouseClicked && canvasHovered)
 		{
 			selectedNode = -1;
 			draggingNode = -1;
 
-			
 			bool pinHandled = false;
 			for (int i = (int)nodes.size() - 1; i >= 0; --i)
 			{
-				if (nodes[i].type == VSNodeType::Branch)
+				for (int outIndex = 0; outIndex < (int)nodes[i].outputs.size(); ++outIndex)
 				{
-					ImVec2 truePin = getOutputPinPos(nodes[i], 1);
-					ImVec2 falsePin = getOutputPinPos(nodes[i], 2);
-
-					if (isMouseNearPoint(truePin, 8.0f))
+					ImVec2 outPin = getOutputPinPos(nodes[i], outIndex);
+					if (isMouseNearPoint(outPin, 8.0f))
 					{
 						creatingLink = true;
 						linkStartNode = nodes[i].id;
-						linkStartPin = 1;
-						pinHandled = true;
-						break;
-					}
-
-					if (isMouseNearPoint(falsePin, 8.0f))
-					{
-						creatingLink = true;
-						linkStartNode = nodes[i].id;
-						linkStartPin = 2;
+						linkStartPin = outIndex;
 						pinHandled = true;
 						break;
 					}
 				}
-
-				ImVec2 outPin = getOutputPinPos(nodes[i], 0);
-				if (isMouseNearPoint(outPin, 8.0f))
-				{
-					creatingLink = true;
-					linkStartNode = nodes[i].id;
-					linkStartPin = 0;
-					pinHandled = true;
-					break;
-				}
+				if (pinHandled) break;
 			}
 
-		
 			if (!pinHandled)
 			{
 				for (int i = (int)nodes.size() - 1; i >= 0; --i)
@@ -1977,13 +2238,13 @@ namespace UI {
 						selectedNode = nodes[i].id;
 						draggingNode = nodes[i].id;
 						dragOffset = ImVec2(mousePos.x - minP.x, mousePos.y - minP.y);
+						dragStartPos = nodes[i].pos;
 						break;
 					}
 				}
 			}
 		}
 
-		
 		if (mouseDown && draggingNode != -1 && !creatingLink)
 		{
 			VSNode* node = findNodeById(draggingNode);
@@ -1996,7 +2257,6 @@ namespace UI {
 			}
 		}
 
-		
 		if (mouseReleased)
 		{
 			if (creatingLink && linkStartNode != -1)
@@ -2005,24 +2265,57 @@ namespace UI {
 				{
 					if (node.id == linkStartNode) continue;
 
-					ImVec2 inPin = getInputPinPos(node);
-					if (isMouseNearPoint(inPin, 8.0f))
+					for (int pinIndex = 0; pinIndex < (int)node.inputs.size(); ++pinIndex)
 					{
-						bool alreadyExists = false;
-						for (const auto& link : links)
+						ImVec2 inPin = getInputPinPos(node, pinIndex);
+						if (isMouseNearPoint(inPin, 8.0f))
 						{
-							if (link.fromNode == linkStartNode && link.toNode == node.id)
+							bool alreadyExists = false;
+							for (const auto& link : links)
 							{
-								alreadyExists = true;
-								break;
+								if (link.fromNode == linkStartNode &&
+									link.fromPin == linkStartPin &&
+									link.toNode == node.id &&
+									link.toPin == pinIndex)
+								{
+									alreadyExists = true;
+									break;
+								}
 							}
-						}
 
-						if (!alreadyExists)
-						{
-							links.push_back({ linkStartNode, node.id, linkStartPin });
+							if (!alreadyExists)
+							{
+								VSLink link;
+								link.fromNode = linkStartNode;
+								link.fromPin = linkStartPin;
+								link.toNode = node.id;
+								link.toPin = pinIndex;
+
+								UndoManager::GetInstance().AddCommand(
+									std::make_unique<CreateVSLinkCommand>(graph, link)
+								);
+							}
+							goto done_linking;
 						}
-						break;
+					}
+				}
+			}
+
+		done_linking:
+			if (draggingNode != -1)
+			{
+				VSNode* node = findNodeById(draggingNode);
+				if (node)
+				{
+					ImVec2 dragEndPos = node->pos;
+
+					if (dragEndPos.x != dragStartPos.x || dragEndPos.y != dragStartPos.y)
+					{
+						node->pos = dragStartPos;
+
+						UndoManager::GetInstance().AddCommand(
+							std::make_unique<MoveVSNodeCommand>(graph, draggingNode, dragStartPos, dragEndPos)
+						);
 					}
 				}
 			}
@@ -2031,22 +2324,21 @@ namespace UI {
 			creatingLink = false;
 			linkStartNode = -1;
 		}
+
 		if (selectedNode != -1 && selectedNode != inspectorNodeId)
 		{
 			inspectorNodeId = selectedNode;
 
 			VSNode* selected = findNodeById(selectedNode);
 			if (selected)
-			{
 				std::snprintf(nodeTitleBuffer, sizeof(nodeTitleBuffer), "%s", selected->title.c_str());
-			}
 		}
 		else if (selectedNode == -1)
 		{
 			inspectorNodeId = -1;
 			nodeTitleBuffer[0] = '\0';
 		}
-		
+
 		for (const auto& link : links)
 		{
 			VSNode* from = findNodeById(link.fromNode);
@@ -2054,7 +2346,7 @@ namespace UI {
 			if (!from || !to) continue;
 
 			ImVec2 p1 = getOutputPinPos(*from, link.fromPin);
-			ImVec2 p2 = getInputPinPos(*to);
+			ImVec2 p2 = getInputPinPos(*to, link.toPin);
 
 			draw->AddBezierCubic(
 				p1,
@@ -2066,7 +2358,6 @@ namespace UI {
 			);
 		}
 
-		
 		if (creatingLink && linkStartNode != -1)
 		{
 			VSNode* from = findNodeById(linkStartNode);
@@ -2086,7 +2377,6 @@ namespace UI {
 			}
 		}
 
-		
 		for (const auto& node : nodes)
 		{
 			ImVec2 minP = getNodeRectMin(node);
@@ -2100,47 +2390,31 @@ namespace UI {
 
 			draw->AddRectFilled(minP, maxP, fillColor, 8.0f);
 			draw->AddRect(minP, maxP, IM_COL32(255, 255, 255, 180), 8.0f);
-			draw->AddText(ImVec2(minP.x + 16.0f, minP.y + 24.0f), IM_COL32(255, 255, 255, 255), node.title.c_str());
+			draw->AddText(ImVec2(minP.x + 16.0f, minP.y + 20.0f), IM_COL32(255, 255, 255, 255), node.title.c_str());
+			draw->AddText(ImVec2(minP.x + 16.0f, minP.y + 40.0f), IM_COL32(200, 200, 220, 255), getTypeName(node.type));
 
-			ImVec2 inPin = getInputPinPos(node);
-			draw->AddCircleFilled(inPin, 6.0f, IM_COL32(180, 220, 255, 255));
-
-			if (node.type == VSNodeType::Branch)
+			for (int pinIndex = 0; pinIndex < (int)node.inputs.size(); ++pinIndex)
 			{
-				draw->AddText(
-					ImVec2(minP.x + 16.0f, minP.y + 44.0f),
-					IM_COL32(200, 255, 200, 255),
-					"Condition"
-				);
-
-				ImVec2 truePin = getOutputPinPos(node, 1);
-				ImVec2 falsePin = getOutputPinPos(node, 2);
-
-				draw->AddCircleFilled(truePin, 6.0f, IM_COL32(120, 255, 120, 255));
-				draw->AddCircleFilled(falsePin, 6.0f, IM_COL32(255, 120, 120, 255));
+				ImVec2 inPin = getInputPinPos(node, pinIndex);
+				draw->AddCircleFilled(inPin, 6.0f, IM_COL32(180, 220, 255, 255));
 
 				draw->AddText(
-					ImVec2(truePin.x - 42.0f, truePin.y - 8.0f),
-					IM_COL32(220, 255, 220, 255),
-					"True"
-				);
-
-				draw->AddText(
-					ImVec2(falsePin.x - 45.0f, falsePin.y - 8.0f),
-					IM_COL32(255, 220, 220, 255),
-					"False"
+					ImVec2(inPin.x + 10.0f, inPin.y - 8.0f),
+					IM_COL32(220, 220, 220, 255),
+					node.inputs[pinIndex].name.c_str()
 				);
 			}
-			else
-			{
-				draw->AddText(
-					ImVec2(minP.x + 16.0f, minP.y + 44.0f),
-					IM_COL32(200, 200, 220, 255),
-					getTypeName(node.type)
-				);
 
-				ImVec2 outPin = getOutputPinPos(node, 0);
+			for (int outIndex = 0; outIndex < (int)node.outputs.size(); ++outIndex)
+			{
+				ImVec2 outPin = getOutputPinPos(node, outIndex);
 				draw->AddCircleFilled(outPin, 6.0f, IM_COL32(255, 210, 100, 255));
+
+				draw->AddText(
+					ImVec2(outPin.x - 70.0f, outPin.y - 8.0f),
+					IM_COL32(220, 220, 220, 255),
+					node.outputs[outIndex].name.c_str()
+				);
 			}
 		}
 
@@ -2151,6 +2425,7 @@ namespace UI {
 				deleteNodeById(selectedNode);
 			}
 		}
+
 		bool deletePressed =
 			ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
 			ImGui::IsKeyPressed(ImGuiKey_Delete, false) &&
@@ -2161,6 +2436,7 @@ namespace UI {
 		{
 			deleteNodeById(selectedNode);
 		}
+
 		ImGui::Separator();
 		ImGui::Text("Selected Node Inspector");
 
@@ -2169,32 +2445,54 @@ namespace UI {
 			VSNode* selected = findNodeById(selectedNode);
 			if (selected)
 			{
+				VSNode beforeEdit = *selected;
+				bool changed = false;
+
 				ImGui::Text("Node ID: %d", selected->id);
 
 				int nodeType = static_cast<int>(selected->type);
-				const char* typeNames[] = { "Start", "Move", "Attack", "Wait", "Branch", "ScriptCall" };
+				const char* typeNames[] = {
+					"Start",
+					"Move",
+					"Attack",
+					"Wait",
+					"Branch",
+					"ScriptCall",
+					"BoolConstant",
+					"IntConstant",
+					"FloatConstant",
+					"GetVariable",
+					"SetVariable",
+					"Add",
+					"Subtract",
+					"Multiply",
+					"Divide",
+					"Equal",
+					"NotEqual",
+					"GreaterThan",
+					"LessThan",
+					"GreaterEqual",
+					"LessEqual",
+					"And",
+					"Or",
+					"Not"
+				};
 
 				if (ImGui::Combo("Type", &nodeType, typeNames, IM_ARRAYSIZE(typeNames)))
 				{
 					selected->type = static_cast<VSNodeType>(nodeType);
-
-					if (selected->title.empty() ||
-						selected->title == "Start" ||
-						selected->title == "Move" ||
-						selected->title == "Attack" ||
-						selected->title == "Wait" ||
-						selected->title == "Branch" ||
-						selected->title == "ScriptCall")
-					{
-						selected->title = getTypeName(selected->type);
-						std::snprintf(nodeTitleBuffer, sizeof(nodeTitleBuffer), "%s", selected->title.c_str());
-					}
+					rebuildNodePins(*selected);
+					selected->title = getTypeName(selected->type);
+					std::snprintf(nodeTitleBuffer, sizeof(nodeTitleBuffer), "%s", selected->title.c_str());
+					changed = true;
 				}
 
 				if (selected->type == VSNodeType::ScriptCall)
 				{
-					static char scriptBuffer[128] = "";
-					static char functionBuffer[128] = "";
+					ImGui::PushID(selected->id);
+
+					char scriptBuffer[128];
+					char functionBuffer[128];
 
 					std::snprintf(scriptBuffer, sizeof(scriptBuffer), "%s", selected->scriptName.c_str());
 					std::snprintf(functionBuffer, sizeof(functionBuffer), "%s", selected->functionName.c_str());
@@ -2202,176 +2500,105 @@ namespace UI {
 					if (ImGui::InputText("Script Name", scriptBuffer, sizeof(scriptBuffer)))
 					{
 						selected->scriptName = scriptBuffer;
+						changed = true;
 					}
 
 					if (ImGui::InputText("Function Name", functionBuffer, sizeof(functionBuffer)))
 					{
 						selected->functionName = functionBuffer;
+						changed = true;
 					}
-				
 
-
+					ImGui::PopID();
 				}
+
+				if (selected->type == VSNodeType::BoolConstant)
+				{
+					if (ImGui::Checkbox("Bool Value", &selected->boolValue))
+					{
+						changed = true;
+
+						auto* ecs = CrashoutsEngine::ECS::getInstance();
+						UI::UIState* uiState = UI::GetUIState();
+
+						if (ecs && uiState)
+						{
+							auto& arr = ecs->GetComponentArray<Component::VisualScriptComponent>();
+
+							for (size_t i = 0; i < arr.dense.size(); ++i)
+							{
+								auto* vs = arr.dense[i];
+								if (!vs) continue;
+
+								if (vs->graphPath == uiState->openedVisualScriptPath && vs->graph)
+								{
+									for (auto& runtimeNode : vs->graph->nodes)
+									{
+										if (runtimeNode.id == selected->id &&
+											runtimeNode.type == UI::VSNodeType::BoolConstant)
+										{
+											runtimeNode.boolValue = selected->boolValue;
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				if (selected->type == VSNodeType::IntConstant)
+				{
+					if (ImGui::DragInt("Int Value", &selected->intValue, 1.0f))
+					{
+						changed = true;
+					}
+				}
+
+				if (selected->type == VSNodeType::FloatConstant)
+				{
+					if (ImGui::DragFloat("Float Value", &selected->floatValue, 0.1f))
+					{
+						changed = true;
+					}
+				}
+
+				if (selected->type == VSNodeType::Wait)
+				{
+					if (ImGui::DragFloat("Wait Time", &selected->waitTime, 0.1f, 0.0f, 100.0f))
+					{
+						changed = true;
+					}
+				}
+
 				if (ImGui::InputText("Title", nodeTitleBuffer, sizeof(nodeTitleBuffer)))
 				{
 					selected->title = nodeTitleBuffer;
+					changed = true;
 				}
 
-				ImGui::DragFloat2("Position", &selected->pos.x, 1.0f);
+				if (ImGui::DragFloat2("Position", &selected->pos.x, 1.0f))
+				{
+					changed = true;
+				}
 
 				ImGui::Text("Size: %.1f x %.1f", selected->size.x, selected->size.y);
+
+				if (changed)
+				{
+					VSNode afterEdit = *selected;
+
+					*selected = beforeEdit;
+
+					UndoManager::GetInstance().AddCommand(
+						std::make_unique<EditVSNodeCommand>(graph, selected->id, beforeEdit, afterEdit)
+					);
+				}
 			}
 		}
 		else
 		{
 			ImGui::TextDisabled("No node selected.");
-		}
-	}
-	/*!
-	 @brief Renders a panel to create new game projects and manage the current project root.
-	*/
-	void RenderProjectManager(UIState& ui) {
-		ScopedWindow w("Project Manager", LockFlags(ui.lockLayout));
-		namespace fs = std::filesystem;
-
-		ImGui::Text("Current Project Root:");
-		ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "%s", GetGameRoot().c_str());
-
-		ImGui::Separator();
-
-		// =========================================================================
-		// HELPER LAMBDA: Hot-Swaps the engine to a new project & loads Start Scene
-		// =========================================================================
-		auto SwitchProjectContext = [](const std::string& projName, const std::string& projPath) {
-			Audio::AudioSystem& audio = Audio::AudioSystem::instance();
-			audio.stopAll(true);
-			audio.unloadAllBanks();
-			audio.unloadAllRawSounds();
-
-			CrashoutsEngine::ScriptSystem::DestroyAll();
-			CrashoutsEngine::ECS::getInstance()->Reset();
-			CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
-
-			// 1. Update Root Pointer
-			SetGameRoot(projPath);
-
-			// 2. Refresh Mono Scripts for the new project
-			fs::path csprojPath = fs::path(projPath) / "scripts" / (projName + ".csproj");
-
-			std::string config = "Release";
-#ifdef _DEBUG
-			config = "Debug";
-#endif
-
-			std::string buildCommand = "dotnet build \"" + csprojPath.generic_string() + "\" -c " + config;
-
-			std::cout << "[Editor] Compiling scripts for " << projName << " in " << config << " mode...\n";
-			int buildResult = std::system(buildCommand.c_str());
-
-			if (buildResult == 0) {
-				std::cout << "[Editor] Script compilation successful!\n";
-			}
-			else {
-				std::cerr << "[Editor] Script compilation failed. Check your C# code!\n";
-			}
-
-			// 3. Refresh Mono Scripts
-			MonoManager::ReloadAssembly();
-			CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
-
-			// 4. Refresh Asset Manager & Manifest
-			auto& am = CrashoutsEngine::Assets::AssetManager::GetInstance();
-			am.Shutdown(); // Soft Reset
-
-			std::string newMPath = GetGameRoot() + "/assets/json/assetmanifest.json";
-			CrashoutsEngine::Assets::GenerateAssetManifest(newMPath);
-			am.LoadManifestAssets(newMPath);
-
-			// Reload Prefabs
-			std::string newPrefabPath = GetGameRoot() + "/assets/prefabs";
-			CrashoutsEngine::ReloadPrefabsFromDisk(newPrefabPath);
-
-			// 5. LOAD THE STARTING SCENE DYNAMICALLY
-			// This safely falls back to "StartScene" if no scene is found
-			g_PendingSceneName = GetStartingSceneName();
-			g_IsSceneLoadPending = true;
-
-			LOGS(Core, "Context Switched to: " + projName + " | Booting into: " + g_PendingSceneName);
-			};
-		// =========================================================================
-
-		ImGui::SeparatorText("Create New Project");
-
-		static char newProjectName[64] = "";
-		ImGui::InputTextWithHint("##ProjName", "Project Name", newProjectName, IM_ARRAYSIZE(newProjectName));
-
-		if (ImGui::Button("Create & Initialize Project")) {
-			if (newProjectName[0] != '\0') {
-				std::string gameName = newProjectName;
-				fs::path projectPath = fs::path("..") / ".." / "projects" / "GameProjects" / gameName;
-				fs::path templatePath = fs::path("..") / ".." / "projects" / "Template";
-
-				try {
-					// 1. Create Core Structure
-					fs::create_directories(projectPath / "assets/images");
-					fs::create_directories(projectPath / "assets/scenes");
-					fs::create_directories(projectPath / "assets/json");
-					fs::create_directories(projectPath / "src");
-					fs::create_directories(projectPath / "include");
-					fs::create_directories(projectPath / "scripts");
-
-					std::ofstream dummyScene(projectPath / "assets/scenes/StartScene.json"); // Added .json for safety
-					if (dummyScene.is_open()) {
-						dummyScene << "{\n  \"Entities\": []\n}";
-						dummyScene.close();
-					}
-
-					// 2. Generate Scaffolding from Raw Strings
-					ScaffoldProjectFile(projectPath / "CMakeLists.txt", CMAKELISTS_TEMPLATE, gameName);
-					ScaffoldProjectFile(projectPath / "src/main.cpp", MAIN_CPP_TEMPLATE, gameName);
-					ScaffoldProjectFile(projectPath / ("scripts/" + gameName + ".csproj"), CSPROJ_TEMPLATE, gameName);
-
-					// 3. Copy Starter Scripts
-					if (fs::exists(templatePath / "scripts")) {
-						fs::copy(templatePath / "scripts", projectPath / "scripts",
-							fs::copy_options::recursive | fs::copy_options::overwrite_existing);
-					}
-
-					LOGS(Core, "Project " + gameName + " is ready!");
-
-					// --- AUTO-LOAD THE NEW PROJECT ---
-					// This will instantly switch the editor into the new project and load the StartScene!
-					SwitchProjectContext(gameName, projectPath.generic_string());
-
-					newProjectName[0] = '\0';
-				}
-				catch (const std::exception& e) {
-					LOGE(Core, std::string("Scaffolding failed: ") + e.what());
-				}
-			}
-		}
-
-		ImGui::SeparatorText("Project Quick Switch");
-
-		fs::path gamesDir = fs::path("..") / ".." / "projects" / "GameProjects";
-		if (fs::exists(gamesDir)) {
-			for (auto const& entry : fs::directory_iterator(gamesDir)) {
-				if (entry.is_directory()) {
-					std::string name = entry.path().filename().string();
-					std::string currentRoot = GetGameRoot();
-					bool isActive = (currentRoot.find(name) != std::string::npos);
-
-					if (ImGui::Selectable(name.c_str(), isActive)) {
-						if (isActive) {
-							LOGI(Core, "Project '" + name + "' is already active.");
-						}
-						else {
-							// --- USE THE HELPER TO QUICK SWITCH ---
-							SwitchProjectContext(name, entry.path().generic_string());
-						}
-					}
-				}
-			}
 		}
 	}
 }

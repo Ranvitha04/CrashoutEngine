@@ -15,7 +15,7 @@ namespace CrashoutsEngine
     {
 
         [SerializeField] private string layerName = "Music";
-        [SerializeField] private float fadeTime = 2.0f;
+        [SerializeField] private float fadeTime = 1.0f;
         [SerializeField] private bool stopLayer = false;
 
         public override void Start()

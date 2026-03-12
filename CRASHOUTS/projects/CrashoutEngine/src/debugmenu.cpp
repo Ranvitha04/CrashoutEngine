@@ -28,13 +28,15 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "debugmenu_internals.h"
 #include "assetmanager.h"
 #include "settings.h"
-
+#include <fstream>
+#include <limits>
 /*
 ----------------------------------------------------------------------------- */
 
 using namespace CrashoutsEngine;
 
 namespace UI { // ----------------------------------------------------------------------------- public UI API
+
 
 	std::string& currSceneName = CrashoutsEngine::Serialization::currSceneName;
 	static VisualScriptingGraph s_VisualGraph;
@@ -135,7 +137,10 @@ namespace UI { // --------------------------------------------------------------
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 	}
-
+	UIState* GetUIState()
+	{
+		return s_UIStatePtr;
+	}
 	/*!
 	 @brief Ends the current ImGui frame and renders all draw data.
 	*/
@@ -310,17 +315,30 @@ namespace UI { // --------------------------------------------------------------
 		}
 	}
      
-	VisualScriptingGraph& GetVisualScriptingGraph()
+	static const char* ToString(VSNodeType type)
 	{
-		return s_VisualGraph;
+		switch (type) {
+		case VSNodeType::Start:      return "Start";
+		case VSNodeType::Move:       return "Move";
+		case VSNodeType::Attack:     return "Attack";
+		case VSNodeType::Wait:       return "Wait";
+		case VSNodeType::Branch:     return "Branch";
+		case VSNodeType::ScriptCall: return "ScriptCall";
+		default:                     return "Start";
+		}
 	}
 
-	void ClearVisualScriptingGraph()
+	static VSNodeType VSNodeTypeFromString(const std::string& s)
 	{
-		s_VisualGraph.nodes.clear();
-		s_VisualGraph.links.clear();
-		s_VisualGraph.nextNodeId = 1;
+		if (s == "Start")      return VSNodeType::Start;
+		if (s == "Move")       return VSNodeType::Move;
+		if (s == "Attack")     return VSNodeType::Attack;
+		if (s == "Wait")       return VSNodeType::Wait;
+		if (s == "Branch")     return VSNodeType::Branch;
+		if (s == "ScriptCall") return VSNodeType::ScriptCall;
+		return VSNodeType::Start;
 	}
+	
 	/*!
 	 @brief Renders all panels and overlays in a single call.
 	 @param profiler Frame profiler reference.
@@ -345,7 +363,11 @@ namespace UI { // --------------------------------------------------------------
 				CollisionGizmos::DrawAllColliders(ecs, collisions, ui.overlayThickness / thicknessRatio);
 				CollisionGizmos::DrawContactsAndNormals(*ECS::getInstance(), collisions, 3.5f, ui.overlayThickness / thicknessRatio);
 			}
-			if (ui.drawQuadTree) Collision::CollisionHandler::GetInstance().quadTree.Draw();
+			if (ui.drawQuadTree) {
+				// Draw BOTH trees so you can see static geometry AND moving entities!
+				Collision::CollisionHandler::GetInstance().staticQuadTree.Draw();
+				Collision::CollisionHandler::GetInstance().dynamicQuadTree.Draw();
+			}
 
 		}
 		RenderDebugMenuBar(ui);

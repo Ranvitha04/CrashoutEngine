@@ -540,7 +540,16 @@ namespace CrashoutsEngine
                 }
             }
         }
+        //Testing VSnode
+        public void VS_Grounded()
+        {
+            Debug.Log("Branch TRUE: Player is grounded");
+        }
 
+        public void VS_Airborne()
+        {
+            Debug.Log("Branch FALSE: Player is airborne");
+        }
         public void Respawn() 
         { 
             alive = true; 

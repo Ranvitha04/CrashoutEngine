@@ -4,9 +4,7 @@
 @date       08/09/2025
 @brief      Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
 
-All content ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¿Ãƒâ€šÃ‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
-
-
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 
 #pragma once
@@ -31,153 +29,141 @@ All content ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¿Ãƒâ€šÃ‚Â½ 2025 Digi
 
 namespace Collision {
 
+    enum class EngineState { STOP, PLAY, PAUSE };
 
-	enum class EngineState { STOP, PLAY, PAUSE };
+    /*Custom Types*/
+    enum TypeOfCollision {
+        ON_ENTER,
+        ON_STAY,
+        ON_EXIT,
+        COUNT
+    };
 
-	/*Custom Types*/
-	enum TypeOfCollision {
-		ON_ENTER,
-		ON_STAY,
-		ON_EXIT,
-		COUNT
-	};
+    /*!
+    @class    CollisionMessage
+    @brief    Used as the data to collision messages
+    */
+    class CollisionMessage : public Messaging::Messages {
+    private:
+        CollisionManifold colManifold;
+        CrashoutsEngine::Entity entity1;
+        CrashoutsEngine::Entity entity2;
+    public:
+        CollisionMessage(const Messaging::EventType& type, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
+        std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> GetCollisionPair();
+        CollisionManifold GetCollisionManifold();
+    };
 
-	/*!
-	@class	CollisionMessage
-	@brief	Used as the data to collision messages
-	*/
-	class CollisionMessage : public Messaging::Messages {
-	private:
-		CollisionManifold colManifold;
-		CrashoutsEngine::Entity entity1;
-		CrashoutsEngine::Entity entity2;
-	public:
-		CollisionMessage(const Messaging::EventType& type, CollisionManifold const& colManifold, CrashoutsEngine::Entity entity1, CrashoutsEngine::Entity entity2);
-		std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity> GetCollisionPair();
-		CollisionManifold GetCollisionManifold();
-	};
+    /*!
+    @struct    CollisionProps
+    @brief    Used to pass data about entities(collider, velocity and position)
+    */
+    struct CollisionProps {
+        std::unique_ptr<Collider> const& collider;
+        const CEVec3& vel;
+        const CEVec3& position;
+    };
 
+    using FunctionDispatchType = CollisionManifold(*)(CollisionProps const& coll1, CollisionProps const& coll2);
 
-	/*!
-	@struct	CollisionProps
-	@brief	Used to pass data about entities(collider, velocity and position)
-	*/
-	struct CollisionProps {
-		std::unique_ptr<Collider> const& collider;
-		const CEVec3& vel;
-		const CEVec3& position;
-	};
+    /*!
+    @class    CollisionHandler
+    @brief    Used to contain functions for checking collision and able to return a function pointer based on the type of collision passed in
+    */
+    class CollisionHandler : public Messaging::Observable {
+    public:
+        using Contact = std::optional<CollisionManifold>;
 
-	using FunctionDispatchType = CollisionManifold(*)(CollisionProps const& coll1, CollisionProps const& coll2);
+    private:
 
-	/*!
-	@class	CollisionHandler
-	@brief	Used to contain functions for checking collision and able to return a function pointer based on the type of collision passed in
-	*/
-	class CollisionHandler : public Messaging::Observable {
-		public:
-			using Contact = std::optional<CollisionManifold>;
+        static constexpr int SHAPE_COUNT = static_cast<int>(Collision::ColliderType::NONE);
 
-		private:
+        std::array<FunctionDispatchType, SHAPE_COUNT* SHAPE_COUNT> collideFuncts;
 
-			//static constexpr int TYPES_OF_COLLISION = static_cast<int>(TypeOfCollision::COUNT);
+        static CollisionManifold CircleToCircleCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        static CollisionManifold CircleToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        static CollisionManifold AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			static constexpr int SHAPE_COUNT = static_cast<int>(Collision::ColliderType::NONE);
+        /*ColliderType::POLYGON FUNCTIONS*/
+        static CollisionManifold PolygonToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        static CollisionManifold CircleToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        static CollisionManifold AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			std::array<FunctionDispatchType, SHAPE_COUNT* SHAPE_COUNT> collideFuncts;
+        /*ColliderType::LINE FUNCTIONS*/
+        static CollisionManifold CircleToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        static CollisionManifold PolygonToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        static CollisionManifold AABBToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        static CollisionManifold LineToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
 
-			static CollisionManifold CircleToCircleCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        std::vector<CollisionEvent> m_FrameCollisions;
 
-			static CollisionManifold CircleToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+    public:
 
-			static CollisionManifold AABBToAABBCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        ContactCollection currentFrameCollision;
+        ContactCollection lastFrameCollision;
 
-			/*ColliderType::POLYGON FUNCTIONS*/
+        static CollisionHandler& GetInstance() {
+            static CollisionHandler singleton;
+            return singleton;
+        }
 
-			static CollisionManifold PolygonToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        // --- DUAL QUADTREE SYSTEM ---
+        DataStructure::QuadTree staticQuadTree;
+        DataStructure::QuadTree dynamicQuadTree;
+        size_t lastStaticCount = 0;
+        bool isStaticDirty = true;
 
-			static CollisionManifold CircleToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        // Helper to query both trees at once
+        void QueryTrees(AABBRect& region, std::vector<CrashoutsEngine::Entity>& outCandidates) {
+            // 1. Query static objects (this might internally clear outCandidates, which is fine here)
+            staticQuadTree.Query(region, outCandidates);
 
-			static CollisionManifold AABBToPolygonCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+            // 2. Query dynamic objects into a temporary list so they don't overwrite the static ones
+            std::vector<CrashoutsEngine::Entity> dynamicCands;
+            dynamicCands.reserve(32);
+            dynamicQuadTree.Query(region, dynamicCands);
 
-			/*ColliderType::LINE FUNCTIONS*/
-			static CollisionManifold CircleToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+            // 3. Combine them!
+            outCandidates.insert(outCandidates.end(), dynamicCands.begin(), dynamicCands.end());
+        }
 
-			static CollisionManifold PolygonToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        CollisionHandler();
 
-			static CollisionManifold AABBToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        void Update(double deltaTime, EngineState engineState, int subStepIndex);
 
-			static CollisionManifold LineToLineCollision(CollisionProps const& coll1, CollisionProps const& coll2);
+        /*!
+        @brief Return a function pointer to call the appropriate collision function
+        */
+        FunctionDispatchType callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2);
 
-			std::vector<CollisionEvent> m_FrameCollisions;
-			
-		public:
+        /*!
+        @brief Cleanup
+        */
+        void Shutdown() {
+            std::vector<CollisionEvent>().swap(m_FrameCollisions);
 
-			ContactCollection currentFrameCollision;
-			ContactCollection lastFrameCollision;
+            ContactCollection().swap(currentFrameCollision);
+            ContactCollection().swap(lastFrameCollision);
 
+            staticQuadTree.Clear();
+            dynamicQuadTree.Clear();
+            lastStaticCount = 0;
+            isStaticDirty = true;
 
-			static CollisionHandler& GetInstance() {
-				static CollisionHandler singleton;
-				return singleton;
-			}
+            ClearObservers();
+        }
 
-			DataStructure::QuadTree quadTree;
+        // Getter for collision data that frame
+        const std::vector<CollisionEvent>& GetFrameCollisions() const {
+            return m_FrameCollisions;
+        }
 
-			CollisionHandler();
+        bool Raycast(CEVec3 start, CEVec3 end, CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity = 999999);
 
-			void Update(double deltaTime, EngineState engineState, int subStepIndex);
+        bool RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, CrashoutsEngine::Entity& outEntity,
+            CrashoutsEngine::Entity ignoredEntity = 999999, CrashoutsEngine::Entity ignoredParent = 0);
 
-			/*!
-			@brief Return a function pointer to call the appropriate collision function
-			@param type1 The first collider type
-			@param type2 The second collider type
-			@return FunctionDispatchType which is a function pointer
-			*/
-			FunctionDispatchType callCollFunct(Collision::ColliderType type1, Collision::ColliderType type2);
-
-			/*!
-			@brief Cleanup
-			*/
-			void Shutdown() {
-				std::vector<CollisionEvent>().swap(m_FrameCollisions);
-
-				ContactCollection().swap(currentFrameCollision);
-				ContactCollection().swap(lastFrameCollision);
-
-				ClearObservers();
-			}
-
-			// Getter for collision data that frame
-			const std::vector<CollisionEvent>& GetFrameCollisions() const {
-				return m_FrameCollisions;
-			}
-
-			/*!
-			@brief Cast a ray and return the first object hit
-			@param start Start position
-			@param end End position
-			@param outEntity Reference to store the entity ID that was hit
-			@param ignoredEntity Entity ID to ignore (e.g. self)
-			@return True if something was hit
-			*/
-			bool Raycast(CEVec3 start, CEVec3 end, CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity = 999999);
-
-			/*!
-			@brief Cast a ray and return the first object hit with contact point
-			@param start Start position
-			@param end End position
-			@param outPoint Reference to store hit position
-			@param outEntity Reference to store the entity ID that was hit
-			@param ignoredEntity Entity ID to ignore (e.g. self)
-			@return True if something was hit
-			*/
-			bool RaycastHit(CEVec3 start, CEVec3 end, CEVec3& outPoint, CrashoutsEngine::Entity& outEntity,
-				CrashoutsEngine::Entity ignoredEntity = 999999, CrashoutsEngine::Entity ignoredParent = 0);
-
-
-			bool RaycastAgainstList(CEVec3 start, CEVec3 end, const std::vector<CrashoutsEngine::Entity>& candidates, CEVec3& outPoint, 
-				CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity = 0, CrashoutsEngine::Entity ignoredParent = 0);
-	};
+        bool RaycastAgainstList(CEVec3 start, CEVec3 end, const std::vector<CrashoutsEngine::Entity>& candidates, CEVec3& outPoint,
+            CrashoutsEngine::Entity& outEntity, CrashoutsEngine::Entity ignoredEntity = 0, CrashoutsEngine::Entity ignoredParent = 0);
+    };
 }
-

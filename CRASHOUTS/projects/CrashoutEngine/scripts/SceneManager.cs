@@ -14,7 +14,7 @@ namespace CrashoutsEngine
     public static class SceneManager
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void LoadScene(string sceneName);
+        private static extern void InternalLoadScene(string sceneName);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void QuitGame();
@@ -31,7 +31,13 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern string GetActiveSceneName();
 
-        // 1. Detailed Control
+        // 1. Default (With Transition)
+        public static void LoadScene(string sceneName)
+        {
+            TransitionToScene(sceneName, 0.3f, 0.3f);
+        }
+
+        // 2. Detailed Control
         public static void LoadScene(string sceneName, float fadeOut, float fadeIn)
         {
             TransitionToScene(sceneName, fadeOut, fadeIn);

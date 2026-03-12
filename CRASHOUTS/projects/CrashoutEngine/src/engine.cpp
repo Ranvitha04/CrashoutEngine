@@ -29,6 +29,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "textureasset.h"
 #include "scriptsystem.h"
 #include "audioSystem.h"
+#include "audiobindings.h"
+#include "scenetransition.h"
 #include "debugmenu.h"
 #include "sceneutils.h"
 #include "camera.h"
@@ -63,7 +65,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 #include "jobsystem.h"
 #include <iostream>
-
+#include "visualscriptsystem.h"
+#include "visualscriptcomponent.h"
 #include "frameratecontroller.h"
 #include "registergamestate.h"
 #include "settings.h"
@@ -200,7 +203,14 @@ Call to ensure safe load based off run order
 static bool PerformPendingSceneLoad() {
     if (g_IsSceneLoadPending) {
 
+        // HARD STOP all audio.
         CrashoutsEngine::Audio::AudioSystem::instance().stopAll(false);
+        
+        // Restore group volumes now that old audio is shot behind the house
+        CrashoutsEngine::Audio::AudioSystem::instance().setMusicGroupVolume(Settings::GetMusicVolume());
+        CrashoutsEngine::Audio::AudioSystem::instance().setSFXGroupVolume(Settings::GetSFXVolume());
+
+        CrashoutsEngine::Bindings::Audio_Reset();
 
         // Before nuking, destroy scripts
         CrashoutsEngine::ScriptSystem::DestroyAll();
@@ -440,6 +450,16 @@ Let application Update state changes (such as animation).
 void Update(double const& dt) {
     CrashoutsEngine::Assets::AssetManager::GetInstance().Update();
     MonoManager::CheckHotReload();
+
+    // --- 1. Update Transitions and Audio (Highest Priority) ---
+    // We do this BEFORE pending scene loads so that fades can finish 
+    // their final frame before the scene is nuked.
+    {
+        float dtFloat = (float)GLApp::delta_time;
+        CrashoutsEngine::SceneTransition::Update(dtFloat);
+        CrashoutsEngine::Audio::AudioSystem::instance().Update(dtFloat);
+    }
+
     if(PerformPendingSceneLoad()) return;
 
     GLApp::update_time();
@@ -557,7 +577,10 @@ void Update(double const& dt) {
             FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "LeaderboardUpdate");
             CrashoutsEngine::LeaderboardSystem::Update(ecs, (float)dt, false);
         }
-
+        {
+            FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "VisualScriptUpdate");
+            UpdateVisualScripts(ecs, (float)dt);
+        }
         //fixed Update please work
         int steps = FrameRateController::GetInstance().StepCount();
 
@@ -708,7 +731,6 @@ void Update(double const& dt) {
         physicsSystem.Update(0.f);
         CrashoutsEngine::ScriptSystem::LateUpdateAll();
         InputManager::ClearInputs();
-        return;
     }
 
     // Process Game Camera
@@ -756,6 +778,13 @@ void Update(double const& dt) {
     {
         FrameProfiler::Scoped s(PerformanceSystem::Get().GetProfiler(), "SceneUpdate");
         Scene::UpdateScene(ecs);
+    }
+
+    // --- Update Transitions and Audio ---
+    {
+        float dtFloat = (float)GLApp::delta_time;
+        CrashoutsEngine::SceneTransition::Update(dtFloat);
+        CrashoutsEngine::Audio::AudioSystem::instance().Update(dtFloat);
     }
 
     {

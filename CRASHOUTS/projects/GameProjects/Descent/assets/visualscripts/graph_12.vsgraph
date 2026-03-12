@@ -1,0 +1,74 @@
+{
+    "nodes": [
+        {
+            "id": 1,
+            "type": 0,
+            "title": "Start",
+            "pos": {
+                "x": 100.0,
+                "y": 100.0
+            },
+            "size": {
+                "x": 140.0,
+                "y": 70.0
+            },
+            "inputs": [],
+            "outputs": [],
+            "scriptName": "",
+            "functionName": "",
+            "waitTime": 1.0
+        },
+        {
+            "id": 2,
+            "type": 1,
+            "title": "Move",
+            "pos": {
+                "x": 457.0,
+                "y": 263.0
+            },
+            "size": {
+                "x": 140.0,
+                "y": 70.0
+            },
+            "inputs": [],
+            "outputs": [],
+            "scriptName": "",
+            "functionName": "",
+            "waitTime": 1.0
+        },
+        {
+            "id": 3,
+            "type": 3,
+            "title": "Wait",
+            "pos": {
+                "x": 745.0,
+                "y": 244.0
+            },
+            "size": {
+                "x": 140.0,
+                "y": 70.0
+            },
+            "inputs": [],
+            "outputs": [],
+            "scriptName": "",
+            "functionName": "",
+            "waitTime": 2.0
+        }
+    ],
+    "links": [
+        {
+            "fromNode": 1,
+            "fromPin": 0,
+            "toNode": 2,
+            "toPin": 0
+        },
+        {
+            "fromNode": 2,
+            "fromPin": 0,
+            "toNode": 3,
+            "toPin": 0
+        }
+    ],
+    "nextNodeId": 4,
+    "nextPinId": 1
+}

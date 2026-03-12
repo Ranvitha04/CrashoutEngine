@@ -61,12 +61,13 @@ All content
 #include "checkpointcomponent.h"
 #include "triggercomponent.h"
 #include "transformentitycommand.h"
+#include "visualscriptcomponent.h"
 // FOR GAME GUI
 #include "buttoncomponent.h"
 #include "guicomponent.h"
 #include "textinputcomponent.h"
 #include "uilayoutcomponent.h"
-
+#include "debugmenu.h"
 #include "collisionmanager.h"
 #include "gamestatemanager.h"
 #include "assetmanager.h"
@@ -78,9 +79,10 @@ All content
 #include "reflectimgui.h"
 #include "shapes.h"
 #include "layercomponent.h"
-#include "transformentitycommand.h"
+
 #include <memory>
 #include "scriptsystem.h"
+#include "visualscriptcomponent.h"
 
 // FOR MONO SCRIPTING
 #include <mono/metadata/reflection.h>
@@ -379,7 +381,82 @@ namespace {
 			ImGui::EndCombo();
 		}
 	}
+	struct VisualScriptAdapter : DebugReflection::IComponentAdapter {
+		const char* name() const override { return "Visual Script"; }
 
+		bool has(ECS& ecs, Entity e) const override {
+			return ecs.HasComponent<Component::VisualScriptComponent>(e);
+		}
+
+		void add(ECS& ecs, Entity e) override {
+			if (!has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<AddComponentCommand<Component::VisualScriptComponent>>(e)
+				);
+			}
+		}
+
+		void remove(ECS& ecs, Entity e) override {
+			if (has(ecs, e)) {
+				UndoManager::GetInstance().AddCommand(
+					std::make_unique<RemoveComponentCommand<Component::VisualScriptComponent>>(e)
+				);
+			}
+		}
+
+		void drawInspector(ECS& ecs, Entity e) override {
+			auto* vs = ecs.GetComponent<Component::VisualScriptComponent>(e);
+			if (!vs) return;
+
+			ImGui::SeparatorText("Visual Script");
+
+			UIHelpers::DrawUndoableBool("Enabled", vs->enabled);
+			UIHelpers::DrawUndoableString("Graph Path", vs->graphPath);
+
+			if (ImGui::Button("New Graph")) {
+				vs->graphPath = "../../projects/GameProjects/Descent/assets/visualscripts/graph_" + std::to_string(e) + ".vsgraph";
+
+				vs->graphLoaded = false;
+				vs->graph.reset();
+				vs->currentNodeId = 0;
+				vs->waitTimer = 0.0f;
+
+				if (UI::UIState* ui = UI::GetUIState()) {
+					ui->openedVisualScriptPath = vs->graphPath;
+
+					UI::ClearVisualScriptingGraph();
+					UI::VisualScriptingGraph& g = UI::GetVisualScriptingGraph();
+
+					UI::VSNode startNode;
+					startNode.id = g.nextNodeId++;
+					startNode.type = UI::VSNodeType::Start;
+					startNode.title = "Start";
+					startNode.pos = ImVec2(100.0f, 100.0f);
+					startNode.size = ImVec2(140.0f, 70.0f);
+					startNode.waitTime = 1.0f;
+
+					g.nodes.push_back(startNode);
+
+					ui->showVisualScripting = true;
+				}
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Open Graph")) {
+				vs->graphLoaded = false;
+				vs->graph.reset();
+				vs->currentNodeId = 0;
+				vs->waitTimer = 0.0f;
+
+				if (UI::UIState* ui = UI::GetUIState()) {
+					ui->openedVisualScriptPath = vs->graphPath;
+					UI::LoadVisualScriptingGraph(vs->graphPath, UI::GetVisualScriptingGraph());
+					ui->showVisualScripting = true;
+				}
+			}
+		}
+	};
 	/*!
 	@brief Unified adapter for editing core entity properties (Name, UUID, Active, Tag, Layer).
 	@details Mimics the Unity GameObject header. Combines multiple ECS components into one UI block.
@@ -811,6 +888,7 @@ namespace {
 	@details Lets users switch collider type and tweak radius/min/max; can snap to Transform.
 	*/
 	struct ColliderAdapter : DebugReflection::IComponentAdapter {
+		std::unordered_map<Entity, bool> m_addedRigidBody;
 		const char* name() const override { return "Collider"; }
 
 		bool has(ECS& ecs, Entity e) const override {
@@ -819,22 +897,35 @@ namespace {
 
 		void add(ECS& ecs, Entity e) override {
 			auto& D = GetDebugDefaults();
-			// Default to a 1.0-radius circle at the entity's transform position (if present)
+
 			CEVec3 center{ 0.f,0.f,0.f };
-			if (auto* t = ecs.GetComponent<TransformComponent>(e)) center = t->position;
+			if (auto* t = ecs.GetComponent<TransformComponent>(e))
+				center = t->position;
 
 			auto col = std::make_unique<Collision::Circle>(D.sphere_radius, center);
 			col->ColliderType = Collision::ColliderType::CIRCLE;
 			ecs.AddComponent<ColliderComponent>(e, std::move(col));
 
+			m_addedRigidBody[e] = false;
+
 			if (!ecs.HasComponent<RigidBodyComponent>(e)) {
 				auto& D2 = GetDebugDefaults();
 				ecs.AddComponent<RigidBodyComponent>(e, CEVec3{ 0.f,0.f,0.f }, 0.0f, D2.rb_restitution);
+				m_addedRigidBody[e] = true;
 			}
 		}
 
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<ColliderComponent>(e);
+			if (has(ecs, e))
+				ecs.RemoveComponent<ColliderComponent>(e);
+
+			auto it = m_addedRigidBody.find(e);
+			if (it != m_addedRigidBody.end() && it->second) {
+				if (ecs.HasComponent<RigidBodyComponent>(e))
+					ecs.RemoveComponent<RigidBodyComponent>(e);
+			}
+
+			m_addedRigidBody.erase(e);
 		}
 
 		void drawInspector(ECS& ecs, Entity e) override {
@@ -4129,6 +4220,7 @@ namespace CrashoutsEngine
 	static LeaderboardAdapter gLeaderboardAdapter;
 	static CheckpointAdapter gCheckpointAdapter;
 	static TriggerMetadataAdapter gTriggerMetadataAdapter;
+	static VisualScriptAdapter gVisualScriptAdapter;
 }
 
 /*!
@@ -4165,5 +4257,5 @@ extern "C" void RegisterBuiltinComponentAdapters() {
 	ComponentRegistry::instance().registerAdapter(&gTriggerMetadataAdapter);
 	DebugReflection::SetGameStateProvider(&gProvider);
 	DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
-
+	ComponentRegistry::instance().registerAdapter(&gVisualScriptAdapter);
 }

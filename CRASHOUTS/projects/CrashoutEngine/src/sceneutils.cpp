@@ -40,12 +40,14 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "activecomponent.h"
 #include "particleSystem.h"
 #include "spriteAnimation.h"
+#include "jobsystem.h"
 #include "hierarchycomponent.h"
 //#include "camera.h"
 #include "performanceSystem.h"
 #include "CEMath.h"
 
 #include <fstream>
+#include <mutex>
 #include <sstream>
 
 #include <filesystem>
@@ -686,16 +688,25 @@ namespace Scene {
 
 			// Iterate over the single ParticleComponent type
 			auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
-			for (const Entity& id : particleArray.indexToEntity) {
-				if (!IsEntityActive(globalECS, id)) continue;
+			CrashoutsEngine::JobSystem::Get().ParallelFor(
+				static_cast<unsigned int>(particleArray.indexToEntity.size()),
+				1u,
+				[&](unsigned int start, unsigned int end) {
+					for (unsigned int i = start; i < end; ++i) {
+						const Entity& id = particleArray.indexToEntity[i];
+						if (!IsEntityActive(globalECS, id)) continue;
 
-				ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
-				if (pc) {
-					// Call the Update function declared in particlecomponent.h
-					if (engineState == EngineState::PLAY || pc->playOnStop) ParticleSystem::ParticleUpdate(id, *pc, dt);
-					else pc->data.activeCount = 0;
-				}
-			}
+						ParticleComponent* pc = globalECS.GetComponent<ParticleComponent>(id);
+						if (!pc) continue;
+
+						if (engineState == EngineState::PLAY || pc->playOnStop) {
+							ParticleSystem::ParticleUpdate(id, *pc, dt);
+						}
+						else {
+							pc->data.activeCount = 0;
+						}
+					}
+				});
 		}
 
 		/*!
@@ -1063,6 +1074,7 @@ namespace Scene {
 
 		const auto& shapeArray = globalECS.GetComponentArray<ShapeComponent>();
 		const auto& textArray = globalECS.GetComponentArray<TextComponent>();
+		const auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
 
 		// 1. Setup Camera & Culling Bounds
 		// ---------------------------------------------------------
@@ -1094,101 +1106,147 @@ namespace Scene {
 		worldEntries.clear();
 		screenEntries.clear();
 
-		size_t reserveSize = shapeArray.indexToEntity.size() + textArray.indexToEntity.size();
+		size_t reserveSize = shapeArray.indexToEntity.size() + textArray.indexToEntity.size() + particleArray.indexToEntity.size();
 		if (worldEntries.capacity() < reserveSize) worldEntries.reserve(reserveSize);
 		if (screenEntries.capacity() < reserveSize) screenEntries.reserve(reserveSize);
+		std::mutex renderEntriesMutex;
+
+		auto mergeEntries = [&](std::vector<RenderEntry>& localWorld, std::vector<RenderEntry>& localScreen) {
+			if (localWorld.empty() && localScreen.empty()) return;
+			std::lock_guard<std::mutex> lock(renderEntriesMutex);
+			if (!localWorld.empty()) {
+				worldEntries.insert(worldEntries.end(), localWorld.begin(), localWorld.end());
+			}
+			if (!localScreen.empty()) {
+				screenEntries.insert(screenEntries.end(), localScreen.begin(), localScreen.end());
+			}
+		};
 
 		// 2a. PRE-SORT SHAPES
-		for (const Entity& id : shapeArray.indexToEntity) {
-			if (!IsEntityActive(globalECS, id)) continue;
-			auto* tc = globalECS.GetComponent<TransformComponent>(id);
-			if (!tc) continue;
-			auto* sc = globalECS.GetComponent<ShapeComponent>(id);
-			if (!sc) continue;
-			if (sc->preview) continue;
+		CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(shapeArray.indexToEntity.size()), 32u,
+			[&](unsigned int start, unsigned int end) {
+				std::vector<RenderEntry> localWorld;
+				std::vector<RenderEntry> localScreen;
+				localWorld.reserve(end - start);
+				localScreen.reserve(end - start);
 
-			// Compute Depth
-			float depth = 0.0f;
-			if (globalECS.HasComponent<Component::LayerComponent>(id)) {
-				auto* z = globalECS.GetComponent<Component::LayerComponent>(id);
-				if (Component::LayerComponent::layerVisibility.count(z->layerName)) {
-					if (!Component::LayerComponent::layerVisibility[z->layerName]) continue;
-				}
-				DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
-				depth = Component::Rendering::ComputeDepth(tc->position, *z, dbg);
-			}
-			else {
-				Component::LayerComponent defaultZ{ "Default", 0 };
-				if (Component::LayerComponent::layerVisibility.count("Default")) {
-					if (!Component::LayerComponent::layerVisibility["Default"]) continue;
-				}
-				depth = Component::Rendering::ComputeDepth(tc->position, defaultZ, nullptr);
-			}
+				for (unsigned int i = start; i < end; ++i) {
+					const Entity& id = shapeArray.indexToEntity[i];
+					if (!IsEntityActive(globalECS, id)) continue;
+					auto* tc = globalECS.GetComponent<TransformComponent>(id);
+					if (!tc) continue;
+					auto* sc = globalECS.GetComponent<ShapeComponent>(id);
+					if (!sc || sc->preview) continue;
 
-			if (sc->isWorldSpace) worldEntries.push_back({ id, depth, RenderType::Shape });
-			else                  screenEntries.push_back({ id, depth, RenderType::Shape });
-		}
+					float depth = 0.0f;
+					if (globalECS.HasComponent<Component::LayerComponent>(id)) {
+						auto* z = globalECS.GetComponent<Component::LayerComponent>(id);
+						if (Component::LayerComponent::layerVisibility.count(z->layerName) &&
+							!Component::LayerComponent::layerVisibility[z->layerName]) {
+							continue;
+						}
+						DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
+						depth = Component::Rendering::ComputeDepth(tc->position, *z, dbg);
+					}
+					else {
+						Component::LayerComponent defaultZ{ "Default", 0 };
+						if (Component::LayerComponent::layerVisibility.count("Default") &&
+							!Component::LayerComponent::layerVisibility["Default"]) {
+							continue;
+						}
+						depth = Component::Rendering::ComputeDepth(tc->position, defaultZ, nullptr);
+					}
+
+					if (sc->isWorldSpace) localWorld.push_back({ id, depth, RenderType::Shape });
+					else                  localScreen.push_back({ id, depth, RenderType::Shape });
+				}
+
+				mergeEntries(localWorld, localScreen);
+			});
 
 		// 2b. PRE-SORT TEXT
-		for (const Entity& id : textArray.indexToEntity) {
-			if (!IsEntityActive(globalECS, id)) continue;
-			auto* tc = globalECS.GetComponent<TransformComponent>(id);
-			if (!tc) continue;
-			auto* txt = globalECS.GetComponent<TextComponent>(id);
+		CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(textArray.indexToEntity.size()), 32u,
+			[&](unsigned int start, unsigned int end) {
+				std::vector<RenderEntry> localWorld;
+				std::vector<RenderEntry> localScreen;
+				localWorld.reserve(end - start);
+				localScreen.reserve(end - start);
 
-			// Compute Depth
-			float depth = 0.0f;
-			if (globalECS.HasComponent<Component::LayerComponent>(id)) {
-				auto* z = globalECS.GetComponent<Component::LayerComponent>(id);
-				if (Component::LayerComponent::layerVisibility.count(z->layerName)) {
-					if (!Component::LayerComponent::layerVisibility[z->layerName]) continue;
-				}
-				DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
-				depth = Component::Rendering::ComputeDepth(tc->position, *z, dbg);
-			}
-			else {
-				Component::LayerComponent defaultZ{ "Default", 0 };
-				if (Component::LayerComponent::layerVisibility.count("Default")) {
-					if (!Component::LayerComponent::layerVisibility["Default"]) continue;
-				}
-				depth = Component::Rendering::ComputeDepth(tc->position, defaultZ, nullptr);
-			}
+				for (unsigned int i = start; i < end; ++i) {
+					const Entity& id = textArray.indexToEntity[i];
+					if (!IsEntityActive(globalECS, id)) continue;
+					auto* tc = globalECS.GetComponent<TransformComponent>(id);
+					auto* txt = globalECS.GetComponent<TextComponent>(id);
+					if (!tc || !txt) continue;
 
-			if (txt->isWorldSpace) worldEntries.push_back({ id, depth, RenderType::Text });
-			else                   screenEntries.push_back({ id, depth, RenderType::Text });
-		}
+					float depth = 0.0f;
+					if (globalECS.HasComponent<Component::LayerComponent>(id)) {
+						auto* z = globalECS.GetComponent<Component::LayerComponent>(id);
+						if (Component::LayerComponent::layerVisibility.count(z->layerName) &&
+							!Component::LayerComponent::layerVisibility[z->layerName]) {
+							continue;
+						}
+						DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
+						depth = Component::Rendering::ComputeDepth(tc->position, *z, dbg);
+					}
+					else {
+						Component::LayerComponent defaultZ{ "Default", 0 };
+						if (Component::LayerComponent::layerVisibility.count("Default") &&
+							!Component::LayerComponent::layerVisibility["Default"]) {
+							continue;
+						}
+						depth = Component::Rendering::ComputeDepth(tc->position, defaultZ, nullptr);
+					}
+
+					if (txt->isWorldSpace) localWorld.push_back({ id, depth, RenderType::Text });
+					else                   localScreen.push_back({ id, depth, RenderType::Text });
+				}
+
+				mergeEntries(localWorld, localScreen);
+			});
 
 		// 2c. PRE-SORT PARTICLES
-		const auto& particleArray = globalECS.GetComponentArray<ParticleComponent>();
-		for (const Entity& id : particleArray.indexToEntity) {
-			if (!IsEntityActive(globalECS, id)) continue;
-			auto* pc = globalECS.GetComponent<ParticleComponent>(id);
-			if (!pc || pc->data.activeCount == 0) continue;
+		CrashoutsEngine::JobSystem::Get().ParallelFor(static_cast<unsigned int>(particleArray.indexToEntity.size()), 16u,
+			[&](unsigned int start, unsigned int end) {
+				std::vector<RenderEntry> localWorld;
+				std::vector<RenderEntry> localScreen;
+				localWorld.reserve(end - start);
+				localScreen.reserve(end - start);
 
-			auto* tc = globalECS.GetComponent<TransformComponent>(id);
-			CEVec3 basePos = tc ? tc->position : CEVec3(0, 0, 0);
+				for (unsigned int i = start; i < end; ++i) {
+					const Entity& id = particleArray.indexToEntity[i];
+					if (!IsEntityActive(globalECS, id)) continue;
+					auto* pc = globalECS.GetComponent<ParticleComponent>(id);
+					if (!pc || pc->data.activeCount == 0) continue;
 
-			// Compute Depth
-			float depth = 0.0f;
-			if (globalECS.HasComponent<Component::LayerComponent>(id)) {
-				auto* z = globalECS.GetComponent<Component::LayerComponent>(id);
-				if (Component::LayerComponent::layerVisibility.count(z->layerName)) {
-					if (!Component::LayerComponent::layerVisibility[z->layerName]) continue;
+					auto* tc = globalECS.GetComponent<TransformComponent>(id);
+					CEVec3 basePos = tc ? tc->position : CEVec3(0, 0, 0);
+
+					float depth = 0.0f;
+					if (globalECS.HasComponent<Component::LayerComponent>(id)) {
+						auto* z = globalECS.GetComponent<Component::LayerComponent>(id);
+						if (Component::LayerComponent::layerVisibility.count(z->layerName) &&
+							!Component::LayerComponent::layerVisibility[z->layerName]) {
+							continue;
+						}
+						DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
+						depth = Component::Rendering::ComputeDepth(basePos, *z, dbg);
+					}
+					else {
+						Component::LayerComponent defaultZ{ "Default", 0 };
+						if (Component::LayerComponent::layerVisibility.count("Default") &&
+							!Component::LayerComponent::layerVisibility["Default"]) {
+							continue;
+						}
+						depth = Component::Rendering::ComputeDepth(basePos, defaultZ, nullptr);
+					}
+
+					if (pc->useWorldSpace) localWorld.push_back({ id, depth, RenderType::Particle });
+					else                   localScreen.push_back({ id, depth, RenderType::Particle });
 				}
-				DebugZOverride* dbg = globalECS.HasComponent<DebugZOverride>(id) ? globalECS.GetComponent<DebugZOverride>(id) : nullptr;
-				depth = Component::Rendering::ComputeDepth(basePos, *z, dbg);
-			}
-			else {
-				Component::LayerComponent defaultZ{ "Default", 0 };
-				if (Component::LayerComponent::layerVisibility.count("Default")) {
-					if (!Component::LayerComponent::layerVisibility["Default"]) continue;
-				}
-				depth = Component::Rendering::ComputeDepth(basePos, defaultZ, nullptr);
-			}
 
-			if (pc->useWorldSpace) worldEntries.push_back({ id, depth, RenderType::Particle });
-			else                   screenEntries.push_back({ id, depth, RenderType::Particle });
-		}
+				mergeEntries(localWorld, localScreen);
+			});
 
 		// 3. SORT
 		auto sortFunc = [](const RenderEntry& a, const RenderEntry& b) {
