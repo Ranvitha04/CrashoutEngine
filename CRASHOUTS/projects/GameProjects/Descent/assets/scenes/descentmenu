@@ -509,7 +509,7 @@
                     {
                         "name": "MenuMusic",
                         "path": "main menu.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -1030,8 +1030,8 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 278.5199890136719,
-                    "y": 60.5
+                    "x": 280.0,
+                    "y": 60.0
                 }
             },
             "shape": {
@@ -1042,13 +1042,13 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/button.png",
+                "textureName": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
                 "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 0.3333333432674408,
+                    "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.0,
+                    "x": 0.6666666865348816,
                     "y": 0.0
                 },
                 "color": {
@@ -1171,7 +1171,7 @@
             },
             "keyframe_animator": {
                 "current": "death_anim",
-                "t": 0.0,
+                "t": 57.8659553527832,
                 "playing": true,
                 "clips": [
                     {

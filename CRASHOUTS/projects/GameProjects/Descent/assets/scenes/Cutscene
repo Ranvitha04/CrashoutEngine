@@ -341,7 +341,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "Dialogue_1_2",
             "uuid": 17951410262263774997,
             "tag": {
@@ -1650,7 +1650,7 @@
                     {
                         "name": "CutsceneMusic",
                         "path": "temp opening cutscene.wav",
-                        "volume": 1.0,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,

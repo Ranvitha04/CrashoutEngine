@@ -133,14 +133,33 @@ void Settings::LoadFromFile(const char* path) {
  */
 void Settings::SaveToFile(const char* path) {
     rapidjson::Document json;
-    json.SetObject();
+    
+    // Read existing file first to preserve other settings
+    std::ifstream ifs(path);
+    if (ifs.is_open()) {
+        rapidjson::IStreamWrapper isw(ifs);
+        json.ParseStream(isw);
+        ifs.close();
+    }
+    
+    // Ensure it's an object in case the file was missing or invalid
+    if (!json.IsObject()) {
+        json.SetObject();
+    }
+
     rapidjson::Document::AllocatorType& allocator = json.GetAllocator();
 
-    json.AddMember("width", screenWidth, allocator);
-    json.AddMember("height", screenHeight, allocator);
+    // Helper macro to update or add a member
+    #define UPDATE_OR_ADD(key, val) \
+        if (json.HasMember(key)) json[key] = val; \
+        else json.AddMember(key, val, allocator)
 
-    json.AddMember("musicVolume", MusicVolume, allocator);
-    json.AddMember("sfxVolume", SFXVolume, allocator);
+    UPDATE_OR_ADD("width", screenWidth);
+    UPDATE_OR_ADD("height", screenHeight);
+    UPDATE_OR_ADD("musicVolume", MusicVolume);
+    UPDATE_OR_ADD("sfxVolume", SFXVolume);
+
+    #undef UPDATE_OR_ADD
 
     std::ofstream ofs(path);
     if (!ofs.is_open()) return;
@@ -156,34 +175,54 @@ void Settings::Save() {
 }
 
 void Settings::SaveEditorSettings(const UI::UIState& uiState) {
+    std::string fullPath = GetGameRoot() + "/assets/settings.json";
     rapidjson::Document json;
-    json.SetObject();
+
+    // Read existing file first to preserve other settings (like width and height)
+    std::ifstream ifs(fullPath);
+    if (ifs.is_open()) {
+        rapidjson::IStreamWrapper isw(ifs);
+        json.ParseStream(isw);
+        ifs.close();
+    }
+    
+    if (!json.IsObject()) {
+        json.SetObject();
+    }
+
     rapidjson::Document::AllocatorType& allocator = json.GetAllocator();
 
-    // --- 1. Boolean Toggles ---
-    json.AddMember("lockLayout", uiState.lockLayout, allocator);
-    json.AddMember("showPerf", uiState.showPerf, allocator);
-    json.AddMember("showConsole", uiState.showConsole, allocator);
-    json.AddMember("showInspector", uiState.showInspector, allocator);
-    json.AddMember("showECS", uiState.showECS, allocator);
-    json.AddMember("showAssets", uiState.showAssets, allocator);
-    json.AddMember("showGameState", uiState.showGameState, allocator);
-    json.AddMember("showGameScene", uiState.showGameScene, allocator);
-    json.AddMember("showPhysics", uiState.showPhysics, allocator);
-    json.AddMember("showAudio", uiState.showAudio, allocator);
-    json.AddMember("drawCollOverlay", uiState.drawCollOverlay, allocator);
-    json.AddMember("showEngineControl", uiState.showEngineControl, allocator);
-    json.AddMember("drawQuadTree", uiState.drawQuadTree, allocator);
-    json.AddMember("freezeOnCollision", uiState.freezeOnCollision, allocator);
-    json.AddMember("showAnimation", uiState.showAnimation, allocator);
-    json.AddMember("showSpriteSheet", uiState.showSpriteSheet, allocator);
-    json.AddMember("drawAllColliders", uiState.drawAllColliders, allocator);
-    json.AddMember("drawVelocities", uiState.drawVelocities, allocator);
+    // Helper macro to update or add a member
+    #define UPDATE_OR_ADD(key, val) \
+        if (json.HasMember(key)) { json[key] = val; } \
+        else { json.AddMember(rapidjson::StringRef(key), val, allocator); }
 
-    // --- 2. Floating Point Values ---
-    json.AddMember("overlayThickness", uiState.overlayThickness, allocator);
-    json.AddMember("fontScale", uiState.fontScale, allocator); 
-    json.AddMember("fpsCap", FrameRateController::GetInstance().CAP(), allocator);
+    // --- 1. Boolean Toggles ---
+    UPDATE_OR_ADD("lockLayout", uiState.lockLayout);
+    UPDATE_OR_ADD("showPerf", uiState.showPerf);
+    UPDATE_OR_ADD("showConsole", uiState.showConsole);
+    UPDATE_OR_ADD("showInspector", uiState.showInspector);
+    UPDATE_OR_ADD("showECS", uiState.showECS);
+    UPDATE_OR_ADD("showAssets", uiState.showAssets);
+    UPDATE_OR_ADD("showGameState", uiState.showGameState);
+    UPDATE_OR_ADD("showGameScene", uiState.showGameScene);
+    UPDATE_OR_ADD("showPhysics", uiState.showPhysics);
+    UPDATE_OR_ADD("showAudio", uiState.showAudio);
+    UPDATE_OR_ADD("drawCollOverlay", uiState.drawCollOverlay);
+    UPDATE_OR_ADD("showEngineControl", uiState.showEngineControl);
+    UPDATE_OR_ADD("drawQuadTree", uiState.drawQuadTree);
+    UPDATE_OR_ADD("freezeOnCollision", uiState.freezeOnCollision);
+    UPDATE_OR_ADD("showAnimation", uiState.showAnimation);
+    UPDATE_OR_ADD("showSpriteSheet", uiState.showSpriteSheet);
+    UPDATE_OR_ADD("drawAllColliders", uiState.drawAllColliders);
+    UPDATE_OR_ADD("drawVelocities", uiState.drawVelocities);
+    UPDATE_OR_ADD("showProjectManager", uiState.showProjectManager);
+    UPDATE_OR_ADD("showVisualScripting", uiState.showVisualScripting);
+
+    // --- 2. Floating Point & Int Values ---
+    UPDATE_OR_ADD("overlayThickness", uiState.overlayThickness);
+    UPDATE_OR_ADD("fontScale", uiState.fontScale); 
+    UPDATE_OR_ADD("fpsCap", FrameRateController::GetInstance().CAP());
 
 	// --- 3. Audio Volumes ---
     float musicVol = 1.0f;
@@ -194,27 +233,19 @@ void Settings::SaveEditorSettings(const UI::UIState& uiState) {
         sfxVol = audio.GetSFXVolume();
     }
     else {
-        // Attempt to read previously saved values so we don't overwrite them with 0.
-        std::string existingPath = GetGameRoot() + "/assets/settings.json";
-        std::ifstream ifs(existingPath);
-        if (ifs.is_open()) {
-            rapidjson::IStreamWrapper isw(ifs);
-            rapidjson::Document prev;
-            prev.ParseStream(isw);
-            if (!prev.HasParseError()) {
-                if (prev.HasMember("musicVolume") && prev["musicVolume"].IsFloat())
-                    musicVol = prev["musicVolume"].GetFloat();
-                if (prev.HasMember("sfxVolume") && prev["sfxVolume"].IsFloat())
-                    sfxVol = prev["sfxVolume"].GetFloat();
-            }
+        // We already loaded the previous json, so if they exist, use them
+        if (json.HasMember("musicVolume") && json["musicVolume"].IsFloat()) {
+            musicVol = json["musicVolume"].GetFloat();
+        }
+        if (json.HasMember("sfxVolume") && json["sfxVolume"].IsFloat()) {
+            sfxVol = json["sfxVolume"].GetFloat();
         }
     }
 
-    json.AddMember("musicVolume", musicVol, allocator);
-    json.AddMember("sfxVolume", sfxVol, allocator);
+    UPDATE_OR_ADD("musicVolume", musicVol);
+    UPDATE_OR_ADD("sfxVolume", sfxVol);
 
-    // 3. Save Colors
-    // We create an array of arrays: [[r,g,b,a], [r,g,b,a], ...]
+    // 4. Save Colors
     rapidjson::Value colorArray(rapidjson::kArrayType);
     ImGuiStyle& style = ImGui::GetStyle();
 
@@ -228,10 +259,15 @@ void Settings::SaveEditorSettings(const UI::UIState& uiState) {
         colorArray.PushBack(rgba, allocator);
     }
 
-    json.AddMember("colors", colorArray, allocator);
+    if (json.HasMember("colors")) {
+        json["colors"] = colorArray;
+    } else {
+        json.AddMember("colors", colorArray, allocator);
+    }
 
-    // 4. Write to File
-    std::string fullPath = GetGameRoot() + "/assets/settings.json";
+    #undef UPDATE_OR_ADD
+
+    // 5. Write to File
     std::ofstream ofs(fullPath);
     if (!ofs.is_open()) {
         std::cerr << "Failed to save editor settings to: " << fullPath << std::endl;
@@ -280,6 +316,8 @@ void Settings::LoadEditorSettings(UI::UIState& uiState) {
     LOAD_BOOL(showSpriteSheet);
     LOAD_BOOL(drawAllColliders);
     LOAD_BOOL(drawVelocities);
+    LOAD_BOOL(showProjectManager);
+    LOAD_BOOL(showVisualScripting);
 
 #undef LOAD_BOOL
 
