@@ -57,7 +57,7 @@ All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â�
 #include "activecomponent.h"
 #include "tagcomponent.h"
 #include "leaderboardcomponent.h"
-
+#include "visualscriptcomponent.h"
 // FOR GAME GUI
 #include "buttoncomponent.h"
 #include "guicomponent.h"
@@ -195,6 +195,7 @@ namespace CrashoutsEngine {
 			const char* const SPRITE_ANIMATOR_COMPONENT = "sprite_animator";
 			const char* const KEYFRAME_ANIMATOR_COMPONENT = "keyframe_animator";
 			const char* const PARTICLE_COMPONENT = "particle";
+			const char* const VISUALSCRIPT_COMPONENT = "visualscript";
 			// UI COMPONENT ITEMS
 			const char* const BUTTON_COMPONENT = "button";
 			const char* const GUI_COMPONENT = "gui";
@@ -696,7 +697,13 @@ namespace CrashoutsEngine {
 				val.AddMember("clips", clips, allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::SPRITE_ANIMATOR_COMPONENT), val, allocator);
 			}
-
+			if (gECS.HasComponent<VisualScriptComponent>(id)) {
+				const auto& c = *gECS.GetComponent<VisualScriptComponent>(id);
+				rapidjson::Value val(rapidjson::kObjectType);
+				val.AddMember("enabled", c.enabled, allocator);
+				val.AddMember("graphPath", rapidjson::Value(c.graphPath.c_str(), allocator), allocator);
+				entityValue.AddMember(rapidjson::StringRef(Keys::VISUALSCRIPT_COMPONENT), val, allocator);
+			}
 			if (gECS.HasComponent<Component::ParentComponent>(id)) {
 				const auto& c = *gECS.GetComponent<Component::ParentComponent>(id);
 				if (c.parent != 0) {
@@ -965,6 +972,25 @@ namespace CrashoutsEngine {
 				c.invInertia = GetFloat(v, "invInertia");
 			}
 
+			//VSnode
+			if (entityValue.HasMember(Keys::VISUALSCRIPT_COMPONENT) &&
+				entityValue[Keys::VISUALSCRIPT_COMPONENT].IsObject())
+			{
+				const auto& v = entityValue[Keys::VISUALSCRIPT_COMPONENT];
+
+				auto& c = gECS.AddComponent<VisualScriptComponent>(newEntity);
+
+				if (v.HasMember("enabled") && v["enabled"].IsBool())
+					c.enabled = v["enabled"].GetBool();
+
+				if (v.HasMember("graphPath") && v["graphPath"].IsString())
+					c.graphPath = v["graphPath"].GetString();
+
+				c.graphLoaded = false;
+				c.graph.reset();
+				c.currentNodeId = 0;
+				c.waitTimer = 0.0f;
+			}
 			// Collider
 			if (entityValue.HasMember(Keys::COLLIDER_COMPONENT)) {
 				const auto& v = entityValue[Keys::COLLIDER_COMPONENT];
