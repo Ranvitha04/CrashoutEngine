@@ -123,6 +123,9 @@ std::string g_GameRootPath = "";
 void SetGameRoot(const std::string& path) {
     g_GameRootPath = path;
 
+    // Load settings now that we know where the game root is
+    Settings::Load();
+
     // 1. Extract the name (e.g., "Descent", "test", or ".") from the path
     std::string gameName = std::filesystem::path(path).filename().string();
 
@@ -797,18 +800,18 @@ void Update(double const& dt) {
     // ==========================================
 //#if !USE_IMGUI_EDITOR && !defined(DEBUG)
     // You already have F3 here, let's add the replay controls!
-    if (InputManager::IsKeyTriggered(Key::F5)) {
-        ReplayManager::Replay::GetInstance().StartRecording();
-    }
-    if (InputManager::IsKeyTriggered(Key::F6)) {
-        ReplayManager::Replay::GetInstance().StopRecording();
-    }
-    if (InputManager::IsKeyTriggered(Key::F7)) {
-        ReplayManager::Replay::GetInstance().StartPlayback();
-    }
-    if (InputManager::IsKeyTriggered(Key::F8)) {
-        ReplayManager::Replay::GetInstance().StopPlayback();
-    }
+    //if (InputManager::IsKeyTriggered(Key::F5)) {
+    //    ReplayManager::Replay::GetInstance().StartRecording();
+    //}
+    //if (InputManager::IsKeyTriggered(Key::F6)) {
+    //    ReplayManager::Replay::GetInstance().StopRecording();
+    //}
+    //if (InputManager::IsKeyTriggered(Key::F7)) {
+    //    ReplayManager::Replay::GetInstance().StartPlayback();
+    //}
+    //if (InputManager::IsKeyTriggered(Key::F8)) {
+    //    ReplayManager::Replay::GetInstance().StopPlayback();
+    //}
 //#endif
     // ==========================================
 
@@ -1025,17 +1028,19 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     int mVpX = 0, mVpY = 0, mVpW = displayWidth, mVpH = displayHeight;
 
     if (currentAspectRatio > targetAspectRatio) {
+        // Pillarbox (Black bars on left and right)
         mVpH = displayHeight;
         mVpW = static_cast<int>(displayHeight * targetAspectRatio);
         mVpX = (displayWidth - mVpW) / 2;
     }
     else if (currentAspectRatio < targetAspectRatio) {
+        // Letterbox (Black bars on top and bottom)
         mVpW = displayWidth;
         mVpH = static_cast<int>(displayWidth / targetAspectRatio);
         mVpY = (displayHeight - mVpH) / 2;
     }
 
-    // Unproject Mouse
+    // Unproject Mouse (Your input code here is fine)
     double mx, my;
     glfwGetCursorPos(GLApp::ptr_window, &mx, &my);
     float localX = static_cast<float>(mx) - mVpX;
@@ -1053,22 +1058,23 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     }
 
     // --- DRAW TO SCREEN ---
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Target the main monitor
-    glViewport(0, 0, displayWidth, displayHeight);
 
-    // 1. Fill the whole window with black to create the bars
+    // 1. Bind the raw game FBO to read from, and the default monitor (0) to draw to.
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, gameFboID);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+    // 2. Set the viewport to the ENTIRE physical window and wipe it black.
+    glViewport(0, 0, displayWidth, displayHeight);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // 2. Set the perfectly centered viewport
-    glViewport(mVpX, mVpY, mVpW, mVpH);
-    glDisable(GL_DEPTH_TEST);
+    // 3. Blit the raw game texture perfectly into the centered box!
+    glBlitFramebuffer(0, 0, gameTextureWidth, gameTextureHeight,
+        mVpX, mVpY, mVpX + mVpW, mVpY + mVpH,
+        GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-    // 3. Render the Post Processing image directly into that centered box!
-    {
-        FrameProfiler::Scoped ppScope(PerformanceSystem::Get().GetProfiler(), "PostProcessing");
-        CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
-    }
+    // 4. Reset bindings
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #endif
 

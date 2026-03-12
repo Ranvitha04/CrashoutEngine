@@ -261,6 +261,10 @@
             "path": "dialogue.json"
         },
         {
+            "name": "endcutscenedialogue",
+            "path": "endcutscenedialogue.json"
+        },
+        {
             "name": "tutorialdialogue",
             "path": "tutorialdialogue.json"
         }
@@ -363,6 +367,10 @@
             "path": "backgrounds/bg2 p2.png"
         },
         {
+            "name": "EndCutscene_2",
+            "path": "Cutscenes/EndCutscene_2.png"
+        },
+        {
             "name": "spikes_22",
             "path": "spritesheet/spikes/spikes_22.png"
         },
@@ -431,12 +439,12 @@
             "path": "spritesheet/lava platform/lava platform_39.png"
         },
         {
-            "name": "ducky",
-            "path": "backgrounds/ducky.png"
-        },
-        {
             "name": "Monsters(2)",
             "path": "Monsters/Monsters(2).png"
+        },
+        {
+            "name": "ducky",
+            "path": "backgrounds/ducky.png"
         },
         {
             "name": "spikes_15",
@@ -535,6 +543,10 @@
             "path": "Character/Light Mode/Left/Run 1.png"
         },
         {
+            "name": "EndCutscene_3",
+            "path": "Cutscenes/EndCutscene_3.png"
+        },
+        {
             "name": "spikes_23",
             "path": "spritesheet/spikes/spikes_23.png"
         },
@@ -619,12 +631,12 @@
             "path": "Character/New Artstyle/Run/5.png"
         },
         {
-            "name": "7",
-            "path": "Character/New Artstyle/Run/7.png"
-        },
-        {
             "name": "Monsters(3)",
             "path": "Monsters/Monsters(3).png"
+        },
+        {
+            "name": "7",
+            "path": "Character/New Artstyle/Run/7.png"
         },
         {
             "name": "Cutscene_2",
@@ -653,6 +665,26 @@
         {
             "name": "Cutscene_3",
             "path": "Cutscenes/Cutscene_3.png"
+        },
+        {
+            "name": "EndCutscene_1",
+            "path": "Cutscenes/EndCutscene_1.png"
+        },
+        {
+            "name": "fourth",
+            "path": "UI/Tutorial/fourth.png"
+        },
+        {
+            "name": "EndCutscene_4",
+            "path": "Cutscenes/EndCutscene_4.png"
+        },
+        {
+            "name": "EndCutscene_5",
+            "path": "Cutscenes/EndCutscene_5.png"
+        },
+        {
+            "name": "EndCutscene_6",
+            "path": "Cutscenes/EndCutscene_6.png"
         },
         {
             "name": "ducky_2_spritesheet",
@@ -2023,10 +2055,6 @@
             "path": "UI/Tutorial/first.png"
         },
         {
-            "name": "fourth",
-            "path": "UI/Tutorial/fourth.png"
-        },
-        {
             "name": "key_S",
             "path": "UI/Tutorial/key_S.png"
         },
@@ -2125,6 +2153,14 @@
             "path": "descentsettings"
         },
         {
+            "name": "menu",
+            "path": "menu"
+        },
+        {
+            "name": "EndCutscene",
+            "path": "EndCutscene"
+        },
+        {
             "name": "Level2",
             "path": "Level2"
         },
@@ -2135,10 +2171,6 @@
         {
             "name": "Level1",
             "path": "Level1"
-        },
-        {
-            "name": "menu",
-            "path": "menu"
         },
         {
             "name": "rain",
@@ -2269,12 +2301,44 @@
     ],
     "tilemaps": [
         {
-            "name": "Rock",
-            "path": "Rock"
+            "name": "ProjectSettings",
+            "path": ".vs/ProjectSettings.json"
         },
         {
-            "name": "Passthrough_Floor",
-            "path": "Passthrough_Floor"
+            "name": "slnx",
+            "path": ".vs/slnx.sqlite"
+        },
+        {
+            "name": "CodeChunks",
+            "path": ".vs/tilemaps/CopilotIndices/17.14.1290.42047/CodeChunks.db"
+        },
+        {
+            "name": "DocumentLayout",
+            "path": ".vs/tilemaps/v17/DocumentLayout.json"
+        },
+        {
+            "name": "SemanticSymbols",
+            "path": ".vs/tilemaps/CopilotIndices/17.14.1290.42047/SemanticSymbols.db"
+        },
+        {
+            "name": "39a76b67-19c8-4f17-bd6f-82623f5e83f9",
+            "path": ".vs/tilemaps/FileContentIndex/39a76b67-19c8-4f17-bd6f-82623f5e83f9.vsidx"
+        },
+        {
+            "name": "3a120126-1ab1-4b73-af3d-b16b9dd1f7fe",
+            "path": ".vs/tilemaps/FileContentIndex/3a120126-1ab1-4b73-af3d-b16b9dd1f7fe.vsidx"
+        },
+        {
+            "name": ".wsuo",
+            "path": ".vs/tilemaps/v17/.wsuo"
+        },
+        {
+            "name": "VSWorkspaceState",
+            "path": ".vs/VSWorkspaceState.json"
+        },
+        {
+            "name": "Rock",
+            "path": "Rock"
         },
         {
             "name": "Darker_Platform",
@@ -2285,16 +2349,24 @@
             "path": "Lava_Platform"
         },
         {
+            "name": "Passthrough_Floor",
+            "path": "Passthrough_Floor"
+        },
+        {
             "name": "Platform",
             "path": "Platform"
+        },
+        {
+            "name": "Rock_Door",
+            "path": "Rock_Door"
         },
         {
             "name": "Spike",
             "path": "Spike"
         },
         {
-            "name": "Rock_Door",
-            "path": "Rock_Door"
+            "name": "Spike_Ground",
+            "path": "Spike_Ground"
         }
     ],
     "videos": [

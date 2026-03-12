@@ -15903,7 +15903,7 @@
                     {
                         "x": 2,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 3,
@@ -15953,7 +15953,7 @@
                     {
                         "x": 4,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 4,
@@ -15983,7 +15983,7 @@
                     {
                         "x": 5,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 5,
@@ -16013,7 +16013,7 @@
                     {
                         "x": 6,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 7,
@@ -16033,7 +16033,7 @@
                     {
                         "x": 7,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 7,
@@ -16052,6 +16052,11 @@
                     },
                     {
                         "x": 8,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
+                        "x": 8,
                         "y": -15,
                         "asset": ""
                     },
@@ -16061,9 +16066,19 @@
                         "asset": "tilemaps/Lava_Platform"
                     },
                     {
+                        "x": 9,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
                         "x": 10,
                         "y": -26,
                         "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": 10,
+                        "y": -17,
+                        "asset": ""
                     },
                     {
                         "x": 10,
@@ -16073,6 +16088,11 @@
                     {
                         "x": 11,
                         "y": -28,
+                        "asset": ""
+                    },
+                    {
+                        "x": 11,
+                        "y": -17,
                         "asset": ""
                     },
                     {
@@ -16091,6 +16111,11 @@
                         "asset": ""
                     },
                     {
+                        "x": 12,
+                        "y": -17,
+                        "asset": ""
+                    },
+                    {
                         "x": 13,
                         "y": -28,
                         "asset": ""
@@ -16098,6 +16123,11 @@
                     {
                         "x": 13,
                         "y": -27,
+                        "asset": ""
+                    },
+                    {
+                        "x": 13,
+                        "y": -17,
                         "asset": ""
                     },
                     {
@@ -16113,6 +16143,11 @@
                     {
                         "x": 14,
                         "y": -26,
+                        "asset": ""
+                    },
+                    {
+                        "x": 14,
+                        "y": -17,
                         "asset": ""
                     },
                     {
@@ -16138,7 +16173,7 @@
                     {
                         "x": 15,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 16,
@@ -16168,7 +16203,7 @@
                     {
                         "x": 16,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 17,
@@ -16188,7 +16223,7 @@
                     {
                         "x": 17,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 17,
@@ -16213,7 +16248,7 @@
                     {
                         "x": 18,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 19,
@@ -22282,6 +22317,7 @@
                     {
                         "className": "VolumeSlider",
                         "fields": {
+                            "isMusicVolume": false,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
                             "clickHeight": 3.0
@@ -22372,6 +22408,7 @@
                     {
                         "className": "VolumeSlider",
                         "fields": {
+                            "isMusicVolume": true,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
                             "clickHeight": 3.0
@@ -23505,7 +23542,7 @@
                     {
                         "name": "Lava_Ambience",
                         "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.15000000596046449,
+                        "volume": 0.03999999910593033,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -23618,7 +23655,7 @@
                     {
                         "name": "Level_1",
                         "path": "level bgm 1 re-mixed.wav",
-                        "volume": 0.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -23632,7 +23669,7 @@
                         "className": "SceneMusic",
                         "fields": {
                             "layerName": "Music",
-                            "fadeTime": 2.0,
+                            "fadeTime": 0.5,
                             "stopLayer": false
                         }
                     }
@@ -24040,7 +24077,7 @@
                     {
                         "name": "footstep1",
                         "path": "footsteps 1.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24049,7 +24086,7 @@
                     {
                         "name": "footstep2",
                         "path": "footsteps 2.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24058,7 +24095,7 @@
                     {
                         "name": "footstep3",
                         "path": "footsteps 3.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24067,7 +24104,7 @@
                     {
                         "name": "footstep4",
                         "path": "footsteps 4.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24076,7 +24113,7 @@
                     {
                         "name": "footstep5",
                         "path": "footsteps 5.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24085,7 +24122,7 @@
                     {
                         "name": "footstep6",
                         "path": "footsteps 6.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24094,7 +24131,7 @@
                     {
                         "name": "footstep7",
                         "path": "footsteps 7.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24103,7 +24140,7 @@
                     {
                         "name": "footstep8",
                         "path": "footsteps 8.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24112,7 +24149,7 @@
                     {
                         "name": "jumpLand",
                         "path": "jump landing.wav",
-                        "volume": 1.0,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24121,7 +24158,7 @@
                     {
                         "name": "jumpUp",
                         "path": "jump.wav",
-                        "volume": 1.0,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -24130,7 +24167,7 @@
                     {
                         "name": "switchMassSound",
                         "path": "switch state.wav",
-                        "volume": 1.0,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24777,166 +24814,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerDeathNoBook",
-                        "wrap": 1,
-                        "textureAsset": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.0625,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.125,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.1875,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.3125,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.375,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.4375,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerDeath",
-                        "wrap": 1,
-                        "textureAsset": "images/Character\\DeathAnimBook\\Light Death spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.0625,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.125,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.1875,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 4.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.3125,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.375,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.4375,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 7.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -27195,6 +27072,19 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "pickUpSound",
+                        "path": "mana chime.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -27589,6 +27479,19 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "pickUpSound",
+                        "path": "mana chime.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -28805,6 +28708,19 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "pickUpSound",
+                        "path": "mana chime.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -29043,6 +28959,19 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "pickUpSound",
+                        "path": "mana chime.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -29292,7 +29221,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -29458,7 +29387,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -29624,7 +29553,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -30403,7 +30332,7 @@
                     {
                         "className": "DoorScript",
                         "fields": {
-                            "nextSceneName": "descentmenu",
+                            "nextSceneName": "Level3",
                             "transitionDelay": 2.0,
                             "doorParticleName": "Door Particles"
                         }
@@ -31336,7 +31265,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1367.721923828125,
+                    "x": 1369.771240234375,
                     "y": -492.81805419921877,
                     "z": 0.0
                 },
@@ -31382,7 +31311,7 @@
             "parent": {
                 "parentUUID": 16727213168522659396,
                 "localPos": {
-                    "x": -0.4000000059604645,
+                    "x": -0.38975343108177187,
                     "y": 0.0,
                     "z": 5.0
                 },
@@ -31402,168 +31331,6 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
-            }
-        },
-        {
-            "active": true,
-            "name": "BGMManager",
-            "uuid": 12689836841019436330,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Level_1",
-                        "path": "level bgm 1 re-mixed.wav",
-                        "volume": 0.5,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": true,
-                        "isMusic": true
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SceneMusic",
-                        "fields": {
-                            "layerName": "Music",
-                            "fadeTime": 2.0,
-                            "stopLayer": false
-                        }
-                    }
-                ]
-            },
-            "parent": {
-                "parentUUID": 3280359092433270463,
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "AmbianceManager",
-            "uuid": 16180766194274038957,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Lava_Ambience",
-                        "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.15000000596046449,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": true,
-                        "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SceneMusic",
-                        "fields": {
-                            "layerName": "Ambiance",
-                            "fadeTime": 2.0,
-                            "stopLayer": false
-                        }
-                    }
-                ]
-            },
-            "parent": {
-                "parentUUID": 3280359092433270463,
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "AudioManager",
-            "uuid": 3280359092433270463,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
             }
         },
         {
@@ -31859,7 +31626,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 159,
+                            "lookAtEntity": 156,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -32032,7 +31799,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -32154,7 +31921,7 @@
                     {
                         "name": "slimeMove1",
                         "path": "slime 1.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32163,7 +31930,7 @@
                     {
                         "name": "slimeMove2",
                         "path": "slime 2.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32172,7 +31939,7 @@
                     {
                         "name": "slimeMove3",
                         "path": "slime 3.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32181,7 +31948,7 @@
                     {
                         "name": "slimeMove4",
                         "path": "slime 4.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32190,7 +31957,7 @@
                     {
                         "name": "slimeMove5",
                         "path": "slime 5.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32199,7 +31966,7 @@
                     {
                         "name": "slimeImpact",
                         "path": "slime impact.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.20000000298023225,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32755,7 +32522,7 @@
                     {
                         "name": "slimeMove1",
                         "path": "slime 1.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32764,7 +32531,7 @@
                     {
                         "name": "slimeMove2",
                         "path": "slime 2.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32773,7 +32540,7 @@
                     {
                         "name": "slimeMove3",
                         "path": "slime 3.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32782,7 +32549,7 @@
                     {
                         "name": "slimeMove4",
                         "path": "slime 4.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32791,7 +32558,7 @@
                     {
                         "name": "slimeMove5",
                         "path": "slime 5.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32800,7 +32567,7 @@
                     {
                         "name": "slimeImpact",
                         "path": "slime impact.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.20000000298023225,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -33421,7 +33188,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 169,
+                            "lookAtEntity": 166,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -33733,6 +33500,87 @@
             "layer": {
                 "layerName": "",
                 "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Spike_TileMap",
+            "uuid": 16833341316908651548,
+            "tag": {
+                "tagMask": 6
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
+                "activeAsset": "tilemaps/Spike",
+                "tileAssetNames": [
+                    "Spike"
+                ],
+                "gridData": [
+                    {
+                        "x": 1,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 3,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 4,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 5,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 6,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 15,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 16,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 17,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 18,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 1
             }
         }
     ],

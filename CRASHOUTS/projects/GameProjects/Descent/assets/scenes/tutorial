@@ -17960,7 +17960,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 191.85025024414063,
+                    "x": 191.82264709472657,
                     "y": 108.00000762939453
                 }
             },
@@ -18003,6 +18003,7 @@
                     {
                         "className": "VolumeSlider",
                         "fields": {
+                            "isMusicVolume": false,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
                             "clickHeight": 3.0
@@ -18019,7 +18020,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.9992200136184692,
+                    "x": 0.9990763068199158,
                     "y": 1.0
                 },
                 "inheritColor": false,
@@ -18050,7 +18051,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 192.0,
+                    "x": 191.80880737304688,
                     "y": 108.00000762939453
                 }
             },
@@ -18093,6 +18094,7 @@
                     {
                         "className": "VolumeSlider",
                         "fields": {
+                            "isMusicVolume": true,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
                             "clickHeight": 3.0
@@ -18109,7 +18111,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 1.0,
+                    "x": 0.9990041851997376,
                     "y": 1.0
                 },
                 "inheritColor": false,
@@ -18365,12 +18367,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -17.280000686645509,
+                    "x": -17.29166603088379,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 24.0,
+                    "x": 23.97610092163086,
                     "y": 2.2680001258850099
                 }
             },
@@ -18443,12 +18445,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 17.462865829467775,
+                    "x": 17.461181640625,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 23.981281280517579,
+                    "x": 23.97783088684082,
                     "y": 2.2680001258850099
                 }
             },
@@ -19226,7 +19228,7 @@
                     {
                         "name": "Lava_Ambience",
                         "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.15000000596046449,
+                        "volume": 0.03999999910593033,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -19339,7 +19341,7 @@
                     {
                         "name": "Level_1",
                         "path": "level bgm 1 re-mixed.wav",
-                        "volume": 0.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -19353,7 +19355,7 @@
                         "className": "SceneMusic",
                         "fields": {
                             "layerName": "Music",
-                            "fadeTime": 2.0,
+                            "fadeTime": 0.5,
                             "stopLayer": false
                         }
                     }
@@ -19506,7 +19508,7 @@
                 },
                 "targetRespawnEntity": 0,
                 "targetEntityName": "respawn1",
-                "activated": false
+                "activated": true
             },
             "trigger_metadata": {
                 "triggerID": "",
@@ -20069,7 +20071,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 140.0,
+                    "x": -140.0,
                     "y": 100.0
                 }
             },
@@ -20120,10 +20122,10 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                "textureName": "images/Character\\New Artstyle\\Jump\\Jump spritesheet.png",
                 "uvSize": {
-                    "x": 0.3333333432674408,
-                    "y": 0.3333333432674408
+                    "x": 0.5,
+                    "y": 1.0
                 },
                 "uvOffset": {
                     "x": 0.0,
@@ -20151,7 +20153,7 @@
                     {
                         "name": "footstep1",
                         "path": "footsteps 1.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -20160,7 +20162,7 @@
                     {
                         "name": "footstep2",
                         "path": "footsteps 2.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -20169,7 +20171,7 @@
                     {
                         "name": "footstep3",
                         "path": "footsteps 3.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -20178,7 +20180,7 @@
                     {
                         "name": "footstep4",
                         "path": "footsteps 4.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -20187,7 +20189,7 @@
                     {
                         "name": "footstep5",
                         "path": "footsteps 5.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -20196,7 +20198,7 @@
                     {
                         "name": "footstep6",
                         "path": "footsteps 6.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -20205,7 +20207,7 @@
                     {
                         "name": "footstep7",
                         "path": "footsteps 7.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -20214,7 +20216,7 @@
                     {
                         "name": "footstep8",
                         "path": "footsteps 8.wav",
-                        "volume": 1.5,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -20223,7 +20225,7 @@
                     {
                         "name": "jumpLand",
                         "path": "jump landing.wav",
-                        "volume": 1.0,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -20232,7 +20234,7 @@
                     {
                         "name": "jumpUp",
                         "path": "jump.wav",
-                        "volume": 1.0,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -20241,7 +20243,7 @@
                     {
                         "name": "switchMassSound",
                         "path": "switch state.wav",
-                        "volume": 1.0,
+                        "volume": 0.20000000298023225,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -20461,6 +20463,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -20513,7 +20546,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -20527,14 +20560,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20587,37 +20620,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21147,7 +21149,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -21265,7 +21267,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -21383,7 +21385,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -21501,7 +21503,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -21614,12 +21616,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -472.60003662109377,
+                    "x": 98.98847961425781,
                     "y": -232.0813751220703,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -25719,12 +25721,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -188.60574340820313,
+                    "x": -185.00579833984376,
                     "y": -48.42399597167969,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 273.8399963378906,
+                    "x": -273.8399963378906,
                     "y": 44.5
                 }
             },
@@ -25858,12 +25860,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -153.177490234375,
+                    "x": -220.43405151367188,
                     "y": -40.771644592285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 0.0,
+                    "x": -0.0,
                     "y": 0.0
                 }
             },
@@ -26578,6 +26580,19 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "pickUpSound",
+                        "path": "mana chime.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -26816,6 +26831,19 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "pickUpSound",
+                        "path": "mana chime.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -27065,7 +27093,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -27231,7 +27259,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -27397,7 +27425,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,

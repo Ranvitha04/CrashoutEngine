@@ -818,6 +818,7 @@
                     {
                         "className": "VolumeSlider",
                         "fields": {
+                            "isMusicVolume": false,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 37.0,
                             "clickHeight": 5.0
@@ -1172,6 +1173,7 @@
                     {
                         "className": "VolumeSlider",
                         "fields": {
+                            "isMusicVolume": true,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 37.0,
                             "clickHeight": 5.0
@@ -1407,7 +1409,7 @@
                         "className": "SceneMusic",
                         "fields": {
                             "layerName": "Music",
-                            "fadeTime": 2.0,
+                            "fadeTime": 0.05000000074505806,
                             "stopLayer": false
                         }
                     }

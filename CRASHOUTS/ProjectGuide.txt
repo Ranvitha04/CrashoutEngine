@@ -275,3 +275,29 @@ Useful Commands:
 
   View logs
     journalctl -u leaderboard-api -f
+
+================================================================================
+			 SECURITY CONFIGURATION
+================================================================================
+The CrashoutsServer virtual machine is secured using multiple layers of protection implemented at both the Azure infrastructure level and within the operating system. These security measures help prevent unauthorized access and protect the server from common network attacks.
+
+An Azure Network Security Group (NSG) is configured to control inbound network traffic to the virtual machine. Only essential ports required for the application are allowed. Port 22 is permitted for SSH access and is restricted to a trusted IP address. Ports 80 and 443 are allowed to support HTTP and HTTPS traffic for the web service. All other inbound traffic is denied by default.
+
+Azure Bastion is deployed to provide secure remote access to the virtual machine without exposing SSH directly to the public internet. Authorized users can connect through the Azure Portal and access is controlled using role-based access control. Users must have the appropriate permissions, such as Reader and Virtual Machine User Login, in order to establish a connection.
+
+A firewall is also enabled within the Ubuntu operating system using UFW (Uncomplicated Firewall). The firewall allows only the necessary service ports, including SSH, HTTP, and HTTPS. Any other incoming connections are blocked by default, providing an additional layer of protection in case external firewall rules are misconfigured.
+
+SSH access is secured using public key authentication instead of password-based login. This significantly reduces the risk of brute-force attacks since only users with a valid private key can access the server.
+
+System activity and authentication attempts are monitored through system logs. Administrators can review login activity using commands such as “sudo tail -f /var/log/auth.log” to detect suspicious behavior or unauthorized access attempts.
+
+The PostgreSQL database used for the leaderboard-api service is not exposed to the internet and is configured to accept connections only from the local machine. This prevents external users from directly accessing the database service.
+
+These security measures collectively provide a layered defense strategy that protects the server from unauthorized access while ensuring that the necessary services remain accessible.
+
+The only attacks I have gotten so far is from bot crawling through the internet trying to check whether an API key endpoint is exposed to the internet. The other attack I received was through SSH but now normal SSH is only allowed through my desktop IP (Shahrin Idzuan). The rest of the allowed users is required to go through bastion using their own Azure Account with security policies managed by the school itself.
+
+To submit data to the leaderboard table, a valid API key is required. The leaderboard API service verifies this key before allowing the request to proceed. The API key is currently stored within the C++ engine and is included in the request when submitting leaderboard data. While this approach provides a basic level of access control, it is not the most secure implementation. A more secure solution would involve implementing a proper authentication system where users must log in and be verified before being permitted to submit or retrieve leaderboard data.
+
+While CIS (Center for Internet Security) Level 1 hardening was not fully implemented for this system, it is recognized as a widely accepted industry standard for improving system security.
+CIS Benchmarks are community-developed security configuration guidelines used to harden operating systems, cloud platforms, and applications against cyber threats.

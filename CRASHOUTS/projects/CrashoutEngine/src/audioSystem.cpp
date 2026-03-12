@@ -1,4 +1,4 @@
-﻿/*!
+/*!
 @file        audioSystem.cpp
 @author      b.mohamadafiq@digipen.edu (70%)
 @co-auther   mohamadamirakmal.b@digipen.edu (30%)
@@ -83,7 +83,7 @@ namespace CrashoutsEngine::Audio
 
         // 2. Force Lowercase (Makes it case-insensitive)
         std::transform(clean.begin(), clean.end(), clean.begin(),
-            [](unsigned char c) { return std::tolower(c); });
+            [](unsigned char c) { return (char)std::tolower(c); });
 
         // 3. Strip everything before "audio/" if present
         const std::string marker = "audio/";
@@ -370,7 +370,7 @@ namespace CrashoutsEngine::Audio
                 }
 
                 // release only the sounds we created temporarily (those tracked in mActiveSounds)
-                snd->release();
+                if (snd) snd->release();
                 it = mActiveSounds.erase(it);
             }
             else
@@ -594,6 +594,19 @@ namespace CrashoutsEngine::Audio
         mChannelVolumeFades.clear();
         mGroupVolumeFades.clear();
         mBusVolumeFades.clear();
+        mParameterFades.clear();
+
+        // Cleanup Group DSPs
+        for (auto& groupPair : mGroupDSPs) {
+            FMOD::ChannelGroup* group = groupPair.first;
+            for (auto& dspPair : groupPair.second) {
+                if (dspPair.second) {
+                    group->removeDSP(dspPair.second);
+                    dspPair.second->release();
+                }
+            }
+        }
+        mGroupDSPs.clear();
     }
 
     /*!
@@ -1056,14 +1069,21 @@ namespace CrashoutsEngine::Audio
         if (!snd) return nullptr;
 
         FMOD::Channel* ch = nullptr;
-        // Play the sound
-        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch), "playMusic"))
+        // Start paused to prevent volume spike before we set mode
+        if (!ok(mCore->playSound(snd, mMusicGroup, true, &ch), "playMusic"))
         {
             return nullptr;
         }
 
         if (ch) {
-            ch->setMode(loop ? (FMOD_LOOP_NORMAL | FMOD_2D) : (FMOD_LOOP_OFF | FMOD_2D));
+            FMOD_MODE mode;
+            ch->getMode(&mode);
+            mode &= ~(FMOD_LOOP_NORMAL | FMOD_LOOP_OFF | FMOD_3D | FMOD_3D_LINEARROLLOFF);
+            mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF) | FMOD_2D;
+            ch->setMode(mode);
+
+            // Track this channel for automatic cleanup of tagged mapping and potential sound release
+            mActiveSounds.push_back({ ch, createdLocal ? snd : nullptr });
         }
 
         return ch;
@@ -1078,6 +1098,7 @@ namespace CrashoutsEngine::Audio
 
         std::string key = SanitizeKey(path);
         FMOD::Sound* snd = nullptr;
+        bool createdLocal = false;
 
         // LOOKUP
         auto it = mRawSoundCache.find(key);
@@ -1094,14 +1115,17 @@ namespace CrashoutsEngine::Audio
                 else return nullptr;
             }
 
+            createdLocal = true;
+
             // Load into RAM (FMOD_DEFAULT) for SFX as they are small and latency-sensitive
-            FMOD_MODE mode = FMOD_DEFAULT;
+            FMOD_MODE mode = FMOD_LOOP_OFF;
             mode |= (spatial3D ? FMOD_3D : FMOD_2D);
 
             FMOD_RESULT r = mCore->createSound(fullPath.c_str(), mode, nullptr, &snd);
 
             if (r == FMOD_OK && snd) {
                 mRawSoundCache[key] = snd;
+                createdLocal = false;
             }
             else {
                 return nullptr;
@@ -1109,18 +1133,28 @@ namespace CrashoutsEngine::Audio
         }
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch), "playSound(sfx)"))
+        // Start paused to prevent volume spike
+        if (!ok(mCore->playSound(snd, mSFXGroup, true, &ch), "playSound(sfx)"))
         {
             return nullptr;
         }
 
         if (ch) {
+            FMOD_MODE mode;
+            ch->getMode(&mode);
+            mode &= ~(FMOD_2D | FMOD_3D | FMOD_3D_LINEARROLLOFF);
+
             if (spatial3D) {
-                ch->setMode(FMOD_3D);
+                mode |= FMOD_3D | FMOD_3D_LINEARROLLOFF;
+                ch->setMode(mode);
                 ch->set3DMinMaxDistance(minDistance, maxDistance);
             } else {
-                ch->setMode(FMOD_2D);
+                mode |= FMOD_2D;
+                ch->setMode(mode);
             }
+            
+            // Track this channel for automatic cleanup of tagged mapping and potential sound release
+            mActiveSounds.push_back({ ch, createdLocal ? snd : nullptr });
         }
 
         return ch;
@@ -1172,16 +1206,21 @@ namespace CrashoutsEngine::Audio
         if (mCore) {
             FMOD::ChannelGroup* master = nullptr;
             if (mCore->getMasterChannelGroup(&master) == FMOD_OK && master) {
+                // Setting the Core Master Group volume affects EVERYTHING (including Studio output)
+                // We should NOT also set the Studio Master Bus volume to avoid double-attenuation
                 okCore = (master->setVolume(v01) == FMOD_OK);
             }
         }
 
+        /* 
+        // Disabled to prevent double-attenuation for Studio events
         if (mStudio) {
             FMOD::Studio::Bus* masterBus = nullptr;
             if (mStudio->getBus("bus:/", &masterBus) == FMOD_OK && masterBus) {
                 masterBus->setVolume(v01);
             }
         }
+        */
 
         return okCore;
     }
@@ -1197,14 +1236,6 @@ namespace CrashoutsEngine::Audio
         return (ch->setVolume(vol) == FMOD_OK);
     }
 
-    void AudioSystem::SetChannelVolume(FMOD::Channel* channel, float volume)
-    {
-        if (channel)
-        {
-            channel->setVolume(volume);
-        }
-    }
-
     void AudioSystem::SetChannel3DAttributes(FMOD::Channel* channel, const CEVec3& position, float minDistance, float maxDistance)
     {
         if (channel)
@@ -1212,8 +1243,11 @@ namespace CrashoutsEngine::Audio
             FMOD_MODE mode;
             channel->getMode(&mode);
             // Force 3D and LINEARROLLOFF for predictable "fade to zero" behavior
+            // We use bitwise OR to preserve other flags like looping
             if (!(mode & FMOD_3D) || !(mode & FMOD_3D_LINEARROLLOFF)) {
-                channel->setMode(FMOD_3D | FMOD_3D_LINEARROLLOFF);
+                mode |= FMOD_3D | FMOD_3D_LINEARROLLOFF;
+                mode &= ~FMOD_2D; // Ensure 2D is cleared if we are forcing 3D
+                channel->setMode(mode);
             }
 
             FMOD_VECTOR pos = { position.x, position.y, position.z };
@@ -1372,6 +1406,7 @@ namespace CrashoutsEngine::Audio
 
         std::string cacheKey = SanitizeKey(path);
         FMOD::Sound* snd = nullptr;
+        bool createdLocal = false;
 
         auto it = mRawSoundCache.find(cacheKey);
         if (it != mRawSoundCache.end()) {
@@ -1381,6 +1416,7 @@ namespace CrashoutsEngine::Audio
             auto pathIt = mSoundPaths.find(cacheKey);
             std::string fullPath = (pathIt != mSoundPaths.end()) ? pathIt->second : joinPath(mBanksDir, cacheKey);
 
+            createdLocal = true;
             FMOD_MODE mode = FMOD_CREATESTREAM | FMOD_2D;
             mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
 
@@ -1391,21 +1427,29 @@ namespace CrashoutsEngine::Audio
 
             if (snd) {
                 mRawSoundCache[cacheKey] = snd;
+                createdLocal = false;
             }
         }
 
         if (!snd) return false;
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mMusicGroup, false, &ch), "playMusicTagged"))
+        // Start paused to prevent volume spike
+        if (!ok(mCore->playSound(snd, mMusicGroup, true, &ch), "playMusicTagged"))
         {
             return false;
         }
 
         if (ch)
         {
-            ch->setMode(loop ? (FMOD_LOOP_NORMAL | FMOD_2D) : (FMOD_LOOP_OFF | FMOD_2D));
+            FMOD_MODE mode;
+            ch->getMode(&mode);
+            mode &= ~(FMOD_LOOP_NORMAL | FMOD_LOOP_OFF | FMOD_3D | FMOD_3D_LINEARROLLOFF);
+            mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF) | FMOD_2D;
+            ch->setMode(mode);
+
             mTaggedChannels[key] = ch;
+            mActiveSounds.push_back({ ch, createdLocal ? snd : nullptr });
         }
 
         return true;
@@ -1423,6 +1467,7 @@ namespace CrashoutsEngine::Audio
         std::string cacheKey = SanitizeKey(path);
 
         FMOD::Sound* snd = nullptr;
+        bool createdLocal = false;
 
         // CACHE LOOKUP
         auto it = mRawSoundCache.find(cacheKey);
@@ -1433,13 +1478,15 @@ namespace CrashoutsEngine::Audio
             auto pathIt = mSoundPaths.find(cacheKey);
             std::string fullPath = (pathIt != mSoundPaths.end()) ? pathIt->second : joinPath(mBanksDir, cacheKey);
 
-            FMOD_MODE mode = FMOD_DEFAULT | FMOD_2D;
+            createdLocal = true;
+            FMOD_MODE mode = FMOD_LOOP_OFF | FMOD_2D;
             mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
 
             FMOD_RESULT r = mCore->createSound(fullPath.c_str(), mode, nullptr, &snd);
 
             if (r == FMOD_OK && snd) {
                 mRawSoundCache[cacheKey] = snd;
+                createdLocal = false;
             }
             else {
                 return false;
@@ -1447,15 +1494,22 @@ namespace CrashoutsEngine::Audio
         }
 
         FMOD::Channel* ch = nullptr;
-        if (!ok(mCore->playSound(snd, mSFXGroup, false, &ch), "playSound(sfxTagged)"))
+        // Start paused
+        if (!ok(mCore->playSound(snd, mSFXGroup, true, &ch), "playSound(sfxTagged)"))
         {
             return false;
         }
 
         if (ch)
         {
-            ch->setMode(loop ? (FMOD_LOOP_NORMAL | FMOD_2D) : (FMOD_LOOP_OFF | FMOD_2D));
+            FMOD_MODE mode;
+            ch->getMode(&mode);
+            mode &= ~(FMOD_LOOP_NORMAL | FMOD_LOOP_OFF | FMOD_3D | FMOD_3D_LINEARROLLOFF);
+            mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF) | FMOD_2D;
+            ch->setMode(mode);
+
             mTaggedChannels[key] = ch;
+            mActiveSounds.push_back({ ch, createdLocal ? snd : nullptr });
         }
 
         return true;
@@ -1519,6 +1573,15 @@ namespace CrashoutsEngine::Audio
         }
 
         return true;
+    }
+
+    void AudioSystem::setPausedTagged(const std::string& key, bool paused)
+    {
+        auto it = mTaggedChannels.find(key);
+        if (it != mTaggedChannels.end() && it->second)
+        {
+            it->second->setPaused(paused);
+        }
     }
 
     void AudioSystem::setPaused(bool paused)
