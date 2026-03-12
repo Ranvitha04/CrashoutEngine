@@ -331,6 +331,10 @@
             "path": "Character/Light Mode/Left/Switch State Idle .png"
         },
         {
+            "name": "spikes_14",
+            "path": "spritesheet/spikes/spikes_14.png"
+        },
+        {
             "name": "bg 1 top",
             "path": "backgrounds/bg 1 top.png"
         },
@@ -341,6 +345,10 @@
         {
             "name": "bg2 p2",
             "path": "backgrounds/bg2 p2.png"
+        },
+        {
+            "name": "spikes_22",
+            "path": "spritesheet/spikes/spikes_22.png"
         },
         {
             "name": "Slime spritesheet_09",
@@ -413,6 +421,10 @@
         {
             "name": "Monsters(2)",
             "path": "Monsters/Monsters(2).png"
+        },
+        {
+            "name": "spikes_15",
+            "path": "spritesheet/spikes/spikes_15.png"
         },
         {
             "name": "foreground base",
@@ -499,8 +511,16 @@
             "path": "Character/Light Mode/Chibi-Light-Actions-SpriteSheet.png"
         },
         {
+            "name": "spikes_20",
+            "path": "spritesheet/spikes/spikes_20.png"
+        },
+        {
             "name": "Run 1",
             "path": "Character/Light Mode/Left/Run 1.png"
+        },
+        {
+            "name": "spikes_23",
+            "path": "spritesheet/spikes/spikes_23.png"
         },
         {
             "name": "Slime spritesheet_08",
@@ -509,6 +529,10 @@
         {
             "name": "Run 2",
             "path": "Character/Light Mode/Left/Run 2.png"
+        },
+        {
+            "name": "spikes_25",
+            "path": "spritesheet/spikes/spikes_25.png"
         },
         {
             "name": "Run 4",
@@ -557,6 +581,10 @@
         {
             "name": "Run Light",
             "path": "Character/Run Light.gif"
+        },
+        {
+            "name": "spikes_03",
+            "path": "spritesheet/spikes/spikes_03.png"
         },
         {
             "name": "Run spritesheet",
@@ -1495,8 +1523,16 @@
             "path": "spritesheet/Slime spritesheet/Slime spritesheet_01.png"
         },
         {
+            "name": "spikes_29",
+            "path": "spritesheet/spikes/spikes_29.png"
+        },
+        {
             "name": "Slime spritesheet_02",
             "path": "spritesheet/Slime spritesheet/Slime spritesheet_02.png"
+        },
+        {
+            "name": "spikes_28",
+            "path": "spritesheet/spikes/spikes_28.png"
         },
         {
             "name": "Slime spritesheet_03",
@@ -1509,6 +1545,110 @@
         {
             "name": "Slime spritesheet_11",
             "path": "spritesheet/Slime spritesheet/Slime spritesheet_11.png"
+        },
+        {
+            "name": "spikes_00",
+            "path": "spritesheet/spikes/spikes_00.png"
+        },
+        {
+            "name": "spikes_01",
+            "path": "spritesheet/spikes/spikes_01.png"
+        },
+        {
+            "name": "spikes_02",
+            "path": "spritesheet/spikes/spikes_02.png"
+        },
+        {
+            "name": "spikes_04",
+            "path": "spritesheet/spikes/spikes_04.png"
+        },
+        {
+            "name": "spikes_05",
+            "path": "spritesheet/spikes/spikes_05.png"
+        },
+        {
+            "name": "spikes_06",
+            "path": "spritesheet/spikes/spikes_06.png"
+        },
+        {
+            "name": "spikes_07",
+            "path": "spritesheet/spikes/spikes_07.png"
+        },
+        {
+            "name": "spikes_08",
+            "path": "spritesheet/spikes/spikes_08.png"
+        },
+        {
+            "name": "spikes_09",
+            "path": "spritesheet/spikes/spikes_09.png"
+        },
+        {
+            "name": "spikes_10",
+            "path": "spritesheet/spikes/spikes_10.png"
+        },
+        {
+            "name": "spikes_11",
+            "path": "spritesheet/spikes/spikes_11.png"
+        },
+        {
+            "name": "Pause Menu Open",
+            "path": "UI/Pause Menu Open.png"
+        },
+        {
+            "name": "spikes_12",
+            "path": "spritesheet/spikes/spikes_12.png"
+        },
+        {
+            "name": "spikes_13",
+            "path": "spritesheet/spikes/spikes_13.png"
+        },
+        {
+            "name": "spikes_16",
+            "path": "spritesheet/spikes/spikes_16.png"
+        },
+        {
+            "name": "spikes_17",
+            "path": "spritesheet/spikes/spikes_17.png"
+        },
+        {
+            "name": "spikes_18",
+            "path": "spritesheet/spikes/spikes_18.png"
+        },
+        {
+            "name": "spikes_19",
+            "path": "spritesheet/spikes/spikes_19.png"
+        },
+        {
+            "name": "spikes_21",
+            "path": "spritesheet/spikes/spikes_21.png"
+        },
+        {
+            "name": "button",
+            "path": "UI/button.png"
+        },
+        {
+            "name": "spikes_24",
+            "path": "spritesheet/spikes/spikes_24.png"
+        },
+        {
+            "name": "spikes_26",
+            "path": "spritesheet/spikes/spikes_26.png"
+        },
+        {
+            "name": "spikes_27",
+            "path": "spritesheet/spikes/spikes_27.png"
+        },
+        {
+            "name": "Rock",
+            "path": "Tileset/Rock.png"
+        },
+        {
+            "name": "spikes_30",
+            "path": "spritesheet/spikes/spikes_30.png"
+        },
+        {
+            "name": "spikes_31",
+            "path": "spritesheet/spikes/spikes_31.png"
         },
         {
             "name": "Switch-State-SpriteSheet_00",
@@ -1567,16 +1707,12 @@
             "path": "Tileset/lava platform.png"
         },
         {
-            "name": "Rock",
-            "path": "Tileset/Rock.png"
+            "name": "spikes",
+            "path": "Tileset/spikes.png"
         },
         {
             "name": "Bar_Area",
             "path": "UI/Bar_Area.png"
-        },
-        {
-            "name": "button",
-            "path": "UI/button.png"
         },
         {
             "name": "Emp 4",
@@ -1605,10 +1741,6 @@
         {
             "name": "mana UI single",
             "path": "UI/mana UI single.png"
-        },
-        {
-            "name": "Pause Menu Open",
-            "path": "UI/Pause Menu Open.png"
         },
         {
             "name": "pause quit text",
@@ -1941,6 +2073,20 @@
         {
             "name": "Shrek - All star _ Intro HD (1080p) - Trim",
             "path": "Shrek - All star _ Intro HD (1080p) - Trim.mp4"
+        }
+    ],
+    "visualscripts": [
+        {
+            "name": "graph_12",
+            "path": "graph_12.vsgraph"
+        },
+        {
+            "name": "graph_13",
+            "path": "graph_13.vsgraph"
+        },
+        {
+            "name": "graph_14",
+            "path": "graph_14.vsgraph"
         }
     ],
     "start_scene": "descentmenu"
