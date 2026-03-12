@@ -6,15 +6,15 @@
                 {
                     "active": true,
                     "name": "PickUp",
-                    "uuid": 14341608125575037330,
+                    "uuid": 18302327966837046204,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 1445.7991943359376,
-                            "y": -455.3166198730469,
+                            "x": 1662.9012451171876,
+                            "y": -395.41064453125,
                             "z": 0.0
                         },
                         "size": {
@@ -41,8 +41,8 @@
                         "isTrigger": true,
                         "enabled": true,
                         "position": {
-                            "x": 1445.7991943359376,
-                            "y": -455.3166198730469,
+                            "x": 1662.9012451171876,
+                            "y": -395.41064453125,
                             "z": 0.0
                         },
                         "offset": {
@@ -52,8 +52,8 @@
                         },
                         "radius": 11.649999618530274,
                         "center": {
-                            "x": 1445.7991943359376,
-                            "y": -455.3166198730469,
+                            "x": 1662.9012451171876,
+                            "y": -395.41064453125,
                             "z": 0.0
                         }
                     },
@@ -91,6 +91,19 @@
                             "z": 0.0
                         }
                     },
+                    "audio": {
+                        "clips": [
+                            {
+                                "name": "pickUpSound",
+                                "path": "mana chime.wav",
+                                "volume": 0.5,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            }
+                        ]
+                    },
                     "script": {
                         "scripts": [
                             {
@@ -101,6 +114,30 @@
                                 }
                             }
                         ]
+                    },
+                    "light": {
+                        "active": true,
+                        "intensity": 1.0499999523162842,
+                        "radius": 19.0,
+                        "affectBloom": true,
+                        "useTransform": true,
+                        "renderSelf": true,
+                        "renderBehind": true,
+                        "ignoreParentOccluders": true,
+                        "ignoreOccluders": true,
+                        "shadowTechnique": 0,
+                        "raymarchSteps": 24,
+                        "raymarchThreshold": 0.5,
+                        "color": {
+                            "x": 0.1427335888147354,
+                            "y": 0.22974756360054017,
+                            "z": 0.8823529481887817
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
                     },
                     "layer": {
                         "layerName": "Default",
