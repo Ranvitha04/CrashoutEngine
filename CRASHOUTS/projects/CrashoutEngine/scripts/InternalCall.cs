@@ -40,6 +40,15 @@ namespace CrashoutsEngine
         internal static extern bool EntityHasTransform(ulong entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasParent(ulong entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void HierarchyGetLocalPos(ulong entityID, out CEVec3 localPos);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void HierarchySetLocalPos(ulong entityID, ref CEVec3 localPos);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern bool EntityHasRigidBody(ulong entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -224,6 +233,16 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool EntityHasShape(uint entityID);
+
+        // --- LIGHT COMPONENT LIFECYCLE ---
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void AddLight(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void RemoveLight(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool EntityHasLight(uint entityID);
 
         // --- Tag COMPONENT LIFECYCLE ---
         [MethodImpl(MethodImplOptions.InternalCall)]

@@ -4,7 +4,7 @@
 @date       16/09/2025
 @brief      definition of shape component bindings functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 */
 #include "shapebindings.h"
 #include "shapescomponent.h" // Ensure this path is correct
@@ -87,6 +87,37 @@ namespace {
             s->color.w() = alpha;
         }
     }
+
+    static void InternalGetP1(uint32_t id, CEVec3* outP1) {
+        if (!outP1) return;
+        if (auto* s = GetShape(id)) *outP1 = s->p1;
+        else *outP1 = CEVec3{ 0.0f, 0.0f, 0.0f };
+    }
+
+    static void InternalSetP1(uint32_t id, CEVec3* inP1) {
+        if (!inP1) return;
+        if (auto* s = GetShape(id)) s->p1 = *inP1;
+    }
+
+    static void InternalGetP2(uint32_t id, CEVec3* outP2) {
+        if (!outP2) return;
+        if (auto* s = GetShape(id)) *outP2 = s->p2;
+        else *outP2 = CEVec3{ 0.0f, 0.0f, 0.0f };
+    }
+
+    static void InternalSetP2(uint32_t id, CEVec3* inP2) {
+        if (!inP2) return;
+        if (auto* s = GetShape(id)) s->p2 = *inP2;
+    }
+
+    static float InternalGetThickness(uint32_t id) {
+        if (auto* s = GetShape(id)) return s->thickness;
+        return 1.0f;
+    }
+
+    static void InternalSetThickness(uint32_t id, float thickness) {
+        if (auto* s = GetShape(id)) s->thickness = thickness;
+    }
 }
 
 void CrashoutsEngine::Bindings::RegisterShapeBindings() {
@@ -96,6 +127,12 @@ void CrashoutsEngine::Bindings::RegisterShapeBindings() {
     mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalSetAlpha", (const void*)InternalSetAlpha);
     mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalGetType", (const void*)InternalGetType);
     mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalSetType", (const void*)InternalSetType);
+    mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalGetP1", (const void*)InternalGetP1);
+    mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalSetP1", (const void*)InternalSetP1);
+    mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalGetP2", (const void*)InternalGetP2);
+    mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalSetP2", (const void*)InternalSetP2);
+    mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalGetThickness", (const void*)InternalGetThickness);
+    mono_add_internal_call("CrashoutsEngine.ShapeComponent::InternalSetThickness", (const void*)InternalSetThickness);
 
     // 2. Lifecycle (Registered to InternalCalls)
     mono_add_internal_call("CrashoutsEngine.InternalCalls::AddShape", (const void*)InternalAddShape);

@@ -999,13 +999,13 @@
                     {
                         "className": "MenuButtons",
                         "fields": {
-                            "StartBtn": 12,
-                            "SettingsBtn": 4,
-                            "CloseBtn": 0,
-                            "QuitBtn": 2,
-                            "QuitCheckPanel": 6,
-                            "YesBtn": 9,
-                            "NoBtn": 10
+                            "StartBtn": 11,
+                            "SettingsBtn": 11,
+                            "CloseBtn": 11,
+                            "QuitBtn": 11,
+                            "QuitCheckPanel": 11,
+                            "YesBtn": 11,
+                            "NoBtn": 11
                         }
                     }
                 ]

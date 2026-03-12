@@ -68,6 +68,32 @@ namespace CrashoutsEngine
             set => InternalSetAlpha(EntityID, value);
         }
 
+        public CEVec3 P1
+        {
+            get
+            {
+                InternalGetP1(EntityID, out CEVec3 p);
+                return p;
+            }
+            set => InternalSetP1(EntityID, ref value);
+        }
+
+        public CEVec3 P2
+        {
+            get
+            {
+                InternalGetP2(EntityID, out CEVec3 p);
+                return p;
+            }
+            set => InternalSetP2(EntityID, ref value);
+        }
+
+        public float Thickness
+        {
+            get => InternalGetThickness(EntityID);
+            set => InternalSetThickness(EntityID, value);
+        }
+
         // --- Internal Calls ---
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void InternalGetColor(uint entityID, out CEColor color);
@@ -83,5 +109,23 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void InternalSetType(uint entityID, int type);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static void InternalGetP1(uint entityID, out CEVec3 p1);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static void InternalSetP1(uint entityID, ref CEVec3 p1);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static void InternalGetP2(uint entityID, out CEVec3 p2);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static void InternalSetP2(uint entityID, ref CEVec3 p2);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static float InternalGetThickness(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static void InternalSetThickness(uint entityID, float thickness);
     }
 }

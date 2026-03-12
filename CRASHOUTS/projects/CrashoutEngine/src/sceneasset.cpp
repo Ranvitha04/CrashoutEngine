@@ -499,13 +499,13 @@ namespace CrashoutsEngine {
 			}
 
 			if (gECS.HasComponent<ScriptComponent>(id)) {
-				const auto& c = *gECS.GetComponent<ScriptComponent>(id);
+				const auto& scriptComp = *gECS.GetComponent<ScriptComponent>(id);
 				rapidjson::Value val(rapidjson::kObjectType);
 				rapidjson::Value arr(rapidjson::kArrayType);
-				for (const auto& inst : c.Scripts) {
+				for (const auto& inst : scriptComp.Scripts) {
 					if (inst.ClassName.empty()) continue;
-					rapidjson::Value obj(rapidjson::kObjectType);
-					obj.AddMember("className", rapidjson::Value(inst.ClassName.c_str(), allocator), allocator);
+					rapidjson::Value scriptObj(rapidjson::kObjectType);
+					scriptObj.AddMember("className", rapidjson::Value(inst.ClassName.c_str(), allocator), allocator);
 					MonoObject* instance = inst.GCHandle ? mono_gchandle_get_target(inst.GCHandle) : nullptr;
 					if (instance && inst.Class) {
 						rapidjson::Value fields(rapidjson::kObjectType);
@@ -540,6 +540,33 @@ namespace CrashoutsEngine {
 									MonoString* ms = nullptr; mono_field_get_value(instance, field, &ms);
 									if (ms) { char* s = mono_string_to_utf8(ms); fields.AddMember(key, rapidjson::Value(s, allocator), allocator); mono_free(s); }
 								}
+								else if (tEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEVec2") == 0) {
+									CEVec2 v{};
+									mono_field_get_value(instance, field, &v);
+									rapidjson::Value vec2Obj(rapidjson::kObjectType);
+									vec2Obj.AddMember("x", v.x, allocator);
+									vec2Obj.AddMember("y", v.y, allocator);
+									fields.AddMember(key, vec2Obj, allocator);
+								}
+								else if (tEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEVec3") == 0) {
+									CEVec3 v{};
+									mono_field_get_value(instance, field, &v);
+									rapidjson::Value vec3Obj(rapidjson::kObjectType);
+									vec3Obj.AddMember("x", v.x, allocator);
+									vec3Obj.AddMember("y", v.y, allocator);
+									vec3Obj.AddMember("z", v.z, allocator);
+									fields.AddMember(key, vec3Obj, allocator);
+								}
+								else if (tEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEColor") == 0) {
+									CEColor col{};
+									mono_field_get_value(instance, field, &col);
+									rapidjson::Value colorObj(rapidjson::kObjectType);
+									colorObj.AddMember("x", col.x(), allocator);
+									colorObj.AddMember("y", col.y(), allocator);
+									colorObj.AddMember("z", col.z(), allocator);
+									colorObj.AddMember("w", col.w(), allocator);
+									fields.AddMember(key, colorObj, allocator);
+								}
 								else if (strcmp(fieldClassName, "Entity") == 0) {
 									uint32_t currentID = 0;
 									MonoClassField* idField = mono_class_get_field_from_name(fieldClass, "ID");
@@ -565,9 +592,9 @@ namespace CrashoutsEngine {
 								}
 							}
 						}
-						obj.AddMember("fields", fields, allocator);
+						scriptObj.AddMember("fields", fields, allocator);
 					}
-					arr.PushBack(obj, allocator);
+					arr.PushBack(scriptObj, allocator);
 				}
 				val.AddMember("scripts", arr, allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::SCRIPT_COMPONENT), val, allocator);
@@ -651,6 +678,10 @@ namespace CrashoutsEngine {
 				val.AddMember("renderSelf", c.renderSelf, allocator);
 				val.AddMember("renderBehind", c.renderBehind, allocator);
 				val.AddMember("ignoreParentOccluders", c.ignoreParentOccluders, allocator);
+				val.AddMember("ignoreOccluders", c.ignoreOccluders, allocator);
+				val.AddMember("shadowTechnique", c.shadowTechnique, allocator);
+				val.AddMember("raymarchSteps", c.raymarchSteps, allocator);
+				val.AddMember("raymarchThreshold", c.raymarchThreshold, allocator);
 				WriteVec3(val, "color", c.color, allocator);
 				WriteVec3(val, "position", c.position, allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::LIGHT_COMPONENT), val, allocator);
@@ -1289,6 +1320,10 @@ namespace CrashoutsEngine {
 				l.renderSelf = GetBool(v, "renderSelf", l.renderSelf);
 				l.renderBehind = GetBool(v, "renderBehind", l.renderBehind);
 				l.ignoreParentOccluders = GetBool(v, "ignoreParentOccluders", l.ignoreParentOccluders);
+				l.ignoreOccluders = GetBool(v, "ignoreOccluders", l.ignoreOccluders);
+				l.shadowTechnique = GetInt(v, "shadowTechnique", l.shadowTechnique);
+				l.raymarchSteps = GetInt(v, "raymarchSteps", l.raymarchSteps);
+				l.raymarchThreshold = GetFloat(v, "raymarchThreshold", l.raymarchThreshold);
 				if (v.HasMember("color")) l.color = ReadVec3(v["color"], l.color);
 				if (v.HasMember("position")) l.position = ReadVec3(v["position"], l.position);
 			}
