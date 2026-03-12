@@ -54,6 +54,9 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 #define FONT_SCALE 0.05f
 
+extern int gameTextureWidth;
+extern int gameTextureHeight;
+
 namespace Scene {
 
 	using namespace Component;
@@ -177,12 +180,11 @@ namespace Scene {
 			glDisable(GL_CULL_FACE);
 
 			// --- DEFINE UI COORDINATE SYSTEM ---
-			// [FIX] Use Game View dimensions for consistency with Input/Editor
+			// Use strict FBO dimensions and a strict 16:9 aspect ratio
+			float winW = (float)gameTextureWidth;
+			float winH = (float)gameTextureHeight;
+			float aspect = 16.0f / 9.0f;
 
-			CEVec2 gameSize = InputManager::GetGameWindowSize();
-			float winW = gameSize.x;
-			float winH = gameSize.y;
-			float aspect = winW / winH;
 			float uiHeight = 100.0f;
 			float uiWidth = uiHeight * aspect;
 
@@ -1339,8 +1341,8 @@ namespace Scene {
 		ProcessSortedList(worldEntries, true, renderer.viewMatrix, renderer.projectionMatrix);
 
 		// 5. DRAW SCREEN SPACE (Culling DISABLED)
-		// Screen space UI shouldn't be culled by the World Camera bounds
-		float aspect = (float)GLApp::width / (float)GLApp::height;
+		// FIX: Force strictly 16:9 aspect ratio so shapes don't stretch in the FBO
+		float aspect = 16.0f / 9.0f;
 		float h = 100.0f;
 		float w = h * aspect;
 		glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);
@@ -1387,10 +1389,9 @@ namespace Scene {
 		if (g_ShowFPS) {
 			batcher.Flush();
 
-			// FIX: Get the logical FBO size, NOT the physical window size!
-			CEVec2 gameSize = InputManager::GetGameWindowSize();
-			int fpsWindowW = static_cast<int>(gameSize.x);
-			int fpsWindowH = static_cast<int>(gameSize.y);
+			// FIX: Use the actual FBO dimensions so the text cannot render out of bounds!
+			int fpsWindowW = gameTextureWidth;
+			int fpsWindowH = gameTextureHeight;
 
 			// FORCE FRONTMOST STATE:
 			glViewport(0, 0, fpsWindowW, fpsWindowH);
@@ -1407,21 +1408,22 @@ namespace Scene {
 
 			renderer.shdr_pgm->Use();
 
-			// Use the logical game bounds for the projection matrix
+			// Use the true FBO dimensions for the projection
 			glm::mat4 overlayProj = glm::ortho(0.0f, (float)fpsWindowW, 0.0f, (float)fpsWindowH);
 			renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
 			renderer.shdr_pgm->SetUniform("uProjection", overlayProj);
 
 			float zFront = 0.0f;
 			float xPos = 20.0f;
-			float yPos = (float)fpsWindowH - 40.0f; // This is now safely inside the FBO bounds
+			// Now this reliably calculates from the top of the letterbox!
+			float yPos = (float)fpsWindowH - 40.0f;
 
 			gTextRenderer->RenderText(fpsText, xPos, yPos, zFront, 15.0f,
 				CEColor(0.0f, 1.0f, 0.0f, 1.0f),
 				"Exo2-Regular", false, 0.0f);
 
 			// RESTORE VIEWPORT
-			glViewport(0, 0, (GLsizei)gameSize.x, (GLsizei)gameSize.y);
+			glViewport(0, 0, gameTextureWidth, gameTextureHeight);
 		}
 	}
 
