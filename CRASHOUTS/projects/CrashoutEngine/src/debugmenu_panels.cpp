@@ -1891,10 +1891,39 @@ namespace UI {
 				switch (node.type)
 				{
 				case VSNodeType::Start:
+				{
+					VSPin outPin;
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Next";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Exec;
+					node.outputs.push_back(outPin);
+					node.size = ImVec2(140.0f, 70.0f);
+					break;
+				}
+
 				case VSNodeType::Move:
 				case VSNodeType::Attack:
 				case VSNodeType::Wait:
 				case VSNodeType::ScriptCall:
+				{
+					VSPin inPin;
+					inPin.id = graph.nextPinId++;
+					inPin.name = "In";
+					inPin.kind = VSPinKind::Input;
+					inPin.type = VSDataType::Exec;
+					node.inputs.push_back(inPin);
+
+					VSPin outPin;
+					outPin.id = graph.nextPinId++;
+					outPin.name = "Next";
+					outPin.kind = VSPinKind::Output;
+					outPin.type = VSDataType::Exec;
+					node.outputs.push_back(outPin);
+
+					node.size = ImVec2(140.0f, 70.0f);
+					break;
+				}
 				case VSNodeType::GetVariable:
 				case VSNodeType::SetVariable:
 				{
@@ -2571,11 +2600,13 @@ namespace UI {
 					}
 				}
 
+				ImGui::Indent(20.0f);
 				if (ImGui::InputText("Title", nodeTitleBuffer, sizeof(nodeTitleBuffer)))
 				{
 					selected->title = nodeTitleBuffer;
 					changed = true;
 				}
+				ImGui::Unindent(20.0f);
 
 				if (ImGui::DragFloat2("Position", &selected->pos.x, 1.0f))
 				{

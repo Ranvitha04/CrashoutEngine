@@ -331,6 +331,10 @@
             "path": "Character/Light Mode/Left/Switch State Idle .png"
         },
         {
+            "name": "spikes_14",
+            "path": "spritesheet/spikes/spikes_14.png"
+        },
+        {
             "name": "bg 1 top",
             "path": "backgrounds/bg 1 top.png"
         },
@@ -341,6 +345,10 @@
         {
             "name": "bg2 p2",
             "path": "backgrounds/bg2 p2.png"
+        },
+        {
+            "name": "spikes_22",
+            "path": "spritesheet/spikes/spikes_22.png"
         },
         {
             "name": "Slime spritesheet_09",
@@ -415,6 +423,10 @@
             "path": "Monsters/Monsters(2).png"
         },
         {
+            "name": "spikes_15",
+            "path": "spritesheet/spikes/spikes_15.png"
+        },
+        {
             "name": "foreground base",
             "path": "backgrounds/foreground base.png"
         },
@@ -441,6 +453,10 @@
         {
             "name": "lava far",
             "path": "backgrounds/lava far.png"
+        },
+        {
+            "name": "tut_text_4",
+            "path": "UI/Tutorial/tut_text_4.png"
         },
         {
             "name": "Switch-State-SpriteSheet-Reverse",
@@ -495,8 +511,16 @@
             "path": "Character/Light Mode/Chibi-Light-Actions-SpriteSheet.png"
         },
         {
+            "name": "spikes_20",
+            "path": "spritesheet/spikes/spikes_20.png"
+        },
+        {
             "name": "Run 1",
             "path": "Character/Light Mode/Left/Run 1.png"
+        },
+        {
+            "name": "spikes_23",
+            "path": "spritesheet/spikes/spikes_23.png"
         },
         {
             "name": "Slime spritesheet_08",
@@ -505,6 +529,10 @@
         {
             "name": "Run 2",
             "path": "Character/Light Mode/Left/Run 2.png"
+        },
+        {
+            "name": "spikes_25",
+            "path": "spritesheet/spikes/spikes_25.png"
         },
         {
             "name": "Run 4",
@@ -553,6 +581,10 @@
         {
             "name": "Run Light",
             "path": "Character/Run Light.gif"
+        },
+        {
+            "name": "spikes_03",
+            "path": "spritesheet/spikes/spikes_03.png"
         },
         {
             "name": "Run spritesheet",
@@ -1491,8 +1523,16 @@
             "path": "spritesheet/Slime spritesheet/Slime spritesheet_01.png"
         },
         {
+            "name": "spikes_29",
+            "path": "spritesheet/spikes/spikes_29.png"
+        },
+        {
             "name": "Slime spritesheet_02",
             "path": "spritesheet/Slime spritesheet/Slime spritesheet_02.png"
+        },
+        {
+            "name": "spikes_28",
+            "path": "spritesheet/spikes/spikes_28.png"
         },
         {
             "name": "Slime spritesheet_03",
@@ -1505,6 +1545,110 @@
         {
             "name": "Slime spritesheet_11",
             "path": "spritesheet/Slime spritesheet/Slime spritesheet_11.png"
+        },
+        {
+            "name": "spikes_00",
+            "path": "spritesheet/spikes/spikes_00.png"
+        },
+        {
+            "name": "spikes_01",
+            "path": "spritesheet/spikes/spikes_01.png"
+        },
+        {
+            "name": "spikes_02",
+            "path": "spritesheet/spikes/spikes_02.png"
+        },
+        {
+            "name": "spikes_04",
+            "path": "spritesheet/spikes/spikes_04.png"
+        },
+        {
+            "name": "spikes_05",
+            "path": "spritesheet/spikes/spikes_05.png"
+        },
+        {
+            "name": "spikes_06",
+            "path": "spritesheet/spikes/spikes_06.png"
+        },
+        {
+            "name": "spikes_07",
+            "path": "spritesheet/spikes/spikes_07.png"
+        },
+        {
+            "name": "spikes_08",
+            "path": "spritesheet/spikes/spikes_08.png"
+        },
+        {
+            "name": "spikes_09",
+            "path": "spritesheet/spikes/spikes_09.png"
+        },
+        {
+            "name": "spikes_10",
+            "path": "spritesheet/spikes/spikes_10.png"
+        },
+        {
+            "name": "spikes_11",
+            "path": "spritesheet/spikes/spikes_11.png"
+        },
+        {
+            "name": "Pause Menu Open",
+            "path": "UI/Pause Menu Open.png"
+        },
+        {
+            "name": "spikes_12",
+            "path": "spritesheet/spikes/spikes_12.png"
+        },
+        {
+            "name": "spikes_13",
+            "path": "spritesheet/spikes/spikes_13.png"
+        },
+        {
+            "name": "spikes_16",
+            "path": "spritesheet/spikes/spikes_16.png"
+        },
+        {
+            "name": "spikes_17",
+            "path": "spritesheet/spikes/spikes_17.png"
+        },
+        {
+            "name": "spikes_18",
+            "path": "spritesheet/spikes/spikes_18.png"
+        },
+        {
+            "name": "spikes_19",
+            "path": "spritesheet/spikes/spikes_19.png"
+        },
+        {
+            "name": "spikes_21",
+            "path": "spritesheet/spikes/spikes_21.png"
+        },
+        {
+            "name": "button",
+            "path": "UI/button.png"
+        },
+        {
+            "name": "spikes_24",
+            "path": "spritesheet/spikes/spikes_24.png"
+        },
+        {
+            "name": "spikes_26",
+            "path": "spritesheet/spikes/spikes_26.png"
+        },
+        {
+            "name": "spikes_27",
+            "path": "spritesheet/spikes/spikes_27.png"
+        },
+        {
+            "name": "Rock",
+            "path": "Tileset/Rock.png"
+        },
+        {
+            "name": "spikes_30",
+            "path": "spritesheet/spikes/spikes_30.png"
+        },
+        {
+            "name": "spikes_31",
+            "path": "spritesheet/spikes/spikes_31.png"
         },
         {
             "name": "Switch-State-SpriteSheet_00",
@@ -1563,16 +1707,12 @@
             "path": "Tileset/lava platform.png"
         },
         {
-            "name": "Rock",
-            "path": "Tileset/Rock.png"
+            "name": "spikes",
+            "path": "Tileset/spikes.png"
         },
         {
             "name": "Bar_Area",
             "path": "UI/Bar_Area.png"
-        },
-        {
-            "name": "button",
-            "path": "UI/button.png"
         },
         {
             "name": "Emp 4",
@@ -1603,10 +1743,6 @@
             "path": "UI/mana UI single.png"
         },
         {
-            "name": "Pause Menu Open",
-            "path": "UI/Pause Menu Open.png"
-        },
-        {
             "name": "pause quit text",
             "path": "UI/pause quit text.png"
         },
@@ -1617,6 +1753,10 @@
         {
             "name": "Resume game hover",
             "path": "UI/Resume game hover.png"
+        },
+        {
+            "name": "tut_text_10",
+            "path": "UI/Tutorial/tut_text_10.png"
         },
         {
             "name": "updated quit large",
@@ -1677,6 +1817,46 @@
         {
             "name": "third",
             "path": "UI/Tutorial/third.png"
+        },
+        {
+            "name": "tut_text_1",
+            "path": "UI/Tutorial/tut_text_1.png"
+        },
+        {
+            "name": "tut_text_11",
+            "path": "UI/Tutorial/tut_text_11.png"
+        },
+        {
+            "name": "tut_text_12",
+            "path": "UI/Tutorial/tut_text_12.png"
+        },
+        {
+            "name": "tut_text_2",
+            "path": "UI/Tutorial/tut_text_2.png"
+        },
+        {
+            "name": "tut_text_3",
+            "path": "UI/Tutorial/tut_text_3.png"
+        },
+        {
+            "name": "tut_text_5",
+            "path": "UI/Tutorial/tut_text_5.png"
+        },
+        {
+            "name": "tut_text_6",
+            "path": "UI/Tutorial/tut_text_6.png"
+        },
+        {
+            "name": "tut_text_7",
+            "path": "UI/Tutorial/tut_text_7.png"
+        },
+        {
+            "name": "tut_text_8",
+            "path": "UI/Tutorial/tut_text_8.png"
+        },
+        {
+            "name": "tut_text_9",
+            "path": "UI/Tutorial/tut_text_9.png"
         }
     ],
     "scenes": [
@@ -1865,44 +2045,12 @@
     ],
     "tilemaps": [
         {
-            "name": "ProjectSettings",
-            "path": ".vs/ProjectSettings.json"
-        },
-        {
-            "name": "slnx",
-            "path": ".vs/slnx.sqlite"
-        },
-        {
-            "name": "CodeChunks",
-            "path": ".vs/tilemaps/CopilotIndices/17.14.1290.42047/CodeChunks.db"
-        },
-        {
-            "name": "DocumentLayout",
-            "path": ".vs/tilemaps/v17/DocumentLayout.json"
-        },
-        {
-            "name": "SemanticSymbols",
-            "path": ".vs/tilemaps/CopilotIndices/17.14.1290.42047/SemanticSymbols.db"
-        },
-        {
-            "name": "39a76b67-19c8-4f17-bd6f-82623f5e83f9",
-            "path": ".vs/tilemaps/FileContentIndex/39a76b67-19c8-4f17-bd6f-82623f5e83f9.vsidx"
-        },
-        {
-            "name": "3a120126-1ab1-4b73-af3d-b16b9dd1f7fe",
-            "path": ".vs/tilemaps/FileContentIndex/3a120126-1ab1-4b73-af3d-b16b9dd1f7fe.vsidx"
-        },
-        {
-            "name": ".wsuo",
-            "path": ".vs/tilemaps/v17/.wsuo"
-        },
-        {
-            "name": "VSWorkspaceState",
-            "path": ".vs/VSWorkspaceState.json"
-        },
-        {
             "name": "Rock",
             "path": "Rock"
+        },
+        {
+            "name": "Passthrough_Floor",
+            "path": "Passthrough_Floor"
         },
         {
             "name": "Darker_Platform",
@@ -1911,10 +2059,6 @@
         {
             "name": "Lava_Platform",
             "path": "Lava_Platform"
-        },
-        {
-            "name": "Passthrough_Floor",
-            "path": "Passthrough_Floor"
         },
         {
             "name": "Platform",
@@ -1929,6 +2073,20 @@
         {
             "name": "Shrek - All star _ Intro HD (1080p) - Trim",
             "path": "Shrek - All star _ Intro HD (1080p) - Trim.mp4"
+        }
+    ],
+    "visualscripts": [
+        {
+            "name": "graph_12",
+            "path": "graph_12.vsgraph"
+        },
+        {
+            "name": "graph_13",
+            "path": "graph_13.vsgraph"
+        },
+        {
+            "name": "graph_14",
+            "path": "graph_14.vsgraph"
         }
     ],
     "start_scene": "descentmenu"
