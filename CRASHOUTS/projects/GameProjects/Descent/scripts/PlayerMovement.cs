@@ -74,6 +74,10 @@ namespace CrashoutsEngine
         private const float FIXED_TIMESTEP = 0.02f;
 
         public bool alive = true;
+        private bool isDying = false;
+        [SerializeField] private float deathDelay = 1.0f;
+        private float deathTimer = 0.0f;
+        [SerializeField] private string deathAnimName = "playerDeath";
         public bool isPaused = false; 
         private static CEVec3 respawnPos;
         private static float checkpointEnergy = 100.0f;
@@ -209,9 +213,19 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
+
             if (tf == null || rb == null) return;
 
             AudioManager.SetListenerPosition(tf.Position);
+            if (isDying)
+            {
+                deathTimer -= (float)Time.DT;
+                if (deathTimer <= 0.0f)
+                {
+                    FinishDeathTransition();
+                }
+                return;
+            }
 
             if (isPaused || !alive) return;
 
@@ -305,7 +319,6 @@ namespace CrashoutsEngine
                 landingDustTimer -= (float)Time.DT;
                 if (landingDustTimer <= 0.0f && landingDustID != 0) InternalCalls.Particle_SetEmitting(landingDustID, false);
             }
-
             HandleFootsteps();
             UpdateAnimationState(false);
         }
@@ -398,7 +411,32 @@ namespace CrashoutsEngine
                 else rb.AddForce(new CEVec3(0f, baseGrav, 0f));
             }
         }
+        private void FinishDeathTransition()
+        {
+            // If a Game Over scene is defined, ALWAYS go there first
+            if (!string.IsNullOrEmpty(gameOverSceneName))
+            {
+                if (!SceneManager.IsTransitioning())
+                {
+                    SceneManager.LoadScene(gameOverSceneName, 1.0f);
+                }
+                return;
+            }
 
+            // Fallback: reload the level directly ONLY if no Game Over scene exists
+            if (reloadOnDeath)
+            {
+                if (!SceneManager.IsTransitioning())
+                {
+                    RespawnNextLoad = true;
+                    string target = string.IsNullOrEmpty(reloadSceneName)
+                        ? SceneManager.GetActiveSceneName()
+                        : reloadSceneName;
+
+                    SceneManager.LoadScene(target, 1.0f);
+                }
+            }
+        }
         private void CheckGround()
         {
             if (jumpCooldown > 0.0f) { IsGrounded = false; return; }
@@ -514,30 +552,21 @@ namespace CrashoutsEngine
             InternalCalls.Particle_SetEmitting(landingDustID, true); 
             landingDustTimer = dustBurstDuration; 
         }
-
+        //Death Anim
         private void HandleDeath()
         {
+            if (isDying) return;
+
             alive = false;
+            isDying = true;
+            deathTimer = deathDelay;
 
-            // If a Game Over scene is defined, ALWAYS go there first
-            if (!string.IsNullOrEmpty(gameOverSceneName))
-            {
-                if (!SceneManager.IsTransitioning())
-                {
-                    SceneManager.LoadScene(gameOverSceneName, 1.0f);
-                }
-                return;
-            }
+            rb.LinearVelocity = new CEVec3(0, 0, 0);
 
-            // Fallback: reload the level directly ONLY if no Game Over scene exists
-            if (reloadOnDeath) 
+            if (anim != null)
             {
-                if (!SceneManager.IsTransitioning())
-                {
-                    RespawnNextLoad = true;
-                    string target = string.IsNullOrEmpty(reloadSceneName) ? SceneManager.GetActiveSceneName() : reloadSceneName;
-                    SceneManager.LoadScene(target, 1.0f);
-                }
+                anim.Play(deathAnimName, true);
+                currentAnimState = deathAnimName;
             }
         }
         //Testing VSnode
@@ -550,6 +579,15 @@ namespace CrashoutsEngine
         {
             Debug.Log("Branch FALSE: Player is airborne");
         }
+        public void VS_TwoPlusTwoTrue()
+        {
+            Console.WriteLine("2 + 2 is 4");
+        }
+
+        public void VS_TwoPlusTwoFalse()
+        {
+            Console.WriteLine("2 + 2 is NOT 4");
+        }
         public void Respawn() 
         { 
             alive = true; 
@@ -559,7 +597,8 @@ namespace CrashoutsEngine
             isPhasing = false; 
             passthroughOverlapTimer = 0.0f;
             jumpReady = true;
-
+            isDying = false;
+            deathTimer = 0.0f;
             // REMIND MYSELF TO LIKE FIGURE PERSISTING MASS STATE
             isLight = false;
             rb.Mass = normalMass;

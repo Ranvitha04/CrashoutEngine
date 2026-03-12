@@ -19,6 +19,26 @@
                     "y": 1.0
                 }
             },
+            "light": {
+                "active": true,
+                "intensity": 1.0,
+                "radius": 200.0,
+                "affectBloom": true,
+                "useTransform": false,
+                "renderSelf": false,
+                "renderBehind": false,
+                "ignoreParentOccluders": true,
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "tilemap": {
                 "tileSize": 32,
                 "excludeOuterBoundary": true,
@@ -16481,7 +16501,7 @@
                 "intensity": 1.5,
                 "radius": 39.0,
                 "affectBloom": true,
-                "useTransform": false,
+                "useTransform": true,
                 "renderSelf": false,
                 "renderBehind": false,
                 "ignoreParentOccluders": true,
@@ -16543,7 +16563,7 @@
                     {
                         "x": -5,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -5,
@@ -16553,7 +16573,7 @@
                     {
                         "x": -4,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -4,
@@ -16568,7 +16588,7 @@
                     {
                         "x": -3,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -3,
@@ -16583,7 +16603,7 @@
                     {
                         "x": -2,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -2,
@@ -16598,7 +16618,7 @@
                     {
                         "x": -1,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -1,
@@ -16638,7 +16658,12 @@
                     {
                         "x": 1,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
+                    },
+                    {
+                        "x": 1,
+                        "y": -15,
+                        "asset": ""
                     },
                     {
                         "x": 1,
@@ -16658,7 +16683,7 @@
                     {
                         "x": 2,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 3,
@@ -16668,7 +16693,7 @@
                     {
                         "x": 3,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 4,
@@ -16683,7 +16708,7 @@
                     {
                         "x": 4,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 4,
@@ -16708,7 +16733,7 @@
                     {
                         "x": 5,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 5,
@@ -16733,7 +16758,7 @@
                     {
                         "x": 6,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 6,
@@ -16758,7 +16783,7 @@
                     {
                         "x": 7,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 7,
@@ -16788,7 +16813,7 @@
                     {
                         "x": 8,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 8,
@@ -16813,7 +16838,7 @@
                     {
                         "x": 9,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 9,
@@ -16848,7 +16873,7 @@
                     {
                         "x": 10,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 10,
@@ -16873,7 +16898,7 @@
                     {
                         "x": 11,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 11,
@@ -16888,7 +16913,7 @@
                     {
                         "x": 12,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 12,
@@ -16908,7 +16933,7 @@
                     {
                         "x": 13,
                         "y": -26,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 13,
@@ -16918,7 +16943,7 @@
                     {
                         "x": 13,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 13,
@@ -16938,7 +16963,7 @@
                     {
                         "x": 14,
                         "y": -25,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 14,
@@ -16948,7 +16973,7 @@
                     {
                         "x": 14,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 14,
@@ -16967,18 +16992,13 @@
                     },
                     {
                         "x": 15,
-                        "y": -24,
-                        "asset": "tilemaps/Lava_Platform"
-                    },
-                    {
-                        "x": 15,
                         "y": -17,
                         "asset": ""
                     },
                     {
                         "x": 15,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 15,
@@ -16998,7 +17018,7 @@
                     {
                         "x": 16,
                         "y": -24,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 16,
@@ -17008,7 +17028,7 @@
                     {
                         "x": 16,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 16,
@@ -17018,7 +17038,7 @@
                     {
                         "x": 17,
                         "y": -24,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 17,
@@ -17028,7 +17048,7 @@
                     {
                         "x": 17,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 17,
@@ -17038,7 +17058,7 @@
                     {
                         "x": 18,
                         "y": -25,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 18,
@@ -17048,7 +17068,7 @@
                     {
                         "x": 18,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 18,
@@ -17058,12 +17078,12 @@
                     {
                         "x": 19,
                         "y": -25,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 19,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 19,
@@ -17108,7 +17128,7 @@
                     {
                         "x": 23,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 23,
@@ -17123,7 +17143,7 @@
                     {
                         "x": 24,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 24,
@@ -17138,7 +17158,7 @@
                     {
                         "x": 25,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 26,
@@ -17148,7 +17168,7 @@
                     {
                         "x": 26,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 27,
@@ -17158,12 +17178,12 @@
                     {
                         "x": 27,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 28,
                         "y": -23,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 28,
@@ -17173,12 +17193,12 @@
                     {
                         "x": 28,
                         "y": -14,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 29,
                         "y": -23,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 29,
@@ -24755,6 +24775,8 @@
                             "CurrentEnergy": 87.5,
                             "MaxEnergy": 100.0,
                             "alive": true,
+                            "deathDelay": 1.0,
+                            "deathAnimName": "playerDeath",
                             "isPaused": false,
                             "reloadOnDeath": false,
                             "reloadSceneName": "",
@@ -34555,55 +34577,21 @@
         },
         {
             "active": true,
-            "name": "PlayerBookGlow",
-            "uuid": 11223344556677890113,
+            "name": "Spike_TileMap",
+            "uuid": 1495962670491379335,
             "tag": {
-                "tagMask": 0
+                "tagMask": 6
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -228.9227752685547,
-                    "y": -12.923833847045899,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 273.8399963378906,
-                    "y": 44.5
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "UI/Icon.png",
-                "uvSize": {
                     "x": 1.0,
                     "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.20441991090774537,
-                    "y": 0.20441991090774537,
-                    "z": 0.20441991090774537,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
                 }
             },
             "light": {
@@ -34649,74 +34637,663 @@
                     "z": 1.0,
                     "w": 1.0
                 }
+            "tilemap": {
+                "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
+                "activeAsset": "tilemaps/Spike",
+                "tileAssetNames": [
+                    "Spike"
+                ],
+                "gridData": [
+                    {
+                        "x": -8,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -8,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -7,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -7,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -6,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -6,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -5,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -4,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -4,
+                        "y": 6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -3,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -3,
+                        "y": 6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -2,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -2,
+                        "y": 6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -1,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -1,
+                        "y": 6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 0,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 0,
+                        "y": 5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 1,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 1,
+                        "y": 5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 4,
+                        "y": -22,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 4,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 5,
+                        "y": -23,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 5,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 6,
+                        "y": -23,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 6,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 7,
+                        "y": -23,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 7,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 8,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 8,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 9,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 9,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 10,
+                        "y": -20,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 10,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 12,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 12,
+                        "y": 1,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 13,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 13,
+                        "y": 1,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 14,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 14,
+                        "y": 0,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 15,
+                        "y": -9,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 15,
+                        "y": 0,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 16,
+                        "y": 0,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 17,
+                        "y": 2,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 18,
+                        "y": 5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 19,
+                        "y": 5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 20,
+                        "y": 7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 21,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 21,
+                        "y": -8,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 22,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 22,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 23,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 23,
+                        "y": -6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 24,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 25,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 26,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 27,
+                        "y": -15,
+                        "asset": ""
+                    },
+                    {
+                        "x": 27,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": 28,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 29,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 30,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 31,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 31,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 32,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 32,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 33,
+                        "y": -18,
+                        "asset": ""
+                    },
+                    {
+                        "x": 33,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 33,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 34,
+                        "y": -18,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 34,
+                        "y": -7,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 39,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 40,
+                        "y": -19,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 40,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 41,
+                        "y": -16,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 41,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 42,
+                        "y": -16,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 42,
+                        "y": 4,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 43,
+                        "y": 5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 47,
+                        "y": -19,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 48,
+                        "y": -19,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 49,
+                        "y": -19,
+                        "asset": "tilemaps/Spike"
+                    }
+                ]
             },
             "layer": {
-                "layerName": "Player",
+                "layerName": "Default",
                 "z": 1
             }
         },
         {
             "active": true,
-            "name": "SlimeLight",
-            "uuid": 17744916967257968049,
+            "name": "SpikeGround_TileMap",
+            "uuid": 2731264537872538826,
             "tag": {
-                "tagMask": 0
+                "tagMask": 6
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1583.729736328125,
-                    "y": -791.5061645507813,
-                    "z": 0.7333488464355469
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "size": {
                     "x": -1.0,
                     "y": 1.0
                 }
             },
-            "light": {
-                "active": true,
-                "intensity": 0.5,
-                "radius": 23.0,
-                "affectBloom": true,
-                "useTransform": true,
-                "renderSelf": true,
-                "renderBehind": true,
-                "ignoreParentOccluders": true,
-                "ignoreOccluders": true,
-                "shadowTechnique": 0,
-                "raymarchSteps": 24,
-                "raymarchThreshold": 0.5,
-                "color": {
-                    "x": 0.9852941036224365,
-                    "y": 0.5192113518714905,
-                    "z": 0.05312861502170563
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 7849124200209266035,
-                "localPos": {
-                    "x": 0.05703677609562874,
-                    "y": -0.08819936215877533,
-                    "z": -50.26665115356445
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": -0.01886792480945587,
-                    "y": 0.020283976569771768
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
+            "tilemap": {
+                "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
+                "activeAsset": "tilemaps/Spike_Ground",
+                "tileAssetNames": [
+                    "Spike_Ground"
+                ],
+                "gridData": [
+                    {
+                        "x": -5,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": -4,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": -3,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": -2,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": -1,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 1,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 2,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 3,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 4,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 5,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 6,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 7,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 8,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 9,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 10,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 11,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 12,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 13,
+                        "y": -26,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 13,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 14,
+                        "y": -25,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 14,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 15,
+                        "y": -24,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 15,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 16,
+                        "y": -24,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 16,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 17,
+                        "y": -24,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 17,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 18,
+                        "y": -25,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 18,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 19,
+                        "y": -25,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 19,
+                        "y": -16,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 22,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 23,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 24,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 25,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 26,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 27,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 28,
+                        "y": -23,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 28,
+                        "y": -14,
+                        "asset": "tilemaps/Spike_Ground"
+                    },
+                    {
+                        "x": 29,
+                        "y": -23,
+                        "asset": "tilemaps/Spike_Ground"
+                    }
+                ]
             },
             "layer": {
                 "layerName": "",
@@ -34789,6 +35366,8 @@
             "layer": {
                 "layerName": "",
                 "z": 0
+                "layerName": "Default",
+                "z": 1
             }
         }
     ],

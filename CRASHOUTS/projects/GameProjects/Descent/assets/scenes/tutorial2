@@ -8284,13 +8284,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 197.27008056640626,
-                    "y": -194.79922485351563,
+                    "x": 318.8038024902344,
+                    "y": -3.4411091804504396,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 118.13680267333985,
-                    "y": 73.3455581665039
+                    "x": 98.63700103759766,
+                    "y": 16.746000289916993
                 }
             },
             "shape": {
@@ -8301,7 +8301,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "tenth",
+                "textureName": "UI/Tutorial/tut_text_10.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -8327,6 +8327,26 @@
                     "z": 0.0
                 }
             },
+            "parent": {
+                "parentUUID": 11373728698402491674,
+                "localPos": {
+                    "x": 318.8038024902344,
+                    "y": -3.4411091804504396,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 98.63700103759766,
+                    "y": 16.746000289916993
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -8342,13 +8362,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 359.27716064453127,
-                    "y": -204.71200561523438,
+                    "x": 155.871337890625,
+                    "y": -200.0,
                     "z": 0.0
                 },
                 "size": {
                     "x": 196.5,
-                    "y": 52.29999923706055
+                    "y": 88.4000015258789
                 }
             },
             "shape": {
@@ -8359,7 +8379,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "eleventh",
+                "textureName": "UI/Tutorial/tut_text_11.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -8383,6 +8403,26 @@
                     "x": 32.0,
                     "y": 0.0,
                     "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 11373728698402491674,
+                "localPos": {
+                    "x": 155.871337890625,
+                    "y": -200.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 196.5,
+                    "y": 88.4000015258789
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -19088,21 +19128,21 @@
         },
         {
             "active": true,
-            "name": "PlayerBookGlow",
-            "uuid": 11223344556677890102,
+            "name": "Tex_twelveth",
+            "uuid": 8755016151358797651,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 26.387645721435548,
-                    "y": -5.7000532150268559,
-                    "z": 50.0
+                    "x": 399.3760986328125,
+                    "y": -202.7942657470703,
+                    "z": 0.0
                 },
                 "size": {
-                    "x": -273.8399963378906,
-                    "y": 44.5
+                    "x": 132.3000030517578,
+                    "y": 44.400001525878909
                 }
             },
             "shape": {
@@ -19113,7 +19153,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/Icon.png",
+                "textureName": "UI/Tutorial/tut_text_12.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -19123,10 +19163,10 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.20441991090774537,
-                    "y": 0.20441991090774537,
-                    "z": 0.20441991090774537,
-                    "w": 0.0
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.649402379989624
                 },
                 "p1": {
                     "x": 0.0,
@@ -19139,41 +19179,17 @@
                     "z": 0.0
                 }
             },
-            "light": {
-                "active": true,
-                "intensity": 0.550000011920929,
-                "radius": 31.0,
-                "affectBloom": true,
-                "useTransform": true,
-                "renderSelf": true,
-                "renderBehind": true,
-                "ignoreParentOccluders": true,
-                "ignoreOccluders": true,
-                "shadowTechnique": 0,
-                "raymarchSteps": 24,
-                "raymarchThreshold": 0.5,
-                "color": {
-                    "x": 0.8823529481887817,
-                    "y": 0.08650518953800202,
-                    "z": 0.08650518953800202
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
             "parent": {
-                "parentUUID": 2235953182091816380,
+                "parentUUID": 11373728698402491674,
                 "localPos": {
-                    "x": 0.24071429669857026,
-                    "y": -0.12200000137090683,
+                    "x": 399.3760986328125,
+                    "y": -202.7942657470703,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 1.9559999704360963,
-                    "y": 0.4449999928474426
+                    "x": 132.3000030517578,
+                    "y": 44.400001525878909
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -19184,247 +19200,27 @@
                 }
             },
             "layer": {
-                "layerName": "Player",
-                "z": 1
-            }
-        },
-        {
-            "active": true,
-            "name": "Camera",
-            "uuid": 3550847570154800869,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1087.0885009765626,
-                    "y": -72.50010681152344,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "CameraController",
-                        "fields": {
-                            "playerEntityName": "Player",
-                            "lookAheadDistance": 50.0,
-                            "smoothSpeedX": 4.0,
-                            "smoothSpeedY": 4.0,
-                            "defaultOffsetY": 20.0,
-                            "directionChangeSpeed": 2.0
-                        }
-                    }
-                ]
-            },
-            "camera": {
-                "zoom": 0.30000001192092898,
-                "xBounds": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "yBounds": {
-                    "x": 0.0,
-                    "y": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "",
+                "layerName": "Default",
                 "z": 0
             }
         },
         {
             "active": true,
-            "name": "Entity 1256",
-            "uuid": 17744916967257968044,
+            "name": "Tutorial_Text",
+            "uuid": 11373728698402491674,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1249.1771240234376,
-                    "y": -109.64822387695313,
-                    "z": 0.7333488464355469
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "size": {
                     "x": 1.0,
                     "y": 1.0
-                }
-            },
-            "light": {
-                "active": true,
-                "intensity": 0.5,
-                "radius": 23.0,
-                "affectBloom": true,
-                "useTransform": true,
-                "renderSelf": true,
-                "renderBehind": true,
-                "ignoreParentOccluders": true,
-                "ignoreOccluders": true,
-                "shadowTechnique": 0,
-                "raymarchSteps": 24,
-                "raymarchThreshold": 0.5,
-                "color": {
-                    "x": 0.9852941036224365,
-                    "y": 0.5192113518714905,
-                    "z": 0.05312861502170563
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 1610264561334882712,
-                "localPos": {
-                    "x": 0.05703677609562874,
-                    "y": -0.08819936215877533,
-                    "z": -50.26665115356445
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": -0.01886792480945587,
-                    "y": 0.020283976569771768
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": false,
-            "name": "BookGlow_EndHandle",
-            "uuid": 434075133436016491,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 106.14199829101563,
-                    "y": -3.824000597000122,
-                    "z": 50.0
-                },
-                "size": {
-                    "x": 28.0,
-                    "y": 28.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 3,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.20000000298023225,
-                    "y": 0.6000000238418579,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "SlimeLight",
-            "uuid": 17744916967257968045,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 89.42291259765625,
-                    "y": -274.6482238769531,
-                    "z": 0.7333488464355469
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "light": {
-                "active": true,
-                "intensity": 0.5,
-                "radius": 23.0,
-                "affectBloom": true,
-                "useTransform": true,
-                "renderSelf": true,
-                "renderBehind": true,
-                "ignoreParentOccluders": true,
-                "ignoreOccluders": true,
-                "shadowTechnique": 0,
-                "raymarchSteps": 24,
-                "raymarchThreshold": 0.5,
-                "color": {
-                    "x": 0.9852941036224365,
-                    "y": 0.5192113518714905,
-                    "z": 0.05312861502170563
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 13467747073361246097,
-                "localPos": {
-                    "x": 0.05703677609562874,
-                    "y": -0.08819936215877533,
-                    "z": -50.26665115356445
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.01886792480945587,
-                    "y": 0.020283976569771768
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
                 }
             },
             "layer": {

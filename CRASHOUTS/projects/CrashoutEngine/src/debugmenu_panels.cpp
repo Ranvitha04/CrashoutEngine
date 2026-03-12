@@ -2118,12 +2118,19 @@ namespace UI {
 
 				case VSNodeType::Branch:
 				{
-					VSPin inPin;
-					inPin.id = graph.nextPinId++;
-					inPin.name = "Condition";
-					inPin.kind = VSPinKind::Input;
-					inPin.type = VSDataType::Bool;
-					node.inputs.push_back(inPin);
+					VSPin execIn;
+					execIn.id = graph.nextPinId++;
+					execIn.name = "In";
+					execIn.kind = VSPinKind::Input;
+					execIn.type = VSDataType::Exec;
+					node.inputs.push_back(execIn);
+
+					VSPin condIn;
+					condIn.id = graph.nextPinId++;
+					condIn.name = "Condition";
+					condIn.kind = VSPinKind::Input;
+					condIn.type = VSDataType::Bool;
+					node.inputs.push_back(condIn);
 
 					VSPin truePin;
 					truePin.id = graph.nextPinId++;
@@ -2139,7 +2146,7 @@ namespace UI {
 					falsePin.type = VSDataType::Exec;
 					node.outputs.push_back(falsePin);
 
-					node.size = ImVec2(180.0f, 100.0f);
+					node.size = ImVec2(180.0f, 110.0f);
 					break;
 				}
 

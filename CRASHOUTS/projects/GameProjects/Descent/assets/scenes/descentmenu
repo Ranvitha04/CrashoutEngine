@@ -1168,6 +1168,51 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
+            },
+            "keyframe_animator": {
+                "current": "death_anim",
+                "t": 0.0,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "death_anim",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 280.0,
+                        "targetHeight": 60.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         },
         {
