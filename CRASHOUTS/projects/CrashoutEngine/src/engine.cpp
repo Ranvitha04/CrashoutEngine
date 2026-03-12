@@ -107,8 +107,8 @@ GLuint gameFboID = 0;
 GLuint gameDepthBufferID = 0;
 GLuint gameTextureColorBuffer = 0;
 GLuint gameRboDepthStencil = 0;
-int gameTextureWidth = 1920;    // FIXED LOGICAL WIDTH
-int gameTextureHeight = 1080;   // FIXED LOGICAL HEIGHT
+int gameTextureWidth = 800;     // Will be resized
+int gameTextureHeight = 600;    // Will be resized
 
 #if USE_IMGUI_EDITOR
 bool gameWinHovered{ false };
@@ -863,35 +863,52 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     int windowW, windowH;
     glfwGetFramebufferSize(GLApp::ptr_window, &windowW, &windowH);
 
-    // 1. Calculate the 16:9 Aspect Ratio for the SCREEN (Used later for blitting)
+    // 1. Calculate the 16:9 Aspect Ratio
     const float targetAspectRatio = 16.0f / 9.0f;
     float currentAspectRatio = (float)windowW / (float)windowH;
 
     int vpX = 0, vpY = 0, vpW = windowW, vpH = windowH;
 
     if (currentAspectRatio > targetAspectRatio) {
+        // Screen is wider than 16:9 (Pillarbox - black bars on left/right)
         vpH = windowH;
         vpW = static_cast<int>(windowH * targetAspectRatio);
         vpX = (windowW - vpW) / 2;
     }
     else {
+        // Screen is taller than 16:9 (Letterbox - black bars on top/bottom)
         vpW = windowW;
         vpH = static_cast<int>(windowW / targetAspectRatio);
         vpY = (windowH - vpH) / 2;
     }
 
-    // 2. Lock the Game Camera to the FIXED logical resolution (1920x1080)
-    // Do NOT pass vpW and vpH here anymore!
-    CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(gameTextureWidth, gameTextureHeight);
+    // 2. Update Camera Matrices to match the correctly scaled dimensions
+    CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(vpW, vpH);
 
-    // 3. Draw to the internal FBO using the FIXED logical resolution
+    // 3. Resize internal textures if the actual gameplay window area changed
+    if (vpW != gameTextureWidth || vpH != gameTextureHeight) {
+        gameTextureWidth = vpW;
+        gameTextureHeight = vpH;
+
+        glBindTexture(GL_TEXTURE_2D, gameTextureColorBuffer);
+        // Re-allocate memory with the new width/height (NULL means we don't copy data, just alloc)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gameTextureWidth, gameTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+        if (gameRboDepthStencil != 0) {
+            glBindRenderbuffer(GL_RENDERBUFFER, gameRboDepthStencil);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, gameTextureWidth, gameTextureHeight);
+        }
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    }
+
+    // 4. When drawing to the internal FBO, the viewport is exactly the texture size!
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 #else
     // EDITOR MODE
-    CrashoutsEngine::RenderCamera::gameCamera.UpdateMatrices(gameTextureWidth, gameTextureHeight); // Ensure editor camera respects it too
     glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
