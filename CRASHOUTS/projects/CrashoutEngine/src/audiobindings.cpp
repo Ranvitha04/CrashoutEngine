@@ -15,6 +15,7 @@ All content � 2025 Digipen Institute of Technology Singapore.All rights reserv
 #include "activecomponent.h"
 #include "transformcomponent.h"
 #include "settings.h"
+#include "monomanager.h"
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
@@ -94,12 +95,14 @@ namespace
     static void ICALL_Audio_SetMusicVolume(float volume)
     {
         auto& audio = AudioSystem::instance();
+        Settings::SetMusicVolume(volume);
         audio.setMusicGroupVolume(volume);
     }
 
     static void ICALL_Audio_SetSFXVolume(float volume)
     {
         auto& audio = AudioSystem::instance();
+        Settings::SetSFXVolume(volume);
         audio.setSFXGroupVolume(volume);
     }
 
@@ -386,6 +389,11 @@ namespace
         AudioSystem::instance().FadeGroupVolume(isMusic != 0, targetVolume, duration);
     }
 
+    static void ICALL_Audio_FadeTaggedVolume(MonoString* key, float targetVolume, float duration)
+    {
+        AudioSystem::instance().FadeTaggedVolume(MonoToStdString(key), targetVolume, duration);
+    }
+
     static mono_bool ICALL_Audio_IsTaggedPlaying(MonoString* key)
     {
         auto& audio = AudioSystem::instance();
@@ -461,4 +469,20 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_FadeGroupDSPParameter", (const void*)ICALL_Audio_FadeGroupDSPParameter);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_FadeGroupVolume", (const void*)ICALL_Audio_FadeGroupVolume);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_FadeTaggedVolume", (const void*)ICALL_Audio_FadeTaggedVolume);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_Reset", (const void*)Audio_Reset);
+}
+
+void CrashoutsEngine::Bindings::Audio_Reset()
+{
+    // Call the static ResetInstance() method on the AudioManager C# class
+    MonoClass* audioClass = mono_class_from_name(MonoManager::GetImage(), "", "AudioManager");
+    if (!audioClass) return;
+
+    MonoMethod* resetMethod = mono_class_get_method_from_name(audioClass, "ResetInstance", 0);
+    if (resetMethod) {
+        mono_runtime_invoke(resetMethod, nullptr, nullptr, nullptr);
+    }
 }

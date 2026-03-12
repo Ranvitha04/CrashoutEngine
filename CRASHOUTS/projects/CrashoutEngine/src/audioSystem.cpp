@@ -264,6 +264,44 @@ namespace CrashoutsEngine::Audio
             }
         }
 
+        // --- Update Channel Volume Fades ---
+        auto channelVolFit = mChannelVolumeFades.begin();
+        while (channelVolFit != mChannelVolumeFades.end())
+        {
+            channelVolFit->currentTime += dt;
+            float t = channelVolFit->currentTime / channelVolFit->totalTime;
+            if (t >= 1.0f) t = 1.0f;
+
+            float currentVol = channelVolFit->startVolume + (channelVolFit->endVolume - channelVolFit->startVolume) * t;
+            channelVolFit->channel->setVolume(currentVol);
+
+            if (t >= 1.0f) {
+                channelVolFit = mChannelVolumeFades.erase(channelVolFit);
+            }
+            else {
+                ++channelVolFit;
+            }
+        }
+
+        // --- Update Bus Volume Fades ---
+        auto busVolFit = mBusVolumeFades.begin();
+        while (busVolFit != mBusVolumeFades.end())
+        {
+            busVolFit->currentTime += dt;
+            float t = busVolFit->currentTime / busVolFit->totalTime;
+            if (t >= 1.0f) t = 1.0f;
+
+            float currentVol = busVolFit->startVolume + (busVolFit->endVolume - busVolFit->startVolume) * t;
+            busVolFit->bus->setVolume(currentVol);
+
+            if (t >= 1.0f) {
+                busVolFit = mBusVolumeFades.erase(busVolFit);
+            }
+            else {
+                ++busVolFit;
+            }
+        }
+
         // --- Update DSP Parameter Fades ---
         auto dspFit = mParameterFades.begin();
         while (dspFit != mParameterFades.end())
@@ -552,6 +590,10 @@ namespace CrashoutsEngine::Audio
 
         // Tagged channels are no longer valid.
         mTaggedChannels.clear();
+        mFadingChannels.clear();
+        mChannelVolumeFades.clear();
+        mGroupVolumeFades.clear();
+        mBusVolumeFades.clear();
     }
 
     /*!
@@ -559,6 +601,9 @@ namespace CrashoutsEngine::Audio
     */
     bool AudioSystem::stopAll(bool fadeOut)
     {
+        if (!fadeOut) {
+            stopAllRaw();
+        }
         // Master bus stops *everything* (music + sfx)
         return stopAllOnBus("bus:/", fadeOut);
     }
@@ -579,6 +624,8 @@ namespace CrashoutsEngine::Audio
         // Clean up tracked channels so the system knows they are dead
         mTaggedChannels.clear();
         mFadingChannels.clear();
+        mGroupVolumeFades.clear();
+        mParameterFades.clear();
     }
 
     /*!
@@ -1080,37 +1127,63 @@ namespace CrashoutsEngine::Audio
     }
 
     /*!
-    @brief Sets the volume of the music channel group.
+    @brief Sets the volume of the music channel group and corresponding Studio bus.
     */
     bool AudioSystem::setMusicGroupVolume(float v01)
     {
-        return mMusicGroup && (mMusicGroup->setVolume(v01) == FMOD_OK);
+        bool okCore = mMusicGroup && (mMusicGroup->setVolume(v01) == FMOD_OK);
+        
+        // Also set Studio Bus volume
+        if (mStudio) {
+            FMOD::Studio::Bus* bus = nullptr;
+            // Try common paths
+            if (mStudio->getBus("bus:/Music", &bus) == FMOD_OK && bus) bus->setVolume(v01);
+            else if (mStudio->getBus("bus:/Master/Music", &bus) == FMOD_OK && bus) bus->setVolume(v01);
+            else if (mStudio->getBus("bus:/music", &bus) == FMOD_OK && bus) bus->setVolume(v01);
+        }
+
+        return okCore;
     }
 
     /*!
-    @brief Sets the volume of the SFX channel group.
+    @brief Sets the volume of the SFX channel group and corresponding Studio bus.
     */
     bool AudioSystem::setSFXGroupVolume(float v01)
     {
-        return mSFXGroup && (mSFXGroup->setVolume(v01) == FMOD_OK);
+        bool okCore = mSFXGroup && (mSFXGroup->setVolume(v01) == FMOD_OK);
+
+        // Also set Studio Bus volume
+        if (mStudio) {
+            FMOD::Studio::Bus* bus = nullptr;
+            if (mStudio->getBus("bus:/SFX", &bus) == FMOD_OK && bus) bus->setVolume(v01);
+            else if (mStudio->getBus("bus:/Master/SFX", &bus) == FMOD_OK && bus) bus->setVolume(v01);
+            else if (mStudio->getBus("bus:/sfx", &bus) == FMOD_OK && bus) bus->setVolume(v01);
+        }
+
+        return okCore;
     }
 
     /*!
-    @brief Sets the master volume on the FMOD Core master channel group.
+    @brief Sets the master volume on both the FMOD Core master group and Studio master bus.
     */
     bool AudioSystem::setMasterVolume(float v01)
     {
-        if (!mCore)
-            return false;
+        bool okCore = false;
+        if (mCore) {
+            FMOD::ChannelGroup* master = nullptr;
+            if (mCore->getMasterChannelGroup(&master) == FMOD_OK && master) {
+                okCore = (master->setVolume(v01) == FMOD_OK);
+            }
+        }
 
-        FMOD::ChannelGroup* master = nullptr;
-        if (!ok(mCore->getMasterChannelGroup(&master), "getMasterChannelGroup"))
-            return false;
+        if (mStudio) {
+            FMOD::Studio::Bus* masterBus = nullptr;
+            if (mStudio->getBus("bus:/", &masterBus) == FMOD_OK && masterBus) {
+                masterBus->setVolume(v01);
+            }
+        }
 
-        if (!master)
-            return false;
-
-        return master->setVolume(v01) == FMOD_OK;
+        return okCore;
     }
 
     /*!
@@ -1573,32 +1646,165 @@ namespace CrashoutsEngine::Audio
         mParameterFades.push_back(fade);
     }
 
+    FMOD::Studio::Bus* AudioSystem::GetStudioBus(bool isMusic)
+    {
+        if (!mStudio) return nullptr;
+        FMOD::Studio::Bus* bus = nullptr;
+        std::vector<std::string> paths = isMusic ? 
+            std::vector<std::string>{"bus:/Music", "bus:/Master/Music", "bus:/music"} :
+            std::vector<std::string>{"bus:/SFX", "bus:/Master/SFX", "bus:/sfx"};
+
+        for (const auto& path : paths) {
+            if (mStudio->getBus(path.c_str(), &bus) == FMOD_OK && bus) return bus;
+        }
+        return nullptr;
+    }
+
     void AudioSystem::FadeGroupVolume(bool isMusic, float targetVolume, float duration)
     {
+        // 1. Fade the Core Channel Group (for tagged files)
         FMOD::ChannelGroup* group = isMusic ? mMusicGroup : mSFXGroup;
-        if (!group) return;
+        if (group) {
+            float currentVolume = 0.0f;
+            group->getVolume(&currentVolume);
+
+            mGroupVolumeFades.remove_if([group](const GroupVolumeFade& f) {
+                return f.group == group;
+            });
+
+            if (duration <= 0.0f) {
+                group->setVolume(targetVolume);
+            }
+            else {
+                GroupVolumeFade fade;
+                fade.group = group;
+                fade.startVolume = currentVolume;
+                fade.endVolume = targetVolume;
+                fade.currentTime = 0.0f;
+                fade.totalTime = duration;
+                mGroupVolumeFades.push_back(fade);
+            }
+        }
+
+        // 2. Fade the Studio Bus (for event instances)
+        FMOD::Studio::Bus* bus = GetStudioBus(isMusic);
+        if (bus) {
+            float currentVolume = 0.0f;
+            bus->getVolume(&currentVolume);
+
+            char path[256];
+            int len;
+            bus->getPath(path, 256, &len);
+            std::cout << "[Audio] Fading Bus: " << path << " to " << targetVolume << " over " << duration << "s" << std::endl;
+
+            mBusVolumeFades.remove_if([bus](const BusVolumeFade& f) {
+                return f.bus == bus;
+            });
+
+            if (duration <= 0.0f) {
+                bus->setVolume(targetVolume);
+            }
+            else {
+                BusVolumeFade fade;
+                fade.bus = bus;
+                fade.startVolume = currentVolume;
+                fade.endVolume = targetVolume;
+                fade.currentTime = 0.0f;
+                fade.totalTime = duration;
+                mBusVolumeFades.push_back(fade);
+            }
+        }
+        else {
+            std::cout << "[Audio] Warning: No Studio Bus found for " << (isMusic ? "Music" : "SFX") << ". FMOD Studio Events will not fade!" << std::endl;
+        }
+    }
+
+    void AudioSystem::FadeMasterVolume(float targetVolume, float duration)
+    {
+        // 1. Fade Core Master Group
+        FMOD::ChannelGroup* masterGroup = nullptr;
+        if (mCore && mCore->getMasterChannelGroup(&masterGroup) == FMOD_OK && masterGroup)
+        {
+            float currentVolume = 0.0f;
+            masterGroup->getVolume(&currentVolume);
+
+            mGroupVolumeFades.remove_if([masterGroup](const GroupVolumeFade& f) {
+                return f.group == masterGroup;
+            });
+
+            if (duration <= 0.0f) {
+                masterGroup->setVolume(targetVolume);
+            }
+            else {
+                GroupVolumeFade fade;
+                fade.group = masterGroup;
+                fade.startVolume = currentVolume;
+                fade.endVolume = targetVolume;
+                fade.currentTime = 0.0f;
+                fade.totalTime = duration;
+                mGroupVolumeFades.push_back(fade);
+                std::cout << "[Audio] Master Core Fade: " << currentVolume << " -> " << targetVolume << " over " << duration << "s" << std::endl;
+            }
+        }
+
+        // 2. Fade Studio Master Bus
+        if (mStudio)
+        {
+            FMOD::Studio::Bus* masterBus = nullptr;
+            if (mStudio->getBus("bus:/", &masterBus) == FMOD_OK && masterBus)
+            {
+                float currentVolume = 0.0f;
+                masterBus->getVolume(&currentVolume);
+
+                mBusVolumeFades.remove_if([masterBus](const BusVolumeFade& f) {
+                    return f.bus == masterBus;
+                });
+
+                if (duration <= 0.0f) {
+                    masterBus->setVolume(targetVolume);
+                }
+                else {
+                    BusVolumeFade fade;
+                    fade.bus = masterBus;
+                    fade.startVolume = currentVolume;
+                    fade.endVolume = targetVolume;
+                    fade.currentTime = 0.0f;
+                    fade.totalTime = duration;
+                    mBusVolumeFades.push_back(fade);
+                    std::cout << "[Audio] Master Studio Fade: " << currentVolume << " -> " << targetVolume << " over " << duration << "s" << std::endl;
+                }
+            }
+        }
+    }
+
+    void AudioSystem::FadeTaggedVolume(const std::string& key, float targetVolume, float duration)
+    {
+        auto it = mTaggedChannels.find(key);
+        if (it == mTaggedChannels.end() || !it->second) return;
+
+        FMOD::Channel* channel = it->second;
 
         float currentVolume = 0.0f;
-        group->getVolume(&currentVolume);
+        channel->getVolume(&currentVolume);
 
-        // Remove any existing volume fade for this group
-        mGroupVolumeFades.remove_if([group](const GroupVolumeFade& f) {
-            return f.group == group;
+        // Remove any existing volume fade for this channel
+        mChannelVolumeFades.remove_if([channel](const ChannelVolumeFade& f) {
+            return f.channel == channel;
         });
 
         if (duration <= 0.0f) {
-            group->setVolume(targetVolume);
+            channel->setVolume(targetVolume);
             return;
         }
 
-        GroupVolumeFade fade;
-        fade.group = group;
+        ChannelVolumeFade fade;
+        fade.channel = channel;
         fade.startVolume = currentVolume;
         fade.endVolume = targetVolume;
         fade.currentTime = 0.0f;
         fade.totalTime = duration;
 
-        mGroupVolumeFades.push_back(fade);
+        mChannelVolumeFades.push_back(fade);
     }
 
 

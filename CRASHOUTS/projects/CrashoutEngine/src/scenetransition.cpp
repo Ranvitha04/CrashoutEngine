@@ -12,6 +12,8 @@ All content � 2025 DigiPen Institute of Technology Singapore. All rights reser
 #include "engine.h" // for g_PendingSceneName
 #include "CEColor.h"
 #include "glapp.h" // for width/height
+#include "audioSystem.h"
+#include "settings.h"
 #include <iostream>
 
 // Access global variables in engine.cpp
@@ -23,10 +25,12 @@ namespace CrashoutsEngine {
     std::string SceneTransition::s_nextScene = "";
     float SceneTransition::s_timer = 0.0f;
 
-    float SceneTransition::s_durationOut = 1.0f; // Time to turn black
-    float SceneTransition::s_durationIn = 1.0f;  // Time to reveal scene
+    float SceneTransition::s_durationOut = 0.3f; // Time to turn black
+    float SceneTransition::s_durationIn = 0.3f;  // Time to reveal scene
 
-    float SceneTransition::s_holdDuration = 0.25f;
+    float SceneTransition::s_holdDuration = 0.05f;
+
+    float SceneTransition::s_baseMasterVolume = 1.0f;
 
     float SceneTransition::s_duration = 1.0f;
     bool SceneTransition::s_active = false;
@@ -49,6 +53,10 @@ namespace CrashoutsEngine {
         s_fadingOut = true;
         s_isHolding = false;
         s_alpha = 0.0f;
+
+        // Capture volume before fade starts
+        s_baseMasterVolume = Audio::AudioSystem::instance().GetMasterVolume();
+
         std::cout << "[SceneTransition] Fade to " << nextSceneName << " (Out: " << s_durationOut << "s, In: " << s_durationIn << "s)" << std::endl;
     }
 
@@ -64,6 +72,10 @@ namespace CrashoutsEngine {
         s_active = true;
         s_fadingOut = true;
         s_alpha = 0.0f;
+
+        // Capture volume before fade starts
+        s_baseMasterVolume = Audio::AudioSystem::instance().GetMasterVolume();
+
         std::cout << "[SceneTransition] Effect started." << std::endl;
     }
 
@@ -103,8 +115,6 @@ namespace CrashoutsEngine {
                 if (!s_nextScene.empty()) {
                     g_PendingSceneName = s_nextScene;
                     g_IsSceneLoadPending = true;
-                    // Note: If your engine loads synchronously, the game will freeze here 
-                    // on a black screen, which is perfect.
                 }
             }
         }
@@ -120,6 +130,12 @@ namespace CrashoutsEngine {
                 s_active = false;
                 s_alpha = 0.0f;
             }
+        }
+
+        // ONLY sync audio if this is a real scene transition.
+        // This prevents audio from dipping during in-game visual-only fades (like cutscenes).
+        if (!s_nextScene.empty()) {
+            Audio::AudioSystem::instance().setMasterVolume(s_baseMasterVolume * (1.0f - s_alpha));
         }
     }
 

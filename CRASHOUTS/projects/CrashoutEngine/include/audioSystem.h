@@ -103,6 +103,7 @@ namespace CrashoutsEngine
             void SetGroupDSPParameter(bool isMusic, FMOD_DSP_TYPE dspType, int index, float value);
             void FadeGroupDSPParameter(bool isMusic, FMOD_DSP_TYPE dspType, int index, float targetValue, float duration);
             void FadeGroupVolume(bool isMusic, float targetVolume, float duration);
+            void FadeMasterVolume(float targetVolume, float duration);
 
             // Getters
             float GetMusicVolume() const;
@@ -111,6 +112,7 @@ namespace CrashoutsEngine
             bool getTaggedVolume(const std::string& key, float& outVol) const;
 
             bool fadeTagged(const std::string& key, float seconds);
+            void FadeTaggedVolume(const std::string& key, float targetVolume, float duration);
 
             // Tagged playback
             bool playMusicFileTagged(const std::string& key, const std::string& path, bool loop = true);
@@ -177,9 +179,29 @@ namespace CrashoutsEngine
                 float totalTime;
             };
 
+            struct ChannelVolumeFade
+            {
+                FMOD::Channel* channel;
+                float startVolume;
+                float endVolume;
+                float currentTime;
+                float totalTime;
+            };
+
+            struct BusVolumeFade
+            {
+                FMOD::Studio::Bus* bus;
+                float startVolume;
+                float endVolume;
+                float currentTime;
+                float totalTime;
+            };
+
             std::vector<FadingChannel> mFadingChannels;
             std::list<DSPParameterFade> mParameterFades;
             std::list<GroupVolumeFade> mGroupVolumeFades;
+            std::list<ChannelVolumeFade> mChannelVolumeFades;
+            std::list<BusVolumeFade> mBusVolumeFades;
 
             std::unique_ptr<FMOD::Studio::System, StudioDeleter> mStudio;
             std::unique_ptr<FMOD::System, CoreNoop>              mCore;
@@ -201,6 +223,7 @@ namespace CrashoutsEngine
             // Helpers
             static std::string SanitizeKey(const std::string& path);
             FMOD::Studio::EventDescription* getEventDesc(const std::string& eventPath);
+            FMOD::Studio::Bus* GetStudioBus(bool isMusic);
             static bool ok(FMOD_RESULT r, const char* where);
         };
 

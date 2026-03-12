@@ -423,6 +423,10 @@
             "path": "backgrounds/foreground top.png"
         },
         {
+            "name": "spacebar",
+            "path": "UI/Tutorial/spacebar.png"
+        },
+        {
             "name": "No",
             "path": "UI/No.png"
         },
@@ -1653,6 +1657,14 @@
         {
             "name": "fourth",
             "path": "UI/Tutorial/fourth.png"
+        },
+        {
+            "name": "key_E",
+            "path": "UI/Tutorial/key_E.png"
+        },
+        {
+            "name": "key_S",
+            "path": "UI/Tutorial/key_S.png"
         },
         {
             "name": "ninth",

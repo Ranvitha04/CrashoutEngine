@@ -197,6 +197,12 @@ namespace CrashoutsEngine
         internal static extern void Audio_FadeGroupVolume(bool isMusic, float targetVolume, float duration);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_FadeTaggedVolume(string key, float targetVolume, float duration);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_Reset();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Settings_Save();
 
         // --- BUTTON COMPONENT LIFECYCLE ---
