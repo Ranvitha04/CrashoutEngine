@@ -186,11 +186,13 @@ public class AudioManager
         if (fadeDuration > 0)
         {
             InternalCalls.Audio_SetTaggedVolume(key, 0.0f);
+            InternalCalls.Audio_SetPausedTagged(key, false); // Now safe to unpause
             InternalCalls.Audio_FadeTaggedVolume(key, volume, fadeDuration);
         }
         else
         {
             InternalCalls.Audio_SetTaggedVolume(key, volume);
+            InternalCalls.Audio_SetPausedTagged(key, false);
         }
 
         _activeLayers[layerName] = key;

@@ -4,7 +4,7 @@
 @date       19/11/2025
 @brief		Definition of audio bindings functions
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
 */
 //__________________________________________________________________________*/
 
@@ -112,6 +112,11 @@ namespace
         audio.setTaggedVolume(MonoToStdString(key), vol);
     }
 
+    static void ICALL_Audio_SetPausedTagged(MonoString* key, mono_bool paused)
+    {
+        AudioSystem::instance().setPausedTagged(MonoToStdString(key), paused != 0);
+    }
+
     static void ICALL_Audio_SetMasterVolume(float volume)
     {
         auto& audio = AudioSystem::instance();
@@ -217,7 +222,13 @@ namespace
                 if (ch) {
                     ch->setVolume(clip.volume);
                     ch->setPitch(clip.pitch);
-                    ch->setMode(clip.looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+                    
+                    FMOD_MODE mode;
+                    ch->getMode(&mode);
+                    mode &= ~(FMOD_LOOP_NORMAL | FMOD_LOOP_OFF);
+                    mode |= (clip.looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+                    ch->setMode(mode);
+
                     clip.channel = ch;
 
                     // Immediately sync 3D attributes if spatial
@@ -231,6 +242,8 @@ namespace
                     if (clip.dspType != -1) {
                         audio.AddChannelDSP(ch, (FMOD_DSP_TYPE)clip.dspType);
                     }
+
+                    ch->setPaused(false); // FINALLY UNPAUSE
                 }
                 return;
             }
@@ -254,7 +267,14 @@ namespace
         if (ch) {
             ch->setVolume(vol);
             ch->setPitch(pitch);
-            if (!isMusic && !spatial3D) ch->setMode(loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+            
+            FMOD_MODE mode;
+            ch->getMode(&mode);
+            mode &= ~(FMOD_LOOP_NORMAL | FMOD_LOOP_OFF);
+            mode |= (loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+            ch->setMode(mode);
+
+            ch->setPaused(false); // FINALLY UNPAUSE
         }
     }
 
@@ -431,6 +451,8 @@ void CrashoutsEngine::Bindings::RegisterAudioBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetSFXVolume", (const void*)ICALL_Audio_SetSFXVolume);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetTaggedVolume", (const void*)ICALL_Audio_SetTaggedVolume);
+
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetPausedTagged", (const void*)ICALL_Audio_SetPausedTagged);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::Audio_SetMasterVolume", (const void*)ICALL_Audio_SetMasterVolume);
     

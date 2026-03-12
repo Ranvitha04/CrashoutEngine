@@ -13547,7 +13547,7 @@
                     {
                         "x": -2,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -1,
@@ -13557,7 +13557,7 @@
                     {
                         "x": -1,
                         "y": -18,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 0,
@@ -13567,7 +13567,7 @@
                     {
                         "x": 0,
                         "y": -19,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 1,
@@ -13577,7 +13577,7 @@
                     {
                         "x": 1,
                         "y": -19,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 2,
@@ -13637,7 +13637,7 @@
                     {
                         "x": 16,
                         "y": -23,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 17,
@@ -13647,7 +13647,7 @@
                     {
                         "x": 17,
                         "y": -21,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 18,
@@ -13657,7 +13657,7 @@
                     {
                         "x": 18,
                         "y": -21,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 19,
@@ -13672,7 +13672,7 @@
                     {
                         "x": 20,
                         "y": -12,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 21,
@@ -13692,7 +13692,7 @@
                     {
                         "x": 23,
                         "y": -13,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 24,
@@ -13717,7 +13717,7 @@
                     {
                         "x": 25,
                         "y": -13,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 26,
@@ -13732,7 +13732,7 @@
                     {
                         "x": 26,
                         "y": -13,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 27,
@@ -13797,82 +13797,82 @@
                     {
                         "x": 37,
                         "y": -5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 38,
                         "y": -5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 39,
                         "y": -5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 40,
                         "y": -5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 41,
                         "y": -5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 42,
                         "y": -5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 43,
                         "y": -5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 44,
                         "y": -6,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 45,
                         "y": -10,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 46,
                         "y": -10,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 47,
                         "y": -10,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 48,
                         "y": -10,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 49,
                         "y": -10,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 50,
                         "y": -8,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 51,
                         "y": -8,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 52,
                         "y": -8,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     }
                 ]
             },
@@ -21492,6 +21492,8 @@
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
+                            "deathDelay": 1.0,
+                            "deathAnimName": "playerDeath",
                             "isPaused": false,
                             "reloadOnDeath": false,
                             "reloadSceneName": "",
@@ -21666,37 +21668,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -21749,7 +21720,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21763,14 +21734,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21823,6 +21794,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -31771,6 +31773,44 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -31823,7 +31863,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -31837,21 +31877,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -31883,37 +31916,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32213,6 +32215,180 @@
             "layer": {
                 "layerName": "",
                 "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Spike_TileMap",
+            "uuid": 839242492576365685,
+            "tag": {
+                "tagMask": 6
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
+                "activeAsset": "tilemaps/Spike",
+                "tileAssetNames": [],
+                "gridData": [
+                    {
+                        "x": -2,
+                        "y": -17,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": -1,
+                        "y": -18,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 0,
+                        "y": -19,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 1,
+                        "y": -19,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 16,
+                        "y": -23,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 17,
+                        "y": -21,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 17,
+                        "y": -11,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 18,
+                        "y": -21,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 23,
+                        "y": -13,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 25,
+                        "y": -13,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 26,
+                        "y": -13,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 37,
+                        "y": -5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 38,
+                        "y": -5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 39,
+                        "y": -5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 40,
+                        "y": -5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 41,
+                        "y": -5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 42,
+                        "y": -5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 43,
+                        "y": -5,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 44,
+                        "y": -6,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 45,
+                        "y": -10,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 46,
+                        "y": -10,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 47,
+                        "y": -10,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 48,
+                        "y": -10,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 49,
+                        "y": -10,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 50,
+                        "y": -10,
+                        "asset": ""
+                    },
+                    {
+                        "x": 50,
+                        "y": -8,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 51,
+                        "y": -8,
+                        "asset": "tilemaps/Spike"
+                    },
+                    {
+                        "x": 52,
+                        "y": -8,
+                        "asset": "tilemaps/Spike"
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 1
             }
         }
     ],

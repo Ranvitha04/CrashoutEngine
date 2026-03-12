@@ -152,7 +152,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(monitor);
     int startX = (mode->width - w) / 2;
-    int startY = (mode->height - h) / 2 + 32;
+    int startY = (mode->height - h) / 2;
     glfwSetWindowPos(GLApp::ptr_window, startX, startY);
 
     // Store initial windowed state

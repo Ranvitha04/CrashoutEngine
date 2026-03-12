@@ -91,7 +91,9 @@ namespace CrashoutsEngine
             bool setSFXGroupVolume(float v01);
             bool setMasterVolume(float v01);
             bool setTaggedVolume(const std::string& key, float vol);
-            void SetChannelVolume(FMOD::Channel* channel, float volume);
+            void SetChannelVolume(FMOD::Channel* channel, float volume) {
+                if (channel) channel->setVolume(volume);
+            }
             void SetChannel3DAttributes(FMOD::Channel* channel, const CEVec3& position, float minDistance, float maxDistance);
             void SetListenerAttributes(const CEVec3& position, const CEVec3& forward, const CEVec3& up, const CEVec3& velocity = { 0.0f, 0.0f, 0.0f });
             void AddChannelDSP(FMOD::Channel* channel, FMOD_DSP_TYPE dspType);
@@ -122,7 +124,7 @@ namespace CrashoutsEngine
             bool isTaggedPlaying(const std::string& key);
 
             bool stopTagged(const std::string& key, float fadeOutSeconds = 0.0f);
-
+            void setPausedTagged(const std::string& key, bool paused);
             void setPaused(bool paused);
 
         private:

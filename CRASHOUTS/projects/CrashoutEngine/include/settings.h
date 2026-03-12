@@ -41,6 +41,11 @@ public:
     static unsigned int GetScreenHeight();
 
     /*!
+    @brief Loads settings from the default settings file in the game root.
+    */
+    static void Load();
+
+    /*!
     @brief Load settings from a file
     @param path Path to the settings file
     

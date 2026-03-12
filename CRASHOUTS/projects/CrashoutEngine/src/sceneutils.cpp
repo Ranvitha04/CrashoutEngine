@@ -1385,20 +1385,19 @@ namespace Scene {
 		Component::RenderSpriteAnimationsECS();
 
 		if (g_ShowFPS) {
-			// Flush any leftover sprites or shapes to ensure we start a fresh draw state
 			batcher.Flush();
 
-			int fpsWindowW, fpsWindowH;
-			glfwGetFramebufferSize(GLApp::ptr_window, &fpsWindowW, &fpsWindowH);
+			// FIX: Get the logical FBO size, NOT the physical window size!
+			CEVec2 gameSize = InputManager::GetGameWindowSize();
+			int fpsWindowW = static_cast<int>(gameSize.x);
+			int fpsWindowH = static_cast<int>(gameSize.y);
 
 			// FORCE FRONTMOST STATE:
 			glViewport(0, 0, fpsWindowW, fpsWindowH);
-			glDisable(GL_DEPTH_TEST);      // Ignore depth; draw over everything
-			glDisable(GL_CULL_FACE);       // Prevent faces from being culled
-			glEnable(GL_BLEND);            // Required for text alpha
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_CULL_FACE);
+			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-			// Clear Depth Buffer just for this draw to ensure 0.0 Z-value is frontmost
 			glClear(GL_DEPTH_BUFFER_BIT);
 
 			if (!gTextRenderer) gTextRenderer = std::make_unique<TextRenderer>();
@@ -1406,27 +1405,22 @@ namespace Scene {
 			double fps = FrameRateController::GetInstance().FPS();
 			std::string fpsText = "FPS: " + std::to_string(static_cast<int>(fps));
 
-			// Use simple non-instanced shader
 			renderer.shdr_pgm->Use();
 
-			// Coordinate Space: Screen Space (Pixels)
-			// Bottom-Left is (0,0), Top-Right is (Width, Height)
+			// Use the logical game bounds for the projection matrix
 			glm::mat4 overlayProj = glm::ortho(0.0f, (float)fpsWindowW, 0.0f, (float)fpsWindowH);
 			renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
 			renderer.shdr_pgm->SetUniform("uProjection", overlayProj);
 
-			// Z-Value: Force 0.0 or negative to stay at the near plane of the ortho projection
 			float zFront = 0.0f;
 			float xPos = 20.0f;
-			float yPos = (float)fpsWindowH - 40.0f; // 40 pixels down from top
+			float yPos = (float)fpsWindowH - 40.0f; // This is now safely inside the FBO bounds
 
-			// Scale check: If Exo2-Regular is an SDF or pixel font, 0.5f - 1.0f is standard.
 			gTextRenderer->RenderText(fpsText, xPos, yPos, zFront, 15.0f,
 				CEColor(0.0f, 1.0f, 0.0f, 1.0f),
 				"Exo2-Regular", false, 0.0f);
 
-			// RESTORE VIEWPORT for next frame's start
-			CEVec2 gameSize = InputManager::GetGameWindowSize();
+			// RESTORE VIEWPORT
 			glViewport(0, 0, (GLsizei)gameSize.x, (GLsizei)gameSize.y);
 		}
 	}

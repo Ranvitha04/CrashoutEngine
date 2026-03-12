@@ -509,7 +509,7 @@
                     {
                         "name": "MenuMusic",
                         "path": "main menu.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -1025,13 +1025,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -7.892475128173828,
+                    "x": 0.0,
                     "y": -10.0,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 278.5199890136719,
-                    "y": 60.5
+                    "x": 263.0,
+                    "y": 60.0
                 }
             },
             "shape": {
@@ -1168,51 +1168,6 @@
             "layer": {
                 "layerName": "StaticBackground",
                 "z": 0
-            },
-            "keyframe_animator": {
-                "current": "death_anim",
-                "t": 0.0,
-                "playing": true,
-                "clips": [
-                    {
-                        "name": "death_anim",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
-                        "spriteCols": 3,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 280.0,
-                        "targetHeight": 60.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
             }
         },
         {
