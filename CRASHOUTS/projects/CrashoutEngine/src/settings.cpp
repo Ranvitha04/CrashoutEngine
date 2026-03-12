@@ -38,13 +38,18 @@ const float Settings::TARGET_ASPECT_RATIO = 16.0f / 9.0f;
 
 struct SettingsLoader {
     SettingsLoader() {
-        std::string path = GetGameRoot() + "/assets/settings.json";
-        Settings::LoadFromFile(path.c_str());
-        Settings::SetScreenSize(Settings::GetScreenWidth(), Settings::GetScreenHeight());
+        // We no longer load here because GetGameRoot() is empty at static-init time.
+        // Initialization will happen manually in engine.cpp after SetGameRoot().
     }
 };
 
 static SettingsLoader SLoader;
+
+void Settings::Load() {
+    std::string path = GetGameRoot() + "/assets/settings.json";
+    LoadFromFile(path.c_str());
+    SetScreenSize(GetScreenWidth(), GetScreenHeight());
+}
 
 /**
  * @brief Set the screen size
@@ -104,6 +109,22 @@ void Settings::LoadFromFile(const char* path) {
     if (json.HasMember("height") && json["height"].IsUint()) {
         screenHeight = json["height"].GetUint();
     }
+
+    if (json.HasMember("musicVolume") && json["musicVolume"].IsFloat()) {
+        float vol = json["musicVolume"].GetFloat();
+        Settings::MusicVolume = vol;
+        if (CrashoutsEngine::Audio::AudioSystem::instance().isInitialized()) {
+            CrashoutsEngine::Audio::AudioSystem::instance().setMusicGroupVolume(vol);
+        }
+    }
+
+    if (json.HasMember("sfxVolume") && json["sfxVolume"].IsFloat()) {
+        float vol = json["sfxVolume"].GetFloat();
+        Settings::SFXVolume = vol;
+        if (CrashoutsEngine::Audio::AudioSystem::instance().isInitialized()) {
+            CrashoutsEngine::Audio::AudioSystem::instance().setSFXGroupVolume(vol);
+        }
+    }
 }
 
 /**
@@ -118,15 +139,8 @@ void Settings::SaveToFile(const char* path) {
     json.AddMember("width", screenWidth, allocator);
     json.AddMember("height", screenHeight, allocator);
 
-    float musicVol = 1.0f;
-    float sfxVol = 1.0f;
-    auto& audio = CrashoutsEngine::Audio::AudioSystem::instance();
-    if (audio.isInitialized()) {
-        musicVol = audio.GetMusicVolume();
-        sfxVol = audio.GetSFXVolume();
-    }
-    json.AddMember("musicVolume", musicVol, allocator);
-    json.AddMember("sfxVolume", sfxVol, allocator);
+    json.AddMember("musicVolume", MusicVolume, allocator);
+    json.AddMember("sfxVolume", SFXVolume, allocator);
 
     std::ofstream ofs(path);
     if (!ofs.is_open()) return;

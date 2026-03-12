@@ -123,6 +123,9 @@ std::string g_GameRootPath = "";
 void SetGameRoot(const std::string& path) {
     g_GameRootPath = path;
 
+    // Load settings now that we know where the game root is
+    Settings::Load();
+
     // 1. Extract the name (e.g., "Descent", "test", or ".") from the path
     std::string gameName = std::filesystem::path(path).filename().string();
 
