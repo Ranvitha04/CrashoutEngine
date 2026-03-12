@@ -2295,6 +2295,10 @@
         {
             "name": "Rock_Door",
             "path": "Rock_Door"
+        },
+        {
+            "name": "Spike_Ground",
+            "path": "Spike_Ground"
         }
     ],
     "videos": [
