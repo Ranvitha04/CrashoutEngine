@@ -24397,7 +24397,7 @@
                     {
                         "name": "footstep1",
                         "path": "footsteps 1.wav",
-                        "volume": 0.05000000074505806,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24406,7 +24406,7 @@
                     {
                         "name": "footstep2",
                         "path": "footsteps 2.wav",
-                        "volume": 0.05000000074505806,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24415,7 +24415,7 @@
                     {
                         "name": "footstep3",
                         "path": "footsteps 3.wav",
-                        "volume": 0.05000000074505806,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24424,7 +24424,7 @@
                     {
                         "name": "footstep4",
                         "path": "footsteps 4.wav",
-                        "volume": 0.05000000074505806,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24433,7 +24433,7 @@
                     {
                         "name": "footstep5",
                         "path": "footsteps 5.wav",
-                        "volume": 0.05000000074505806,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24442,7 +24442,7 @@
                     {
                         "name": "footstep6",
                         "path": "footsteps 6.wav",
-                        "volume": 0.05000000074505806,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24451,7 +24451,7 @@
                     {
                         "name": "footstep7",
                         "path": "footsteps 7.wav",
-                        "volume": 0.05000000074505806,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24460,7 +24460,7 @@
                     {
                         "name": "footstep8",
                         "path": "footsteps 8.wav",
-                        "volume": 0.05000000074505806,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24469,7 +24469,7 @@
                     {
                         "name": "jumpLand",
                         "path": "jump landing.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -24478,7 +24478,7 @@
                     {
                         "name": "jumpUp",
                         "path": "jump.wav",
-                        "volume": 0.009999999776482582,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -24487,7 +24487,7 @@
                     {
                         "name": "switchMassSound",
                         "path": "switch state.wav",
-                        "volume": 0.012000000104308129,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -28777,7 +28777,7 @@
                     {
                         "name": "pickUpSound",
                         "path": "mana chime.wav",
-                        "volume": 0.007000000216066837,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -29029,7 +29029,7 @@
                     {
                         "name": "pickUpSound",
                         "path": "mana chime.wav",
-                        "volume": 0.007000000216066837,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -29285,7 +29285,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.007000000216066837,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -29451,7 +29451,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.007000000216066837,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -31255,7 +31255,7 @@
                     {
                         "name": "Level_1",
                         "path": "level bgm 1 re-mixed.wav",
-                        "volume": 0.44999998807907107,
+                        "volume": 0.30000001192092898,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -31324,7 +31324,7 @@
                     {
                         "name": "Lava_Ambience",
                         "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.05000000074505806,
+                        "volume": 0.03999999910593033,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -31859,7 +31859,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.007000000216066837,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -31981,7 +31981,7 @@
                     {
                         "name": "slimeMove1",
                         "path": "slime 1.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -31990,7 +31990,7 @@
                     {
                         "name": "slimeMove2",
                         "path": "slime 2.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -31999,7 +31999,7 @@
                     {
                         "name": "slimeMove3",
                         "path": "slime 3.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32008,7 +32008,7 @@
                     {
                         "name": "slimeMove4",
                         "path": "slime 4.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32017,7 +32017,7 @@
                     {
                         "name": "slimeMove5",
                         "path": "slime 5.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32026,7 +32026,7 @@
                     {
                         "name": "slimeImpact",
                         "path": "slime impact.wav",
-                        "volume": 0.125,
+                        "volume": 0.20000000298023225,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32582,7 +32582,7 @@
                     {
                         "name": "slimeMove1",
                         "path": "slime 1.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32591,7 +32591,7 @@
                     {
                         "name": "slimeMove2",
                         "path": "slime 2.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32600,7 +32600,7 @@
                     {
                         "name": "slimeMove3",
                         "path": "slime 3.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32609,7 +32609,7 @@
                     {
                         "name": "slimeMove4",
                         "path": "slime 4.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32618,7 +32618,7 @@
                     {
                         "name": "slimeMove5",
                         "path": "slime 5.wav",
-                        "volume": 0.004999999888241291,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -32627,7 +32627,7 @@
                     {
                         "name": "slimeImpact",
                         "path": "slime impact.wav",
-                        "volume": 0.125,
+                        "volume": 0.20000000298023225,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -34605,7 +34605,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.007000000216066837,
+                        "volume": 0.5,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
