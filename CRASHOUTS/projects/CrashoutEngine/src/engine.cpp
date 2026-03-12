@@ -800,18 +800,18 @@ void Update(double const& dt) {
     // ==========================================
 //#if !USE_IMGUI_EDITOR && !defined(DEBUG)
     // You already have F3 here, let's add the replay controls!
-    if (InputManager::IsKeyTriggered(Key::F5)) {
-        ReplayManager::Replay::GetInstance().StartRecording();
-    }
-    if (InputManager::IsKeyTriggered(Key::F6)) {
-        ReplayManager::Replay::GetInstance().StopRecording();
-    }
-    if (InputManager::IsKeyTriggered(Key::F7)) {
-        ReplayManager::Replay::GetInstance().StartPlayback();
-    }
-    if (InputManager::IsKeyTriggered(Key::F8)) {
-        ReplayManager::Replay::GetInstance().StopPlayback();
-    }
+    //if (InputManager::IsKeyTriggered(Key::F5)) {
+    //    ReplayManager::Replay::GetInstance().StartRecording();
+    //}
+    //if (InputManager::IsKeyTriggered(Key::F6)) {
+    //    ReplayManager::Replay::GetInstance().StopRecording();
+    //}
+    //if (InputManager::IsKeyTriggered(Key::F7)) {
+    //    ReplayManager::Replay::GetInstance().StartPlayback();
+    //}
+    //if (InputManager::IsKeyTriggered(Key::F8)) {
+    //    ReplayManager::Replay::GetInstance().StopPlayback();
+    //}
 //#endif
     // ==========================================
 
@@ -1028,17 +1028,19 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     int mVpX = 0, mVpY = 0, mVpW = displayWidth, mVpH = displayHeight;
 
     if (currentAspectRatio > targetAspectRatio) {
+        // Pillarbox (Black bars on left and right)
         mVpH = displayHeight;
         mVpW = static_cast<int>(displayHeight * targetAspectRatio);
         mVpX = (displayWidth - mVpW) / 2;
     }
     else if (currentAspectRatio < targetAspectRatio) {
+        // Letterbox (Black bars on top and bottom)
         mVpW = displayWidth;
         mVpH = static_cast<int>(displayWidth / targetAspectRatio);
         mVpY = (displayHeight - mVpH) / 2;
     }
 
-    // Unproject Mouse
+    // Unproject Mouse (Your input code here is fine)
     double mx, my;
     glfwGetCursorPos(GLApp::ptr_window, &mx, &my);
     float localX = static_cast<float>(mx) - mVpX;
@@ -1056,30 +1058,22 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     }
 
     // --- DRAW TO SCREEN ---
-    // 1. Let RenderPP draw into its own FBO (Just like Editor Mode)
-    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
-    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDisable(GL_DEPTH_TEST);
-    {
-        FrameProfiler::Scoped ppScope(PerformanceSystem::Get().GetProfiler(), "PostProcessing");
-        CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
-    }
 
-    // 2. Blit (copy) the Post Processing FBO to the Default Screen Framebuffer
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Target Main Monitor
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID); // Read from PP FBO
+    // 1. Bind the raw game FBO to read from, and the default monitor (0) to draw to.
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, gameFboID);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-    // Fill the whole window with black to create the bars
+    // 2. Set the viewport to the ENTIRE physical window and wipe it black.
+    glViewport(0, 0, displayWidth, displayHeight);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // Blit using your centered coordinates!
+    // 3. Blit the raw game texture perfectly into the centered box!
     glBlitFramebuffer(0, 0, gameTextureWidth, gameTextureHeight,
         mVpX, mVpY, mVpX + mVpW, mVpY + mVpH,
-        GL_COLOR_BUFFER_BIT, GL_LINEAR);
+        GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-    // Reset bindings
+    // 4. Reset bindings
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #endif
