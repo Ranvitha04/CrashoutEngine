@@ -102,3 +102,163 @@ To test the game without the Editor UI:
 1. Open the TOP-LEVEL CMakeLists.txt.
 2. Find the "USE_IMGUI_EDITOR" flag and set it to 0.
 
+***
+==================================================
+CrashoutsServer VM - How to access
+==================================================
+
+Head to https://portal.azure.com/#@SITsingaporetechedu.onmicrosoft.com/resource/subscriptions/ce1e71c8-fbb5-4668-8d43-4a91a724e061/resourceGroups/CrashoutsServer_group/providers/Microsoft.Compute/virtualMachines/CrashoutsServer/overview 
+
+The server is hosted on azure and you will only be able to connect with bastion using the key I attached.
+
+Go to Connect -> Bastion -> Protocol:SSH -> Port:22 -> SSHAuthentication type: SSH private key from local file -> username: gameadmin -> select the key text file I attached -> connect (if you have pop up blocker turn it off as it will prevent you from accessing it
+
+You should now be able to connect to the ubuntu 24.04 vm.
+
+In the ubuntu vm,
+
+cd leaderboard_api
+nano main.py
+
+This will get you to the main.py
+
+LEADERBOARD API DOCUMENTATION
+
+Overview
+This API allows the game to submit player scores and retrieve leaderboard rankings.
+The API is built using FastAPI and stores data in a PostgreSQL database.
+
+Base URL
+http://SERVER_IP:8000
+
+All protected endpoints require an API Key in the request header:
+x-api-key: YOUR_API_KEY
+
+
+DATA MODEL
+
+ScoreSubmission
+
+Fields:
+name  - string  - player name
+score - integer - player score
+time  - integer - completion time
+
+Example JSON request body:
+
+{
+"name": "Player1",
+"score": 45000,
+"time": 45000
+}
+
+Note:
+The API requires score and time to be equal for validation.
+
+
+ENDPOINTS
+
+1. Health Check
+
+Endpoint:
+GET /health
+
+Description:
+Checks if the API server is running.
+
+Example response:
+{
+"ok": true
+}
+
+No authentication required.
+
+
+2. Get Leaderboard
+
+Endpoint:
+GET /leaderboard?limit=10
+
+Required header:
+x-api-key: YOUR_API_KEY
+
+Description:
+Returns leaderboard entries sorted by fastest time.
+
+Example response:
+{
+"entries": [
+{
+"rank": 1,
+"name": "Alice",
+"score": 21000,
+"time": 21000
+}
+]
+}
+
+
+3. Submit Score
+
+Endpoint:
+POST /submitScore
+
+Required header:
+x-api-key: YOUR_API_KEY
+
+Example request body:
+{
+"name": "Alice",
+"score": 25000,
+"time": 25000
+}
+
+Validation rules:
+Score must be between 0 and 1000000.
+Time must be between 20000 and 1000000.
+Score must equal time.
+
+Successful response:
+{
+"status": "ok"
+}
+
+
+DATABASE SCHEMA
+
+Table: leaderboard_scores
+
+SQL example:
+
+CREATE TABLE leaderboard_scores (
+id SERIAL PRIMARY KEY,
+player_name TEXT,
+score INTEGER,
+time INTEGER,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+SERVICE MANAGEMENT
+
+The API runs as a systemd service called:
+
+leaderboard-api.service
+
+This ensures the API starts automatically and runs in the background.
+
+Useful commands:
+
+Start the service(By default it is always running)
+sudo systemctl start leaderboard-api
+
+Stop the service
+sudo systemctl stop leaderboard-api
+
+Restart the service
+sudo systemctl restart leaderboard-api
+
+Check service status
+sudo systemctl status leaderboard-api
+
+View logs
+journalctl -u leaderboard-api -f
