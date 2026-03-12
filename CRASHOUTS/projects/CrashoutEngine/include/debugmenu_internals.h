@@ -76,7 +76,6 @@ All content © 2025 DigiPen Institute of Technology Singapore. All rights reserve
 #include "debugcollision.h"
 #include "debugAssetLoader.h"
 #include "performanceViewer.h"
-#include "hierarchy.h"
 
 // --- 8. External / Utils ---
 #include <fmod_studio.hpp>

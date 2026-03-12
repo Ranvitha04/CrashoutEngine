@@ -728,12 +728,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 22.24860382080078,
+                    "x": -224.94497680664063,
+                    "y": 3.4761908054351808,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 140.0,
+                    "x": -140.0,
                     "y": 100.0
                 }
             },
@@ -756,8 +756,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 17.24860382080078,
+                    "x": -224.94497680664063,
+                    "y": -1.579364538192749,
                     "z": 50.0
                 },
                 "offset": {
@@ -766,13 +766,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -235.2585906982422,
-                    "y": -13.251396179199219,
+                    "x": -243.74502563476563,
+                    "y": -32.07936477661133,
                     "z": 50.0
                 },
                 "max": {
-                    "x": -197.6584930419922,
-                    "y": 47.74860382080078,
+                    "x": -206.14492797851563,
+                    "y": 28.920635223388673,
                     "z": 50.0
                 }
             },
@@ -784,14 +784,14 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                "textureName": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
                 "uvSize": {
                     "x": 0.3333333432674408,
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
                     "x": 0.0,
-                    "y": 0.0
+                    "y": 0.6666666865348816
                 },
                 "color": {
                     "x": 1.0,
@@ -817,7 +817,7 @@
                         "path": "footsteps 1.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -826,7 +826,7 @@
                         "path": "footsteps 2.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -835,7 +835,7 @@
                         "path": "footsteps 3.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -844,7 +844,7 @@
                         "path": "footsteps 4.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -853,7 +853,7 @@
                         "path": "footsteps 5.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -862,7 +862,7 @@
                         "path": "footsteps 6.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -871,7 +871,7 @@
                         "path": "footsteps 7.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -880,7 +880,7 @@
                         "path": "footsteps 8.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -889,7 +889,7 @@
                         "path": "jump landing.wav",
                         "volume": 0.4000000059604645,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -907,7 +907,7 @@
                         "path": "switch state.wav",
                         "volume": 1.0,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     }
@@ -941,14 +941,19 @@
                             "groundCheckWidth": 10.0,
                             "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
-                            "isDialogueActive": true,
-                            "facingRight": true,
-                            "CurrentEnergy": 100.0,
+                            "isDialogueActive": false,
+                            "facingRight": false,
+                            "CurrentEnergy": 75.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false,
+                            "normalDeathDelay": 2.0,
+                            "lightDeathDelay": 2.0,
+                            "normalDeathAnimName": "playerDeathNoBook",
+                            "lightDeathAnimName": "playerDeath",
                             "reloadOnDeath": false,
-                            "reloadSceneName": ""
+                            "reloadSceneName": "",
+                            "gameOverSceneName": "Defeat"
                         }
                     }
                 ]
@@ -1008,13 +1013,17 @@
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
             },
+            "visualscript": {
+                "enabled": true,
+                "graphPath": "../../projects/GameProjects/Descent/assets/visualscripts/graph_8.vsgraph"
+            },
             "layer": {
                 "layerName": "Player",
                 "z": 0
             },
             "keyframe_animator": {
-                "current": "playerIdle",
-                "t": 0.699999988079071,
+                "current": "playerDeathNoBook",
+                "t": 2.4166650772094728,
                 "playing": true,
                 "clips": [
                     {
@@ -1216,12 +1225,12 @@
                     },
                     {
                         "name": "playerSwitchLight",
-                        "wrap": 1,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 140.0,
+                        "targetWidth": -140.0,
                         "targetHeight": 100.0,
                         "bindings": [
                             {
@@ -1235,49 +1244,49 @@
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.25,
+                                        "t": 0.0625,
                                         "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.5,
+                                        "t": 0.125,
                                         "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.75,
+                                        "t": 0.1875,
                                         "v": 3.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.0,
+                                        "t": 0.25,
                                         "v": 4.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.25,
+                                        "t": 0.3125,
                                         "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.5,
+                                        "t": 0.375,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.75,
+                                        "t": 0.4375,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
@@ -1289,12 +1298,12 @@
                     },
                     {
                         "name": "playerSwitch",
-                        "wrap": 1,
+                        "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
-                        "targetWidth": 140.0,
+                        "targetWidth": -140.0,
                         "targetHeight": 100.0,
                         "bindings": [
                             {
@@ -1308,49 +1317,49 @@
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.25,
+                                        "t": 0.0625,
                                         "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.5,
+                                        "t": 0.125,
                                         "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.75,
+                                        "t": 0.1875,
                                         "v": 3.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.0,
+                                        "t": 0.25,
                                         "v": 4.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.25,
+                                        "t": 0.3125,
                                         "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.5,
+                                        "t": 0.375,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 1.75,
+                                        "t": 0.4375,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
@@ -1452,12 +1461,172 @@
                                 ]
                             }
                         ]
+                    },
+                    {
+                        "name": "playerDeath",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\DeathAnimBook\\Light Death spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.0625,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.125,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.1875,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.3125,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.375,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.4375,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerDeathNoBook",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.0625,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.125,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.1875,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.3125,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.375,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.4375,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "PlayerDialogue_1",
             "uuid": 225047415224189460,
             "tag": {
@@ -1466,12 +1635,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 80.6185073852539,
+                    "x": -224.94497680664063,
+                    "y": 61.7905387878418,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -1584,12 +1753,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 80.6185073852539,
+                    "x": -224.94497680664063,
+                    "y": 61.7905387878418,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -1702,12 +1871,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 80.6185073852539,
+                    "x": -224.94497680664063,
+                    "y": 61.7905387878418,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -1820,12 +1989,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 80.6185073852539,
+                    "x": -224.94497680664063,
+                    "y": 61.7905387878418,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -1938,12 +2107,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -502.2528076171875,
-                    "y": -177.10894775390626,
+                    "x": 60.849273681640628,
+                    "y": -195.93690490722657,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 98.0,
+                    "x": -98.0,
                     "y": 50.0
                 }
             },
@@ -2056,12 +2225,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -214.19773864746095,
-                    "y": -25.87029266357422,
+                    "x": -227.20578002929688,
+                    "y": -44.69826126098633,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 140.97999572753907,
+                    "x": -140.97999572753907,
                     "y": 101.0
                 }
             },
@@ -2171,12 +2340,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 212.71139526367188,
-                    "y": -31.952878952026368,
+                    "x": 294.09820556640627,
+                    "y": -50.55736541748047,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 53.0,
+                    "x": -53.0,
                     "y": 49.29999923706055
                 }
             },
@@ -2199,8 +2368,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 213.41139221191407,
-                    "y": -35.452880859375,
+                    "x": 294.7982177734375,
+                    "y": -54.65792465209961,
                     "z": 50.0
                 },
                 "offset": {
@@ -2209,13 +2378,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 198.51136779785157,
-                    "y": -45.65289306640625,
+                    "x": 279.898193359375,
+                    "y": -64.85794067382813,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 228.31141662597657,
-                    "y": -25.25286865234375,
+                    "x": 309.6982421875,
+                    "y": -44.45791244506836,
                     "z": 50.0
                 }
             },
@@ -2260,7 +2429,7 @@
                         "path": "slime 1.wav",
                         "volume": 0.6000000238418579,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -2269,7 +2438,7 @@
                         "path": "slime 2.wav",
                         "volume": 0.6000000238418579,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -2278,7 +2447,7 @@
                         "path": "slime 3.wav",
                         "volume": 0.6000000238418579,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -2287,7 +2456,7 @@
                         "path": "slime 4.wav",
                         "volume": 0.6000000238418579,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -2296,7 +2465,7 @@
                         "path": "slime 5.wav",
                         "volume": 0.6000000238418579,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -2305,7 +2474,7 @@
                         "path": "slime impact.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     }
@@ -2393,7 +2562,7 @@
             },
             "keyframe_animator": {
                 "current": "slimeWalk",
-                "t": 5.866688251495361,
+                "t": 348.79229736328127,
                 "playing": true,
                 "clips": [
                     {
@@ -2595,8 +2764,41 @@
         }
     },
     "VisualScripting": {
-        "nextNodeId": 1,
-        "nodes": [],
-        "links": []
+        "nextNodeId": 11,
+        "nodes": [
+            {
+                "id": 8,
+                "type": 0,
+                "title": "Start",
+                "x": 323.0,
+                "y": 615.0,
+                "w": 140.0,
+                "h": 70.0
+            },
+            {
+                "id": 9,
+                "type": 6,
+                "title": "BoolConstant",
+                "x": 631.0,
+                "y": 723.0,
+                "w": 180.0,
+                "h": 90.0
+            },
+            {
+                "id": 10,
+                "type": 2,
+                "title": "Attack",
+                "x": 561.0,
+                "y": 651.0,
+                "w": 140.0,
+                "h": 70.0
+            }
+        ],
+        "links": [
+            {
+                "from": 8,
+                "to": 10
+            }
+        ]
     }
 }

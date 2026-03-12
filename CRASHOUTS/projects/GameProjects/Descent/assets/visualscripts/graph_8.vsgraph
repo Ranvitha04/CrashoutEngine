@@ -13,19 +13,12 @@
                 "y": 90.0
             },
             "inputs": [],
-            "outputs": [
-                {
-                    "id": 11,
-                    "name": "Value",
-                    "kind": 1,
-                    "type": 2
-                }
-            ],
+            "outputs": [],
             "scriptName": "",
             "functionName": "",
             "waitTime": 1.0,
             "boolValue": false,
-            "intValue": 2,
+            "intValue": 3,
             "floatValue": 0.0,
             "variableName": ""
         },
@@ -42,19 +35,12 @@
                 "y": 90.0
             },
             "inputs": [],
-            "outputs": [
-                {
-                    "id": 12,
-                    "name": "Value",
-                    "kind": 1,
-                    "type": 2
-                }
-            ],
+            "outputs": [],
             "scriptName": "",
             "functionName": "",
             "waitTime": 1.0,
             "boolValue": false,
-            "intValue": 2,
+            "intValue": 3,
             "floatValue": 0.0,
             "variableName": ""
         },
@@ -70,28 +56,8 @@
                 "x": 180.0,
                 "y": 100.0
             },
-            "inputs": [
-                {
-                    "id": 13,
-                    "name": "A",
-                    "kind": 0,
-                    "type": 3
-                },
-                {
-                    "id": 14,
-                    "name": "B",
-                    "kind": 0,
-                    "type": 3
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 15,
-                    "name": "Result",
-                    "kind": 1,
-                    "type": 3
-                }
-            ],
+            "inputs": [],
+            "outputs": [],
             "scriptName": "",
             "functionName": "",
             "waitTime": 1.0,
@@ -113,19 +79,12 @@
                 "y": 90.0
             },
             "inputs": [],
-            "outputs": [
-                {
-                    "id": 16,
-                    "name": "Value",
-                    "kind": 1,
-                    "type": 2
-                }
-            ],
+            "outputs": [],
             "scriptName": "",
             "functionName": "",
             "waitTime": 1.0,
             "boolValue": false,
-            "intValue": 4,
+            "intValue": 5,
             "floatValue": 0.0,
             "variableName": ""
         },
@@ -141,70 +100,8 @@
                 "x": 180.0,
                 "y": 100.0
             },
-            "inputs": [
-                {
-                    "id": 17,
-                    "name": "A",
-                    "kind": 0,
-                    "type": 3
-                },
-                {
-                    "id": 18,
-                    "name": "B",
-                    "kind": 0,
-                    "type": 3
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 19,
-                    "name": "Result",
-                    "kind": 1,
-                    "type": 1
-                }
-            ],
-            "scriptName": "",
-            "functionName": "",
-            "waitTime": 1.0,
-            "boolValue": false,
-            "intValue": 0,
-            "floatValue": 0.0,
-            "variableName": ""
-        },
-        {
-            "id": 6,
-            "type": 4,
-            "title": "Branch",
-            "pos": {
-                "x": 1019.0,
-                "y": 142.0
-            },
-            "size": {
-                "x": 180.0,
-                "y": 100.0
-            },
-            "inputs": [
-                {
-                    "id": 20,
-                    "name": "Condition",
-                    "kind": 0,
-                    "type": 1
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 21,
-                    "name": "True",
-                    "kind": 1,
-                    "type": 0
-                },
-                {
-                    "id": 22,
-                    "name": "False",
-                    "kind": 1,
-                    "type": 0
-                }
-            ],
+            "inputs": [],
+            "outputs": [],
             "scriptName": "",
             "functionName": "",
             "waitTime": 1.0,
@@ -226,14 +123,7 @@
                 "y": 70.0
             },
             "inputs": [],
-            "outputs": [
-                {
-                    "id": 23,
-                    "name": "Next",
-                    "kind": 1,
-                    "type": 0
-                }
-            ],
+            "outputs": [],
             "scriptName": "",
             "functionName": "",
             "waitTime": 1.0,
@@ -254,24 +144,10 @@
                 "x": 140.0,
                 "y": 70.0
             },
-            "inputs": [
-                {
-                    "id": 24,
-                    "name": "In",
-                    "kind": 0,
-                    "type": 0
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 25,
-                    "name": "Next",
-                    "kind": 1,
-                    "type": 0
-                }
-            ],
-            "scriptName": "PlayerMovment",
-            "functionName": "VS_TwoPlusTwoFalse",
+            "inputs": [],
+            "outputs": [],
+            "scriptName": "",
+            "functionName": "",
             "waitTime": 1.0,
             "boolValue": false,
             "intValue": 0,
@@ -290,24 +166,32 @@
                 "x": 140.0,
                 "y": 70.0
             },
-            "inputs": [
-                {
-                    "id": 26,
-                    "name": "In",
-                    "kind": 0,
-                    "type": 0
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 27,
-                    "name": "Next",
-                    "kind": 1,
-                    "type": 0
-                }
-            ],
-            "scriptName": "PlayerMovement",
-            "functionName": "VS_TwoPlusTwoTrue",
+            "inputs": [],
+            "outputs": [],
+            "scriptName": "",
+            "functionName": "",
+            "waitTime": 1.0,
+            "boolValue": false,
+            "intValue": 0,
+            "floatValue": 0.0,
+            "variableName": ""
+        },
+        {
+            "id": 10,
+            "type": 4,
+            "title": "Branch",
+            "pos": {
+                "x": 976.0,
+                "y": 140.0
+            },
+            "size": {
+                "x": 180.0,
+                "y": 110.0
+            },
+            "inputs": [],
+            "outputs": [],
+            "scriptName": "",
+            "functionName": "",
             "waitTime": 1.0,
             "boolValue": false,
             "intValue": 0,
@@ -326,7 +210,7 @@
             "fromNode": 2,
             "fromPin": 0,
             "toNode": 3,
-            "toPin": 1
+            "toPin": 0
         },
         {
             "fromNode": 3,
@@ -338,33 +222,33 @@
             "fromNode": 4,
             "fromPin": 0,
             "toNode": 5,
-            "toPin": 1
-        },
-        {
-            "fromNode": 5,
-            "fromPin": 0,
-            "toNode": 6,
-            "toPin": 0
-        },
-        {
-            "fromNode": 6,
-            "fromPin": 0,
-            "toNode": 9,
-            "toPin": 0
-        },
-        {
-            "fromNode": 6,
-            "fromPin": 1,
-            "toNode": 8,
             "toPin": 0
         },
         {
             "fromNode": 7,
             "fromPin": 0,
-            "toNode": 6,
+            "toNode": 10,
+            "toPin": 0
+        },
+        {
+            "fromNode": 5,
+            "fromPin": 0,
+            "toNode": 10,
+            "toPin": 0
+        },
+        {
+            "fromNode": 10,
+            "fromPin": 0,
+            "toNode": 9,
+            "toPin": 0
+        },
+        {
+            "fromNode": 10,
+            "fromPin": 0,
+            "toNode": 8,
             "toPin": 0
         }
     ],
-    "nextNodeId": 10,
-    "nextPinId": 28
+    "nextNodeId": 11,
+    "nextPinId": 32
 }

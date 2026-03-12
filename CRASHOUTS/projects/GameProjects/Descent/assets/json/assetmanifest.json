@@ -307,6 +307,10 @@
             "path": "Character/DeathAnimBook/Light Death spritesheet.png"
         },
         {
+            "name": "spikes updated",
+            "path": "Tileset/spikes updated.png"
+        },
+        {
             "name": "Normal Death spritesheet_04",
             "path": "spritesheet/Normal Death spritesheet/Normal Death spritesheet_04.png"
         },
@@ -513,6 +517,10 @@
         {
             "name": "Chibi-4",
             "path": "Character/Normal Mode/Chibi-4.png"
+        },
+        {
+            "name": "Light Death spritesheet_04",
+            "path": "spritesheet/Light Death spritesheet/Light Death spritesheet_04.png"
         },
         {
             "name": "Chibi-Light-Actions-SpriteSheet",
@@ -1369,6 +1377,38 @@
         {
             "name": "lava platform_43",
             "path": "spritesheet/lava platform/lava platform_43.png"
+        },
+        {
+            "name": "Light Death spritesheet_00",
+            "path": "spritesheet/Light Death spritesheet/Light Death spritesheet_00.png"
+        },
+        {
+            "name": "Light Death spritesheet_01",
+            "path": "spritesheet/Light Death spritesheet/Light Death spritesheet_01.png"
+        },
+        {
+            "name": "Light Death spritesheet_02",
+            "path": "spritesheet/Light Death spritesheet/Light Death spritesheet_02.png"
+        },
+        {
+            "name": "Light Death spritesheet_03",
+            "path": "spritesheet/Light Death spritesheet/Light Death spritesheet_03.png"
+        },
+        {
+            "name": "Light Death spritesheet_05",
+            "path": "spritesheet/Light Death spritesheet/Light Death spritesheet_05.png"
+        },
+        {
+            "name": "Light Death spritesheet_06",
+            "path": "spritesheet/Light Death spritesheet/Light Death spritesheet_06.png"
+        },
+        {
+            "name": "Light Death spritesheet_07",
+            "path": "spritesheet/Light Death spritesheet/Light Death spritesheet_07.png"
+        },
+        {
+            "name": "Light Death spritesheet_08",
+            "path": "spritesheet/Light Death spritesheet/Light Death spritesheet_08.png"
         },
         {
             "name": "Normal Death spritesheet_00",
