@@ -728,8 +728,8 @@ void Update(double const& dt) {
         }
     }
     else if (engineState == EngineState::PAUSE) {
-        // Freeze gameplay, but still allow editor camera to move
         physicsSystem.Update(0.f);
+        CrashoutsEngine::ScriptSystem::LateUpdateAll();
         InputManager::ClearInputs();
     }
 

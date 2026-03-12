@@ -16505,6 +16505,10 @@
                 "renderSelf": false,
                 "renderBehind": false,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 0.5607843399047852,
                     "y": 0.19607843458652497,
@@ -24767,6 +24771,7 @@
                             "dialogueCooldown": 1.0,
                             "isDialogueActive": false,
                             "facingRight": true,
+                            "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 87.5,
                             "MaxEnergy": 100.0,
                             "alive": true,
@@ -24776,6 +24781,94 @@
                             "reloadOnDeath": false,
                             "reloadSceneName": "",
                             "gameOverSceneName": "Defeat"
+                        }
+                    },
+                    {
+                        "className": "PlayerBookGlowController",
+                        "fields": {
+                            "bookGlowEntityName": "PlayerBookGlow",
+                            "onlyGlowInLightMode": false,
+                            "followZ": false,
+                            "useAngledPath": false,
+                            "pathFirstPortion": 24.75,
+                            "pathAngleDeg": 0.0,
+                            "pathDistance": 50.900001525878909,
+                            "moveSpeed": 1.0,
+                            "useAlphaTransition": true,
+                            "alphaStart": 0.0,
+                            "alphaEnd": 1.0,
+                            "alphaSpeed": 0.4000000059604645,
+                            "forceShowStart": false,
+                            "forceShowEnd": false,
+                            "showOffsetGizmos": false,
+                            "useDragHandleEntities": false,
+                            "startHandleEntityName": "BookGlow_StartHandle",
+                            "endHandleEntityName": "BookGlow_EndHandle",
+                            "lineEntityName": "BookGlow_PathLine",
+                            "handleRadius": 14.0,
+                            "lineThickness": 4.0,
+                            "finalizeAndDisableHandles": false,
+                            "hideHandleEntitiesWhenDisabled": true,
+                            "snapStartToEnd": false,
+                            "snapEndToStart": false,
+                            "overrideStartEnd": true,
+                            "mirrorXForLeft": true,
+                            "lockEndToBookCenter": true,
+                            "useAirEndOffset": true,
+                            "startOffset": {
+                                "x": -1.7999687194824219,
+                                "y": -15.700160026550293,
+                                "z": 0.0
+                            },
+                            "endOffset": {
+                                "x": 33.70000076293945,
+                                "y": -12.199999809265137,
+                                "z": 0.0
+                            },
+                            "endOffsetAir": {
+                                "x": 31.299999237060548,
+                                "y": 5.800000190734863,
+                                "z": 0.0
+                            },
+                            "snapAirToGround": false,
+                            "snapGroundToAir": false,
+                            "offsetBehindRight": {
+                                "x": -30.0,
+                                "y": -5.0,
+                                "z": 0.0
+                            },
+                            "offsetBehindLeft": {
+                                "x": 30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetRight": {
+                                "x": 27.0,
+                                "y": -5.300000190734863,
+                                "z": 0.0
+                            },
+                            "offsetLeft": {
+                                "x": -30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetRightSwitch": {
+                                "x": 30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "offsetLeftSwitch": {
+                                "x": -30.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "previewEnabled": false,
+                            "previewSwitchT01": 0.0,
+                            "previewStartIsLight": false,
+                            "previewTargetIsLight": true,
+                            "previewFacingRight": true,
+                            "previewUseSwitchClip": true,
+                            "previewForceVisible": true
                         }
                     }
                 ]
@@ -24826,17 +24919,21 @@
             },
             "light": {
                 "active": true,
-                "intensity": 0.25,
-                "radius": 129.0,
-                "affectBloom": false,
+                "intensity": 0.15000000596046449,
+                "radius": 70.0,
+                "affectBloom": true,
                 "useTransform": true,
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 0.9058823585510254,
+                    "y": 0.7921568751335144,
+                    "z": 0.7921568751335144
                 },
                 "position": {
                     "x": 0.0,
@@ -27047,6 +27144,30 @@
                     }
                 ]
             },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -27417,6 +27538,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -28399,6 +28544,10 @@
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 0.7941176891326904,
                     "y": 1.0,
@@ -28604,6 +28753,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -28819,6 +28992,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -35102,36 +35299,8 @@
         }
     },
     "VisualScripting": {
-        "nextNodeId": 4,
-        "nodes": [
-            {
-                "id": 1,
-                "type": 0,
-                "title": "Start",
-                "x": 100.0,
-                "y": 100.0,
-                "w": 140.0,
-                "h": 70.0
-            },
-            {
-                "id": 2,
-                "type": 4,
-                "title": "Branch",
-                "x": 614.0,
-                "y": 333.0,
-                "w": 180.0,
-                "h": 100.0
-            },
-            {
-                "id": 3,
-                "type": 5,
-                "title": "ScriptCall",
-                "x": 364.0,
-                "y": 102.0,
-                "w": 140.0,
-                "h": 70.0
-            }
-        ],
+        "nextNodeId": 1,
+        "nodes": [],
         "links": []
     }
 }

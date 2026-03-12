@@ -59,6 +59,7 @@ namespace CrashoutsEngine
         public bool OnWall { get; private set; } = false;
 
         public static PlayerMovement Instance;
+        public bool lockBookGlowToPlayer = false;
         public static bool RespawnNextLoad = false;
         public float CurrentEnergy = 0.0f;
         public float MaxEnergy = 100.0f;
@@ -84,8 +85,26 @@ namespace CrashoutsEngine
 
         private string currentAnimState = "";
         private bool isLight = false;
+        public bool IsLightMode { get { return isLight; } }
         private float swapPauseTimer = 0.0f;
         private bool stateChangedThisSwap = false;
+        private bool switchStartIsLight = false;
+        private bool switchTargetIsLight = false;
+
+        public bool IsSwitching { get { return swapPauseTimer > 0.0f; } }
+        public bool SwitchStartIsLight { get { return switchStartIsLight; } }
+        public bool SwitchTargetIsLight { get { return switchTargetIsLight; } }
+        public float SwitchProgress01
+        {
+            get
+            {
+                if (swapPause <= 0.0001f) return 1.0f;
+                float t = 1.0f - (swapPauseTimer / swapPause);
+                if (t < 0.0f) return 0.0f;
+                if (t > 1.0f) return 1.0f;
+                return t;
+            }
+        }
 
         private uint landingDustID = 0;
         private float landingDustTimer = 0.0f;
@@ -230,6 +249,8 @@ namespace CrashoutsEngine
             if (Input.IsKeyTriggered(Key.E) && IsGrounded && CurrentEnergy >= energyConsumption && swapPauseTimer <= 0.0f)
             {
                 RemoveEnergy(energyConsumption);
+                switchStartIsLight = isLight;
+                switchTargetIsLight = !isLight;
                 swapPauseTimer = swapPause;
                 stateChangedThisSwap = false;
                 rb.LinearVelocity = new CEVec3(0, 0, 0);
