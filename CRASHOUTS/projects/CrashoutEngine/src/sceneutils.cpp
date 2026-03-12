@@ -1387,9 +1387,10 @@ namespace Scene {
 		if (g_ShowFPS) {
 			batcher.Flush();
 
-			// Pull the exact FBO resolution directly from the engine globals
-			int fpsWindowW = gameTextureWidth;
-			int fpsWindowH = gameTextureHeight;
+			// FIX: Get the logical FBO size, NOT the physical window size!
+			CEVec2 gameSize = InputManager::GetGameWindowSize();
+			int fpsWindowW = static_cast<int>(gameSize.x);
+			int fpsWindowH = static_cast<int>(gameSize.y);
 
 			// FORCE FRONTMOST STATE:
 			glViewport(0, 0, fpsWindowW, fpsWindowH);
@@ -1406,22 +1407,21 @@ namespace Scene {
 
 			renderer.shdr_pgm->Use();
 
-			// Use the exact FBO bounds for the projection matrix
+			// Use the logical game bounds for the projection matrix
 			glm::mat4 overlayProj = glm::ortho(0.0f, (float)fpsWindowW, 0.0f, (float)fpsWindowH);
 			renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
 			renderer.shdr_pgm->SetUniform("uProjection", overlayProj);
 
 			float zFront = 0.0f;
 			float xPos = 20.0f;
-			// Because we use the FBO's true height, this is guaranteed to stay inside the game view!
-			float yPos = (float)fpsWindowH - 40.0f;
+			float yPos = (float)fpsWindowH - 40.0f; // This is now safely inside the FBO bounds
 
 			gTextRenderer->RenderText(fpsText, xPos, yPos, zFront, 15.0f,
 				CEColor(0.0f, 1.0f, 0.0f, 1.0f),
 				"Exo2-Regular", false, 0.0f);
 
 			// RESTORE VIEWPORT
-			glViewport(0, 0, fpsWindowW, fpsWindowH);
+			glViewport(0, 0, (GLsizei)gameSize.x, (GLsizei)gameSize.y);
 		}
 	}
 
