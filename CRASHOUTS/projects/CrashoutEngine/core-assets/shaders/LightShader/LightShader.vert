@@ -8,6 +8,9 @@ layout (location = 4) in vec3 iLightColor;
 layout (location = 5) in float iIntensity;
 layout (location = 6) in float iShadowIndex;
 layout (location = 7) in float iAffectBloom;
+layout (location = 8) in float iShadowTechnique;
+layout (location = 9) in float iRaymarchSteps;
+layout (location = 10) in float iRaymarchThreshold;
 
 out vec2 texCoord;
 out vec2 vLightPos;
@@ -16,6 +19,9 @@ out vec3 vLightColor;
 out float vIntensity;
 out float vShadowIndex;
 out float vAffectBloom;
+out float vShadowTechnique;
+out float vRaymarchSteps;
+out float vRaymarchThreshold;
 
 void main()
 {
@@ -27,5 +33,8 @@ void main()
     vIntensity = iIntensity;
     vShadowIndex = iShadowIndex;
     vAffectBloom = iAffectBloom;
+    vShadowTechnique = iShadowTechnique;
+    vRaymarchSteps = iRaymarchSteps;
+    vRaymarchThreshold = iRaymarchThreshold;
     gl_Position = vec4(aPos, 0.0, 1.0);
 }

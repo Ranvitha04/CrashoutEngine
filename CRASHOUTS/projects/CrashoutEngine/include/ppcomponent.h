@@ -60,5 +60,8 @@ namespace Component {
         bool active{ true };
         bool ignoreParentOccluders{ true };
         bool ignoreOccluders{ true };
+        int shadowTechnique{ 0 }; // 0 = Shadow Map (per-light), 1 = Raymarch (screen mask)
+        int raymarchSteps{ 24 };
+        float raymarchThreshold{ 0.5f };
     };
 }

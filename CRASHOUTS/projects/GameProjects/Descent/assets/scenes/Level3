@@ -16485,6 +16485,10 @@
                 "renderSelf": false,
                 "renderBehind": false,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 0.5607843399047852,
                     "y": 0.19607843458652497,
@@ -24779,12 +24783,14 @@
                             "dialogueCooldown": 1.0,
                             "isDialogueActive": false,
                             "facingRight": true,
+                            "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 87.5,
                             "MaxEnergy": 100.0,
                             "alive": true,
                             "isPaused": false,
                             "reloadOnDeath": false,
-                            "reloadSceneName": ""
+                            "reloadSceneName": "",
+                            "gameOverSceneName": "Defeat"
                         }
                     },
                     {
@@ -24923,18 +24929,21 @@
             },
             "light": {
                 "active": true,
-                "intensity": 0.25,
-                "radius": 129.0,
-                "affectBloom": false,
+                "intensity": 0.15000000596046449,
+                "radius": 70.0,
+                "affectBloom": true,
                 "useTransform": true,
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
                 "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 0.9058823585510254,
+                    "y": 0.7921568751335144,
+                    "z": 0.7921568751335144
                 },
                 "position": {
                     "x": 0.0,
@@ -27145,6 +27154,30 @@
                     }
                 ]
             },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "layer": {
                 "layerName": "Default",
                 "z": 0
@@ -27515,6 +27548,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -28497,6 +28554,10 @@
                 "renderSelf": true,
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 0.7941176891326904,
                     "y": 1.0,
@@ -28702,6 +28763,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -28917,6 +29002,30 @@
                         }
                     }
                 ]
+            },
+            "light": {
+                "active": true,
+                "intensity": 1.0499999523162842,
+                "radius": 19.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.1427335888147354,
+                    "y": 0.22974756360054017,
+                    "z": 0.8823529481887817
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Default",
@@ -34486,8 +34595,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -228.9227752685547,
-                    "y": -9.202164649963379,
+                    "x": -230.07955932617188,
+                    "y": -2.724332809448242,
                     "z": 0.0
                 },
                 "size": {
@@ -34531,7 +34640,7 @@
             },
             "light": {
                 "active": true,
-                "intensity": 1.0,
+                "intensity": 0.550000011920929,
                 "radius": 31.0,
                 "affectBloom": true,
                 "useTransform": true,
@@ -34539,6 +34648,9 @@
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
                 "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 0.8823529481887817,
                     "y": 0.08650518953800202,
@@ -34573,6 +34685,142 @@
             "layer": {
                 "layerName": "Player",
                 "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "SlimeLight",
+            "uuid": 17744916967257968049,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1596.142333984375,
+                    "y": -789.9560546875,
+                    "z": 0.7333488464355469
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.5,
+                "radius": 23.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.9852941036224365,
+                    "y": 0.5192113518714905,
+                    "z": 0.05312861502170563
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 7849124200209266035,
+                "localPos": {
+                    "x": 0.05703677609562874,
+                    "y": -0.08819936215877533,
+                    "z": -50.26665115356445
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": -0.01886792480945587,
+                    "y": 0.020283976569771768
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "SlimeLight",
+            "uuid": 17744916967257968050,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1360.3614501953126,
+                    "y": -80.14938354492188,
+                    "z": 0.7333488464355469
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.5,
+                "radius": 23.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.9852941036224365,
+                    "y": 0.5192113518714905,
+                    "z": 0.05312861502170563
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 11749515231721264001,
+                "localPos": {
+                    "x": 0.05703677609562874,
+                    "y": -0.08819936215877533,
+                    "z": -50.26665115356445
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": -0.01886792480945587,
+                    "y": 0.020283976569771768
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

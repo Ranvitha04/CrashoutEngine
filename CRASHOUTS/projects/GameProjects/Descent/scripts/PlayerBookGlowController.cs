@@ -85,6 +85,9 @@ namespace CrashoutsEngine
         private CEVec3 lastStartHandlePos;
         private CEVec3 lastEndHandlePos;
         private bool handleCacheValid = false;
+        private float baseGlowIntensity = 1.0f;
+        private float lastAppliedGlowIntensity = float.NaN;
+        private float lastAppliedGlowMultiplier = 1.0f;
 
         private static float Clamp01(float v)
         {
@@ -337,6 +340,9 @@ namespace CrashoutsEngine
             glowTf = glowEntity.GetComponent<TransformComponent>();
             glowLight = glowEntity.GetComponent<LightComponent>();
             lastActiveState = InternalCalls.GetActive(glowEntity.ID);
+            if (glowLight != null) baseGlowIntensity = glowLight.Intensity;
+            lastAppliedGlowIntensity = float.NaN;
+            lastAppliedGlowMultiplier = 1.0f;
         }
 
         public override void LateUpdate()
@@ -428,20 +434,20 @@ namespace CrashoutsEngine
             ComputeOffsets(facingRight, isSwitchClip, out CEVec3 behindOffset, out CEVec3 bookOffset);
 
             CEVec3 offset = isLightMode ? bookOffset : behindOffset;
-            float desiredIntensity = isLightMode ? alphaEnd : alphaStart;
+            float desiredMultiplier = isLightMode ? alphaEnd : alphaStart;
             if (forceShowStart) forceShowEnd = false;
             if (forceShowEnd) forceShowStart = false;
 
             if (forceShowStart)
             {
                 offset = behindOffset;
-                desiredIntensity = alphaStart;
+                desiredMultiplier = alphaStart;
                 isSwitching = false;
             }
             else if (forceShowEnd)
             {
                 offset = bookOffset;
-                desiredIntensity = alphaEnd;
+                desiredMultiplier = alphaEnd;
                 isSwitching = false;
             }
             if (isSwitching)
@@ -453,7 +459,7 @@ namespace CrashoutsEngine
                     if (useAlphaTransition)
                     {
                         float tA = Smooth01(Clamp01((switchT / 0.5f) * alphaSpeed));
-                        desiredIntensity = alphaStart + (alphaEnd - alphaStart) * tA;
+                        desiredMultiplier = alphaStart + (alphaEnd - alphaStart) * tA;
                     }
                 }
                 else if (switchStartLight && !switchTargetLight)
@@ -463,13 +469,13 @@ namespace CrashoutsEngine
                     if (useAlphaTransition)
                     {
                         float tA = Smooth01(Clamp01(((switchT - 0.5f) / 0.5f) * alphaSpeed));
-                        desiredIntensity = alphaEnd + (alphaStart - alphaEnd) * tA;
+                        desiredMultiplier = alphaEnd + (alphaStart - alphaEnd) * tA;
                     }
                 }
                 else
                 {
                     offset = switchTargetLight ? bookOffset : behindOffset;
-                    desiredIntensity = switchTargetLight ? alphaEnd : alphaStart;
+                    desiredMultiplier = switchTargetLight ? alphaEnd : alphaStart;
                 }
             }
 
@@ -527,7 +533,27 @@ namespace CrashoutsEngine
 
             if (glowLight != null)
             {
-                glowLight.Intensity = desiredIntensity;
+                float current = glowLight.Intensity;
+                if (!float.IsNaN(lastAppliedGlowIntensity) && Math.Abs(current - lastAppliedGlowIntensity) > 0.0001f)
+                {
+                    if (lastAppliedGlowMultiplier > 0.1f)
+                    {
+                        baseGlowIntensity = current / lastAppliedGlowMultiplier;
+                    }
+                    else if (current > 0.0001f)
+                    {
+                        baseGlowIntensity = current;
+                    }
+                }
+                else if (float.IsNaN(lastAppliedGlowIntensity))
+                {
+                    baseGlowIntensity = current;
+                }
+
+                lastAppliedGlowMultiplier = desiredMultiplier;
+                float applied = baseGlowIntensity * desiredMultiplier;
+                glowLight.Intensity = applied;
+                lastAppliedGlowIntensity = applied;
             }
         }
 

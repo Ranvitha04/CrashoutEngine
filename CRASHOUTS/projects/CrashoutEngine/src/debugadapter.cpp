@@ -2670,7 +2670,16 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableBool("Use Transform", lc->useTransform);
 			UIHelpers::DrawUndoableBool("Render Behind Entity", lc->renderBehind);
 			UIHelpers::DrawUndoableBool("Ignore Parent Occluders", lc->ignoreParentOccluders);
-			UIHelpers::DrawUndoableBool("Ignore All Occluders (No Shadows)", lc->ignoreOccluders);
+			UIHelpers::DrawUndoableBool("Ignore Non-Ground Occluders", lc->ignoreOccluders);
+
+			int shadowTech = lc->shadowTechnique;
+			if (ImGui::Combo("Shadow Technique", &shadowTech, "Shadow Map\0Raymarch\0")) {
+				lc->shadowTechnique = shadowTech;
+			}
+			if (lc->shadowTechnique == 1) {
+				UIHelpers::DrawUndoableInt("Raymarch Steps", lc->raymarchSteps, 1.0f, 4, 128);
+				UIHelpers::DrawUndoableFloat("Raymarch Threshold", lc->raymarchThreshold, 0.01f, 0.01f, 1.0f);
+			}
 		}
 	};
 

@@ -678,6 +678,9 @@ namespace CrashoutsEngine {
 				val.AddMember("renderBehind", c.renderBehind, allocator);
 				val.AddMember("ignoreParentOccluders", c.ignoreParentOccluders, allocator);
 				val.AddMember("ignoreOccluders", c.ignoreOccluders, allocator);
+				val.AddMember("shadowTechnique", c.shadowTechnique, allocator);
+				val.AddMember("raymarchSteps", c.raymarchSteps, allocator);
+				val.AddMember("raymarchThreshold", c.raymarchThreshold, allocator);
 				WriteVec3(val, "color", c.color, allocator);
 				WriteVec3(val, "position", c.position, allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::LIGHT_COMPONENT), val, allocator);
@@ -1292,6 +1295,9 @@ namespace CrashoutsEngine {
 				l.renderBehind = GetBool(v, "renderBehind", l.renderBehind);
 				l.ignoreParentOccluders = GetBool(v, "ignoreParentOccluders", l.ignoreParentOccluders);
 				l.ignoreOccluders = GetBool(v, "ignoreOccluders", l.ignoreOccluders);
+				l.shadowTechnique = GetInt(v, "shadowTechnique", l.shadowTechnique);
+				l.raymarchSteps = GetInt(v, "raymarchSteps", l.raymarchSteps);
+				l.raymarchThreshold = GetFloat(v, "raymarchThreshold", l.raymarchThreshold);
 				if (v.HasMember("color")) l.color = ReadVec3(v["color"], l.color);
 				if (v.HasMember("position")) l.position = ReadVec3(v["position"], l.position);
 			}

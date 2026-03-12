@@ -23,6 +23,8 @@ All content ? 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include "activecomponent.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
+#include "tagcomponent.h"
+#include "scriptcomponent.h"
 #include "collisionmanager.h"
 #include "hierarchycomponent.h"
 #include "jobsystem.h"
@@ -67,6 +69,8 @@ namespace CrashoutsEngine {
         static GLuint behindLightsTex[2]{ 0, 0 }; // [0] = Bloom, [1] = NoBloom
         static GLuint occluderFbo = 0;
         static GLuint occluderTexture = 0;
+        static GLuint sceneOccluderFbo = 0;
+        static GLuint sceneOccluderTexture = 0;
         static GLuint combineFbo = 0;
         static GLuint combineTexture = 0;
         static GLuint brightFbo = 0;
@@ -84,6 +88,10 @@ namespace CrashoutsEngine {
             bool affectBloom{ true };
             bool renderBehind{ false };
             bool ignoreParentOccluders{ true };
+            bool ignoreOccluders{ true };
+            int shadowTechnique{ 0 };
+            int raymarchSteps{ 24 };
+            float raymarchThreshold{ 0.5f };
             glm::vec2 uvCenter{ 0.0f, 0.0f };
             float radiusUV{ 0.0f };
             CEVec3 worldPos{ 0.0f, 0.0f, 0.0f };
@@ -103,6 +111,9 @@ namespace CrashoutsEngine {
             float intensity;
             float shadowIndex;
             float affectBloom;
+            float shadowTechnique;
+            float raymarchSteps;
+            float raymarchThreshold;
         };
 
 
@@ -164,6 +175,7 @@ namespace CrashoutsEngine {
             CreateFboWithTexturesMRT(frontLightsFbo, frontLightsTex, cachedWidth, cachedHeight);
             CreateFboWithTexturesMRT(behindLightsFbo, behindLightsTex, cachedWidth, cachedHeight);
             CreateFboWithTexture(occluderFbo, occluderTexture, cachedWidth, cachedHeight);
+            CreateFboWithTexture(sceneOccluderFbo, sceneOccluderTexture, cachedWidth, cachedHeight);
             CreateFboWithTexture(combineFbo, combineTexture, cachedWidth, cachedHeight);
             CreateFboWithTexture(brightFbo, brightTexture, halfW, halfH);
             CreateFboWithTexture(pingpongFbo[0], pingpongTex[0], halfW, halfH);
@@ -212,33 +224,48 @@ namespace CrashoutsEngine {
 
             // layout(location = 2) vec2 iLightPos
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
             glVertexAttribDivisor(2, 1);
 
             // layout(location = 3) float iLightRadius
             glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(2 * sizeof(float)));
+            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(2 * sizeof(float)));
             glVertexAttribDivisor(3, 1);
 
             // layout(location = 4) vec3 iLightColor
             glEnableVertexAttribArray(4);
-            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
             glVertexAttribDivisor(4, 1);
 
             // layout(location = 5) float iIntensity
             glEnableVertexAttribArray(5);
-            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(6 * sizeof(float)));
             glVertexAttribDivisor(5, 1);
 
             // layout(location = 6) float iShadowIndex
             glEnableVertexAttribArray(6);
-            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
+            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(7 * sizeof(float)));
             glVertexAttribDivisor(6, 1);
 
             // layout(location = 7) float iAffectBloom
             glEnableVertexAttribArray(7);
-            glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(8 * sizeof(float)));
+            glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(8 * sizeof(float)));
             glVertexAttribDivisor(7, 1);
+
+            // layout(location = 8) float iShadowTechnique
+            glEnableVertexAttribArray(8);
+            glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(9 * sizeof(float)));
+            glVertexAttribDivisor(8, 1);
+
+            // layout(location = 9) float iRaymarchSteps
+            glEnableVertexAttribArray(9);
+            glVertexAttribPointer(9, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(10 * sizeof(float)));
+            glVertexAttribDivisor(9, 1);
+
+            // layout(location = 10) float iRaymarchThreshold
+            glEnableVertexAttribArray(10);
+            glVertexAttribPointer(10, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(11 * sizeof(float)));
+            glVertexAttribDivisor(10, 1);
 
             glBindVertexArray(0); // Unbind
 
@@ -274,6 +301,8 @@ namespace CrashoutsEngine {
             glDeleteTextures(2, behindLightsTex);
             glDeleteFramebuffers(1, &occluderFbo);
             glDeleteTextures(1, &occluderTexture);
+            glDeleteFramebuffers(1, &sceneOccluderFbo);
+            glDeleteTextures(1, &sceneOccluderTexture);
             glDeleteFramebuffers(1, &combineFbo);
             glDeleteTextures(1, &combineTexture);
             glDeleteFramebuffers(1, &brightFbo);
@@ -382,11 +411,14 @@ namespace CrashoutsEngine {
             float camWidth = currentCamera.GetVisibleWorldWidth();
             float camHeight = currentCamera.GetVisibleWorldHeight();
             glUniform2f(glGetUniformLocation(lightShader.GetHandle(), "uWorldSize"), camWidth, camHeight);
-            glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uUseShadows"), (shadowsEnabled && !shadowRowByLight.empty()) ? 1 : 0);
+            glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uUseShadows"), shadowsEnabled ? 1 : 0);
             glUniform1f(glGetUniformLocation(lightShader.GetHandle(), "uShadowTexHeight"), (float)shadowTexHeight);
             glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uShadowTex"), 1);
+            glUniform1i(glGetUniformLocation(lightShader.GetHandle(), "uSceneOccluder"), 5);
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, shadowTex);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, sceneOccluderTexture);
 
             static std::vector<LightInstance> instances;
             instances.clear();
@@ -404,8 +436,11 @@ namespace CrashoutsEngine {
                 inst.colorG = ld.color.y;
                 inst.colorB = ld.color.z;
                 inst.intensity = ld.intensity;
-                inst.shadowIndex = (shadowRowByLight[i] >= 0) ? (float)shadowRowByLight[i] : -1.0f;
                 inst.affectBloom = ld.affectBloom ? 1.0f : 0.0f;
+                inst.shadowTechnique = (float)ld.shadowTechnique;
+                inst.raymarchSteps = (float)ld.raymarchSteps;
+                inst.raymarchThreshold = ld.raymarchThreshold;
+                inst.shadowIndex = (ld.shadowTechnique == 0 && shadowRowByLight[i] >= 0) ? (float)shadowRowByLight[i] : -1.0f;
                 instances.push_back(inst);
             }
 
@@ -434,33 +469,6 @@ namespace CrashoutsEngine {
 #endif
             glm::mat4 view = currentCamera.GetViewMatrix();
             glm::mat4 proj = currentCamera.GetProjectionMatrix();
-
-            struct LightDraw {
-                bool active{ false };
-                bool affectBloom{ true };
-                bool renderBehind{ false };
-                bool ignoreParentOccluders{ true };
-                bool ignoreOccluders{ false };
-                glm::vec2 uvCenter{ 0.0f, 0.0f };
-                float radiusUV{ 0.0f };
-                CEVec3 worldPos{ 0.0f, 0.0f, 0.0f };
-                float radiusWorld{ 0.0f };
-                CEVec3 color{ 1.0f, 1.0f, 1.0f };
-                float intensity{ 1.0f };
-                int shadowRow{ -1 };
-            };
-
-            struct LightInstance {
-                float posX;
-                float posY;
-                float radiusWorld;
-                float colorR;
-                float colorG;
-                float colorB;
-                float intensity;
-                float shadowIndex;
-            };
-
 
             auto& lightArray = ecs.GetComponentArray<LightComponent>();
             static std::vector<LightDraw> lightDraws;
@@ -516,6 +524,9 @@ namespace CrashoutsEngine {
                         lightDraws[i].radiusWorld = lc->radius;
                         lightDraws[i].color = lc->color;
                         lightDraws[i].intensity = lc->intensity;
+                        lightDraws[i].shadowTechnique = lc->shadowTechnique;
+                        lightDraws[i].raymarchSteps = lc->raymarchSteps;
+                        lightDraws[i].raymarchThreshold = lc->raymarchThreshold;
 
                         // Occluder rectangles are built on the main thread after this pass.
                     }
@@ -531,7 +542,7 @@ namespace CrashoutsEngine {
             if (g_shadowsEnabled) {
                 for (size_t i = 0; i < lightDraws.size(); ++i) {
                     if (!lightDraws[i].active) continue;
-                    if (lightDraws[i].ignoreOccluders) continue;
+                    if (lightDraws[i].shadowTechnique != 0) continue;
                     shadowRowByLight[i] = static_cast<int>(shadowLights.size());
                     shadowLights.push_back(i);
                 }
@@ -584,6 +595,39 @@ namespace CrashoutsEngine {
 
                     allLightCandidates[idx].reserve(64);
                     Collision::CollisionHandler::GetInstance().quadTree.Query(lightRegion, allLightCandidates[idx]);
+
+                    if (ld.ignoreOccluders) {
+                        unsigned int groundMask = 2;
+                        auto it = Component::TagComponent::tags.find("Ground");
+                        if (it != Component::TagComponent::tags.end()) groundMask = it->second;
+
+                        if (groundMask != 0) {
+                            size_t w = 0;
+                            for (size_t r = 0; r < allLightCandidates[idx].size(); ++r) {
+                                Entity cand = allLightCandidates[idx][r];
+                                auto* tag = ecs.GetComponent<Component::TagComponent>(cand);
+                                if (!tag) continue;
+                                if ((tag->tagMask & groundMask) == 0) continue;
+                                auto* cc = ecs.GetComponent<Component::ColliderComponent>(cand);
+                                if (!cc || !cc->collider) continue;
+                                if (!cc->collider->enabled || cc->collider->isTrigger) continue;
+
+                                auto* scriptComp = ecs.GetComponent<Component::ScriptComponent>(cand);
+                                if (scriptComp) {
+                                    bool isWeightedPlatform = false;
+                                    for (const auto& s : scriptComp->Scripts) {
+                                        if (s.ClassName == "WeightedPlatform") {
+                                            isWeightedPlatform = true;
+                                            break;
+                                        }
+                                    }
+                                    if (isWeightedPlatform) continue;
+                                }
+                                allLightCandidates[idx][w++] = cand;
+                            }
+                            allLightCandidates[idx].resize(w);
+                        }
+                    }
 
                     // PRE-UPDATE COLLIDERS ON MAIN THREAD
                     // This prevents multiple threads from calling UpdateCollider on the same entity later.
@@ -664,6 +708,139 @@ namespace CrashoutsEngine {
                 glBindTexture(GL_TEXTURE_2D, shadowTex);
                 glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, shadowTexWidth, shadowTexHeight, GL_RED, GL_FLOAT, shadowData.data());
                 glBindTexture(GL_TEXTURE_2D, 0);
+            }
+
+            bool needRaymarch = false;
+            if (g_shadowsEnabled) {
+                for (size_t i = 0; i < lightDraws.size(); ++i) {
+                    if (!lightDraws[i].active) continue;
+                    if (lightDraws[i].shadowTechnique == 1) {
+                        needRaymarch = true;
+                        break;
+                    }
+                }
+            }
+
+            if (needRaymarch) {
+                glBindFramebuffer(GL_FRAMEBUFFER, sceneOccluderFbo);
+                glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                glDisable(GL_DEPTH_TEST);
+                glClearColor(0.f, 0.f, 0.f, 1.f);
+                glClear(GL_COLOR_BUFFER_BIT);
+
+                auto* occAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("OccluderMaskShader");
+                if (occAsset) {
+                    struct OccVertex { float x, y, u, v; };
+                    GLSLShader& occShader = occAsset->shaderObject;
+                    occShader.Use();
+                    glEnable(GL_BLEND);
+                    glBlendEquation(GL_MAX);
+                    glBlendFunc(GL_ONE, GL_ONE);
+                    glDisable(GL_CULL_FACE);
+
+                    glUniform1i(glGetUniformLocation(occShader.GetHandle(), "uUseTexture"), 0);
+                    glUniform1f(glGetUniformLocation(occShader.GetHandle(), "uAlpha"), 1.0f);
+
+                    unsigned int groundMask = 2;
+                    auto it = Component::TagComponent::tags.find("Ground");
+                    if (it != Component::TagComponent::tags.end()) groundMask = it->second;
+
+                    glBindVertexArray(occluderVao);
+                    glBindBuffer(GL_ARRAY_BUFFER, occluderVbo);
+
+                    auto& colArray = ecs.GetComponentArray<Component::ColliderComponent>();
+                    for (size_t ci = 0; ci < colArray.dense.size(); ++ci) {
+                        auto* cc = colArray.dense[ci];
+                        if (!cc || !cc->collider) continue;
+
+                        Entity ent = colArray.indexToEntity[ci];
+                        if (ecs.HasComponent<ActiveComponent>(ent) && !ecs.GetComponent<ActiveComponent>(ent)->isActive) continue;
+
+                        auto* tag = ecs.GetComponent<Component::TagComponent>(ent);
+                        if (!tag) continue;
+                        if ((tag->tagMask & groundMask) == 0) continue;
+
+                        auto* scriptComp = ecs.GetComponent<Component::ScriptComponent>(ent);
+                        if (scriptComp) {
+                            for (const auto& s : scriptComp->Scripts) {
+                                if (s.ClassName == "WeightedPlatform") {
+                                    goto SkipColliderOcc;
+                                }
+                            }
+                        }
+
+                        if (!cc->collider->enabled || cc->collider->isTrigger) goto SkipColliderOcc;
+
+                        {
+                            CEVec3 minW{}, maxW{};
+                            switch (cc->collider->ColliderType) {
+                            case Collision::ColliderType::AABB: {
+                                auto* a = static_cast<Collision::AABBRect*>(cc->collider.get());
+                                minW = a->min;
+                                maxW = a->max;
+                                break;
+                            }
+                            case Collision::ColliderType::CIRCLE: {
+                                auto* c = static_cast<Collision::Circle*>(cc->collider.get());
+                                minW = { c->position.x - c->radius, c->position.y - c->radius, 0.f };
+                                maxW = { c->position.x + c->radius, c->position.y + c->radius, 0.f };
+                                break;
+                            }
+                            case Collision::ColliderType::OBB:
+                            case Collision::ColliderType::POLYGON:
+                            case Collision::ColliderType::TRIANGLE: {
+                                auto* p = static_cast<Collision::Polygon*>(cc->collider.get());
+                                CEVec3 extents = Collision::Polygon::CalculateOBBExtents(*p);
+                                minW = p->position - extents;
+                                maxW = p->position + extents;
+                                break;
+                            }
+                            default:
+                                goto SkipColliderOcc;
+                            }
+
+                            glm::vec2 world[4] = {
+                                { minW.x, minW.y },
+                                { maxW.x, minW.y },
+                                { maxW.x, maxW.y },
+                                { minW.x, maxW.y }
+                            };
+
+                            glm::vec2 ndc[4];
+                            bool ok = true;
+                            for (int k = 0; k < 4; ++k) {
+                                glm::vec4 clipC = proj * view * glm::vec4(world[k].x, world[k].y, 0.0f, 1.0f);
+                                if (clipC.w == 0.0f) { ok = false; break; }
+                                glm::vec3 ndcC = glm::vec3(clipC) / clipC.w;
+                                ndc[k] = { ndcC.x, ndcC.y };
+                            }
+                            if (!ok) goto SkipColliderOcc;
+
+                            OccVertex verts[6] = {
+                                { ndc[0].x, ndc[0].y, 0.0f, 1.0f },
+                                { ndc[1].x, ndc[1].y, 1.0f, 1.0f },
+                                { ndc[2].x, ndc[2].y, 1.0f, 0.0f },
+                                { ndc[0].x, ndc[0].y, 0.0f, 1.0f },
+                                { ndc[2].x, ndc[2].y, 1.0f, 0.0f },
+                                { ndc[3].x, ndc[3].y, 0.0f, 0.0f }
+                            };
+
+                            glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_DYNAMIC_DRAW);
+                            glDrawArrays(GL_TRIANGLES, 0, 6);
+                            Component::Rendering::Get().drawCalls++;
+                        }
+
+                    SkipColliderOcc:
+                        continue;
+                    }
+
+                    glBindVertexArray(0);
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    glBlendEquation(GL_FUNC_ADD);
+                    glDisable(GL_BLEND);
+                    glEnable(GL_CULL_FACE);
+                }
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
             }
 
             // --- Light Passes ---
