@@ -4,7 +4,7 @@
 @date       06/11/2025
 @brief		Definition of transform bindings functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "transformbindings.h"
@@ -99,6 +99,30 @@ static void TransformSetLocalScale(uint32_t entityID, CEVec2* inScale)
     pc->localScale = *inScale;
 }
 
+static bool EntityHasParent(uint32_t entityID)
+{
+    ECS* ecs = ECS::getInstance();
+    return ecs->HasComponent<ParentComponent>(entityID);
+}
+
+static void HierarchyGetLocalPos(uint32_t entityID, CEVec3* outPos)
+{
+    if (!outPos) return;
+    ECS* ecs = ECS::getInstance();
+    if (!ecs->HasComponent<ParentComponent>(entityID)) return;
+    auto* pc = ecs->GetComponent<ParentComponent>(entityID);
+    *outPos = pc->localPos;
+}
+
+static void HierarchySetLocalPos(uint32_t entityID, CEVec3* inPos)
+{
+    if (!inPos) return;
+    ECS* ecs = ECS::getInstance();
+    if (!ecs->HasComponent<ParentComponent>(entityID)) return;
+    auto* pc = ecs->GetComponent<ParentComponent>(entityID);
+    pc->localPos = *inPos;
+}
+
 // Check if entity has transform
 static bool EntityHasTransform(uint32_t entityID)
 {
@@ -122,6 +146,9 @@ void CrashoutsEngine::Bindings::RegisterTransformBindings()
     mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformGetSize", (const void*)TransformGetSize);
     mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformSetSize", (const void*)TransformSetSize);
     mono_add_internal_call("CrashoutsEngine.InternalCalls::TransformSetLocalScale", (const void*)TransformSetLocalScale);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasParent", (const void*)EntityHasParent);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::HierarchyGetLocalPos", (const void*)HierarchyGetLocalPos);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::HierarchySetLocalPos", (const void*)HierarchySetLocalPos);
 
     // Component check
     mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasTransform", (const void*)EntityHasTransform);

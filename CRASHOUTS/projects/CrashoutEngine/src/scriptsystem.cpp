@@ -26,6 +26,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "tagbindings.h"
 #include "timebindings.h"
 #include "shapebindings.h"
+#include "lightbindings.h"
 #include "activecomponent.h"
 #include "videobindings.h"
 #include "checkpointbindings.h"
@@ -33,10 +34,76 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "replaybindings.h"
 #include "leaderboardbindings.h"
 #include "particlecomponent.h"
+#include "ppcomponent.h"
 #include <mono/metadata/attrdefs.h>
 #include "collidereventmanager.h"
 #include "performanceSystem.h"
 #include "rapidjson/document.h"
+
+namespace {
+	static Component::LightComponent* GetLight(uint32_t entityID) {
+		auto* ecs = CrashoutsEngine::ECS::getInstance();
+		if (ecs && ecs->HasComponent<Component::LightComponent>(entityID)) {
+			return ecs->GetComponent<Component::LightComponent>(entityID);
+		}
+		return nullptr;
+	}
+
+	static void InternalAddLight(uint32_t id) {
+		CrashoutsEngine::ECS::getInstance()->AddComponent<Component::LightComponent>(id);
+	}
+
+	static void InternalRemoveLight(uint32_t id) {
+		CrashoutsEngine::ECS::getInstance()->RemoveComponent<Component::LightComponent>(id);
+	}
+
+	static bool InternalEntityHasLight(uint32_t id) {
+		return CrashoutsEngine::ECS::getInstance()->HasComponent<Component::LightComponent>(id);
+	}
+
+	static float InternalGetLightIntensity(uint32_t id) {
+		if (auto* l = GetLight(id)) return l->intensity;
+		return 0.0f;
+	}
+
+	static void InternalSetLightIntensity(uint32_t id, float intensity) {
+		if (auto* l = GetLight(id)) l->intensity = intensity;
+	}
+
+	static void InternalGetLightColor(uint32_t id, CEVec3* outColor) {
+		if (!outColor) return;
+		if (auto* l = GetLight(id)) *outColor = l->color;
+		else *outColor = CEVec3{ 1.0f, 1.0f, 1.0f };
+	}
+
+	static void InternalSetLightColor(uint32_t id, CEVec3* inColor) {
+		if (!inColor) return;
+		if (auto* l = GetLight(id)) l->color = *inColor;
+	}
+
+	static bool InternalGetLightActive(uint32_t id) {
+		if (auto* l = GetLight(id)) return l->active;
+		return false;
+	}
+
+	static void InternalSetLightActive(uint32_t id, bool active) {
+		if (auto* l = GetLight(id)) l->active = active;
+	}
+}
+
+void CrashoutsEngine::Bindings::RegisterLightBindings()
+{
+	mono_add_internal_call("CrashoutsEngine.LightComponent::InternalGetIntensity", (const void*)InternalGetLightIntensity);
+	mono_add_internal_call("CrashoutsEngine.LightComponent::InternalSetIntensity", (const void*)InternalSetLightIntensity);
+	mono_add_internal_call("CrashoutsEngine.LightComponent::InternalGetColor", (const void*)InternalGetLightColor);
+	mono_add_internal_call("CrashoutsEngine.LightComponent::InternalSetColor", (const void*)InternalSetLightColor);
+	mono_add_internal_call("CrashoutsEngine.LightComponent::InternalGetActive", (const void*)InternalGetLightActive);
+	mono_add_internal_call("CrashoutsEngine.LightComponent::InternalSetActive", (const void*)InternalSetLightActive);
+
+	mono_add_internal_call("CrashoutsEngine.InternalCalls::AddLight", (const void*)InternalAddLight);
+	mono_add_internal_call("CrashoutsEngine.InternalCalls::RemoveLight", (const void*)InternalRemoveLight);
+	mono_add_internal_call("CrashoutsEngine.InternalCalls::EntityHasLight", (const void*)InternalEntityHasLight);
+}
 
 namespace CrashoutsEngine
 {
@@ -333,6 +400,39 @@ namespace CrashoutsEngine
 							MonoString* str = mono_string_new(MonoManager::GetDomain(), it->value.GetString());
 							mono_field_set_value(instance, field, str);
 						}
+						else if (typeEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEVec2") == 0) {
+							if (it->value.IsObject() && it->value.HasMember("x") && it->value.HasMember("y") &&
+								it->value["x"].IsNumber() && it->value["y"].IsNumber())
+							{
+								CEVec2 val{};
+								val.x = it->value["x"].GetFloat();
+								val.y = it->value["y"].GetFloat();
+								mono_field_set_value(instance, field, &val);
+							}
+						}
+						else if (typeEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEVec3") == 0) {
+							if (it->value.IsObject() && it->value.HasMember("x") && it->value.HasMember("y") && it->value.HasMember("z") &&
+								it->value["x"].IsNumber() && it->value["y"].IsNumber() && it->value["z"].IsNumber())
+							{
+								CEVec3 val{};
+								val.x = it->value["x"].GetFloat();
+								val.y = it->value["y"].GetFloat();
+								val.z = it->value["z"].GetFloat();
+								mono_field_set_value(instance, field, &val);
+							}
+						}
+						else if (typeEnum == MONO_TYPE_VALUETYPE && strcmp(fieldClassName, "CEColor") == 0) {
+							if (it->value.IsObject() && it->value.HasMember("x") && it->value.HasMember("y") && it->value.HasMember("z") && it->value.HasMember("w") &&
+								it->value["x"].IsNumber() && it->value["y"].IsNumber() && it->value["z"].IsNumber() && it->value["w"].IsNumber())
+							{
+								CEColor val{};
+								val.r = it->value["x"].GetFloat();
+								val.g = it->value["y"].GetFloat();
+								val.b = it->value["z"].GetFloat();
+								val.a = it->value["w"].GetFloat();
+								mono_field_set_value(instance, field, &val);
+							}
+						}
 						else if (strcmp(fieldClassName, "Entity") == 0) {
 							if (it->value.IsUint() || it->value.IsInt()) {
 								uint32_t loadedID = it->value.GetUint();
@@ -438,6 +538,7 @@ namespace CrashoutsEngine
         //Bindings::RegisterAIBindings();
         Bindings::RegisterTimeBindings();
         Bindings::RegisterShapeBindings();
+        Bindings::RegisterLightBindings();
         Bindings::RegisterVideoBindings();
         Bindings::RegisterCheckpointBindings();
         Bindings::RegisterTriggerBindings();
