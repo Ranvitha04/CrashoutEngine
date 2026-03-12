@@ -4,7 +4,7 @@
 @date       29/11/2025
 @brief      internal calls between managed and native code for Crashouts Engine
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 using System;
@@ -147,6 +147,9 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetTaggedVolume(string key, float volume);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Audio_SetPausedTagged(string key, bool paused);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Audio_SetMasterVolume(float volume);

@@ -20799,232 +20799,6 @@
         },
         {
             "active": true,
-            "name": "AmbianceManager",
-            "uuid": 13512590310489673917,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Lava_Ambience",
-                        "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.15000000596046449,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": true,
-                        "isMusic": false
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SceneMusic",
-                        "fields": {
-                            "layerName": "Ambiance",
-                            "fadeTime": 2.0,
-                            "stopLayer": false
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "parent": {
-                "parentUUID": 16914448410700199274,
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "BGMManager",
-            "uuid": 18114748699651674278,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "audio": {
-                "clips": [
-                    {
-                        "name": "Level_1",
-                        "path": "level bgm 1 re-mixed.wav",
-                        "volume": 0.5,
-                        "pitch": 1.0,
-                        "spatial3D": false,
-                        "looping": true,
-                        "isMusic": true
-                    }
-                ]
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "SceneMusic",
-                        "fields": {
-                            "layerName": "Music",
-                            "fadeTime": 2.0,
-                            "stopLayer": false
-                        }
-                    }
-                ]
-            },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "parent": {
-                "parentUUID": 16914448410700199274,
-                "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
             "name": "TriggerCP1",
             "uuid": 1895781001044336769,
             "tag": {
@@ -21157,30 +20931,6 @@
             "active": true,
             "name": "WorldParticles",
             "uuid": 6529571415753105255,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "AudioManager",
-            "uuid": 16914448410700199274,
             "tag": {
                 "tagMask": 0
             },
@@ -21356,7 +21106,7 @@
                     {
                         "name": "footstep1",
                         "path": "footsteps 1.wav",
-                        "volume": 1.5,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -21365,7 +21115,7 @@
                     {
                         "name": "footstep2",
                         "path": "footsteps 2.wav",
-                        "volume": 1.5,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -21374,7 +21124,7 @@
                     {
                         "name": "footstep3",
                         "path": "footsteps 3.wav",
-                        "volume": 1.5,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -21383,7 +21133,7 @@
                     {
                         "name": "footstep4",
                         "path": "footsteps 4.wav",
-                        "volume": 1.5,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -21392,7 +21142,7 @@
                     {
                         "name": "footstep5",
                         "path": "footsteps 5.wav",
-                        "volume": 1.5,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -21401,7 +21151,7 @@
                     {
                         "name": "footstep6",
                         "path": "footsteps 6.wav",
-                        "volume": 1.5,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -21410,7 +21160,7 @@
                     {
                         "name": "footstep7",
                         "path": "footsteps 7.wav",
-                        "volume": 1.5,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -21419,7 +21169,7 @@
                     {
                         "name": "footstep8",
                         "path": "footsteps 8.wav",
-                        "volume": 1.5,
+                        "volume": 0.05000000074505806,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -21428,7 +21178,7 @@
                     {
                         "name": "jumpLand",
                         "path": "jump landing.wav",
-                        "volume": 1.0,
+                        "volume": 0.004999999888241291,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -21437,7 +21187,7 @@
                     {
                         "name": "jumpUp",
                         "path": "jump.wav",
-                        "volume": 1.0,
+                        "volume": 0.009999999776482582,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -21446,7 +21196,7 @@
                     {
                         "name": "switchMassSound",
                         "path": "switch state.wav",
-                        "volume": 1.0,
+                        "volume": 0.012000000104308129,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -21569,6 +21319,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -21621,7 +21402,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21635,14 +21416,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21695,37 +21476,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23985,13 +23735,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -75.95115661621094,
-                    "y": -623.0357666015625,
+                    "x": -85.0746078491211,
+                    "y": -174.10101318359376,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 100.0,
-                    "y": 16.0
+                    "x": -98.0,
+                    "y": 50.0
                 }
             },
             "rigidbody": {
@@ -24098,13 +23848,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -136.26731872558595,
-                    "y": -623.0357666015625,
+                    "x": -85.0746078491211,
+                    "y": -144.9160614013672,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.0,
-                    "y": 16.0
+                    "x": -68.5999984741211,
+                    "y": 25.0
                 }
             },
             "shape": {
@@ -24142,16 +23892,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 13688077741230738189,
+                "parentUUID": 13200285090024433184,
                 "localPos": {
-                    "x": -0.603161633014679,
-                    "y": 0.0,
+                    "x": 0.0,
+                    "y": 0.583699107170105,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
+                    "x": 0.699999988079071,
+                    "y": 0.5
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -24176,13 +23926,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -96.30699157714844,
-                    "y": -623.0357666015625,
+                    "x": -85.0746078491211,
+                    "y": -144.9160614013672,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.0,
-                    "y": 16.0
+                    "x": -68.5999984741211,
+                    "y": 25.0
                 }
             },
             "shape": {
@@ -24220,16 +23970,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 13688077741230738189,
+                "parentUUID": 13200285090024433184,
                 "localPos": {
-                    "x": -0.20355835556983949,
-                    "y": 0.0,
+                    "x": 0.0,
+                    "y": 0.583699107170105,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
+                    "x": 0.699999988079071,
+                    "y": 0.5
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -24254,13 +24004,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -76.30699157714844,
-                    "y": -623.0357666015625,
+                    "x": -85.0746078491211,
+                    "y": -144.9160614013672,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.0,
-                    "y": 16.0
+                    "x": -68.5999984741211,
+                    "y": 25.0
                 }
             },
             "shape": {
@@ -24298,16 +24048,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 13688077741230738189,
+                "parentUUID": 13200285090024433184,
                 "localPos": {
-                    "x": -0.0035583495628088714,
-                    "y": 0.0,
+                    "x": 0.0,
+                    "y": 0.583699107170105,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
+                    "x": 0.699999988079071,
+                    "y": 0.5
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -24332,13 +24082,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -56.30699157714844,
-                    "y": -623.0357666015625,
+                    "x": 114.98137664794922,
+                    "y": -273.77978515625,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.0,
-                    "y": 16.0
+                    "x": -68.5999984741211,
+                    "y": 25.0
                 }
             },
             "shape": {
@@ -24376,16 +24126,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 13688077741230738189,
+                "parentUUID": 13200285090024433184,
                 "localPos": {
-                    "x": 0.196441650390625,
-                    "y": 0.0,
+                    "x": -2.0413875579833986,
+                    "y": -1.9935754537582398,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.20000000298023225,
-                    "y": 1.0
+                    "x": 0.699999988079071,
+                    "y": 0.5
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -24410,13 +24160,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -16.306995391845704,
-                    "y": -623.0357666015625,
+                    "x": -143.52587890625,
+                    "y": -174.10101318359376,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.0,
-                    "y": 16.0
+                    "x": -19.600000381469728,
+                    "y": 50.0
                 }
             },
             "shape": {
@@ -24488,13 +24238,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -116.30699157714844,
-                    "y": -623.0357666015625,
+                    "x": -45.5258903503418,
+                    "y": -174.10101318359376,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.0,
-                    "y": 16.0
+                    "x": -19.600000381469728,
+                    "y": 50.0
                 }
             },
             "shape": {
@@ -24566,13 +24316,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -36.30699157714844,
-                    "y": -623.0357666015625,
+                    "x": -123.92588806152344,
+                    "y": -174.10101318359376,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.0,
-                    "y": 16.0
+                    "x": -19.600000381469728,
+                    "y": 50.0
                 }
             },
             "shape": {
@@ -25850,6 +25600,19 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "pickUpSound",
+                        "path": "mana chime.wav",
+                        "volume": 0.007000000216066837,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -26064,6 +25827,19 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "pickUpSound",
+                        "path": "mana chime.wav",
+                        "volume": 0.007000000216066837,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -26289,7 +26065,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.007000000216066837,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -26455,7 +26231,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.007000000216066837,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -26621,7 +26397,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.007000000216066837,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -29645,13 +29421,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
+                    "x": 0.24020200967788697,
+                    "y": -0.08047807961702347,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 0.0,
+                    "y": 0.0
                 }
             },
             "audio": {
@@ -29659,7 +29435,7 @@
                     {
                         "name": "Level_1",
                         "path": "level bgm 1 re-mixed.wav",
-                        "volume": 0.5,
+                        "volume": 0.00800000037997961,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -29680,16 +29456,16 @@
                 ]
             },
             "parent": {
-                "parentUUID": 3280359092433270463,
+                "parentUUID": 13200285090024433184,
                 "localPos": {
-                    "x": 0.0,
-                    "y": 0.0,
+                    "x": 0.24020200967788697,
+                    "y": -0.08047807961702347,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -29728,7 +29504,7 @@
                     {
                         "name": "Lava_Ambience",
                         "path": "lava-volcano-wind-environment_loop.wav",
-                        "volume": 0.15000000596046449,
+                        "volume": 0.0020000000949949028,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
@@ -30239,7 +30015,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.007000000216066837,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -30361,7 +30137,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.007000000216066837,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -31100,7 +30876,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.007000000216066837,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -31361,7 +31137,7 @@
                     {
                         "name": "Switch",
                         "path": "switch_stepon.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.007000000216066837,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -31483,7 +31259,7 @@
                     {
                         "name": "slimeMove1",
                         "path": "slime 1.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.004999999888241291,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -31492,7 +31268,7 @@
                     {
                         "name": "slimeMove2",
                         "path": "slime 2.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.004999999888241291,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -31501,7 +31277,7 @@
                     {
                         "name": "slimeMove3",
                         "path": "slime 3.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.10000000149011612,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -31510,7 +31286,7 @@
                     {
                         "name": "slimeMove4",
                         "path": "slime 4.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.004999999888241291,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -31519,7 +31295,7 @@
                     {
                         "name": "slimeMove5",
                         "path": "slime 5.wav",
-                        "volume": 0.6000000238418579,
+                        "volume": 0.004999999888241291,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -31528,7 +31304,7 @@
                     {
                         "name": "slimeImpact",
                         "path": "slime impact.wav",
-                        "volume": 0.800000011920929,
+                        "volume": 0.125,
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
@@ -31622,44 +31398,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -31712,7 +31450,7 @@
                         ]
                     },
                     {
-                        "name": "slimeStunned",
+                        "name": "slimeWalk",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -31726,14 +31464,21 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -31765,6 +31510,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
