@@ -30550,7 +30550,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 139,
+                            "lookAtEntity": 135,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -31698,7 +31698,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 152,
+                            "lookAtEntity": 148,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
