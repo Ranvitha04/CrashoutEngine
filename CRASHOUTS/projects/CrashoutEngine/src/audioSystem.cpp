@@ -594,6 +594,19 @@ namespace CrashoutsEngine::Audio
         mChannelVolumeFades.clear();
         mGroupVolumeFades.clear();
         mBusVolumeFades.clear();
+        mParameterFades.clear();
+
+        // Cleanup Group DSPs
+        for (auto& groupPair : mGroupDSPs) {
+            FMOD::ChannelGroup* group = groupPair.first;
+            for (auto& dspPair : groupPair.second) {
+                if (dspPair.second) {
+                    group->removeDSP(dspPair.second);
+                    dspPair.second->release();
+                }
+            }
+        }
+        mGroupDSPs.clear();
     }
 
     /*!
