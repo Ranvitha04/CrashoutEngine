@@ -1056,22 +1056,31 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
     }
 
     // --- DRAW TO SCREEN ---
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Target the main monitor
-    glViewport(0, 0, displayWidth, displayHeight);
-
-    // 1. Fill the whole window with black to create the bars
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    // 1. Let RenderPP draw into its own FBO (Just like Editor Mode)
+    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    // 2. Set the perfectly centered viewport
-    glViewport(mVpX, mVpY, mVpW, mVpH);
     glDisable(GL_DEPTH_TEST);
-
-    // 3. Render the Post Processing image directly into that centered box!
     {
         FrameProfiler::Scoped ppScope(PerformanceSystem::Get().GetProfiler(), "PostProcessing");
         CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
     }
+
+    // 2. Blit (copy) the Post Processing FBO to the Default Screen Framebuffer
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Target Main Monitor
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID); // Read from PP FBO
+
+    // Fill the whole window with black to create the bars
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Blit using your centered coordinates!
+    glBlitFramebuffer(0, 0, gameTextureWidth, gameTextureHeight,
+        mVpX, mVpY, mVpX + mVpW, mVpY + mVpH,
+        GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+    // Reset bindings
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #endif
 
