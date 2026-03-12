@@ -1,104 +1,277 @@
-==================================================
-PROJECT SETUP AND BUILD GUIDE (v2.0)
-==================================================
+================================================================================
+                         PROJECT SETUP AND BUILD GUIDE 
+================================================================================
 
-Welcome! This guide provides instructions for managing multiple game 
-projects, building the engine, and utilizing the automated scaffolding 
-system.
+Welcome! This guide provides instructions for managing multiple game projects, 
+building the engine, and utilizing the automated scaffolding system.
 
-***
-==================================================
+
+--------------------------------------------------------------------------------
 PREREQUISITES
-==================================================
+--------------------------------------------------------------------------------
 
 Before you begin, ensure you have the following installed:
 
-* Visual Studio 2022: With the "Desktop development with C++" workload.
-* .NET SDK: Version 4.7.2 or higher (to compile C# game scripts).
-* CMake: Version 3.25 or higher.
-    - IMPORTANT: During installation, select "Add CMake to the system 
-      PATH". Verify by typing "cmake --version" in Command Prompt.
+  * Visual Studio 2022: With the "Desktop development with C++" workload.
+  * .NET SDK: Version 4.7.2 or higher (to compile C# game scripts).
+  * CMake: Version 3.25 or higher.
+    - IMPORTANT: During installation, select "Add CMake to the system PATH". 
+      Verify by typing "cmake --version" in Command Prompt.
 
-***
-==================================================
+
+--------------------------------------------------------------------------------
 STEP 1: CREATE A NEW GAME PROJECT
-==================================================
+--------------------------------------------------------------------------------
 
 You no longer need to copy files manually to start a new game project.
 
-1. Launch the Editor: Run 'run.bat' to open the CrashoutEditor.
-2. Project Manager: Open the "Project Manager" panel in the debug menu.
-3. Scaffold: Enter your project name (e.g., Ascent) and click 
-   "Create & Initialize Project".
-    * This generates the folder structure, CMakeLists.txt, main.cpp, 
-      and .csproj file automatically.
-    * It copies starter scripts from the 'projects/Template' folder.
+  1. Launch the Editor: Run 'run.bat' to open the CrashoutEditor.
+  2. Project Manager: Open the "Project Manager" panel in the debug menu.
+  3. Scaffold: Enter your project name (e.g., Ascent) and click 
+     "Create & Initialize Project".
+     * This generates the folder structure, CMakeLists.txt, main.cpp, 
+       and .csproj file automatically.
+     * It copies starter scripts from the 'projects/Template' folder.
 
-***
-==================================================
+
+--------------------------------------------------------------------------------
 STEP 2: BUILD & RUN DYNAMICALLY
-==================================================
+--------------------------------------------------------------------------------
 
 The 'run.bat' script dynamically detects which project you want to build 
 based on the target name passed to it.
 
-* To run a specific Game (e.g., Ascent):
+  * To run a specific Game (e.g., Ascent):
     - Open a Command Prompt in the root folder.
     - Type: .\run.bat Ascent
     - Result: This configures CMake for that game, builds C# scripts, 
       compiles the C++ EXE, and launches it.
 
-* To run the Engine Editor:
+  * To run the Engine Editor:
     - Simply double-click 'run.bat' or type: .\run.bat CrashoutEditor
 
-* To build in Release mode:
+  * To build in Release mode:
     - Type: .\run.bat {ProjectName} Release
 
-***
-==================================================
+
+--------------------------------------------------------------------------------
 STEP 3: CLEANING UP (AND ASSET SAFETY)
-==================================================
+--------------------------------------------------------------------------------
 
 Use 'clean.bat' to wipe build artifacts while protecting your progress.
 
-* Asset Sync: Before deletion, the script automatically copies any 
-  modified assets (like edited scenes) back to your source project folder 
-  from the build directory.
-* Deep Clean: It then removes the 'build' directory and all CMake caches 
-  to ensure a fresh state.
+  * Asset Sync: Before deletion, the script automatically copies any 
+    modified assets (like edited scenes) back to your source project folder 
+    from the build directory.
+  * Deep Clean: It then removes the 'build' directory and all CMake caches 
+    to ensure a fresh state.
 
-***
-==================================================
+
+--------------------------------------------------------------------------------
 STEP 4: C# SCRIPTING & HOT RELOAD
-==================================================
+--------------------------------------------------------------------------------
 
-1. Editing: Open the .csproj inside 'GameProjects/{Name}/scripts'.
-2. Shared Code: These projects reference 'CrashoutEngine/core-assets/scripts'. 
-   Do not edit files in the core folder unless you want the changes 
-   to affect every project.
-3. Building: Compiling via 'run.bat' or VS automatically copies the 
-   DLL to the engine's internal script folder.
-4. Hot Reload: If the engine is running, the MonoManager detects the 
-   new DLL and reloads your scripts live.
+  1. Editing: Open the .csproj inside 'GameProjects/{Name}/scripts'.
+  2. Shared Code: These projects reference 'CrashoutEngine/core-assets/scripts'. 
+     Do not edit files in the core folder unless you want the changes 
+     to affect every project.
+  3. Building: Compiling via 'run.bat' or VS automatically copies the 
+     DLL to the engine's internal script folder.
+  4. Hot Reload: If the engine is running, the MonoManager detects the 
+     new DLL and reloads your scripts live.
 
-***
-==================================================
+
+--------------------------------------------------------------------------------
 HOW TO DEBUG IN VISUAL STUDIO
-==================================================
+--------------------------------------------------------------------------------
 
-1. Run '.\run.bat {YourProjectName}' once to generate the build folder.
-2. Open 'build/CrashoutEngine.sln'.
-3. Set Startup Project: In Solution Explorer, right-click your specific 
-   game project (e.g., Ascent) and select "Set as StartUp Project".
-4. Debug: Ensure the config is "Debug" and platform is "x64", then 
-   press F5 to start.
+  1. Run '.\run.bat {YourProjectName}' once to generate the build folder.
+  2. Open 'build/CrashoutEngine.sln'.
+  3. Set Startup Project: In Solution Explorer, right-click your specific 
+     game project (e.g., Ascent) and select "Set as StartUp Project".
+  4. Debug: Ensure the config is "Debug" and platform is "x64", then 
+     press F5 to start.
 
-***
-==================================================
+
+--------------------------------------------------------------------------------
 DISABLING IMGUI
-==================================================
+--------------------------------------------------------------------------------
 
 To test the game without the Editor UI:
-1. Open the TOP-LEVEL CMakeLists.txt.
-2. Find the "USE_IMGUI_EDITOR" flag and set it to 0.
+  1. Open the TOP-LEVEL CMakeLists.txt.
+  2. Find the "USE_IMGUI_EDITOR" flag and set it to 0.
 
+
+--------------------------------------------------------------------------------
+MULTIPLE GAME PROJECTS SETUP
+--------------------------------------------------------------------------------
+
+To test the game project swapping feature:
+  1. Always make sure to perform ".\run.bat" after clean.bat.
+  2. In editor, head to the project manager tab. If hidden, expose it by
+     hovering "Windows" on top-left of the editor, and checking project 
+     manager.
+  3. Creating and selecting new game project:
+     - Creating new project: Enter project name and press "Create &
+       Initialize Project".
+     - Selecting new project: Choose from list of project names and 
+       wait for them to load, then press the blue "Recompile C#" button
+       at the top of the editor.
+
+
+================================================================================
+                       CRASHOUTS SERVER VM - HOW TO ACCESS
+================================================================================
+
+Head to:
+https://portal.azure.com/#@SITsingaporetechedu.onmicrosoft.com/resource/subscriptions/ce1e71c8-fbb5-4668-8d43-4a91a724e061/resourceGroups/CrashoutsServer_group/providers/Microsoft.Compute/virtualMachines/CrashoutsServer/overview 
+
+The server is hosted on Azure and you will only be able to connect with 
+bastion using the id_ed25519.txt file in the root folder.
+
+Connection Steps:
+  1. Go to Connect -> Bastion 
+  2. Protocol: SSH 
+  3. Port: 22 
+  4. SSH Authentication type: SSH private key from local file 
+  5. Username: gameadmin 
+  6. Select the id_ed25519.txt file in the root folder 
+  7. Connect (if you have a pop-up blocker, turn it off as it will prevent 
+     you from accessing it).
+
+You should now be able to connect to the Ubuntu 24.04 VM.
+
+In the Ubuntu VM, type:
+  cd leaderboard_api
+  nano main.py
+
+This will get you to the main.py file.
+
+
+================================================================================
+                         LEADERBOARD API DOCUMENTATION
+================================================================================
+
+Overview:
+This API allows the game to submit player scores and retrieve leaderboard 
+rankings. The API is built using FastAPI and stores data in a PostgreSQL 
+database.
+
+Base URL:
+http://SERVER_IP:8000
+
+Authentication:
+All protected endpoints require an API Key in the request header:
+  x-api-key: YOUR_API_KEY
+
+
+--------------------------------------------------------------------------------
+DATA MODEL
+--------------------------------------------------------------------------------
+
+ScoreSubmission Fields:
+  name  - string  - player name
+  score - integer - player score
+  time  - integer - completion time
+
+Example JSON request body:
+{
+  "name": "Player1",
+  "score": 45000,
+  "time": 45000
+}
+
+Note: The API requires score and time to be equal for validation.
+
+
+--------------------------------------------------------------------------------
+ENDPOINTS
+--------------------------------------------------------------------------------
+
+1. Health Check
+   Endpoint: GET /health
+   Description: Checks if the API server is running. No auth required.
+
+   Example response:
+   {
+     "ok": true
+   }
+
+2. Get Leaderboard
+   Endpoint: GET /leaderboard?limit=10
+   Required header: x-api-key: YOUR_API_KEY
+   Description: Returns leaderboard entries sorted by fastest time.
+
+   Example response:
+   {
+     "entries": [
+       {
+         "rank": 1,
+         "name": "Alice",
+         "score": 21000,
+         "time": 21000
+       }
+     ]
+   }
+
+3. Submit Score
+   Endpoint: POST /submitScore
+   Required header: x-api-key: YOUR_API_KEY
+
+   Example request body:
+   {
+     "name": "Alice",
+     "score": 25000,
+     "time": 25000
+   }
+
+   Validation rules:
+   - Score must be between 0 and 1000000.
+   - Time must be between 20000 and 1000000.
+   - Score must equal time.
+
+   Successful response:
+   {
+     "status": "ok"
+   }
+
+
+--------------------------------------------------------------------------------
+DATABASE SCHEMA
+--------------------------------------------------------------------------------
+
+Table: leaderboard_scores
+
+SQL Example:
+CREATE TABLE leaderboard_scores (
+  id SERIAL PRIMARY KEY,
+  player_name TEXT,
+  score INTEGER,
+  time INTEGER,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+--------------------------------------------------------------------------------
+SERVICE MANAGEMENT
+--------------------------------------------------------------------------------
+
+The API runs as a systemd service called: leaderboard-api.service
+This ensures the API starts automatically and runs in the background.
+
+Useful Commands:
+
+  Start the service (By default it is always running)
+    sudo systemctl start leaderboard-api
+
+  Stop the service
+    sudo systemctl stop leaderboard-api
+
+  Restart the service
+    sudo systemctl restart leaderboard-api
+
+  Check service status
+    sudo systemctl status leaderboard-api
+
+  View logs
+    journalctl -u leaderboard-api -f
