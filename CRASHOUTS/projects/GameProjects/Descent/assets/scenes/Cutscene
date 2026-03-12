@@ -1531,7 +1531,7 @@
                     {
                         "name": "Ambiance",
                         "path": "nightshift_bgm_loop_70bpm.wav",
-                        "volume": 1.0,
+                        "volume": 0.0,
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
@@ -1544,9 +1544,9 @@
                     {
                         "className": "SceneMusic",
                         "fields": {
-                            "layerName": "Music",
+                            "layerName": "Ambiance",
                             "fadeTime": 2.0,
-                            "stopLayer": false
+                            "stopLayer": true
                         }
                     }
                 ]
@@ -1664,7 +1664,7 @@
                         "className": "SceneMusic",
                         "fields": {
                             "layerName": "Music",
-                            "fadeTime": 2.0,
+                            "fadeTime": 0.10000000149011612,
                             "stopLayer": false
                         }
                     }
@@ -1744,5 +1744,10 @@
             "x": 2000.0,
             "y": 2000.0
         }
+    },
+    "VisualScripting": {
+        "nextNodeId": 1,
+        "nodes": [],
+        "links": []
     }
 }

@@ -30,6 +30,7 @@ namespace CrashoutsEngine {
 		static float s_durationIn;
 		static float s_holdDuration;
 		static bool s_isHolding;
+		static float s_baseMasterVolume;
 	};
 
 }

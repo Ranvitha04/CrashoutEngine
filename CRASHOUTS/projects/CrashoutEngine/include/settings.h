@@ -57,9 +57,15 @@ public:
     static void SaveToFile(const char* path);
 
     /*!
-    @brief Save current settings to the default settings file.
+    @brief Saves current settings to the default settings file.
     */
     static void Save();
+
+    static float GetMusicVolume() { return MusicVolume; }
+    static float GetSFXVolume() { return SFXVolume; }
+
+    static void SetMusicVolume(float vol) { MusicVolume = vol; }
+    static void SetSFXVolume(float vol) { SFXVolume = vol; }
 
     // --- EDITOR SETTINGS ---
     /*!

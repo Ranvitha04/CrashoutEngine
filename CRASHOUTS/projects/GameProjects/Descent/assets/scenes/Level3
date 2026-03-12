@@ -16509,32 +16509,32 @@
                     {
                         "x": -8,
                         "y": -20,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -8,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -7,
                         "y": -20,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -7,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -6,
                         "y": -20,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -6,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -5,
@@ -16544,7 +16544,7 @@
                     {
                         "x": -5,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -4,
@@ -16554,12 +16554,12 @@
                     {
                         "x": -4,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -4,
                         "y": 6,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -3,
@@ -16569,12 +16569,12 @@
                     {
                         "x": -3,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -3,
                         "y": 6,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -2,
@@ -16584,12 +16584,12 @@
                     {
                         "x": -2,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -2,
                         "y": 6,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -1,
@@ -16598,13 +16598,18 @@
                     },
                     {
                         "x": -1,
+                        "y": -9,
+                        "asset": ""
+                    },
+                    {
+                        "x": -1,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": -1,
                         "y": 6,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 0,
@@ -16614,12 +16619,12 @@
                     {
                         "x": 0,
                         "y": -9,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 0,
                         "y": 5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 1,
@@ -16634,12 +16639,12 @@
                     {
                         "x": 1,
                         "y": -9,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 1,
                         "y": 5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 2,
@@ -16669,7 +16674,7 @@
                     {
                         "x": 4,
                         "y": -22,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 4,
@@ -16684,7 +16689,7 @@
                     {
                         "x": 4,
                         "y": 7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 5,
@@ -16694,7 +16699,7 @@
                     {
                         "x": 5,
                         "y": -23,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 5,
@@ -16709,7 +16714,7 @@
                     {
                         "x": 5,
                         "y": 7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 6,
@@ -16719,7 +16724,7 @@
                     {
                         "x": 6,
                         "y": -23,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 6,
@@ -16734,7 +16739,7 @@
                     {
                         "x": 6,
                         "y": 7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 7,
@@ -16744,7 +16749,7 @@
                     {
                         "x": 7,
                         "y": -23,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 7,
@@ -16759,7 +16764,7 @@
                     {
                         "x": 7,
                         "y": 7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 8,
@@ -16769,7 +16774,7 @@
                     {
                         "x": 8,
                         "y": -20,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 8,
@@ -16789,7 +16794,7 @@
                     {
                         "x": 8,
                         "y": 7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 9,
@@ -16799,7 +16804,7 @@
                     {
                         "x": 9,
                         "y": -20,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 9,
@@ -16819,7 +16824,7 @@
                     {
                         "x": 9,
                         "y": 4,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 10,
@@ -16829,7 +16834,7 @@
                     {
                         "x": 10,
                         "y": -20,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 10,
@@ -16849,7 +16854,7 @@
                     {
                         "x": 10,
                         "y": 4,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 11,
@@ -16884,7 +16889,7 @@
                     {
                         "x": 12,
                         "y": -9,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 12,
@@ -16894,7 +16899,7 @@
                     {
                         "x": 12,
                         "y": 1,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 13,
@@ -16914,7 +16919,7 @@
                     {
                         "x": 13,
                         "y": -9,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 13,
@@ -16924,7 +16929,7 @@
                     {
                         "x": 13,
                         "y": 1,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 14,
@@ -16944,7 +16949,7 @@
                     {
                         "x": 14,
                         "y": -9,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 14,
@@ -16954,7 +16959,7 @@
                     {
                         "x": 14,
                         "y": 0,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 15,
@@ -16974,7 +16979,7 @@
                     {
                         "x": 15,
                         "y": -9,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 15,
@@ -16984,7 +16989,7 @@
                     {
                         "x": 15,
                         "y": 0,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 16,
@@ -17004,7 +17009,7 @@
                     {
                         "x": 16,
                         "y": 0,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 17,
@@ -17024,7 +17029,7 @@
                     {
                         "x": 17,
                         "y": 2,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 18,
@@ -17044,7 +17049,7 @@
                     {
                         "x": 18,
                         "y": 5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 19,
@@ -17059,7 +17064,7 @@
                     {
                         "x": 19,
                         "y": 5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 20,
@@ -17069,7 +17074,7 @@
                     {
                         "x": 20,
                         "y": 7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 21,
@@ -17079,7 +17084,7 @@
                     {
                         "x": 21,
                         "y": -8,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 22,
@@ -17089,7 +17094,7 @@
                     {
                         "x": 22,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 23,
@@ -17104,7 +17109,7 @@
                     {
                         "x": 23,
                         "y": -6,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 24,
@@ -17159,7 +17164,7 @@
                     {
                         "x": 28,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 28,
@@ -17174,32 +17179,32 @@
                     {
                         "x": 29,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 30,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 31,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 31,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 32,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 32,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 33,
@@ -17209,12 +17214,12 @@
                     {
                         "x": 33,
                         "y": -17,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 33,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 34,
@@ -17224,12 +17229,12 @@
                     {
                         "x": 34,
                         "y": -18,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 34,
                         "y": -7,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 35,
@@ -17264,7 +17269,7 @@
                     {
                         "x": 39,
                         "y": 4,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 40,
@@ -17274,52 +17279,52 @@
                     {
                         "x": 40,
                         "y": -19,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 40,
                         "y": 4,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 41,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 41,
                         "y": 4,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 42,
                         "y": -16,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 42,
                         "y": 4,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 43,
                         "y": 5,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 47,
                         "y": -19,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 48,
                         "y": -19,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     },
                     {
                         "x": 49,
                         "y": -19,
-                        "asset": "tilemaps/Lava_Platform"
+                        "asset": ""
                     }
                 ]
             },
@@ -21376,43 +21381,6 @@
             }
         },
         {
-            "active": true,
-            "name": "Post-Process Volume",
-            "uuid": 2176618565825410799,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "postprocessing": {
-                "brightness": -0.019999999552965165,
-                "contrast": -0.07999999821186066,
-                "saturation": 0.10000000149011612,
-                "ambient": 0.15000000596046449,
-                "shadowsEnabled": true,
-                "shadowRays": 128,
-                "bloomEnabled": true,
-                "bloomThreshold": 1.0,
-                "bloomIntensity": 0.800000011920929,
-                "bloomIterations": 6,
-                "active": true
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
             "active": false,
             "name": "Pause",
             "uuid": 3899499466856881947,
@@ -24864,6 +24832,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -24916,7 +24915,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -24930,14 +24929,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -24990,37 +24989,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -28369,7 +28337,7 @@
                 "saturation": 0.0,
                 "ambient": 0.6000000238418579,
                 "shadowsEnabled": true,
-                "shadowRays": 512,
+                "shadowRays": 255,
                 "bloomEnabled": false,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,
@@ -31878,44 +31846,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -31968,7 +31898,7 @@
                         ]
                     },
                     {
-                        "name": "slimeStunned",
+                        "name": "slimeWalk",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -31982,14 +31912,21 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32021,6 +31958,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32479,6 +32447,44 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -32531,7 +32537,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -32545,21 +32551,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32591,37 +32590,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
