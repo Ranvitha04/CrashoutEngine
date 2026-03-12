@@ -1680,9 +1680,152 @@ namespace UI {
 
 		ImGui::End();
 	}
-	void UI::RenderProjectManager(UIState& ui)
-	{
-		(void)ui;
+	/*!
+	 @brief Renders a panel to create new game projects and manage the current project root.
+	*/
+	void RenderProjectManager(UIState& ui) {
+		ScopedWindow w("Project Manager", LockFlags(ui.lockLayout));
+		namespace fs = std::filesystem;
+
+		ImGui::Text("Current Project Root:");
+		ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "%s", GetGameRoot().c_str());
+
+		ImGui::Separator();
+
+		// =========================================================================
+		// HELPER LAMBDA: Hot-Swaps the engine to a new project & loads Start Scene
+		// =========================================================================
+		auto SwitchProjectContext = [](const std::string& projName, const std::string& projPath) {
+			Audio::AudioSystem& audio = Audio::AudioSystem::instance();
+			audio.stopAll(true);
+			audio.unloadAllBanks();
+			audio.unloadAllRawSounds();
+
+			CrashoutsEngine::ScriptSystem::DestroyAll();
+			CrashoutsEngine::ECS::getInstance()->Reset();
+			CrashoutsEngine::CollisionEventManager::GetInstance().Clear();
+
+			// 1. Update Root Pointer
+			SetGameRoot(projPath);
+
+			// 2. Refresh Mono Scripts for the new project
+			fs::path csprojPath = fs::path(projPath) / "scripts" / (projName + ".csproj");
+
+			std::string config = "Release";
+#ifdef _DEBUG
+			config = "Debug";
+#endif
+
+			std::string buildCommand = "dotnet build \"" + csprojPath.generic_string() + "\" -c " + config;
+
+			std::cout << "[Editor] Compiling scripts for " << projName << " in " << config << " mode...\n";
+			int buildResult = std::system(buildCommand.c_str());
+
+			if (buildResult == 0) {
+				std::cout << "[Editor] Script compilation successful!\n";
+			}
+			else {
+				std::cerr << "[Editor] Script compilation failed. Check your C# code!\n";
+			}
+
+			// 3. Refresh Mono Scripts
+			MonoManager::ReloadAssembly();
+			CrashoutsEngine::ScriptSystem::InitializeAll(MonoManager::GetDomain(), MonoManager::GetAssembly());
+
+			// 4. Refresh Asset Manager & Manifest
+			auto& am = CrashoutsEngine::Assets::AssetManager::GetInstance();
+			am.Shutdown(); // Soft Reset
+
+			std::string newMPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+			CrashoutsEngine::Assets::GenerateAssetManifest(newMPath);
+			am.LoadManifestAssets(newMPath);
+
+			// Reload Prefabs
+			std::string newPrefabPath = GetGameRoot() + "/assets/prefabs";
+			CrashoutsEngine::ReloadPrefabsFromDisk(newPrefabPath);
+
+			// 5. LOAD THE STARTING SCENE DYNAMICALLY
+			// This safely falls back to "StartScene" if no scene is found
+			g_PendingSceneName = GetStartingSceneName();
+			g_IsSceneLoadPending = true;
+
+			LOGS(Core, "Context Switched to: " + projName + " | Booting into: " + g_PendingSceneName);
+			};
+		// =========================================================================
+
+		ImGui::SeparatorText("Create New Project");
+
+		static char newProjectName[64] = "";
+		ImGui::InputTextWithHint("##ProjName", "Project Name", newProjectName, IM_ARRAYSIZE(newProjectName));
+
+		if (ImGui::Button("Create & Initialize Project")) {
+			if (newProjectName[0] != '\0') {
+				std::string gameName = newProjectName;
+				fs::path projectPath = fs::path("..") / ".." / "projects" / "GameProjects" / gameName;
+				fs::path templatePath = fs::path("..") / ".." / "projects" / "Template";
+
+				try {
+					// 1. Create Core Structure
+					fs::create_directories(projectPath / "assets/images");
+					fs::create_directories(projectPath / "assets/scenes");
+					fs::create_directories(projectPath / "assets/json");
+					fs::create_directories(projectPath / "src");
+					fs::create_directories(projectPath / "include");
+					fs::create_directories(projectPath / "scripts");
+
+					std::ofstream dummyScene(projectPath / "assets/scenes/StartScene.json"); // Added .json for safety
+					if (dummyScene.is_open()) {
+						dummyScene << "{\n  \"Entities\": []\n}";
+						dummyScene.close();
+					}
+
+					// 2. Generate Scaffolding from Raw Strings
+					ScaffoldProjectFile(projectPath / "CMakeLists.txt", CMAKELISTS_TEMPLATE, gameName);
+					ScaffoldProjectFile(projectPath / "src/main.cpp", MAIN_CPP_TEMPLATE, gameName);
+					ScaffoldProjectFile(projectPath / ("scripts/" + gameName + ".csproj"), CSPROJ_TEMPLATE, gameName);
+
+					// 3. Copy Starter Scripts
+					if (fs::exists(templatePath / "scripts")) {
+						fs::copy(templatePath / "scripts", projectPath / "scripts",
+							fs::copy_options::recursive | fs::copy_options::overwrite_existing);
+					}
+
+					LOGS(Core, "Project " + gameName + " is ready!");
+
+					// --- AUTO-LOAD THE NEW PROJECT ---
+					// This will instantly switch the editor into the new project and load the StartScene!
+					SwitchProjectContext(gameName, projectPath.generic_string());
+
+					newProjectName[0] = '\0';
+				}
+				catch (const std::exception& e) {
+					LOGE(Core, std::string("Scaffolding failed: ") + e.what());
+				}
+			}
+		}
+
+		ImGui::SeparatorText("Project Quick Switch");
+
+		fs::path gamesDir = fs::path("..") / ".." / "projects" / "GameProjects";
+		if (fs::exists(gamesDir)) {
+			for (auto const& entry : fs::directory_iterator(gamesDir)) {
+				if (entry.is_directory()) {
+					std::string name = entry.path().filename().string();
+					std::string currentRoot = GetGameRoot();
+					bool isActive = (currentRoot.find(name) != std::string::npos);
+
+					if (ImGui::Selectable(name.c_str(), isActive)) {
+						if (isActive) {
+							LOGI(Core, "Project '" + name + "' is already active.");
+						}
+						else {
+							// --- USE THE HELPER TO QUICK SWITCH ---
+							SwitchProjectContext(name, entry.path().generic_string());
+						}
+					}
+				}
+			}
+		}
 	}
 	void UI::RenderVisualScriptingPanel(UIState& ui)
 	{
