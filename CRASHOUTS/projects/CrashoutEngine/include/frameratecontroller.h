@@ -59,7 +59,7 @@ private:
 	double mDT{};
 	double mAccumulatedTime{};
 	int mCurrentSteps{};
-	int mMaxPhysicsSteps{ 5 }; // Default to 5 steps max
+	int mMaxPhysicsSteps{ 4 }; // Default to 4 steps max
 	//Exponential moving average of FPS
 	///EMA calculate smoothed fps to avoid jumping fps values
 	double mFPS{};
