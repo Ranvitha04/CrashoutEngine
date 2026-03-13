@@ -34,11 +34,19 @@ public class AudioManager
         return Instance;
     }
 
+    public static void SyncVolumesFromEngine()
+    {
+        playerMusVol = InternalCalls.Audio_GetMusicVolume();
+        playerSFXVol = InternalCalls.Audio_GetSFXVolume();
+    }
+
     public static void ResetInstance()
     {
         Instance._activeLayers.Clear();
         Instance.sounds.Clear();
-        // playerMusVol/playerSFXVol can stay as they are global preferences
+        
+        // Re-sync preferences with C++ (important if engine loaded new settings during scene load)
+        SyncVolumesFromEngine();
     }
 
     // Converted version of your "Sound[]" array

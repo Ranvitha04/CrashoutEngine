@@ -13,6 +13,7 @@ All content  2025 Digipen Institute of Technology Singapore. All rights reserved
 
 #include "rendering.h"
 #include "TextRenderer.h"
+#include "inputmanager.h"
 #include "shapes.h"
 #include "glapp.h"
 #include <CEVec3.h>
@@ -29,6 +30,9 @@ All content  2025 Digipen Institute of Technology Singapore. All rights reserved
 
 #define FONT_SCALE 0.05f
 #define INV_FONT_SCALE 20.f
+
+extern int gameTextureWidth;
+extern int gameTextureHeight;
 
 /*!
 @brief Construct a new TextRenderer
@@ -115,11 +119,10 @@ void TextRenderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLf
 
     }
     else {
-        // SCREEN SPACE: Use the static UI camera
-        //Component::Rendering& renderer = Component::Rendering::Get();
+        // SCREEN SPACE: Use the logical FBO dimensions
         projection = glm::ortho(
-            0.0f, static_cast<float>(GLApp::width),
-            0.0f, static_cast<float>(GLApp::height),
+            0.0f, (float)gameTextureWidth,
+            0.0f, (float)gameTextureHeight,
             -1.0f, 1.0f
         );
 

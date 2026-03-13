@@ -13795,6 +13795,7 @@
                     {
                         "className": "VolumeSlider",
                         "fields": {
+                            "isMusicVolume": false,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
                             "clickHeight": 3.0
@@ -13963,6 +13964,7 @@
                     {
                         "className": "VolumeSlider",
                         "fields": {
+                            "isMusicVolume": true,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
                             "clickHeight": 3.0

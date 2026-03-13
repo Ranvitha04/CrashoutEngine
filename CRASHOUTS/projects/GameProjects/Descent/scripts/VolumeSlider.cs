@@ -12,14 +12,11 @@ namespace CrashoutsEngine
     [ScriptBehaviour]
     public class VolumeSlider : ScriptBase
     {
-        private bool _isMusic = true;
+        [SerializeField] private bool isMusicVolume = true;
         [SerializeField] private float smoothingSpeed = 15.0f;
 
-        // IMPORTANT: In a 100-height UI system, 200.0f is VERY wide (wider than the screen).
-        // Try setting this to something like 30.0f or 40.0f in the Inspector.
         [SerializeField] private float clickWidth = 30.0f;
         [SerializeField] private float clickHeight = 10.0f;
-        //[SerializeField] private bool drawHitbox = true;
 
         private bool _isDragging = false;
         private bool wasDraggingLastFrame = false;
@@ -32,19 +29,20 @@ namespace CrashoutsEngine
             _tf = Entity.GetComponent<TransformComponent>();
             if (_tf == null) return;
 
-            string entityName = InternalCalls.GetName(Entity.ID);
-            _isMusic = !entityName.Contains("SFX");
-
-            _currentT = _isMusic ? InternalCalls.Audio_GetMusicVolume() : InternalCalls.Audio_GetSFXVolume();
+            // Read from AudioManager preferences instead of live volume to avoid pause-dip values (30%/40%)
+            _currentT = isMusicVolume ? AudioManager.playerMusVol : AudioManager.playerSFXVol;
             _targetT = _currentT;
-            _tf.Size = new CEVec2(_currentT, 1.0f);
+            
+            // Sync local scale immediately
+            CEVec2 initialScale = new CEVec2(_currentT, 1.0f);
+            InternalCalls.TransformSetLocalScale(Entity.ID, ref initialScale);
         }
 
         public override void Update()
         {
             if (_tf == null) return;
 
-            // 1. Mouse & UI Space Calculation (Matches SceneUtils.cpp)
+            // 1. Mouse & UI Space Calculation
             InternalCalls.GetGameMousePos(out CEVec2 rawMouse);
             InternalCalls.GetGameWindowSize(out CEVec2 gameSize);
 
@@ -66,8 +64,7 @@ namespace CrashoutsEngine
             bool isHovering = (mouseUI.x >= hitMinX && mouseUI.x <= hitMaxX &&
                                mouseUI.y >= hitMinY && mouseUI.y <= hitMaxY);
 
-            // 3. Robust Dragging Logic
-            // Start dragging if clicked inside; stop if mouse released anywhere
+            // 3. Dragging Logic
             if (Input.IsMouseButtonDown(0) && isHovering) _isDragging = true;
             if (!Input.IsMouseButtonDown(0)) _isDragging = false;
 
@@ -77,45 +74,25 @@ namespace CrashoutsEngine
                 _targetT = Math.Max(0.0f, Math.Min(offset / clickWidth, 1.0f));
             }
 
-            // 4. Volume Smoothing
+            // 4. Volume Smoothing & Application
             float dt = (float)InternalCalls.TimeGetDT();
             if (Math.Abs(_currentT - _targetT) > 0.001f)
             {
                 _currentT = _currentT + (_targetT - _currentT) * Math.Min(dt * smoothingSpeed, 1.0f);
-                if (_isMusic) AudioManager.Instance.MusicVolume(_currentT);
+                if (isMusicVolume) AudioManager.Instance.MusicVolume(_currentT);
                 else AudioManager.Instance.SFXVolume(_currentT);
             }
 
-            // 5. Trigger a settings save when the user stops dragging
+            // 5. Settings Save
             if (!_isDragging && wasDraggingLastFrame)
             {
                 InternalCalls.Settings_Save();
             }
             wasDraggingLastFrame = _isDragging;
 
-            // 6. Apply local scale instead of absolute size
-            // This allows the hierarchy to calculate the visual width correctly
+            // 6. Update Visual Scale
             CEVec2 newLocalScale = new CEVec2(_currentT, 1.0f);
             InternalCalls.TransformSetLocalScale(Entity.ID, ref newLocalScale);
-
-            // Debugging
-            // if (drawHitbox)
-            // {
-            //     CEVec3 color = isHovering ? new CEVec3(0, 1, 0) : new CEVec3(1, 0, 0);
-            //     DrawDebugRect(hitMinX, hitMaxX, hitMinY, hitMaxY, worldPos.z, color);
-            // }
         }
-        // private void DrawDebugRect(float minX, float maxX, float minY, float maxY, float z, CEVec3 color)
-        // {
-        //     CEVec3 tl = new CEVec3(minX, maxY, z);
-        //     CEVec3 tr = new CEVec3(maxX, maxY, z);
-        //     CEVec3 bl = new CEVec3(minX, minY, z);
-        //     CEVec3 br = new CEVec3(maxX, minY, z);
-        //     float thick = 2.0f;
-        //     Debug.DrawLine(ref tl, ref tr, thick, ref color);
-        //     Debug.DrawLine(ref tr, ref br, thick, ref color);
-        //     Debug.DrawLine(ref br, ref bl, thick, ref color);
-        //     Debug.DrawLine(ref bl, ref tl, thick, ref color);
-        // }
     }
 }

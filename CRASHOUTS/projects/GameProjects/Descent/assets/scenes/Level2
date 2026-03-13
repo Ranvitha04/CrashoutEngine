@@ -22317,6 +22317,7 @@
                     {
                         "className": "VolumeSlider",
                         "fields": {
+                            "isMusicVolume": false,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
                             "clickHeight": 3.0
@@ -22407,6 +22408,7 @@
                     {
                         "className": "VolumeSlider",
                         "fields": {
+                            "isMusicVolume": true,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
                             "clickHeight": 3.0
@@ -30330,7 +30332,7 @@
                     {
                         "className": "DoorScript",
                         "fields": {
-                            "nextSceneName": "descentmenu",
+                            "nextSceneName": "Level3",
                             "transitionDelay": 2.0,
                             "doorParticleName": "Door Particles"
                         }
@@ -31263,7 +31265,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1367.721923828125,
+                    "x": 1369.771240234375,
                     "y": -492.81805419921877,
                     "z": 0.0
                 },
@@ -31309,7 +31311,7 @@
             "parent": {
                 "parentUUID": 16727213168522659396,
                 "localPos": {
-                    "x": -0.4000000059604645,
+                    "x": -0.38975343108177187,
                     "y": 0.0,
                     "z": 5.0
                 },
@@ -31624,7 +31626,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 159,
+                            "lookAtEntity": 156,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -33186,7 +33188,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 169,
+                            "lookAtEntity": 166,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
