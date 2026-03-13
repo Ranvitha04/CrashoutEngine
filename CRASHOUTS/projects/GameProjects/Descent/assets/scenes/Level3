@@ -34661,34 +34661,10 @@
                     "y": 44.5
                 }
             },
-            "light": {
-                "active": true,
-                "intensity": 0.550000011920929,
-                "radius": 31.0,
-                "affectBloom": true,
-                "useTransform": true,
-                "renderSelf": true,
-                "renderBehind": true,
-                "ignoreParentOccluders": true,
-                "ignoreOccluders": true,
-                "shadowTechnique": 0,
-                "raymarchSteps": 24,
-                "raymarchThreshold": 0.5,
-                "color": {
-                    "x": 0.8823529481887817,
-                    "y": 0.08650518953800202,
-                    "z": 0.08650518953800202
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
             "tilemap": {
                 "tileSize": 32,
                 "excludeOuterBoundary": false,
-                "lightPerTile": true,
+                "lightPerTile": false,
                 "emissiveBoost": 0.0,
                 "activeAsset": "tilemaps/Spike",
                 "tileAssetNames": [
@@ -35121,26 +35097,6 @@
                         "asset": "tilemaps/Spike"
                     }
                 ]
-            },
-            "parent": {
-                "parentUUID": 17142618762681968282,
-                "localPos": {
-                    "x": 0.24071429669857026,
-                    "y": -0.12200000137090683,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1.9559999704360963,
-                    "y": 0.4449999928474426
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
             },
             "layer": {
                 "layerName": "Default",
