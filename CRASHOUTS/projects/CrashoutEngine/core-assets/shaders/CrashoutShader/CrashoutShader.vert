@@ -1,3 +1,12 @@
+/*!
+@file       CrashoutShader.vert
+@author     Renfred Lee
+@date       13/03/2026
+@brief      Sprite/mesh vertex shader supporting both instanced and non-instanced rendering.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #version 460 core
 
 // Non-instanced vertex attributes
@@ -21,6 +30,10 @@ uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
 uniform vec2 u_uvSize; // Defaults to vec2(1) if unset
+
+/*!
+@brief Vertex shader entry point.
+*/
 
 void main() {
     bool useInstancing = (aInstanceScale > 0.0) || (aInstanceRot != 0.0) || (length(aInstancePos) > 0.0);

@@ -1,3 +1,12 @@
+/*!
+@file       CrashoutShader.frag
+@author     Renfred Lee
+@date       13/03/2026
+@brief      Sprite/mesh fragment shader with optional texturing and global tinting.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #version 460 core
 
 in vec4 color;    // CHANGED: vec3 -> vec4
@@ -7,6 +16,10 @@ out vec4 fragColor;
 uniform sampler2D uTex2d;
 uniform int  u_useTexture; // 0: color only, 1: sample texture
 uniform vec4 u_tint;       // CHANGED: vec3 -> vec4
+
+/*!
+@brief Fragment shader entry point.
+*/
 
 void main() {
     vec4 result;

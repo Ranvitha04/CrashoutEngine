@@ -1,3 +1,12 @@
+/*!
+@file       BrightShader.frag
+@author     Renfred (RTIS)
+@date       13/03/2026
+@brief      Extracts bright fragments from the scene for bloom processing.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #version 460 core
 
 out vec4 fragColor;
@@ -6,6 +15,10 @@ in vec2 texCoord;
 
 uniform sampler2D uScene;
 uniform float uThreshold;
+
+/*!
+@brief Fragment shader entry point.
+*/
 
 void main() {
     vec3 color = texture(uScene, texCoord).rgb;

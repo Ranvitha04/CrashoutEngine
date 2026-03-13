@@ -1,3 +1,12 @@
+/*!
+@file       CrashoutShader_Instancing.frag
+@author     Renfred Lee
+@date       13/03/2026
+@brief      Instanced fragment shader variant with optional texturing and tinting.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #version 330 core
 
 in vec4 color;      // CHANGED: vec3 -> vec4
@@ -9,6 +18,10 @@ uniform int u_modulate;
 uniform vec4 u_tint;      // CHANGED: vec3 -> vec4 (to allow fading via uniform)
 
 out vec4 FragColor;
+
+/*!
+@brief Fragment shader entry point.
+*/
 
 void main() {
     vec4 result;

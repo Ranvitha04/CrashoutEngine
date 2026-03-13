@@ -1,3 +1,13 @@
+/*!
+@file       BloomCompositeShader.frag
+@author     Ranvitha
+@author     Renfred (RTIS)
+@date       13/03/2026
+@brief      Combines scene, bloom, and lighting buffers with optional post-processing.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #version 460 core
 
 out vec4 fragColor;
@@ -18,6 +28,10 @@ uniform int uActive;          // enable post-processing
 uniform float uBrightness;
 uniform float uContrast;
 uniform float uSaturation;
+
+/*!
+@brief Fragment shader entry point.
+*/
 
 void main()
 {

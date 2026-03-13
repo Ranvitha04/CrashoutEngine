@@ -1,3 +1,12 @@
+/*!
+@file       PPShader.frag
+@author     Renfred Lee
+@date       13/03/2026
+@brief      Post-processing fragment shader providing optional color grading (brightness/contrast/saturation).
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #version 460 core
 
 out vec4 fragColor;
@@ -11,6 +20,10 @@ uniform float u_brightness = 0.0;   // 0.0 = no change
 uniform float u_contrast = 0.0;     // 0.0 = no change
 uniform float u_saturation = 0.0;   // 0.0 = no change
 uniform bool  u_active = false;   
+
+/*!
+@brief Fragment shader entry point.
+*/
 
 void main() {
     // Get the pixel color from game scene

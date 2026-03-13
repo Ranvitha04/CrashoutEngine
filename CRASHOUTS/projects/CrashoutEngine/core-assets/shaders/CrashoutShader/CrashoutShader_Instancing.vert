@@ -1,3 +1,12 @@
+/*!
+@file       CrashoutShader_Instancing.vert
+@author     Renfred Lee
+@date       13/03/2026
+@brief      Instanced vertex shader variant for sprite/mesh rendering.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #version 330 core
 
 // Vertex Attributes
@@ -23,6 +32,10 @@ uniform vec2 u_uvSize;
 // Outputs to Fragment Shader
 out vec4 color;      // CHANGED: vec3 -> vec4
 out vec2 texCoord;
+
+/*!
+@brief Vertex shader entry point.
+*/
 
 void main() {
     
