@@ -225,6 +225,15 @@ namespace Scene {
 				float finalScale = tc->scale;
 				std::string font = tc->font.empty() ? "Exo2-Regular" : tc->font;
 
+				// --- RESOLUTION-AWARE TEXT SCALING ---
+				// Shrink the absolute pixel scale of the text when the FBO shrinks.
+				if (!tc->isWorldSpace) {
+					// Set this to whatever height you authored your UI for in standalone!
+					// (e.g., 1080.0f, 720.0f, or Settings::GetScreenHeight())
+					float baseResolutionHeight = 1080.0f;
+					finalScale *= (winH / baseResolutionHeight);
+				}
+
 				// --- TYPEWRITER LOGIC ---
 				std::string textToRender = tc->text;
 				if (tc->isRevealing && engineState == EngineState::PLAY) {
