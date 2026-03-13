@@ -31945,12 +31945,12 @@
                 },
                 "min": {
                     "x": 1480.3990478515626,
-                    "y": -800.8579711914063,
+                    "y": -800.2573852539063,
                     "z": 51.0
                 },
                 "max": {
                     "x": 1500.3990478515626,
-                    "y": -780.4579467773438,
+                    "y": -779.8573608398438,
                     "z": 51.0
                 }
             },
@@ -32121,6 +32121,30 @@
                 "texturePressed": "",
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.5,
+                "radius": 23.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.9843137264251709,
+                    "y": 0.5176470875740051,
+                    "z": 0.054901961237192157
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Player",
@@ -32546,12 +32570,12 @@
                 },
                 "min": {
                     "x": 1356.321533203125,
-                    "y": -97.1124496459961,
+                    "y": -96.51189422607422,
                     "z": 51.0
                 },
                 "max": {
                     "x": 1376.321533203125,
-                    "y": -76.7124252319336,
+                    "y": -76.11186981201172,
                     "z": 51.0
                 }
             },
@@ -32722,6 +32746,30 @@
                 "texturePressed": "",
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.5,
+                "radius": 23.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.9843137264251709,
+                    "y": 0.5176470875740051,
+                    "z": 0.054901961237192157
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
             },
             "layer": {
                 "layerName": "Player",
