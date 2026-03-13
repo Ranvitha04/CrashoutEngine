@@ -183,7 +183,7 @@ namespace Scene {
 			// Use strict FBO dimensions and a strict 16:9 aspect ratio
 			float winW = (float)gameTextureWidth;
 			float winH = (float)gameTextureHeight;
-			float aspect = 16.0f / 9.0f;
+			float aspect = winW / winH;
 
 			float uiHeight = 100.0f;
 			float uiWidth = uiHeight * aspect;
@@ -224,6 +224,15 @@ namespace Scene {
 
 				float finalScale = tc->scale;
 				std::string font = tc->font.empty() ? "Exo2-Regular" : tc->font;
+
+				// --- RESOLUTION-AWARE TEXT SCALING ---
+				// Shrink the absolute pixel scale of the text when the FBO shrinks.
+				if (!tc->isWorldSpace) {
+					// Set this to whatever height you authored your UI for in standalone!
+					// (e.g., 1080.0f, 720.0f, or Settings::GetScreenHeight())
+					float baseResolutionHeight = 1080.0f;
+					finalScale *= (winH / baseResolutionHeight);
+				}
 
 				// --- TYPEWRITER LOGIC ---
 				std::string textToRender = tc->text;
@@ -389,9 +398,8 @@ namespace Scene {
 
 			// 2. Calculate MOUSE in UI Space (Center Origin, Fixed Height 100.0f)
 			// [FIX] Use Game View dimensions/mouse for Editor compatibility
-			CEVec2 gameSize = InputManager::GetGameWindowSize();
-			float winW = gameSize.x;
-			float winH = gameSize.y;
+			float winW = (float)gameTextureWidth;
+			float winH = (float)gameTextureHeight;
 
 			float aspect = winW / winH;
 			float baseHeight = 100.0f;
@@ -533,9 +541,8 @@ namespace Scene {
 			CEVec2 mouseUI;
 
 			// [FIX] Use Game View dimensions/mouse for Editor compatibility
-			CEVec2 gameSize = InputManager::GetGameWindowSize();
-			float winW = gameSize.x;
-			float winH = gameSize.y;
+			float winW = (float)gameTextureWidth;
+			float winH = (float)gameTextureHeight;
 
 			CEVec2 rawMouse = InputManager::GetGameMousePos(); // Top-Left Pixels (Relative to Game View)
 
@@ -1342,7 +1349,7 @@ namespace Scene {
 
 		// 5. DRAW SCREEN SPACE (Culling DISABLED)
 		// FIX: Force strictly 16:9 aspect ratio so shapes don't stretch in the FBO
-		float aspect = 16.0f / 9.0f;
+		float aspect = (float)gameTextureWidth / (float)gameTextureHeight; 
 		float h = 100.0f;
 		float w = h * aspect;
 		glm::mat4 uiProj = glm::ortho(-w * 0.5f, w * 0.5f, -h * 0.5f, h * 0.5f);

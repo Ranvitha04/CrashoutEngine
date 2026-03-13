@@ -133,6 +133,10 @@
                 "renderSelf": true,
                 "renderBehind": false,
                 "ignoreParentOccluders": false,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 0.1764705926179886,
                     "y": 1.0,
@@ -15188,7 +15192,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "LAP: [0 / 0]",
-                "scale": 33.400001525878909,
+                "scale": 16.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -15230,8 +15234,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -65.0,
-                    "y": -34.0,
+                    "x": -64.79560852050781,
+                    "y": -33.043975830078128,
                     "z": 0.0
                 },
                 "size": {
@@ -15242,7 +15246,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "00:00:00",
-                "scale": 33.400001525878909,
+                "scale": 16.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -15461,6 +15465,10 @@
                 "renderSelf": true,
                 "renderBehind": false,
                 "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
                 "color": {
                     "x": 1.0,
                     "y": 0.0,
@@ -15648,7 +15656,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "Enter Name",
-                "scale": 20.0,
+                "scale": 8.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -15770,6 +15778,7 @@
             },
             "leaderboard": {
                 "baseUrl": "http://104.214.187.128",
+                "apiKey": "leaderboardsecretapikey",
                 "limit": 10,
                 "sortBy": "",
                 "sortOrder": "",
@@ -15861,7 +15870,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "Send",
-                "scale": 20.0,
+                "scale": 8.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0

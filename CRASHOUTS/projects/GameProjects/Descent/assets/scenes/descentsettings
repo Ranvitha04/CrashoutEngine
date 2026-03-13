@@ -632,22 +632,22 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 23.78116798400879,
-                    "y": -11.905862808227539,
+                    "x": 25.786102294921876,
+                    "y": -14.631595611572266,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 1.0,
+                    "x": 40.70000076293945,
                     "y": 1.0
                 }
             },
             "text": {
                 "font": "AlegreyaSC-Medium",
-                "text": "Switch between modes to explore\nand solve puzzles.\nUse enemies to your advantage.\nLaval & Enemies kill you instantly,\nso be careful!\n\nActivate all the pressure plates to\nopen the door at the end!",
+                "text": "Switch between modes to explore and solve puzzles.\nUse enemies to your advantage.\nLaval & Enemies kill you instantly,\nso be careful!\n\nActivate all the pressure plates to\nopen the door at the end!",
                 "scale": 11.0,
                 "offset": {
-                    "x": 77.30000305175781,
-                    "y": 5.300000190734863
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "color": {
                     "x": 0.22745098173618318,
@@ -659,7 +659,7 @@
                 "isworldspace": false,
                 "alignment": 1,
                 "verticalAlignment": 1,
-                "wrapText": false,
+                "wrapText": true,
                 "padding": {
                     "x": 0.0,
                     "y": 0.0
@@ -679,18 +679,18 @@
                     "x": 0.0,
                     "y": 0.0
                 },
-                "uiLayout": 4
+                "uiLayout": 12
             },
             "parent": {
                 "parentUUID": 16805797322157221579,
                 "localPos": {
-                    "x": 3.9824695587158205,
-                    "y": -31.41304588317871,
+                    "x": 5.987403869628906,
+                    "y": -34.13877868652344,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 1.0,
+                    "x": 40.70000076293945,
                     "y": 1.0
                 },
                 "inheritColor": false,
