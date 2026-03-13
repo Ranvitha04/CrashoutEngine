@@ -185,7 +185,6 @@ namespace CrashoutsEngine {
 
             if (shadowTex == 0) glGenTextures(1, &shadowTex);
 
-#if USE_IMGUI_EDITOR
             if (ppFboID == 0) glGenFramebuffers(1, &ppFboID);
             glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
             if (ppTextureID == 0) glGenTextures(1, &ppTextureID);
@@ -197,7 +196,6 @@ namespace CrashoutsEngine {
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
                 std::cout << "ERROR: Post-Processing Framebuffer is not complete!" << std::endl;
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-#endif
         }
 
         void InitPP() {
@@ -282,10 +280,8 @@ namespace CrashoutsEngine {
             glDeleteVertexArrays(1, &occluderVao);
             glDeleteBuffers(1, &occluderVbo);
 
-#if USE_IMGUI_EDITOR
             glDeleteFramebuffers(1, &ppFboID);
             glDeleteTextures(1, &ppTextureID);
-#endif
             glDeleteFramebuffers(1, &frontLightsFbo);
             glDeleteTextures(2, frontLightsTex);
             glDeleteFramebuffers(1, &behindLightsFbo);
