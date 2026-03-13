@@ -3,7 +3,9 @@
 
 /*!
 @file        rendering.h
-@author      ranvitha@digipen.edu
+@author      Ranvitha
+@author      Shahrin Idzuan
+@author      Renfred (RTIS)
 @date        09/12/2025
 
 This file declares the Rendering class, which provides a comprehensive

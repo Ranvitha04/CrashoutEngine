@@ -1,6 +1,8 @@
 /*!
 @file       aimanager.h
-@author     m.biniswandi@digipen.edu
+@author     Renfred Lee
+@author     tristan
+@author     Renfred (RTIS)
 @date       04/11/2025
 @brief      [Brief description of aimanager.h]
 

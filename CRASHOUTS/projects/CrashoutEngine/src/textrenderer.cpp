@@ -1,6 +1,8 @@
 /*!
 @file       textrenderer.cpp
-@author     m.biniswandi@digipen.edu    (80%)
+@author     Renfred Lee
+@author     Shahrin Idzuan
+@author     Renfred (RTIS)
 @co-author  lee.r@digipen.edu           (20%)
 @date       25/09/2025
 @brief      Implementation of the TextRenderer class

@@ -1,10 +1,11 @@
 /*!
 @file      contactinfobindings.cpp
-@author    m.biniswandi@digipen.edu
+@author    Shahrin Idzuan
+@author    Ranvitha
 @date      30/11/2025
 @brief     Mono bindings to expose ContactInfo data to C#
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 

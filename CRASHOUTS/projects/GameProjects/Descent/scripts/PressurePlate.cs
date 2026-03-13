@@ -1,6 +1,8 @@
 /*!
 @file       PressurePlate.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
+@author     Renfred (RTIS)
+@author     Mohamad Amir Akmal
 @date       26/11/2025
 @brief      Script behaviour for a pressure plate that can be activated by the player or enemies.
 

@@ -1,6 +1,8 @@
 /*!
 @file		frameratecontroller.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     Renfred (RTIS)
 @date       24/09/2025
 @brief		Declaration for frame rate controller
 

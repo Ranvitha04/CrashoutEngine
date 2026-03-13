@@ -1,6 +1,8 @@
 /*!
 @file        scene.cpp
-@author      lee.r@digipen.edu
+@author      Renfred Lee
+@author      Renfred (RTIS)
+@author      Shahrin Idzuan
 @date        12/11/2025
 @brief       
 

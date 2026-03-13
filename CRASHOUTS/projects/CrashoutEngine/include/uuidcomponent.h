@@ -1,11 +1,11 @@
 /*!
 @file       uuidcomponent.h
-@author     Renfred (lee.r@digipen.edu)
+@author     Renfred Lee
 @date       19/02/2026
 @brief      Unique ID component.
 @details    Component for UUID for identification in all entities.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 

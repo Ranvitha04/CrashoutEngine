@@ -1,6 +1,8 @@
 /*!
 @file       rainscene.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Ranvitha
+@author     Renfred Lee
 @date       29/11/2025
 @brief      rain scene function declarations
 

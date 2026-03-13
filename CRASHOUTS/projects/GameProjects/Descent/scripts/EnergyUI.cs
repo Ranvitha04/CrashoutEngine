@@ -1,6 +1,6 @@
 /*!
 @file       EnergyUI.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
 @date       03/02/2026
 @brief      Manages the energy UI display for the player.
 

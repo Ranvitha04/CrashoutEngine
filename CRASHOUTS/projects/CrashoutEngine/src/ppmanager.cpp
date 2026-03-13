@@ -1,6 +1,8 @@
 /*!
 @file   ppmanager.cpp
-@author lee.r@digipen.edu
+@author Ranvitha
+@author Shahrin Idzuan
+@author Renfred Lee
 @date   05/11/2025
 
 @brief  This file contains values and functions to manage post-processing.

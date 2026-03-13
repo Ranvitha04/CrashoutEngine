@@ -1,10 +1,12 @@
 /*!
 @file       afiqscene.h
-@author     lee.r@digipen.edu
+@author     Shahrin Idzuan
+@author     Ranvitha
+@author     Renfred Lee
 @date       16/10/2025
 @brief      [Brief description of afiqscene.h]
 
-All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 #pragma once
 
@@ -14,7 +16,7 @@ All content © 2025 DigiPen Institute of Technology Singapore. All rights reserve
 @date        30/11/2025
 @brief       scene functions for Afiq scene
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 

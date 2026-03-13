@@ -1,6 +1,8 @@
 /*!
 @file       Collision.cpp
-@author     miratristan.d@digipen.edu
+@author     tristan
+@author     Renfred Lee
+@author     Tristan Mira
 @date       08/09/2025
 @brief      Function definitions for Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
 

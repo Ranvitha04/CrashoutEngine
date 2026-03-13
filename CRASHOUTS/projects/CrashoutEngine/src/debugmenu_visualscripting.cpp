@@ -1,3 +1,12 @@
+/*!
+@file       debugmenu_visualscripting.cpp
+@author     Afiq
+@date       13/03/2026
+@brief      Serialization and editor utilities for the visual scripting debug menu.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #include "debugmenu.h"
 #include "visualscriptsystem.h"
 
@@ -13,6 +22,10 @@
 
 namespace UI {
 
+    /*!
+    @brief Get the visual scripting graph stored in the UI state.
+    @return Reference to the current graph, or a static empty graph if no UI state exists.
+    */
     VisualScriptingGraph& GetVisualScriptingGraph()
     {
         UIState* s = GetUIState();
@@ -23,6 +36,9 @@ namespace UI {
         return s->visualGraph;
     }
 
+    /*!
+    @brief Clear the visual scripting graph stored in the UI state.
+    */
     void ClearVisualScriptingGraph()
     {
         UIState* s = GetUIState();
@@ -32,6 +48,12 @@ namespace UI {
         s->visualGraph.nextNodeId = 1;
     }
 
+    /*!
+    @brief Save a visual scripting graph to disk in JSON format.
+    @param path Destination file path.
+    @param graph Graph to serialize.
+    @return True if saved successfully, otherwise false.
+    */
     bool SaveVisualScriptingGraph(const std::string& path, const VisualScriptingGraph& graph)
     {
         using namespace rapidjson;
@@ -139,6 +161,12 @@ namespace UI {
         return true;
     }
 
+    /*!
+    @brief Load a visual scripting graph from a JSON file on disk.
+    @param path Source file path.
+    @param graph Output graph to populate.
+    @return True if loaded successfully, otherwise false.
+    */
     bool LoadVisualScriptingGraph(const std::string& path, VisualScriptingGraph& graph)
     {
         using namespace rapidjson;

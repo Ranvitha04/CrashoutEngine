@@ -1,8 +1,23 @@
+/*!
+@file       visualscriptcommands.cpp
+@author     Afiq
+@date       13/03/2026
+@brief      Implementation of editor commands for visual scripting graph modifications.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #include "visualscriptcommands.h"
 #include <algorithm>
 
 namespace UI
 {
+    /*!
+    @brief Find a node in a visual scripting graph by its id.
+    @param graph Graph to search.
+    @param id Node id.
+    @return Pointer to the node if found, otherwise nullptr.
+    */
     static VSNode* FindVSNodeById(VisualScriptingGraph& graph, int id)
     {
         for (auto& node : graph.nodes)
@@ -13,6 +28,12 @@ namespace UI
         return nullptr;
     }
 
+    /*!
+    @brief Compare two links for equality.
+    @param a First link.
+    @param b Second link.
+    @return True if both links connect the same pins, otherwise false.
+    */
     static bool VSLinkEquals(const VSLink& a, const VSLink& b)
     {
         return a.fromNode == b.fromNode &&

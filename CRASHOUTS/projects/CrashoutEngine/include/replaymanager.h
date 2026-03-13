@@ -1,6 +1,6 @@
 /*!
 @file		replaymanager.h
-@author     lee.r@digipen.edu
+@author     Renfred Lee
 @date       03/03/2026
 @brief		Maintain code used for tracking gameplay and performing replay
             of past gameplay funtionalities.

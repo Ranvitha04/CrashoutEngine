@@ -1,9 +1,23 @@
+/*!
+@file       MenuButtons.cs
+@author     Renfred (RTIS)
+@author     m.biniswandi
+@author     Renfred Lee
+@date       13/03/2026
+@brief      UI button logic for the Descent main menu and quit confirmation.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 using System;
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
+    /*!
+    @brief Handles menu button clicks and scene transitions.
+    */
     public class MenuButtons : ScriptBase
     {
         public Entity StartBtn;
@@ -20,11 +34,17 @@ namespace CrashoutsEngine
         // NEW: A simple frame cooldown to prevent overlapping buttons from swapping instantly
         private int _clickCooldown = 0;
 
+        /*!
+        @brief Initialize internal click state.
+        */
         public override void Start()
         {
             isClicking = false;
         }
 
+        /*!
+        @brief Poll for UI button clicks and perform the corresponding actions.
+        */
         public override void Update()
         {
             if(!Input.IsMouseButtonDown(0)) isClicking = false;
@@ -83,6 +103,11 @@ namespace CrashoutsEngine
         public override void FixedUpdate() { }
         public override void OnDestroy() { }
 
+        /*!
+        @brief Check whether a button entity was clicked this frame.
+        @param btnEnt Button entity reference.
+        @return True if the button was clicked, otherwise false.
+        */
         private bool CheckButtonClick(Entity btnEnt)
         {
             if(isClicking) return false;

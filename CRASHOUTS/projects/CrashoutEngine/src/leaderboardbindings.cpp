@@ -1,6 +1,8 @@
 ﻿/*!
 @file       leaderboardbindings.cpp
-@author     lee.r@digipen.edu
+@author     Renfred (RTIS)
+@author     Renfred Lee
+@author     Shahrin Idzuan
 @date       08/03/2026
 @brief      Bind leaderboard functionalities to C#
 

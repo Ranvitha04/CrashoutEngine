@@ -1,10 +1,12 @@
 /*!
 @file       collidereventmanager.cpp
-@author     miratristan.d@digipen.edu
+@author     Shahrin Idzuan
+@author     Tristan Mira
+@author     Renfred Lee
 @date       29/11/2025
 @brief      collidereventmanager.cpp file contains the implementation of the CollisionEventManager class for handling collision events in the CrashoutsEngine
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 #include "collidereventmanager.h"

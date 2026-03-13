@@ -1,10 +1,12 @@
 /*!
 @file       camera.h
-@author     lee.r@digipen.edu
+@author     Renfred Lee
+@author     Renfred (RTIS)
+@author     Shahrin Idzuan
 @date       30/10/2025
 @brief      [Brief description of camera.h]
 
-All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 #ifndef CAMERA_H
 #define CAMERA_H
@@ -14,7 +16,7 @@ All content © 2025 DigiPen Institute of Technology Singapore. All rights reserve
 @author      lee.r@digipen.edu
 @date        29/10/2025
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 This file 
 *//*__________________________________________________________________________*/

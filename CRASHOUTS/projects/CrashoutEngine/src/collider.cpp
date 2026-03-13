@@ -1,6 +1,8 @@
 /*!
 @file       collider.cpp
-@author     miratristan.d@digipen.edu
+@author     Tristan Mira
+@author     Renfred Lee
+@author     Renfred (RTIS)
 @date       29/11/2025`
 @brief      collider class definitions and implementations
 

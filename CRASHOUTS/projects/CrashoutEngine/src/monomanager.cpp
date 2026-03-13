@@ -1,6 +1,8 @@
 /*!
 @file		monomanager.cpp
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     m.biniswandi
 @date       06/11/2025
 @brief		Definition of mono manager functions
 

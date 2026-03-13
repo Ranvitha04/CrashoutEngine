@@ -1,6 +1,8 @@
 /*!
 @file    	engine.cpp
-@author  	lee.r@digipen.edu
+@author  	Renfred Lee
+@author  	Renfred (RTIS)
+@author  	Shahrin Idzuan
 @date    	18/10/2025
 
 This file uses functionality defined in type GLApp to initialize an OpenGL

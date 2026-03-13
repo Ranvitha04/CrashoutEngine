@@ -1,6 +1,8 @@
 /*!
 @file   shapebindings.h
-@author lee.r@digipen.edu
+@author Shahrin Idzuan
+@author Ranvitha
+@author Renfred Lee
 @date   29/11/2025
 @brief	shapebindings.h file contains the function declarations for registering shape-related bindings in the CrashoutsEngine
 

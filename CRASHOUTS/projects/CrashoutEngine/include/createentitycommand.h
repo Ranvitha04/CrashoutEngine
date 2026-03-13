@@ -1,3 +1,12 @@
+/*!
+@file       createentitycommand.h
+@author     Afiq
+@date       13/03/2026
+@brief      Declaration of an editor command for creating an entity with undo/redo support.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #pragma once
 
 #include "undomanager.h"
@@ -6,14 +15,32 @@
 
 namespace CrashoutsEngine {
 
+    /*!
+    @class CreateEntityCommand
+    @brief Creates an entity and stores a snapshot so it can be recreated on redo.
+    */
     class CreateEntityCommand : public EditorCommand {
     public:
+        /*!
+        @brief Construct a create-entity command.
+        */
         CreateEntityCommand();
         ~CreateEntityCommand() override = default;
 
-        void Execute() override; // Create (or recreate on redo)
-        void Undo() override;    // Destroy
+        /*!
+        @brief Execute the command by creating (or recreating) the entity.
+        */
+        void Execute() override;
 
+        /*!
+        @brief Undo the command by destroying the created entity.
+        */
+        void Undo() override;
+
+        /*!
+        @brief Get the entity created by the command.
+        @return Entity id for the created entity, or 0 if none exists.
+        */
         Entity GetCreatedEntity() const { return m_createdEntity; }
 
     private:

@@ -1,10 +1,11 @@
 /*!
 @file       namebindings.cpp
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Ranvitha
 @date       29/11/2025
 @brief      bindings for NameComponent
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 

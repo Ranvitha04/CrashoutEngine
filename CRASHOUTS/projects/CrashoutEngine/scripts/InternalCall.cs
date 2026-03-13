@@ -1,6 +1,8 @@
 /*!
 @file       InternalCalls.cs
-@author     m.biniswandi@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Ranvitha
+@author     mohamadamirakmal.b
 @date       29/11/2025
 @brief      internal calls between managed and native code for Crashouts Engine
 

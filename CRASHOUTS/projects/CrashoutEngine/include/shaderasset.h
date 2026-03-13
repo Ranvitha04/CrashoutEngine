@@ -1,11 +1,13 @@
 /*!
 @file   shaderasset.h
-@author lee.r@digipen.edu       
+@author Renfred (RTIS)
+@author Shahrin Idzuan
+@author Toastyship
 @date   19/10/2025
 
 @brief	This file contains the declaration of the shader
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 //#pragma once

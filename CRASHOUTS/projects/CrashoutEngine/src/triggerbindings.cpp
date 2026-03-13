@@ -1,6 +1,7 @@
 /*!
 @file		triggerbindings.cpp
-@author     m.biniswandi@digipen.edu
+@author     m.biniswandi
+@author     Shahrin Idzuan
 @brief		Definition of trigger bindings functions
 */
 #include "triggerbindings.h"

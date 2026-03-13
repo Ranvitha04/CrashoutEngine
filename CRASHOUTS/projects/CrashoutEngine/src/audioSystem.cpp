@@ -1,6 +1,8 @@
 /*!
 @file        audioSystem.cpp
-@author      b.mohamadafiq@digipen.edu (70%)
+@author      Mohamad Amir Akmal
+@author      mohamadamirakmal.b
+@author      Renfred Lee
 @co-auther   mohamadamirakmal.b@digipen.edu (30%)
 @date        28/9/2025
 @brief      Minimal FMOD Studio wrapper for the CrashoutsEngine.

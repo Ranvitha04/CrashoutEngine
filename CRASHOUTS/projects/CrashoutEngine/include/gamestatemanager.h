@@ -1,12 +1,14 @@
 /*!
 @file		gamestatemanager.h
-@author     m.biniswandi@digipen.edu
+@author     Renfred Lee
+@author     Shahrin Idzuan
+@author     Renfred (RTIS)
 @date       13/09/2025
 @brief		Declarations for the game state manager
 
 Provides enums structures and functions for handling game state registration initialization updates and transitions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #pragma once

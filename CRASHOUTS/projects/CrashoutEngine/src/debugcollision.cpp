@@ -1,6 +1,8 @@
 /*!
 @file       debugcollision.cpp
-@author     mohamadamirakmal.b@digipen.edu
+@author     Renfred Lee
+@author     Tristan Mira
+@author     tristan
 @date       28/09/2025
 @brief      Implements collision debug visualization for Crashout Engine.
 @details    Renders wireframe overlays for all active colliders (AABBs & spheres),

@@ -1,6 +1,8 @@
 /*!
 @file       WinGame.cs
-@author     lee.r@digipen.edu
+@author     Ranvitha
+@author     Shahrin Idzuan
+@author     Renfred Lee
 @date       28/11/2025
 @brief      Script to handle winning the game when the player enters a designated win zone.
 

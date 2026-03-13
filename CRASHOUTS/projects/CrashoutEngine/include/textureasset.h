@@ -1,10 +1,12 @@
 /*!
 @file   textureasset.h
-@author lee.r@digipen.edu       - 70%
+@author Renfred Lee
+@author Ranvitha
+@author Shahrin Idzuan
 @co-author ranvitha@digipen.edu - 30%
 @date   16/09/2025
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 @brief	This file contains the declaration of the TextureAsset class, a concrete
 		asset type that encapsulates a texture's raw data and dimensions. The class

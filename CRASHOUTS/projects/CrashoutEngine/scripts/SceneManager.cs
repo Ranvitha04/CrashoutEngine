@@ -1,6 +1,7 @@
 /*!
 @file       SceneManager.cs
-@author     lee.r@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Renfred Lee
 @date       26/11/2025
 @brief      Scene management functionalities for loading scenes and handling transitions.
 

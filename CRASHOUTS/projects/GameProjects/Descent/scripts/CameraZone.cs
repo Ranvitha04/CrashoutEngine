@@ -1,6 +1,6 @@
 ﻿/*!
 @file       CameraZone.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
 @date       01/03/2026
 @brief      Handles camera zone for controlled camera behavior.
 */

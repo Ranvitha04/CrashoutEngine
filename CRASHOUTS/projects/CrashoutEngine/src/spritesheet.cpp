@@ -1,6 +1,8 @@
 /*!
 @file       spritesheet.cpp
-@author     b.mohamadafiq@digipen.edu
+@author     Afiq
+@author     Renfred Lee
+@author     Mohamad Amir Akmal
 @date       19/11/2025
 
 All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.

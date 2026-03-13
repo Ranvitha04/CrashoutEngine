@@ -1,6 +1,8 @@
 /*!
 @file        animatorbindings.cpp
-@author      m.biniswandi@digipen.edu
+@author      Renfred (RTIS)
+@author      Shahrin Idzuan
+@author      Afiq
 @date        30/11/2025
 @brief       Definition of animator bindings functions (Updated for Keyframe System)
 

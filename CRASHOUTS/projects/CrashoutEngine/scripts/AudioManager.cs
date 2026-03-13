@@ -1,6 +1,8 @@
 /*!
 @file		AudioManager.cs
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Shahrin Idzuan
+@author     mohamadamirakmal.b
 @date       19/11/2025
 @brief		Declaration and implementation of AudioManager class to manage audio playback.
 */

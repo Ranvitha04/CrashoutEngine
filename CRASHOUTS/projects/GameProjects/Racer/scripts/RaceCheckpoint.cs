@@ -1,14 +1,29 @@
+/*!
+@file       RaceCheckpoint.cs
+@author     Renfred (RTIS)
+@date       13/03/2026
+@brief      Trigger script that reports checkpoint hits to the LapTracker.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 using System;
 using System.Diagnostics;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
+    /*!
+    @brief Reports player trigger entry events to the race lap tracker.
+    */
     public class RaceCheckpoint : ScriptBase
     {
         // Set this per-entity in your editor!
         public int CheckpointID = 0; 
         
+        /*!
+        @brief Register the trigger callback and configure audio.
+        */
         public override void Start()
         {
             // Optional: Setup audio just like your old script
@@ -18,6 +33,10 @@ namespace CrashoutsEngine
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
         }
 
+        /*!
+        @brief Trigger callback that notifies the lap tracker when the player enters.
+        @param otherEntity Entity id that entered the trigger.
+        */
         public void OnTriggerEnter(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);

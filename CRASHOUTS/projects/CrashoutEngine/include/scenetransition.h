@@ -1,6 +1,8 @@
 /*!
 @file       scenetransition.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred (RTIS)
+@author     Renfred Lee
 @date       31/01/2026
 @brief      Header file for scene transition functionalities.
 

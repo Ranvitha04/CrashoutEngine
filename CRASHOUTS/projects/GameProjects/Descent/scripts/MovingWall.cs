@@ -1,6 +1,7 @@
 /*!
 @file       MovingWall.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
+@author     Shahrin Idzuan
 @date       27/11/2025
 @brief      Moving wall that opens when pressure plates are activated.
 

@@ -1,6 +1,8 @@
 /*!
 @file       performanceSystem.h
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Renfred Lee
+@author     mohamadamirakmal.b
 @date       04/11/2025
 
 @brief      Thin runtime facade over the engine's profiler UI.
@@ -13,7 +15,7 @@
             This keeps the ImGui performance panel code in one place instead of
             scattering it across engine/editor files.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

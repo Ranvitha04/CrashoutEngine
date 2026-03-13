@@ -1,6 +1,8 @@
 /*!
 @file       textrenderer.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     Renfred (RTIS)
 @date       25/09/2025
 @brief      Declaration of the TextRenderer class
 

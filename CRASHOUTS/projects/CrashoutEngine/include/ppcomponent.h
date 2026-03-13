@@ -1,6 +1,8 @@
 /*!
 @file   ppcomponent.h
-@author lee.r@digipen.edu
+@author Ranvitha
+@author Shahrin Idzuan
+@author Renfred (RTIS)
 @date   05/11/2025
 
 @brief  This file defines the post-processing component.

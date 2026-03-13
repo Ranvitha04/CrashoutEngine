@@ -1,6 +1,8 @@
 /*!
 @file       EnergyBall.cs
-@author     lee.r@digipen.edu
+@author     mohamadamirakmal.b
+@author     Renfred Lee
+@author     Mohamad Amir Akmal
 @date       28/11/2025
 @brief      Energy Ball Pickup Script
 

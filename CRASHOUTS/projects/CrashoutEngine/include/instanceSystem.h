@@ -1,6 +1,8 @@
 /*!
 @file        instanceSystem.h
-@author      ranvitha@digipen.edu
+@author      Ranvitha
+@author      Renfred Lee
+@author      Shahrin Idzuan
 @date        11/06/2025
 @brief
 

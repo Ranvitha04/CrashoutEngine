@@ -1,6 +1,8 @@
 /*!
 @file        rendering.cpp
-@author      ranvitha@digipen.edu (65%)
+@author      Renfred Lee
+@author      Ranvitha
+@author      Shahrin Idzuan
 @co-author   lee.r@digipen.edu (35% - Mainly camera related)
 @date        09/12/2025
 @brief       Implementation of the Rendering class for high-performance OpenGL rendering.

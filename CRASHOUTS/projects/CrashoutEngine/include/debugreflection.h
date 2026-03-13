@@ -1,6 +1,8 @@
 /*!
 @file       debugreflection.h
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Ranvitha
+@author     Shahrin Idzuan
 @date       25/09/2025
 
 @brief      Lightweight registry hooks for the Debug Menu. Provides:
@@ -11,7 +13,7 @@
 
 These APIs let the debug UI be data-driven without hardcoding per-project UI.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

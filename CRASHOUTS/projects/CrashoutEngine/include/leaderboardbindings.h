@@ -1,6 +1,6 @@
 ﻿/*!
 @file   leaderboardbindings.h
-@author lee.r@digipen.edu
+@author Renfred (RTIS)
 @date   08/03/2026
 @brief	leaderboard bindings file contains the function declarations for registering
         leaderboard -related bindings in the CrashoutsEngine

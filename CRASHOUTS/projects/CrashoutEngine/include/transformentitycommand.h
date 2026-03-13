@@ -1,6 +1,8 @@
 /*!
 @file       transformentitycommand.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Afiq
+@author     Ranvitha
 @date       29/11/2025
 @brief      transformentitycommand.h file contains the declaration of TransformEntityCommand and TransformGroupCommand classes for undo/redo functionality in the CrashoutsEngine
 

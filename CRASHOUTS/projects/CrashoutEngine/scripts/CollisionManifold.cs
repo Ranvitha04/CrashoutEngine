@@ -1,10 +1,10 @@
 /*!
 @file       collisionmanifold.cs
-@author     m.biniswandi@digipen.edu
+@author     Renfred Lee
 @date       29/11/2025
 @brief      class for collision manifold representation
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 using System;

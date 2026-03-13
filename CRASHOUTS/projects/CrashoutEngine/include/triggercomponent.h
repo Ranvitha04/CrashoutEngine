@@ -1,6 +1,7 @@
 /*!
 @file       triggercomponent.h
-@author     m.biniswandi@digipen.edu
+@author     m.biniswandi
+@author     Shahrin Idzuan
 @brief      Metadata component for triggers.
 */
 #pragma once

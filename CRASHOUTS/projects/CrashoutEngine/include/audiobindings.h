@@ -1,6 +1,7 @@
 /*!
 @file		audiobindings.h
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Ranvitha
 @date       19/11/2025
 @brief		Declaration of audio bindings functions
 */

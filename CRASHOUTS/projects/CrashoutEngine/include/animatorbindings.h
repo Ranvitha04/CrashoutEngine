@@ -1,6 +1,7 @@
 /*!
 @file       animatorbindings.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Ranvitha
 @date       20/11/2025
 @brief      declaration of animator bindings registration function
 

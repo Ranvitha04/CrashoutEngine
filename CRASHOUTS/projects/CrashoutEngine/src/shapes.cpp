@@ -1,6 +1,8 @@
 /*!
 @file        shapes.cpp
-@author      ranvitha@digipen.edu
+@author      Renfred Lee
+@author      Ranvitha
+@author      Renfred (RTIS)
 @date        12/09/2025
 
 This file implements the Shapes struct, which provides static functions

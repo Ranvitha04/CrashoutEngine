@@ -1,6 +1,8 @@
 /*!
 @file       debugadapter.cpp
-@author     mohamadamirakmal.b@digipen.edu
+@author     Renfred Lee
+@author     Mohamad Amir Akmal
+@author     Renfred (RTIS)
 @date       25/09/2025
 
 Declares and registers built-in Debug Menu adapters & providers:

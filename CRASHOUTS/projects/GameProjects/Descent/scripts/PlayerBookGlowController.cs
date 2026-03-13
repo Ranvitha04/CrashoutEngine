@@ -1,6 +1,6 @@
 /*!
 @file       PlayerBookGlowController.cs
-@author     
+@author     Ranvitha
 @date       07/03/2026
 @brief      Keeps PlayerBookGlow positioned on the book pose and toggles it by light mode.
 */

@@ -1,6 +1,8 @@
 /*!
 @file       audiocomponent.h
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Shahrin Idzuan
+@author     Ranvitha
 @date       25/10/2025
 @brief	    This file defines the AudioComponent
 

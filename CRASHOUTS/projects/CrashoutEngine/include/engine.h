@@ -1,6 +1,8 @@
 /*!
 @file    	engine.h
-@author  	lee.r@digipen.edu
+@author  	Renfred Lee
+@author  	Renfred (RTIS)
+@author  	m.biniswandi
 @date    	18/10/2025
 
 This file 

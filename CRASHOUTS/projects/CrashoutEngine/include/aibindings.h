@@ -1,6 +1,8 @@
 /*!
 @file       aibindings.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred (RTIS)
+@author     Ranvitha
 @date       26/11/2025
 @brief      [Brief description of aibindings.h]
 

@@ -1,3 +1,12 @@
+/*!
+@file       visualscriptsystem.cpp
+@author     Afiq
+@date       13/03/2026
+@brief      Runtime evaluation and update logic for the visual scripting system.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #include "visualscriptsystem.h"
 #include "transformcomponent.h"
 #include "visualscriptcomponent.h"
@@ -16,12 +25,23 @@
 using namespace CrashoutsEngine;
 
 // Forward declaration
+/*!
+@brief Get a cached visual scripting graph or load it from disk.
+@param path Graph asset path.
+@return Shared pointer to the graph, or nullptr on failure.
+*/
 std::shared_ptr<UI::VisualScriptingGraph> GetOrLoadGraph(const std::string& path);
 
 namespace
  {   
     std::unordered_map<std::string, std::shared_ptr<UI::VisualScriptingGraph>> g_visualScriptCache;
 
+    /*!
+    @brief Find a node in the graph by its id.
+    @param graph Graph to search.
+    @param id Node id.
+    @return Pointer to the node if found, otherwise nullptr.
+    */
     UI::VSNode* FindNodeById(UI::VisualScriptingGraph& graph, int id)
     {
         for (auto& node : graph.nodes) {
@@ -30,6 +50,17 @@ namespace
         }
         return nullptr;
     }
+
+    /*!
+    @brief Evaluate a float-producing node and output its value.
+    @param ecs ECS instance to query/modify.
+    @param e Entity being evaluated.
+    @param comp Visual script component containing variable state.
+    @param graph Graph containing nodes and links.
+    @param nodeId Node id to evaluate.
+    @param outValue Output float value on success.
+    @return True if evaluation succeeded, otherwise false.
+    */
     static bool EvaluateFloatNode(CrashoutsEngine::ECS& ecs,
         CrashoutsEngine::Entity e,
         Component::VisualScriptComponent& comp,
@@ -140,6 +171,17 @@ namespace
             return false;
         }
     }
+
+    /*!
+    @brief Evaluate a bool-producing node and output its value.
+    @param ecs ECS instance to query/modify.
+    @param e Entity being evaluated.
+    @param comp Visual script component containing variable state.
+    @param graph Graph containing nodes and links.
+    @param nodeId Node id to evaluate.
+    @param outValue Output bool value on success.
+    @return True if evaluation succeeded, otherwise false.
+    */
     static bool EvaluateBoolNode(ECS& ecs, Entity e, Component::VisualScriptComponent& comp,
         UI::VisualScriptingGraph& graph, int nodeId, bool& outValue)
     {
@@ -346,6 +388,16 @@ namespace
         }
     }
     
+    /*!
+    @brief Evaluate an int-producing node and output its value.
+    @param ecs ECS instance to query/modify.
+    @param e Entity being evaluated.
+    @param comp Visual script component containing variable state.
+    @param graph Graph containing nodes and links.
+    @param nodeId Node id to evaluate.
+    @param outValue Output int value on success.
+    @return True if evaluation succeeded, otherwise false.
+    */
     static bool EvaluateIntNode(CrashoutsEngine::ECS& ecs,
         CrashoutsEngine::Entity e,
         Component::VisualScriptComponent& comp,
@@ -446,6 +498,12 @@ namespace
             return false;
         }
     }
+
+    /*!
+    @brief Find the start node in a visual scripting graph.
+    @param graph Graph to search.
+    @return Pointer to the start node if found, otherwise nullptr.
+    */
     UI::VSNode* FindStartNode(UI::VisualScriptingGraph& graph)
     {
         for (auto& node : graph.nodes) {
@@ -455,6 +513,13 @@ namespace
         return nullptr;
     }
 
+    /*!
+    @brief Find the next node connected from a given node output pin.
+    @param graph Graph containing links.
+    @param currentNodeId Source node id.
+    @param outputPin Output pin index to follow.
+    @return Pointer to the next node if a link exists, otherwise nullptr.
+    */
     UI::VSNode* FindNextNode(UI::VisualScriptingGraph& graph, int currentNodeId, int outputPin = 0)
     {
         for (auto& link : graph.links) {
@@ -465,6 +530,14 @@ namespace
         return nullptr;
     }
 
+    /*!
+    @brief Invoke a no-argument Mono instance method on a script component attached to an entity.
+    @param ecs ECS instance to query for script components.
+    @param entity Entity that owns the script component.
+    @param className Script class name to match.
+    @param methodName Method name to invoke.
+    @return True if the method was invoked successfully, otherwise false.
+    */
     bool ExecuteMonoInstanceMethod(ECS& ecs,
         Entity entity,
         const std::string& className,
@@ -533,6 +606,15 @@ namespace
         return false;
     }
 
+    /*!
+    @brief Read a boolean property from a Mono script instance attached to an entity.
+    @param ecs ECS instance to query for script components.
+    @param entity Entity that owns the script component.
+    @param className Script class name to match.
+    @param propertyName Property name to read.
+    @param outValue Output bool value on success.
+    @return True if the property was read successfully, otherwise false.
+    */
     bool GetMonoBoolProperty(ECS& ecs,
         Entity entity,
         const std::string& className,
@@ -605,12 +687,21 @@ namespace
         }
         return false;
     }
+    /*!
+    @brief Reset the per-entity execution state for a visual script graph.
+    @param comp Visual script component to reset.
+    */
     void ResetGraphExecution(Component::VisualScriptComponent& comp)
     {
         comp.currentNodeId = 0;
         comp.waitTimer = 0.0f;
     }
 }
+
+/*!
+@brief Invalidate cached visual script graphs for a given asset path.
+@param path Graph asset path to invalidate.
+*/
 void InvalidateVisualScriptCache(const std::string& path)
 {
     std::error_code ec;
@@ -624,6 +715,14 @@ void InvalidateVisualScriptCache(const std::string& path)
     g_visualScriptCache.erase(normalized.string());
     g_visualScriptCache.erase(path);
 }
+
+/*!
+@brief Execute a single visual script graph for an entity.
+@param ecs ECS instance to query/modify.
+@param e Entity to execute the script for.
+@param comp Visual script component containing graph state and variables.
+@param dt Delta time in seconds.
+*/
 void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& comp, float dt)
 {
     std::cout << "[VisualScript] Current node id = " << comp.currentNodeId << "\n";
@@ -790,6 +889,11 @@ void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& c
     }
 }
 
+/*!
+@brief Update all visual scripts for entities that have a VisualScriptComponent.
+@param ecs ECS instance to query/modify.
+@param dt Delta time in seconds.
+*/
 void UpdateVisualScripts(ECS& ecs, float dt)
 {
     auto& arr = ecs.GetComponentArray<Component::VisualScriptComponent>();
@@ -845,6 +949,11 @@ void UpdateVisualScripts(ECS& ecs, float dt)
     }
 }
 
+/*!
+@brief Get a cached visual scripting graph or load it from disk.
+@param path Graph asset path.
+@return Shared pointer to the graph, or nullptr on failure.
+*/
 std::shared_ptr<UI::VisualScriptingGraph> GetOrLoadGraph(const std::string& path)
 {
     std::error_code ec;

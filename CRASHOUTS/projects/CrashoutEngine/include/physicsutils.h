@@ -1,6 +1,8 @@
 /*!
 @file       physicsutils.h
-@author     miratristan.d@digipen.edu
+@author     Renfred Lee
+@author     tristan
+@author     Tristan Mira
 @date       02/11/2025
 @brief      Declaration for types of forces and a force manager
 

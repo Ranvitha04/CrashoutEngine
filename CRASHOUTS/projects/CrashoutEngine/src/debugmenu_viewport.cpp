@@ -1,6 +1,8 @@
 /*!
 @file       debugmenu_viewport.cpp
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Renfred Lee
+@author     Shahrin Idzuan
 @date       25/12/2025
 @brief      File containing the implementation of the Debug Menu Viewport rendering functions.
 

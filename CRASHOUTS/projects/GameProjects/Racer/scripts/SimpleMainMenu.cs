@@ -1,9 +1,21 @@
+/*!
+@file       SimpleMainMenu.cs
+@author     Renfred Lee
+@date       13/03/2026
+@brief      Basic start/quit menu logic for the Racer project.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 using System;
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
+    /*!
+    @brief Handles click interactions for a minimal main menu.
+    */
     public class SimpleMainMenu : ScriptBase
     {
         // Drag and drop these in your Inspector
@@ -16,12 +28,18 @@ namespace CrashoutsEngine
         private bool isClicking = false;
         private int _clickCooldown = 0;
 
+        /*!
+        @brief Initialize click state.
+        */
         public override void Start()
         {
             isClicking = false;
             _clickCooldown = 0;
         }
 
+        /*!
+        @brief Handle start/quit button clicks each frame.
+        */
         public override void Update()
         {
             // Reset click state when mouse is released
@@ -50,7 +68,11 @@ namespace CrashoutsEngine
         public override void FixedUpdate() { }
         public override void OnDestroy() { }
 
-        // Reusing your robust button check logic
+        /*!
+        @brief Check whether a button entity was clicked this frame.
+        @param btnEnt Button entity reference.
+        @return True if clicked, otherwise false.
+        */
         private bool CheckButtonClick(Entity btnEnt)
         {
             if (isClicking) return false;

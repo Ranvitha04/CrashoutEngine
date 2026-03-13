@@ -1,6 +1,8 @@
 /*!
 @file   entitymanager.h
-@author lee.r@digipen.edu
+@author Renfred Lee
+@author Renfred (RTIS)
+@author Shahrin Idzuan
 @date   05/09/2025
 
 @brief	This file contains the declaration and implementation of the 

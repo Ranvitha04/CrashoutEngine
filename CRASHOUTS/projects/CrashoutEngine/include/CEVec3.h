@@ -1,11 +1,13 @@
 /*!
 @file       CEVec3.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     Ranvitha
 @date       05/09/2025
 @brief      3D vector type with common operations
 
 The file defines a 3D vector structure with basic arithmetic and comparison operations.
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.s
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.s
 //__________________________________________________________________________*/
 
 #pragma once

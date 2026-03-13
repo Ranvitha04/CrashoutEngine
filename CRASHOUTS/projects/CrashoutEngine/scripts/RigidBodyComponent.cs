@@ -1,6 +1,7 @@
 /*!
 @file       rigidbodycomponent.cs
-@author     m.biniswandi@digipen.edu
+@author     Renfred Lee
+@author     Shahrin Idzuan
 @date       29/11/2025
 @brief      rigidbody component for physics interactions
 

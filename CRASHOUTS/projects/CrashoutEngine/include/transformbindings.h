@@ -1,10 +1,12 @@
 /*!
 @file		transformbindings.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     m.biniswandi
+@author     Ranvitha
 @date       06/11/2025
 @brief		Declaration of transformbindings
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #pragma once

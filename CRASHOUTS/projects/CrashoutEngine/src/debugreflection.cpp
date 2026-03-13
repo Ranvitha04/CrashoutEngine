@@ -1,6 +1,7 @@
 /*!
 @file       editorregistry.cpp
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Ranvitha
 @date       25/09/2025
 
 Implements lightweight reflection registries used by the Debug Menu:
@@ -11,7 +12,7 @@ Implements lightweight reflection registries used by the Debug Menu:
 
 These registries allow the UI to be data-driven instead of hardcoded.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -24,7 +25,7 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserve
 /*!
  @brief Static storage for registries and provider pointer.
 
- Each registry is a Meyers singleton so it’s safe to call from any module
+ Each registry is a Meyers singleton so itï¿½s safe to call from any module
  without manual initialization. The Game State provider is a single pointer
  the game installs once at startup.
 */
@@ -90,7 +91,7 @@ namespace DebugReflection {
     /*!
      @brief Registers a new custom ImGui panel in the registry.
      @param name       Name of the panel as shown in the UI.
-     @param fn         Function that renders the panel’s ImGui contents.
+     @param fn         Function that renders the panelï¿½s ImGui contents.
      @param toggleFlag Optional pointer to a boolean controlling panel visibility.
      @note Registered panels can be toggled on-demand and are integrated into the debug UI system.
     */

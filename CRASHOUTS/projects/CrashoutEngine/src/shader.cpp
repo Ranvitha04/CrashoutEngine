@@ -1,6 +1,6 @@
 /*!
 @file        glslshader.cpp
-@author      ranvitha@digipen.edu
+@author      Ranvitha
 @date        09/12/2025
 
 This file implements the GLSLShader class, which provides a
@@ -15,7 +15,7 @@ and set uniform variables of various types (scalars, vectors, and
 matrices). These implementations simplify shader program usage
 by encapsulating common OpenGL calls and error handling.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 

@@ -1,12 +1,13 @@
 /*!
 @file		registergamestate.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Ranvitha
 @date       13/09/2025
 @brief		Declaration for game state registration
 
 Provides a single function to register all available game states with the game state manager
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 

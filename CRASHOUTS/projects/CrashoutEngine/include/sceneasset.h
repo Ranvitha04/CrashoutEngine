@@ -1,6 +1,8 @@
 /*!
 @file   sceneasset.h
-@author lee.r@digipen.edu       
+@author Renfred Lee
+@author Ranvitha
+@author Shahrin Idzuan
 =@date   16/09/2025
 
 @brief	This file contains the declaration of the Scene class, a rough implementation

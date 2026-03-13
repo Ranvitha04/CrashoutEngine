@@ -1,6 +1,6 @@
 /*!
 @file       CutsceneScript.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
 @date       02/02/2026
 @brief      Script to manage cutscene sequences with images and dialogues.
 

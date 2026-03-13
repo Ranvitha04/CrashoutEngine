@@ -1,6 +1,7 @@
 /*!
 @file       checkpointcomponent.h
-@author     m.biniswandi@digipen.edu
+@author     m.biniswandi
+@author     Shahrin Idzuan
 @brief      Checkpoint component for respawn logic.
 */
 #pragma once

@@ -1,6 +1,8 @@
 /*!
 @file		transformbindings.cpp
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Ranvitha
+@author     m.biniswandi
 @date       06/11/2025
 @brief		Definition of transform bindings functions
 

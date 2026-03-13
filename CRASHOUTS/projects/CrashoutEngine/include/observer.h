@@ -1,11 +1,12 @@
 /*!
 @file       observer.h
-@author     miratristan.d@digipen.edu
+@author     Renfred Lee
+@author     Ranvitha
 @date       19/09/2025
 @brief      Declaration for the Base class Observar. Allows other system to inherit from this class to listen to messages emitted by
 			Observables
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

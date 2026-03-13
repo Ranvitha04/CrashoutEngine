@@ -1,6 +1,8 @@
 /*!
 @file   tilemapcomponent.cpp
-@author lee.r@digipen.edu
+@author Renfred Lee
+@author Renfred (RTIS)
+@author Shahrin Idzuan
 @date   19/11/2025
 
 @brief	This file defines the functions that would be used by the

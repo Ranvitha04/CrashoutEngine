@@ -1,13 +1,29 @@
+/*!
+@file       Checkpoint.cs
+@author     Renfred Lee
+@author     Mohamad Amir Akmal
+@date       13/03/2026
+@brief      Gameplay script that activates a checkpoint when the player enters its trigger.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 using System;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
+    /*!
+    @brief Activates and updates the player's respawn point when triggered.
+    */
     public class Checkpoint : ScriptBase
     {
         private CheckpointComponent cp;
         private TriggerMetadataComponent tm;
 
+        /*!
+        @brief Initialize component references and register trigger callbacks.
+        */
         public override void Start()
         {
             cp = Entity.GetComponent<CheckpointComponent>();
@@ -27,6 +43,10 @@ namespace CrashoutsEngine
             CollisionEvents.RegisterTriggerEnter(Entity.ID, this.OnTriggerEnter);
         }
 
+        /*!
+        @brief Trigger callback for checkpoint activation.
+        @param otherEntity Entity id that entered the trigger.
+        */
         public void OnTriggerEnter(uint otherEntity)
         {
             Entity other = new Entity(otherEntity);

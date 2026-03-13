@@ -1,3 +1,12 @@
+/*!
+@file       createentitycommand.cpp
+@author     Afiq
+@date       13/03/2026
+@brief      Implementation of CreateEntityCommand.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #include "createentitycommand.h"
 #include "sceneasset.h"
 
@@ -13,8 +22,14 @@
 #include "tagcomponent.h"
 namespace CrashoutsEngine {
 
+    /*!
+    @brief Construct a create-entity command.
+    */
     CreateEntityCommand::CreateEntityCommand() {}
 
+    /*!
+    @brief Create (or recreate) the entity and snapshot its serialized state.
+    */
     void CreateEntityCommand::Execute()
     {
         ECS& ecs = *ECS::getInstance();
@@ -67,6 +82,9 @@ namespace CrashoutsEngine {
         m_createdEntity = static_cast<Entity>(Serialization::DeserializeEntity(doc[0], nullptr));
     }
 
+    /*!
+    @brief Destroy the created entity if it exists.
+    */
     void CreateEntityCommand::Undo()
     {
         if (m_createdEntity == 0)

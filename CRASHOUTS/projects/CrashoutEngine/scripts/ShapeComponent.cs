@@ -1,6 +1,7 @@
 /*!
 @file       ShapeComponent.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
+@author     Ranvitha
 @date       28/11/2025
 @brief      C# Script for Shape Component
 

@@ -1,12 +1,12 @@
 /*!
 @file    	main.cpp
-@author  	lee.r@digipen.edu
+@author  	Renfred Lee
 @date    	17/09/2025
 
 This file uses functionality defined in type GLApp to initialize an OpenGL
 context and implement a game loop.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 

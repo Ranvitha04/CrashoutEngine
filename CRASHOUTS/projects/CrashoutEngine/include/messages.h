@@ -1,10 +1,12 @@
 /*!
 @file       messages.h
-@author     miratristan.d@digipen.edu
+@author     Renfred Lee
+@author     Ranvitha
+@author     tristan
 @date       19/09/2025
 @brief      Declaration for the Base class Messages, and common IDS for messages to listen to.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 #pragma once

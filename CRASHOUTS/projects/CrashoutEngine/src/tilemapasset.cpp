@@ -1,12 +1,14 @@
 /*!
 @file   tilemapasset.cpp
-@author lee.r@digipen.edu
+@author Renfred Lee
+@author Renfred (RTIS)
+@author Ranvitha
 @date   16/09/2025
 
 @brief	This file contains the definition of the tile map asset class, as well
         as the functions required to create it and use it.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 __________________________________________________________________________*/
 #pragma once

@@ -1,6 +1,6 @@
 /*!
 @file       ButtonComponent.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
 @date       26/11/2025
 @brief      Button Component for Crashouts Engine.
 

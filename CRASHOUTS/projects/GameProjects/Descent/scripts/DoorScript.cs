@@ -1,6 +1,6 @@
 /*!
 @file       DoorScript.cs
-@author     
+@author     Renfred Lee
 @date       09/03/2026
 @brief      Generic script to handle player interaction with level transition doors.
             When the player collides with or triggers the door, it loads the specified scene.

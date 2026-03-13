@@ -1,6 +1,7 @@
 /*!
 @file       timebindings.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Ranvitha
 @date       29/11/2025
 @brief      timebindings.h file contains the function declarations for registering time-related bindings in the CrashoutsEngine
 

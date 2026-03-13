@@ -1,6 +1,6 @@
 /*!
 @file       SerializeField.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
 @date       27/11/2025
 @brief      Defines the SerializeField attribute for marking fields to be serialized.
 

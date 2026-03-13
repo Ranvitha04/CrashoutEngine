@@ -1,6 +1,7 @@
 /*!
 @file       leaderboard.cs
-@author     lee.r@digipen.edu
+@author     Renfred (RTIS)
+@author     Renfred Lee
 @date       08/03/2025
 @brief      Leaderboard interface with C++ leaderboard items
 

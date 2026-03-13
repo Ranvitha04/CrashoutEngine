@@ -6,11 +6,13 @@
 
 /*!
 @file   spriteAnimation.h
-@author ranvitha@digipen.edu
+@author Ranvitha
+@author Afiq
+@author Renfred Lee
 @date   30/11/2025
 @brief  This file contains the declaration of sprite-related components
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 
