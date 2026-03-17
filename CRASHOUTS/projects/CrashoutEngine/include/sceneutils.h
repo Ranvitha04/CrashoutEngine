@@ -19,6 +19,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 namespace Scene {
     namespace UI {
         void LoadDialogue(Component::TextComponent& tc);
+        void SetForcedHoveredButton(CrashoutsEngine::Entity entity);
+        void ClearForcedHoveredButton();
     }
 
 

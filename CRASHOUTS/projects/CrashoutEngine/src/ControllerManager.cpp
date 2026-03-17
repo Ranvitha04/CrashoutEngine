@@ -81,6 +81,18 @@ namespace CrashoutEngine
         }
     }
 
+    void ControllerManager::SyncState()
+    {
+        // Force "previous" state to match the controller's live state so held
+        // buttons and sticks do not retrigger across scene loads or UI mode
+        // transitions.
+        for (auto& [instanceId, controller] : m_controllers)
+        {
+            (void)instanceId;
+            SnapshotControllerState(controller);
+        }
+    }
+
     void ControllerManager::HandleEvent(const SDL_Event& event)
     {
         switch (event.type)

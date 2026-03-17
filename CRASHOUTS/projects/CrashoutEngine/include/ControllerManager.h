@@ -20,6 +20,7 @@ namespace CrashoutEngine
         void Shutdown();
 
         void BeginFrame();
+        void SyncState();
         void HandleEvent(const SDL_Event& event);
 
         bool GetButton(SDL_GameControllerButton button) const;

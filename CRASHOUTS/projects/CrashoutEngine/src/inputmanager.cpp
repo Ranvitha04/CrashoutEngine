@@ -476,11 +476,16 @@ bool InputManager::GetActionReleased(const std::string& actionName)
 void InputManager::ClearInputs()
 {
     Keys.clear();
+    s_lastKeys.clear();
     MouseButtons.clear();
     s_lastMouseButtons.clear();
     ScrollYAccum = 0.0f;
     ScrollYFrame = 0.0f;
     s_typedChars.clear();
+    if (s_controllerManager)
+    {
+        s_controllerManager->SyncState();
+    }
 }
 
 float InputManager::GetKeyboardAxis(int negativeKey, int positiveKey)

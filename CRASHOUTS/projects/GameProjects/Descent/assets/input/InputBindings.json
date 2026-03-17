@@ -23,6 +23,21 @@
     "GrabSlime": [
       { "type": "mouse_button", "button": "Left" },
       { "type": "controller_axis", "axis": "RT", "direction": "positive", "threshold": 0.5 }
+    ],
+    "UISubmit": [
+      { "type": "key", "key": "Enter" },
+      { "type": "key", "key": "Space" },
+      { "type": "controller_button", "button": "A" }
+    ],
+    "UIUp": [
+      { "type": "key", "key": "W" },
+      { "type": "key", "key": "Up" },
+      { "type": "controller_button", "button": "Dpad_Up" }
+    ],
+    "UIDown": [
+      { "type": "key", "key": "S" },
+      { "type": "key", "key": "Down" },
+      { "type": "controller_button", "button": "Dpad_Down" }
     ]
   },
   "axes": {
@@ -41,6 +56,11 @@
     ],
     "AimY": [
       { "type": "controller_axis", "axis": "Right_Y", "deadzone": 0.2, "invert": true }
+    ],
+    "MenuY": [
+      { "type": "key_axis", "negative": "S", "positive": "W" },
+      { "type": "key_axis", "negative": "Down", "positive": "Up" },
+      { "type": "controller_axis", "axis": "Left_Y", "deadzone": 0.2, "invert": true }
     ]
   }
 }

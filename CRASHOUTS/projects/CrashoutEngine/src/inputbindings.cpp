@@ -33,6 +33,11 @@ static bool InternalIsKeyHeld(int key)
     return InputManager::IsKeyHeld(key);
 }
 
+static void InternalClearState()
+{
+    InputManager::ClearInputs();
+}
+
 static float InternalGetAxis(MonoString* axisName)
 {
     if (axisName == nullptr)
@@ -139,6 +144,7 @@ void CrashoutsEngine::Bindings::RegisterInputBindings()
     mono_add_internal_call("CrashoutsEngine.Input::InternalIsKeyPressed", reinterpret_cast<const void*>(InternalIsKeyPressed));
     mono_add_internal_call("CrashoutsEngine.Input::InternalIsKeyTriggered", reinterpret_cast<const void*>(InternalIsKeyTriggered));
 	mono_add_internal_call("CrashoutsEngine.Input::InternalIsKeyHeld", reinterpret_cast<const void*>(InternalIsKeyHeld));
+    mono_add_internal_call("CrashoutsEngine.Input::InternalClearState", reinterpret_cast<const void*>(InternalClearState));
     mono_add_internal_call("CrashoutsEngine.Input::InternalGetAxis", reinterpret_cast<const void*>(InternalGetAxis));
     mono_add_internal_call("CrashoutsEngine.Input::InternalGetAction", reinterpret_cast<const void*>(InternalGetAction));
     mono_add_internal_call("CrashoutsEngine.Input::InternalGetActionTriggered", reinterpret_cast<const void*>(InternalGetActionTriggered));

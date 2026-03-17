@@ -127,6 +127,7 @@ namespace CrashoutsEngine
         private Entity pauseScreenEntity;
         private Entity gameOverScreen;
         private CEVec3 storedVelocity;
+        private float storedAngularVelocity = 0.0f;
         [SerializeField] private bool reloadOnDeath = false;
         [SerializeField] private string reloadSceneName = "";
         [SerializeField] private string gameOverSceneName = "Defeat";
@@ -139,10 +140,18 @@ namespace CrashoutsEngine
             if (isPaused)
             {
                 storedVelocity = rb.LinearVelocity;
+                storedAngularVelocity = rb.AngularVelocity;
                 rb.LinearVelocity = new CEVec3(0, 0, 0);
+                rb.AngularVelocity = 0.0f;
+                rb.SetDynamic(false);
                 anim.Play("playerIdle" + (isLight ? "Light" : ""));
             }
-            else { rb.LinearVelocity = storedVelocity; }
+            else
+            {
+                rb.SetDynamic(true);
+                rb.LinearVelocity = storedVelocity;
+                rb.AngularVelocity = storedAngularVelocity;
+            }
         }
 
         private void ApplyFlipping()

@@ -46,6 +46,14 @@ namespace
         return btn && (btn->buttonState == ButtonState::HOVERED);
     }
 
+    static void InternalSetForcedHoveredButton(uint32_t id) {
+        Scene::UI::SetForcedHoveredButton(id);
+    }
+
+    static void InternalClearForcedHoveredButton() {
+        Scene::UI::ClearForcedHoveredButton();
+    }
+
     // --- Lifecycle Functions (For InternalCalls.cs) ---
     static void InternalAddButton(uint32_t id) {
         ECS::getInstance()->AddComponent<ButtonComponent>(id);
@@ -117,6 +125,8 @@ void CrashoutsEngine::Bindings::RegisterUIBindings()
     // 1. Register Logic (Matches ButtonComponent class in C#)
     mono_add_internal_call("CrashoutsEngine.ButtonComponent::InternalIsClicked", (const void*)InternalIsClicked);
     mono_add_internal_call("CrashoutsEngine.ButtonComponent::InternalIsHovered", (const void*)InternalIsHovered);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::UI_SetForcedHoveredButton", (const void*)InternalSetForcedHoveredButton);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::UI_ClearForcedHoveredButton", (const void*)InternalClearForcedHoveredButton);
 
     // 2. Register Lifecycle (Matches InternalCalls class in C#)
     mono_add_internal_call("CrashoutsEngine.InternalCalls::AddButton", (const void*)InternalAddButton);

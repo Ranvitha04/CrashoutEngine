@@ -9,9 +9,6 @@
 All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
 */
 
-using System;
-using System.Runtime.CompilerServices;
-
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]

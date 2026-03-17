@@ -386,5 +386,11 @@ namespace CrashoutsEngine
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void TransformSetLocalScale(uint entityID, ref CEVec2 scale);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void UI_SetForcedHoveredButton(uint entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void UI_ClearForcedHoveredButton();
     }
 }

@@ -36,6 +36,13 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalIsKeyHeld(Key key);
 
+        public static void ClearState()
+        {
+            InternalClearState();
+        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalClearState();
+
         // Returns a gameplay axis in the range [-1, 1].
         // Example: "MoveX" combines A/D with the left stick X axis.
         public static float GetAxis(string axisName)

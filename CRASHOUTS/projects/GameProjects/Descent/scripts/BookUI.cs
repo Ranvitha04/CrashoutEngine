@@ -9,7 +9,7 @@ All content � 2025 DigiPen Institute of Technology Singapore. All rights reser
 using System;
 
 namespace CrashoutsEngine
-{
+{  
     [ScriptBehaviour]
     public class BookUI : ScriptBase
     {
