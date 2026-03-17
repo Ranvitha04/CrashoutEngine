@@ -35,6 +35,7 @@ namespace CrashoutsEngine
         [SerializeField] private float minThrowSpeed = 300.0f;
         [SerializeField] private float maxThrowSpeed = 2000.0f; 
         [SerializeField] private float maxMouseDragDist = 400.0f;
+        [SerializeField] private float controllerAimDeadzone = 0.2f;
         [SerializeField] private float airDrag = 1.0f; 
         [SerializeField] private float stunDuration = 1.0f;
         [SerializeField] private float pickAnimDuration = 60.0f;
@@ -383,7 +384,7 @@ namespace CrashoutsEngine
 
                 if (playerTf != null)
                 {
-                    CEVec2 mousePos = Input.GetMouseWorldPosition();
+                    CEVec2 mousePos = GetThrowAimPosition(tf.Position);
                     CEVec3 slimePos = new CEVec3(tf.Position.x, tf.Position.y, drawZ);
                     CEVec3 throwVel = CalculateThrowVelocity(mousePos, tf.Position);
                     SimulatePath(throwVel, slimePos);
@@ -555,16 +556,64 @@ namespace CrashoutsEngine
             PlayerMovement.Instance.CurrentEnergy = Math.Max(PlayerMovement.Instance.CurrentEnergy - amount, 0.0f);
         }
 
+        private bool TryGetControllerAimWorldPosition(CEVec3 anchorPos, float maxDistance, out CEVec2 aimWorldPos)
+        {
+            float aimX = Input.GetAxis("AimX");
+            float aimY = Input.GetAxis("AimY");
+            float magnitude = (float)Math.Sqrt((aimX * aimX) + (aimY * aimY));
+
+            if (magnitude <= controllerAimDeadzone)
+            {
+                aimWorldPos = new CEVec2(anchorPos.x, anchorPos.y);
+                return false;
+            }
+
+            float normalizedX = aimX / magnitude;
+            float normalizedY = aimY / magnitude;
+            float clampedMagnitude = Math.Min(magnitude, 1.0f);
+            float aimDistance = maxDistance * clampedMagnitude;
+
+            aimWorldPos = new CEVec2(
+                anchorPos.x + (normalizedX * aimDistance),
+                anchorPos.y + (normalizedY * aimDistance));
+
+            return true;
+        }
+
+        private CEVec2 GetGrabAimPosition(CEVec3 slimeWorldPos)
+        {
+            var playerTf = playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null;
+            CEVec3 anchorPos = playerTf != null ? playerTf.WorldPosition : slimeWorldPos;
+
+            if (TryGetControllerAimWorldPosition(anchorPos, grabRange + 100.0f, out CEVec2 controllerAimPos))
+            {
+                return controllerAimPos;
+            }
+
+            return Input.GetMouseWorldPosition();
+        }
+
+        private CEVec2 GetThrowAimPosition(CEVec3 anchorPos)
+        {
+            if (TryGetControllerAimWorldPosition(anchorPos, maxMouseDragDist, out CEVec2 controllerAimPos))
+            {
+                return controllerAimPos;
+            }
+
+            return Input.GetMouseWorldPosition();
+        }
+
         private void HandleGrabInput()
         {
-            bool isDown = Input.IsMouseButtonDown(0);
-            CEVec2 mousePos = Input.GetMouseWorldPosition();
+            bool isDown = Input.IsMouseButtonDown(0) || Input.GetAction("GrabSlime");
+            CEVec3 worldPos = tf.WorldPosition;
+            CEVec2 aimPos = isGrabbed ? GetThrowAimPosition(worldPos) : GetGrabAimPosition(worldPos);
 
             if (isDown)
             {
                 if (isGrabbed && playerScript != null && playerScript.CurrentEnergy <= 0.0f)
                 {
-                    ReleaseSlime(false, mousePos);
+                    ReleaseSlime(false, aimPos);
                     return;
                 }
 
@@ -573,11 +622,10 @@ namespace CrashoutsEngine
                     float halfW = Math.Abs(tf.Size.x) * 0.5f + 100.0f;
                     float halfH = Math.Abs(tf.Size.y) * 0.5f + 100.0f;
 
-                    CEVec3 worldPos = tf.WorldPosition;
-                    bool mouseOverSlime = mousePos.x >= worldPos.x - halfW && mousePos.x <= worldPos.x + halfW &&
-                                          mousePos.y >= worldPos.y - halfH && mousePos.y <= worldPos.y + halfH;
+                    bool aimOverSlime = aimPos.x >= worldPos.x - halfW && aimPos.x <= worldPos.x + halfW &&
+                                        aimPos.y >= worldPos.y - halfH && aimPos.y <= worldPos.y + halfH;
 
-                    if (mouseOverSlime)
+                    if (aimOverSlime)
                     {
                         var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
                         float distToPlayer = Distance(worldPos, playerTf.WorldPosition);
@@ -605,24 +653,23 @@ namespace CrashoutsEngine
 
                 if (isGrabbed && playerScript != null)
                 {
-                    CEVec3 worldPos = tf.WorldPosition;
                     RemoveEnergy(grabEnergyDrainRate * (float)Time.DT);
                     if (playerScript.CurrentEnergy <= 0.0f)
                     {
-                        ReleaseSlime(false, mousePos);
+                        ReleaseSlime(false, aimPos);
                         return;
                     }
                     var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
                     if (playerTf != null)
                     {
-                        CEVec3 throwVel = CalculateThrowVelocity(mousePos, worldPos);
+                        CEVec3 throwVel = CalculateThrowVelocity(aimPos, worldPos);
                         SimulatePath(throwVel, worldPos);
                     }
                 }
             }
             else if (isGrabbed)
             {
-                ReleaseSlime(true, mousePos);
+                ReleaseSlime(true, aimPos);
             }
         }
 

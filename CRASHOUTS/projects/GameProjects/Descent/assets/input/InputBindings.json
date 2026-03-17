@@ -19,6 +19,10 @@
       { "type": "key", "key": "Down" },
       { "type": "controller_button", "button": "Dpad_Down" },
       { "type": "controller_axis", "axis": "Left_Y", "direction": "positive", "threshold": 0.5 }
+    ],
+    "GrabSlime": [
+      { "type": "mouse_button", "button": "Left" },
+      { "type": "controller_axis", "axis": "RT", "direction": "positive", "threshold": 0.5 }
     ]
   },
   "axes": {
@@ -31,6 +35,12 @@
       { "type": "key_axis", "negative": "S", "positive": "W" },
       { "type": "key_axis", "negative": "Down", "positive": "Up" },
       { "type": "controller_axis", "axis": "Left_Y", "deadzone": 0.2, "invert": true }
+    ],
+    "AimX": [
+      { "type": "controller_axis", "axis": "Right_X", "deadzone": 0.2 }
+    ],
+    "AimY": [
+      { "type": "controller_axis", "axis": "Right_Y", "deadzone": 0.2, "invert": true }
     ]
   }
 }
