@@ -24719,6 +24719,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -24771,7 +24802,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -24785,14 +24816,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -24845,37 +24876,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -27128,7 +27128,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.0
                 },
                 "color": {
@@ -27536,7 +27536,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.0
                 },
                 "color": {
@@ -28764,7 +28764,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.0
                 },
                 "color": {
@@ -29016,7 +29016,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.0,
                     "y": 0.0
                 },
                 "color": {
@@ -32122,6 +32122,30 @@
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
             },
+            "light": {
+                "active": true,
+                "intensity": 0.5,
+                "radius": 23.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.9843137264251709,
+                    "y": 0.5176470875740051,
+                    "z": 0.054901961237192157
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "layer": {
                 "layerName": "Player",
                 "z": 0
@@ -32131,44 +32155,6 @@
                 "t": 15.016609191894532,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "slimePick",
                         "wrap": 0,
@@ -32222,7 +32208,7 @@
                         ]
                     },
                     {
-                        "name": "slimeStunned",
+                        "name": "slimeWalk",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -32236,14 +32222,21 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32275,6 +32268,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32512,7 +32536,7 @@
                     "z": 51.0
                 },
                 "size": {
-                    "x": 53.0,
+                    "x": -53.0,
                     "y": 49.29999923706055
                 }
             },
@@ -32723,6 +32747,30 @@
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
             },
+            "light": {
+                "active": true,
+                "intensity": 0.5,
+                "radius": 23.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "color": {
+                    "x": 0.9843137264251709,
+                    "y": 0.5176470875740051,
+                    "z": 0.054901961237192157
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "layer": {
                 "layerName": "Player",
                 "z": 0
@@ -32732,6 +32780,44 @@
                 "t": 2.566664934158325,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "slimePick",
                         "wrap": 0,
@@ -32785,7 +32871,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -32799,21 +32885,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32845,37 +32924,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -35118,7 +35166,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": -1.0,
+                    "x": 1.0,
                     "y": 1.0
                 }
             },
@@ -35341,27 +35389,61 @@
         },
         {
             "active": true,
-            "name": "SlimeLight",
-            "uuid": 17744916967257968050,
+            "name": "PlayerBookGlow",
+            "uuid": 11223344556677890112,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1368.64453125,
-                    "y": -87.16011047363281,
-                    "z": 0.7333488464355469
+                    "x": -294.4568786621094,
+                    "y": 0.7686786651611328,
+                    "z": 0.0
                 },
                 "size": {
-                    "x": -1.0,
+                    "x": -273.8399963378906,
+                    "y": 44.5
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Icon.png",
+                "uvSize": {
+                    "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.20441991090774537,
+                    "y": 0.20441991090774537,
+                    "z": 0.20441991090774537,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "light": {
                 "active": true,
-                "intensity": 0.5,
-                "radius": 23.0,
+                "intensity": 0.550000011920929,
+                "radius": 31.0,
                 "affectBloom": true,
                 "useTransform": true,
                 "renderSelf": true,
@@ -35372,9 +35454,9 @@
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
                 "color": {
-                    "x": 0.9852941036224365,
-                    "y": 0.5192113518714905,
-                    "z": 0.05312861502170563
+                    "x": 0.8823529481887817,
+                    "y": 0.08650518953800202,
+                    "z": 0.08650518953800202
                 },
                 "position": {
                     "x": 0.0,
@@ -35383,16 +35465,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 11749515231721264001,
+                "parentUUID": 17142618762681968282,
                 "localPos": {
-                    "x": 0.05703677609562874,
-                    "y": -0.08819936215877533,
-                    "z": -50.26665115356445
+                    "x": 0.23245151340961457,
+                    "y": -0.057221680879592898,
+                    "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": -0.01886792480945587,
-                    "y": 0.020283976569771768
+                    "x": 1.9559999704360963,
+                    "y": 0.4449999928474426
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -35403,8 +35485,8 @@
                 }
             },
             "layer": {
-                "layerName": "",
-                "z": 0
+                "layerName": "Player",
+                "z": 1
             }
         }
     ],
