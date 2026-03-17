@@ -234,8 +234,9 @@ namespace CrashoutsEngine
 
             if (isPaused || !alive) return;
 
-            if (Input.IsKeyPressed(Key.A) && !isDialogueActive) facingRight = false;
-            else if (Input.IsKeyPressed(Key.D) && !isDialogueActive) facingRight = true;
+            float moveInputX = isDialogueActive ? 0.0f : Input.GetAxis("MoveX");
+            if (moveInputX < -0.01f) facingRight = false;
+            else if (moveInputX > 0.01f) facingRight = true;
             ApplyFlipping();
 
             if (playDialogueOnStart && isDialogueActive)
@@ -251,7 +252,7 @@ namespace CrashoutsEngine
                 return;
             }
 
-            if (Input.IsKeyTriggered(Key.E) && IsGrounded && CurrentEnergy >= energyConsumption && swapPauseTimer <= 0.0f)
+            if (Input.GetActionTriggered("SwapMass") && IsGrounded && CurrentEnergy >= energyConsumption && swapPauseTimer <= 0.0f)
             {
                 RemoveEnergy(energyConsumption);
                 switchStartIsLight = isLight;
@@ -269,9 +270,7 @@ namespace CrashoutsEngine
                 return;
             }
 
-            horizontalInput = 0f;
-            if (Input.IsKeyPressed(Key.A)) horizontalInput = -1f;
-            else if (Input.IsKeyPressed(Key.D)) horizontalInput = 1f;
+            horizontalInput = moveInputX;
 
             bool wasGroundedThisFrame = IsGrounded;
             CheckGround();
@@ -293,7 +292,7 @@ namespace CrashoutsEngine
             }
 
             // Drop down trigger (S Key)
-            if (Input.IsKeyHeld(Key.S) && IsGrounded && !isPhasing)
+            if (Input.GetAction("DropDown") && IsGrounded && !isPhasing)
             {
                 isPhasing = true;
                 passthroughOverlapTimer = 0.1f; // Kickstart the heartbeat so we don't immediately un-phase
@@ -302,7 +301,7 @@ namespace CrashoutsEngine
             // ---------------------------------------------------------
             // 7. JUMP LOGIC
             // ---------------------------------------------------------
-            if (Input.IsKeyTriggered(Key.Space) && (IsGrounded || coyoteTimeTimer > 0.0f) && jumpReady && !isPhasing) 
+            if (Input.GetActionTriggered("Jump") && (IsGrounded || coyoteTimeTimer > 0.0f) && jumpReady && !isPhasing) 
             {
                 jumpRequested = true;
                 jumpReady = false; 
@@ -526,7 +525,7 @@ namespace CrashoutsEngine
             if (currentDialogueIndex >= dialogueEntities.Length) { isDialogueActive = false; return; }
             Entity ent = dialogueEntities[currentDialogueIndex];
             if (ent == null) { isDialogueActive = false; return; }
-            if (Input.IsKeyTriggered(Key.Space) || (InternalCalls.IsTextFinished(ent.ID) && (dialogueTimer += (float)Time.DT) >= dialogueCooldown))
+            if (Input.GetActionTriggered("Jump") || (InternalCalls.IsTextFinished(ent.ID) && (dialogueTimer += (float)Time.DT) >= dialogueCooldown))
             {
                 InternalCalls.SetActive(ent.ID, false); currentDialogueIndex++; dialogueTimer = 0.0f;
                 if (currentDialogueIndex < dialogueEntities.Length && dialogueEntities[currentDialogueIndex] != null)

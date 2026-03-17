@@ -36,6 +36,36 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalIsKeyHeld(Key key);
 
+        // Returns a gameplay axis in the range [-1, 1].
+        // Example: "MoveX" combines A/D with the left stick X axis.
+        public static float GetAxis(string axisName)
+        {
+            return InternalGetAxis(axisName);
+        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern float InternalGetAxis(string axisName);
+
+        public static bool GetAction(string actionName)
+        {
+            return InternalGetAction(actionName);
+        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalGetAction(string actionName);
+
+        public static bool GetActionTriggered(string actionName)
+        {
+            return InternalGetActionTriggered(actionName);
+        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalGetActionTriggered(string actionName);
+
+        public static bool GetActionReleased(string actionName)
+        {
+            return InternalGetActionReleased(actionName);
+        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool InternalGetActionReleased(string actionName);
+
         public static CEVec2 GetMousePosition()
         {
             CEVec2 pos;

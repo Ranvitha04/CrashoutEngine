@@ -83,7 +83,7 @@ foreach(TARGET_LIB ${ENGINE_LIBRARIES})
     target_precompile_headers(${TARGET_LIB} PRIVATE "include/engine_pch.h")
 
     target_link_libraries(${TARGET_LIB} PUBLIC 
-        libglew_static glfw glm::glm imgui 
+        libglew_static glfw glm::glm imgui sdl2
         PRIVATE stb freetype reflect rapidjson CrashoutsAudio imguizmo
     )
 

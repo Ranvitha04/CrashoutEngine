@@ -12,16 +12,31 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 */
 #include "inputmanager.h"
+#include "ControllerManager.h"
+#include "engine.h"
 #include "replaymanager.h"
 #include "frameratecontroller.h"
 
 #include <iostream>
 #include <ostream>
+#include <algorithm>
+#include <cmath>
+#include <cctype>
+#include <filesystem>
+#include <fstream>
+#include <memory>
 #include <log.h>
 #include "settings.h"
 #include <glm/glm.hpp>
 
 #include "CEVec2.h"
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/error/en.h>
+
+namespace
+{
+    namespace fs = std::filesystem;
+}
 
 /// Static storage for the GLFW window pointer
 GLFWwindow* InputManager::Window = nullptr;
@@ -49,6 +64,10 @@ std::unordered_map<int, bool> InputManager::s_lastKeys;
 bool InputManager::s_isReplayMode = false;
 std::unordered_map<int, bool> InputManager::s_replayKeys;
 std::unordered_map<int, bool> InputManager::s_replayMouseButtons;
+std::unique_ptr<CrashoutEngine::ControllerManager> InputManager::s_controllerManager;
+std::unordered_map<std::string, std::vector<InputManager::DigitalBinding>> InputManager::s_actionBindings;
+std::unordered_map<std::string, std::vector<InputManager::AxisBinding>> InputManager::s_axisBindings;
+float InputManager::s_defaultDeadzone = 0.2f;
 
 // Game View State
 bool InputManager::s_usingGameView = false;
@@ -116,6 +135,23 @@ void InputManager::Init(GLFWwindow* ptr_window) {
     glfwSetScrollCallback(Window, ScrollCallback);
     // Tell GLFW to call CharCallback when a key is typed
     glfwSetCharCallback(Window, CharCallback);
+
+    if (!s_controllerManager)
+    {
+        s_controllerManager = std::make_unique<CrashoutEngine::ControllerManager>();
+        s_controllerManager->Initialize();
+    }
+
+    std::string bindingPath = GetBindingsPath();
+    if (!LoadBindings(bindingPath))
+    {
+        bindingPath = GetGameRoot() + "/assets/json/InputBindings.json";
+        if (!LoadBindings(bindingPath))
+        {
+            bindingPath = GetGameRoot() + "/assets/InputBindings.json";
+            LoadBindings(bindingPath);
+        }
+    }
 }
 
 /*!
@@ -125,6 +161,17 @@ Snapshots scroll delta resets accumulator and refreshes key and mouse button sta
 */
 void InputManager::Update() {
     s_usingGameView = false;
+
+    if (s_controllerManager)
+    {
+        s_controllerManager->BeginFrame();
+
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            s_controllerManager->HandleEvent(event);
+        }
+    }
 
     // Clear typed chars and store last frame's key state
     s_typedChars.clear();
@@ -167,6 +214,12 @@ void InputManager::Shutdown() {
     s_lastMouseButtons.clear();
     ScrollYAccum = 0.0f;
     ScrollYFrame = 0.0f;
+
+    if (s_controllerManager)
+    {
+        s_controllerManager->Shutdown();
+        s_controllerManager.reset();
+    }
 }
 
 /*!
@@ -338,6 +391,88 @@ bool InputManager::IsKeyHeld(Key key)
     return IsKeyHeld(static_cast<int>(key));
 }
 
+float InputManager::GetAxis(const std::string& axisName)
+{
+    const auto axisIt = s_axisBindings.find(axisName);
+    if (axisIt == s_axisBindings.end())
+    {
+        return 0.0f;
+    }
+
+    float axisValue = 0.0f;
+    for (const AxisBinding& binding : axisIt->second)
+    {
+        axisValue = ChooseDominantAxis(axisValue, EvaluateAxisBinding(binding));
+    }
+
+    return ClampAxis(axisValue);
+}
+
+std::string InputManager::GetBindingsPath()
+{
+    const fs::path bindingsDir = fs::path(GetGameRoot()) / "assets" / "input";
+    std::error_code errorCode;
+    fs::create_directories(bindingsDir, errorCode);
+    return (bindingsDir / "InputBindings.json").string();
+}
+
+bool InputManager::GetAction(const std::string& actionName)
+{
+    const auto actionIt = s_actionBindings.find(actionName);
+    if (actionIt == s_actionBindings.end())
+    {
+        return false;
+    }
+
+    for (const DigitalBinding& binding : actionIt->second)
+    {
+        if (EvaluateDigitalBinding(binding))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool InputManager::GetActionTriggered(const std::string& actionName)
+{
+    const auto actionIt = s_actionBindings.find(actionName);
+    if (actionIt == s_actionBindings.end())
+    {
+        return false;
+    }
+
+    for (const DigitalBinding& binding : actionIt->second)
+    {
+        if (EvaluateDigitalBindingTriggered(binding))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool InputManager::GetActionReleased(const std::string& actionName)
+{
+    const auto actionIt = s_actionBindings.find(actionName);
+    if (actionIt == s_actionBindings.end())
+    {
+        return false;
+    }
+
+    for (const DigitalBinding& binding : actionIt->second)
+    {
+        if (EvaluateDigitalBindingReleased(binding))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void InputManager::ClearInputs()
 {
     Keys.clear();
@@ -348,3 +483,431 @@ void InputManager::ClearInputs()
     s_typedChars.clear();
 }
 
+float InputManager::GetKeyboardAxis(int negativeKey, int positiveKey)
+{
+    const float negative = IsKeyHeld(negativeKey) ? 1.0f : 0.0f;
+    const float positive = IsKeyHeld(positiveKey) ? 1.0f : 0.0f;
+    return positive - negative;
+}
+
+bool InputManager::EvaluateDigitalBinding(const DigitalBinding& binding)
+{
+    switch (binding.type)
+    {
+    case DigitalBinding::Type::Key:
+        return IsKeyHeld(binding.key);
+
+    case DigitalBinding::Type::MouseButton:
+        return IsMouseButtonPressed(binding.mouseButton);
+
+    case DigitalBinding::Type::ControllerButton:
+        return s_controllerManager &&
+            s_controllerManager->GetButton(static_cast<SDL_GameControllerButton>(binding.controllerButton));
+
+    case DigitalBinding::Type::ControllerAxis:
+        if (!s_controllerManager)
+        {
+            return false;
+        }
+        {
+            const float axisValue = s_controllerManager->GetAxis(
+                static_cast<SDL_GameControllerAxis>(binding.controllerAxis),
+                s_defaultDeadzone);
+            return binding.direction < 0 ? axisValue <= -binding.threshold : axisValue >= binding.threshold;
+        }
+    }
+
+    return false;
+}
+
+bool InputManager::EvaluateDigitalBindingTriggered(const DigitalBinding& binding)
+{
+    switch (binding.type)
+    {
+    case DigitalBinding::Type::Key:
+        return IsKeyTriggered(binding.key);
+
+    case DigitalBinding::Type::MouseButton:
+        return IsMouseButtonTriggered(binding.mouseButton);
+
+    case DigitalBinding::Type::ControllerButton:
+        return s_controllerManager &&
+            s_controllerManager->GetButtonDown(static_cast<SDL_GameControllerButton>(binding.controllerButton));
+
+    case DigitalBinding::Type::ControllerAxis:
+        if (!s_controllerManager)
+        {
+            return false;
+        }
+        {
+            const float currentAxis = s_controllerManager->GetAxis(
+                static_cast<SDL_GameControllerAxis>(binding.controllerAxis),
+                s_defaultDeadzone);
+            const float previousAxis = s_controllerManager->GetPreviousAxis(
+                static_cast<SDL_GameControllerAxis>(binding.controllerAxis),
+                s_defaultDeadzone);
+            return binding.direction < 0
+                ? currentAxis <= -binding.threshold && previousAxis > -binding.threshold
+                : currentAxis >= binding.threshold && previousAxis < binding.threshold;
+        }
+    }
+
+    return false;
+}
+
+bool InputManager::EvaluateDigitalBindingReleased(const DigitalBinding& binding)
+{
+    switch (binding.type)
+    {
+    case DigitalBinding::Type::Key:
+    {
+        const bool nowPressed = IsKeyHeld(binding.key);
+        const bool wasPressed = s_lastKeys.count(binding.key) ? s_lastKeys[binding.key] : false;
+        return !nowPressed && wasPressed;
+    }
+
+    case DigitalBinding::Type::MouseButton:
+        return IsMouseButtonReleased(binding.mouseButton);
+
+    case DigitalBinding::Type::ControllerButton:
+        return s_controllerManager &&
+            s_controllerManager->GetButtonUp(static_cast<SDL_GameControllerButton>(binding.controllerButton));
+
+    case DigitalBinding::Type::ControllerAxis:
+        if (!s_controllerManager)
+        {
+            return false;
+        }
+        {
+            const float currentAxis = s_controllerManager->GetAxis(
+                static_cast<SDL_GameControllerAxis>(binding.controllerAxis),
+                s_defaultDeadzone);
+            const float previousAxis = s_controllerManager->GetPreviousAxis(
+                static_cast<SDL_GameControllerAxis>(binding.controllerAxis),
+                s_defaultDeadzone);
+            return binding.direction < 0
+                ? currentAxis > -binding.threshold && previousAxis <= -binding.threshold
+                : currentAxis < binding.threshold && previousAxis >= binding.threshold;
+        }
+    }
+
+    return false;
+}
+
+float InputManager::EvaluateAxisBinding(const AxisBinding& binding)
+{
+    float value = 0.0f;
+
+    switch (binding.type)
+    {
+    case AxisBinding::Type::KeyAxis:
+        value = GetKeyboardAxis(binding.negativeKey, binding.positiveKey);
+        break;
+
+    case AxisBinding::Type::ControllerAxis:
+        if (s_controllerManager)
+        {
+            const float deadzone = binding.deadzone >= 0.0f ? binding.deadzone : s_defaultDeadzone;
+            value = s_controllerManager->GetAxis(
+                static_cast<SDL_GameControllerAxis>(binding.controllerAxis),
+                deadzone);
+        }
+        break;
+    }
+
+    if (binding.invert)
+    {
+        value = -value;
+    }
+
+    return ClampAxis(value);
+}
+
+bool InputManager::LoadBindings(const std::string& path)
+{
+    std::ifstream file(path);
+    if (!file.is_open())
+    {
+        return false;
+    }
+
+    rapidjson::IStreamWrapper stream(file);
+    rapidjson::Document document;
+    document.ParseStream(stream);
+    if (document.HasParseError() || !document.IsObject())
+    {
+        return false;
+    }
+
+    std::unordered_map<std::string, std::vector<DigitalBinding>> actionBindings;
+    std::unordered_map<std::string, std::vector<AxisBinding>> axisBindings;
+    float defaultDeadzone = 0.2f;
+
+    if (document.HasMember("deadzone") && document["deadzone"].IsNumber())
+    {
+        defaultDeadzone = std::clamp(document["deadzone"].GetFloat(), 0.0f, 0.99f);
+    }
+
+    if (document.HasMember("actions") && document["actions"].IsObject())
+    {
+        for (auto member = document["actions"].MemberBegin(); member != document["actions"].MemberEnd(); ++member)
+        {
+            if (!member->value.IsArray())
+            {
+                continue;
+            }
+
+            for (const auto& bindingValue : member->value.GetArray())
+            {
+                DigitalBinding binding;
+                if (ParseDigitalBinding(bindingValue, binding))
+                {
+                    actionBindings[member->name.GetString()].push_back(binding);
+                }
+            }
+        }
+    }
+
+    if (document.HasMember("axes") && document["axes"].IsObject())
+    {
+        for (auto member = document["axes"].MemberBegin(); member != document["axes"].MemberEnd(); ++member)
+        {
+            if (!member->value.IsArray())
+            {
+                continue;
+            }
+
+            for (const auto& bindingValue : member->value.GetArray())
+            {
+                AxisBinding binding;
+                if (ParseAxisBinding(bindingValue, binding))
+                {
+                    axisBindings[member->name.GetString()].push_back(binding);
+                }
+            }
+        }
+    }
+
+    s_actionBindings = std::move(actionBindings);
+    s_axisBindings = std::move(axisBindings);
+    s_defaultDeadzone = defaultDeadzone;
+    return true;
+}
+
+bool InputManager::ParseDigitalBinding(const rapidjson::Value& value, DigitalBinding& binding)
+{
+    if (!value.IsObject() || !value.HasMember("type") || !value["type"].IsString())
+    {
+        return false;
+    }
+
+    const std::string type = ToUpper(value["type"].GetString());
+    if (type == "KEY")
+    {
+        if (!value.HasMember("key") || !value["key"].IsString())
+        {
+            return false;
+        }
+
+        binding.type = DigitalBinding::Type::Key;
+        binding.key = ParseKeyName(value["key"].GetString());
+        return binding.key != GLFW_KEY_UNKNOWN;
+    }
+
+    if (type == "MOUSE_BUTTON")
+    {
+        if (!value.HasMember("button") || !value["button"].IsString())
+        {
+            return false;
+        }
+
+        binding.type = DigitalBinding::Type::MouseButton;
+        binding.mouseButton = ParseMouseButtonName(value["button"].GetString());
+        return binding.mouseButton != 0;
+    }
+
+    if (type == "CONTROLLER_BUTTON")
+    {
+        if (!value.HasMember("button") || !value["button"].IsString())
+        {
+            return false;
+        }
+
+        binding.type = DigitalBinding::Type::ControllerButton;
+        binding.controllerButton = ParseControllerButtonName(value["button"].GetString());
+        return binding.controllerButton >= 0;
+    }
+
+    if (type == "CONTROLLER_AXIS")
+    {
+        if (!value.HasMember("axis") || !value["axis"].IsString())
+        {
+            return false;
+        }
+
+        binding.type = DigitalBinding::Type::ControllerAxis;
+        binding.controllerAxis = ParseControllerAxisName(value["axis"].GetString());
+        if (binding.controllerAxis < 0)
+        {
+            return false;
+        }
+
+        if (value.HasMember("threshold") && value["threshold"].IsNumber())
+        {
+            binding.threshold = std::clamp(value["threshold"].GetFloat(), 0.0f, 1.0f);
+        }
+
+        if (value.HasMember("direction") && value["direction"].IsString())
+        {
+            const std::string direction = ToUpper(value["direction"].GetString());
+            binding.direction = (direction == "NEGATIVE" || direction == "LEFT" || direction == "DOWN") ? -1 : 1;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool InputManager::ParseAxisBinding(const rapidjson::Value& value, AxisBinding& binding)
+{
+    if (!value.IsObject() || !value.HasMember("type") || !value["type"].IsString())
+    {
+        return false;
+    }
+
+    const std::string type = ToUpper(value["type"].GetString());
+    if (type == "KEY_AXIS")
+    {
+        if (!value.HasMember("negative") || !value["negative"].IsString() ||
+            !value.HasMember("positive") || !value["positive"].IsString())
+        {
+            return false;
+        }
+
+        binding.type = AxisBinding::Type::KeyAxis;
+        binding.negativeKey = ParseKeyName(value["negative"].GetString());
+        binding.positiveKey = ParseKeyName(value["positive"].GetString());
+        return binding.negativeKey != GLFW_KEY_UNKNOWN && binding.positiveKey != GLFW_KEY_UNKNOWN;
+    }
+
+    if (type == "CONTROLLER_AXIS")
+    {
+        if (!value.HasMember("axis") || !value["axis"].IsString())
+        {
+            return false;
+        }
+
+        binding.type = AxisBinding::Type::ControllerAxis;
+        binding.controllerAxis = ParseControllerAxisName(value["axis"].GetString());
+        if (binding.controllerAxis < 0)
+        {
+            return false;
+        }
+
+        if (value.HasMember("deadzone") && value["deadzone"].IsNumber())
+        {
+            binding.deadzone = std::clamp(value["deadzone"].GetFloat(), 0.0f, 0.99f);
+        }
+
+        if (value.HasMember("invert") && value["invert"].IsBool())
+        {
+            binding.invert = value["invert"].GetBool();
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+int InputManager::ParseKeyName(const std::string& keyName)
+{
+    const std::string name = keyName;
+
+    static const std::unordered_map<std::string, int> keyMap =
+    {
+        { "SPACE", GLFW_KEY_SPACE }, { "ESCAPE", GLFW_KEY_ESCAPE }, { "ENTER", GLFW_KEY_ENTER },
+        { "TAB", GLFW_KEY_TAB }, { "BACKSPACE", GLFW_KEY_BACKSPACE }, { "LEFT SHIFT", GLFW_KEY_LEFT_SHIFT },
+        { "RIGHT SHIFT", GLFW_KEY_RIGHT_SHIFT }, { "LEFT CTRL", GLFW_KEY_LEFT_CONTROL }, { "RIGHT CTRL", GLFW_KEY_RIGHT_CONTROL },
+        { "LEFT", GLFW_KEY_LEFT }, { "RIGHT", GLFW_KEY_RIGHT }, { "UP", GLFW_KEY_UP }, { "DOWN", GLFW_KEY_DOWN },
+        { "A", GLFW_KEY_A }, { "B", GLFW_KEY_B }, { "C", GLFW_KEY_C }, { "D", GLFW_KEY_D }, { "E", GLFW_KEY_E },
+        { "F", GLFW_KEY_F }, { "G", GLFW_KEY_G }, { "H", GLFW_KEY_H }, { "I", GLFW_KEY_I }, { "J", GLFW_KEY_J },
+        { "K", GLFW_KEY_K }, { "L", GLFW_KEY_L }, { "M", GLFW_KEY_M }, { "N", GLFW_KEY_N }, { "O", GLFW_KEY_O },
+        { "P", GLFW_KEY_P }, { "Q", GLFW_KEY_Q }, { "R", GLFW_KEY_R }, { "S", GLFW_KEY_S }, { "T", GLFW_KEY_T },
+        { "U", GLFW_KEY_U }, { "V", GLFW_KEY_V }, { "W", GLFW_KEY_W }, { "X", GLFW_KEY_X }, { "Y", GLFW_KEY_Y }, { "Z", GLFW_KEY_Z }
+    };
+
+    const auto keyIt = keyMap.find(ToUpper(name));
+    return keyIt != keyMap.end() ? keyIt->second : GLFW_KEY_UNKNOWN;
+}
+
+int InputManager::ParseMouseButtonName(const std::string& buttonName)
+{
+    static const std::unordered_map<std::string, int> mouseMap =
+    {
+        { "LEFT", GLFW_MOUSE_BUTTON_LEFT },
+        { "RIGHT", GLFW_MOUSE_BUTTON_RIGHT },
+        { "MIDDLE", GLFW_MOUSE_BUTTON_MIDDLE },
+        { "X1", GLFW_MOUSE_BUTTON_4 },
+        { "X2", GLFW_MOUSE_BUTTON_5 }
+    };
+
+    const auto buttonIt = mouseMap.find(ToUpper(buttonName));
+    return buttonIt != mouseMap.end() ? buttonIt->second : 0;
+}
+
+int InputManager::ParseControllerButtonName(const std::string& buttonName)
+{
+    static const std::unordered_map<std::string, int> buttonMap =
+    {
+        { "A", SDL_CONTROLLER_BUTTON_A }, { "B", SDL_CONTROLLER_BUTTON_B },
+        { "X", SDL_CONTROLLER_BUTTON_X }, { "Y", SDL_CONTROLLER_BUTTON_Y },
+        { "CROSS", SDL_CONTROLLER_BUTTON_A }, { "CIRCLE", SDL_CONTROLLER_BUTTON_B },
+        { "SQUARE", SDL_CONTROLLER_BUTTON_X }, { "TRIANGLE", SDL_CONTROLLER_BUTTON_Y },
+        { "BACK", SDL_CONTROLLER_BUTTON_BACK }, { "SELECT", SDL_CONTROLLER_BUTTON_BACK },
+        { "START", SDL_CONTROLLER_BUTTON_START }, { "GUIDE", SDL_CONTROLLER_BUTTON_GUIDE },
+        { "LEFT_STICK", SDL_CONTROLLER_BUTTON_LEFTSTICK }, { "RIGHT_STICK", SDL_CONTROLLER_BUTTON_RIGHTSTICK },
+        { "LEFT_SHOULDER", SDL_CONTROLLER_BUTTON_LEFTSHOULDER }, { "L1", SDL_CONTROLLER_BUTTON_LEFTSHOULDER },
+        { "RIGHT_SHOULDER", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER }, { "R1", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER },
+        { "DPAD_UP", SDL_CONTROLLER_BUTTON_DPAD_UP }, { "DPAD_DOWN", SDL_CONTROLLER_BUTTON_DPAD_DOWN },
+        { "DPAD_LEFT", SDL_CONTROLLER_BUTTON_DPAD_LEFT }, { "DPAD_RIGHT", SDL_CONTROLLER_BUTTON_DPAD_RIGHT }
+    };
+
+    const auto buttonIt = buttonMap.find(ToUpper(buttonName));
+    return buttonIt != buttonMap.end() ? buttonIt->second : -1;
+}
+
+int InputManager::ParseControllerAxisName(const std::string& axisName)
+{
+    static const std::unordered_map<std::string, int> axisMap =
+    {
+        { "LEFT_X", SDL_CONTROLLER_AXIS_LEFTX }, { "LEFT_Y", SDL_CONTROLLER_AXIS_LEFTY },
+        { "RIGHT_X", SDL_CONTROLLER_AXIS_RIGHTX }, { "RIGHT_Y", SDL_CONTROLLER_AXIS_RIGHTY },
+        { "LT", SDL_CONTROLLER_AXIS_TRIGGERLEFT }, { "RT", SDL_CONTROLLER_AXIS_TRIGGERRIGHT },
+        { "LEFT_TRIGGER", SDL_CONTROLLER_AXIS_TRIGGERLEFT }, { "RIGHT_TRIGGER", SDL_CONTROLLER_AXIS_TRIGGERRIGHT }
+    };
+
+    const auto axisIt = axisMap.find(ToUpper(axisName));
+    return axisIt != axisMap.end() ? axisIt->second : -1;
+}
+
+std::string InputManager::ToUpper(std::string value)
+{
+    std::transform(
+        value.begin(),
+        value.end(),
+        value.begin(),
+        [](unsigned char c) { return static_cast<char>(std::toupper(c)); });
+    return value;
+}
+
+float InputManager::ClampAxis(float value)
+{
+    return std::clamp(value, -1.0f, 1.0f);
+}
+
+float InputManager::ChooseDominantAxis(float currentValue, float candidateValue)
+{
+    return std::fabs(candidateValue) > std::fabs(currentValue) ? candidateValue : currentValue;
+}
