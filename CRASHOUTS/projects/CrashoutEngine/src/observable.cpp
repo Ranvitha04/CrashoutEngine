@@ -1,10 +1,12 @@
 /*!
 @file       observable.cpp
-@author     miratristan.d@digipen.edu
+@author     Renfred Lee
+@author     tristan
+@author     Ranvitha
 @date       19/09/2025
 @brief      Member Function definitions for the Base class Observable. Includes definitions for registerObserver, sendMessage.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

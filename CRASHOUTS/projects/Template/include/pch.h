@@ -1,6 +1,6 @@
 /*!
 @file       pch.h
-@author     lee.r@digipen.edu
+@author     Renfred Lee
 @date       13/11/2025
 @brief      precompiled header file
 

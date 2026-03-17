@@ -2,7 +2,9 @@
 
 /*!
 @file        afiqscene.cpp
-@author      b.mohamadafiq@digipen.edu
+@author      Renfred Lee
+@author      Afiq
+@author      Shahrin Idzuan
 @date        30/11/2025
 @brief       scene functions for Afiq scene
 

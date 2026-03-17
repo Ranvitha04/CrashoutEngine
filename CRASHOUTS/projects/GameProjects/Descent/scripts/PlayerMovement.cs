@@ -1,6 +1,8 @@
 /*!
 @file       PlayerMovement.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
+@author     Renfred (RTIS)
+@author     Afiq
 @date       23/02/2026
 @brief      Handles player movement, jumping, mass-switching, and animations.
 */

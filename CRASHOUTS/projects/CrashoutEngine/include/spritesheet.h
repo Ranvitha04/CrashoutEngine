@@ -1,6 +1,8 @@
 /*!
 @file       spritesheet.h
-@author     b.mohamadafiq@digipen.edu
+@author     Afiq
+@author     Shahrin Idzuan
+@author     Ranvitha
 @date       19/11/2025
 @brief      This file contains the declaration of sprite sheet related components
 

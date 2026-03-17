@@ -1,6 +1,8 @@
 /*!
 @file        ranvitha.cpp
-@author      ranvitha@digipen.edu
+@author      Ranvitha
+@author      Renfred Lee
+@author      Renfred (RTIS)
 @date        18/09/2025
 @brief
 This source file implements the **Ran game state** logic for the CrashoutsEngine-based

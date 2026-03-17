@@ -1,6 +1,8 @@
 /*!
 @file        sceneutils.h
-@author      lee.r@digipen.edu
+@author      Renfred Lee
+@author      Shahrin Idzuan
+@author      Ranvitha
 @date        29/09/2025
 @brief       Implements the main functions that run in engine.cpp to Update
              visuals and elements in the scene.

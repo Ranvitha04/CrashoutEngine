@@ -1,13 +1,15 @@
 /*!
 @file   tilemapasset.h
-@author lee.r@digipen.edu       
+@author Renfred (RTIS)
+@author Renfred Lee
+@author Ranvitha
 @date   13/11/2025
 
 @brief	This file contains the declaration of the Tile Map Asset which stores 
         the asset name, as well as the key data which is a map of index to 
         texture name.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 #pragma once

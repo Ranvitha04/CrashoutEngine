@@ -1,6 +1,8 @@
 /*!
 @file       collidereventmanager.h
-@author     miratristan.d@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     tristan
 @date       29/11/2025
 @brief      colliderevent manager declaration
 

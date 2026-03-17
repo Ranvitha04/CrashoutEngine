@@ -1,6 +1,8 @@
 /*!
 @file   assetmanager.h
-@author lee.r@digipen.edu
+@author Renfred Lee
+@author Ranvitha
+@author Renfred (RTIS)
 @date   15/09/2025
 
 @brief	This file contains the declaration of the AssetManager, a singleton

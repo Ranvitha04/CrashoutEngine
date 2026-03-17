@@ -1,3 +1,13 @@
+/*!
+@file       LightShader.frag
+@author     Ranvitha
+@author     Renfred (RTIS)
+@date       13/03/2026
+@brief      Computes per-pixel light contribution with optional occlusion/shadowing and bloom split.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #version 460 core
 
 layout (location = 0) out vec4 fragBloom;
@@ -20,6 +30,10 @@ uniform sampler2D uShadowTex;
 uniform sampler2D uSceneOccluder;
 uniform float uShadowTexHeight;
 uniform int uUseShadows;
+
+/*!
+@brief Fragment shader entry point.
+*/
 
 void main() {
     vec2 d = texCoord - vLightPos;

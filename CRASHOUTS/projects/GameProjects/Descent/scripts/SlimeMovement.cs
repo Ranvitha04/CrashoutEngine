@@ -1,6 +1,8 @@
 /*!
 @file       SlimeMovement.cs
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred (RTIS)
+@author     mohamadamirakmal.b
 @date       27/11/2025
 @brief      Handles the AI movement, state machine, and pathfinding logic for Slime enemies.
 

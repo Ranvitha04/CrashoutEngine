@@ -1,6 +1,8 @@
 /*!
 @file		SceneMusic.cs
-@author     mohamadamirakmal.b@digipen.edu
+@author     Shahrin Idzuan
+@author     Mohamad Amir Akmal
+@author     Renfred Lee
 @date       27/01/2026
 @brief		Declaration and implementation of SceneMusic script to manage background music per scene.
 */

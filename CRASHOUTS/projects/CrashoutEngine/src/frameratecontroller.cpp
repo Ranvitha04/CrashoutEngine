@@ -1,6 +1,8 @@
 /*!
 @file		frameratecontroller.cpp
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     tristan
 @date       24/09/2025
 @brief		Definition for frame rate controller
 

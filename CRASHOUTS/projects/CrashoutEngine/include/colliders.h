@@ -1,6 +1,8 @@
 /*!
 @file       colliders.h
-@author     miratristan.d@digipen.edu
+@author     Renfred Lee
+@author     Tristan Mira
+@author     Renfred (RTIS)
 @date       26/10/2025
 @brief      Type declarations for the different types of colliders
 

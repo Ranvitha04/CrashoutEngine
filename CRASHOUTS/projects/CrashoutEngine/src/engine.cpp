@@ -1,6 +1,8 @@
 /*!
 @file    	engine.cpp
-@author  	lee.r@digipen.edu
+@author  	Renfred Lee
+@author  	Renfred (RTIS)
+@author  	Shahrin Idzuan
 @date    	18/10/2025
 
 This file uses functionality defined in type GLApp to initialize an OpenGL
@@ -1057,10 +1059,14 @@ void Draw(CrashoutsEngine::Entity& globalSelectedEntity) {
         InputManager::g_mouseWorldPos = CEVec2{ worldPos.x, worldPos.y };
     }
 
-    // --- DRAW TO SCREEN ---
+    // --- POST-PROCESS & DRAW TO SCREEN ---
+    {
+        FrameProfiler::Scoped ppScope(PerformanceSystem::Get().GetProfiler(), "PostProcessing");
+        CrashoutsEngine::PostProcessing::RenderPP(gameTextureColorBuffer);
+    }
 
-    // 1. Bind the raw game FBO to read from, and the default monitor (0) to draw to.
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, gameFboID);
+    // 1. Bind the post-processed FBO to read from, and the default monitor (0) to draw to.
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
     // 2. Set the viewport to the ENTIRE physical window and wipe it black.

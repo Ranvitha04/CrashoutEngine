@@ -1,6 +1,8 @@
 /*!
 @file   assetmanager.cpp
-@author lee.r@digipen.edu (95%)
+@author Renfred Lee
+@author Mohamad Amir Akmal
+@author Ranvitha
 @co-auther mohamadamirakmak.b (5%)
 @date   28/09/2025
 

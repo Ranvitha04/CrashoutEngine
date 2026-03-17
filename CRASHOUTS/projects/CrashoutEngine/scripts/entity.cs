@@ -1,6 +1,7 @@
 /*!
 @file       entity.cs
-@author     m.biniswandi@digipen.edu
+@author     Renfred (RTIS)
+@author     Renfred Lee
 @date       29/11/2025
 @brief      class for entity in Crashouts Engine
 

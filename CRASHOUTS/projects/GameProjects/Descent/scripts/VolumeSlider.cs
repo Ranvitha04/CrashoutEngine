@@ -1,6 +1,8 @@
 /*!
 @file       VolumeSlider.cs
-@author     mohamadamirakmal.b@digipen.edu
+@author     Renfred Lee
+@author     Renfred (RTIS)
+@author     m.biniswandi
 @date       26/11/2025
 @brief      Handles volume slider UI logic for music and SFX volume control.
 */

@@ -1,6 +1,6 @@
 /*!
 @file		replaybindings.cpp
-@author     lee.r@digipen.edu
+@author     Renfred Lee
 @brief		Definition of replay bindings functions
 */
 

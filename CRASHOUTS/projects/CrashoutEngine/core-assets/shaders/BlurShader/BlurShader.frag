@@ -1,3 +1,12 @@
+/*!
+@file       BlurShader.frag
+@author     Renfred (RTIS)
+@date       13/03/2026
+@brief      Fragment shader for a multi-pass blur using texel offsets.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #version 460 core
 
 out vec4 fragColor;
@@ -7,6 +16,10 @@ in vec2 texCoord;
 uniform sampler2D uImage;
 uniform vec2 uTexelSize; // 1.0 / textureSize(uImage, 0)
 uniform int uPass;       // The current blur pass (0, 1, 2, ...)
+
+/*!
+@brief Fragment shader entry point.
+*/
 
 void main() {
     // The offset is increased for each pass

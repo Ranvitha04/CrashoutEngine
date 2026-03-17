@@ -1,6 +1,7 @@
 /*!
 @file       Keys.cs
-@author     m.biniswandi@digipen.edu
+@author     Renfred (RTIS)
+@author     Renfred Lee
 @date       29/11/2025
 @brief      keys enumeration for keyboard input handling
 

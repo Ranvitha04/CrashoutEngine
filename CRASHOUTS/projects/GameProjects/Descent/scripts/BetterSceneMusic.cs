@@ -1,6 +1,6 @@
 /*!
 @file		BetterSceneMusic.cs
-@author     mohamadamirakmal.b@digipen.edu 
+@author     Mohamad Amir Akmal
 @date       09/03/2026
 @brief		An improved version of SceneMusic that adds DSP effects, proper class naming, and more control over the audio layer.
 */

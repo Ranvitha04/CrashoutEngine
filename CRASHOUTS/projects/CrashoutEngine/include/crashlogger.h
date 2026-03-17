@@ -1,6 +1,8 @@
 /*!
 @file       crashlogger.h
-@author     mohamadamirakmal.b@digipen.edu
+@author     Renfred Lee
+@author     Mohamad Amir Akmal
+@author     Ranvitha
 @date       28/09/2025
 
 @brief      Process-wide crash logger installation entry point.
@@ -9,7 +11,7 @@
             application startup. Pass the application name so the crash
             reporter can tag dumps/logs accordingly.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 
 #pragma once

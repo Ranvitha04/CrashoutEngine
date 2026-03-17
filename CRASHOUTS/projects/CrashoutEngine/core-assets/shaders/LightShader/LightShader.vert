@@ -1,3 +1,13 @@
+/*!
+@file       LightShader.vert
+@author     Ranvitha
+@author     Renfred (RTIS)
+@date       13/03/2026
+@brief      Fullscreen vertex shader that passes per-light instance attributes to the fragment stage.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 #version 460 core
 
 layout (location = 0) in vec2 aPos;
@@ -22,6 +32,10 @@ out float vAffectBloom;
 out float vShadowTechnique;
 out float vRaymarchSteps;
 out float vRaymarchThreshold;
+
+/*!
+@brief Vertex shader entry point.
+*/
 
 void main()
 {

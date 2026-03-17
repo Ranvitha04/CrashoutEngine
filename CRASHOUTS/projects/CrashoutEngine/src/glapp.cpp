@@ -1,7 +1,9 @@
 
 /*!
 @file        glapp.cpp
-@author      pghali@digipen.edu
+@author      Renfred Lee
+@author      Ranvitha
+@author      Shahrin Idzuan
 @co-author   parminder.singh@digipen.edu
 @date        05/05/2025
 

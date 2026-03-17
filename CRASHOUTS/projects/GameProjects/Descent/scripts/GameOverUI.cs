@@ -1,6 +1,7 @@
 /*!
 @file       GameOverUI.cs
-@author     lee.r@digipen.edu
+@author     mohamadamirakmal.b
+@author     Renfred Lee
 @date       28/11/2025
 @brief      Handles the Game Over and Win UI screens, including restart and quit functionality.
 

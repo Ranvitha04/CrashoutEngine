@@ -1,6 +1,8 @@
 /*!
 @file        amirscene.cpp
-@author      mohamadamirakmal.b@digipen.edu
+@author      Renfred Lee
+@author      Mohamad Amir Akmal
+@author      Afiq
 @date        18/09/2025
 @brief       
 
@@ -8,7 +10,7 @@ This file contains the implementation of the Amir scene, including loading, init
 */
 
 /*!
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 

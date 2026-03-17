@@ -1,6 +1,8 @@
 /*!
 @file       debugmenu.cpp
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Renfred Lee
+@author     Afiq
 @date       14/09/2025
 
 @brief      Renders the editor/debug Im

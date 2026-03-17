@@ -1,10 +1,11 @@
 /*!
 @file       debugAssetLoader.h
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Ranvitha
 @date       23/11/2025
 @brief      Helpers for asset drag-and-drop payloads in Crashout Engine's debug tools.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

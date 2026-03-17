@@ -1,6 +1,6 @@
 /*!
 @file       VideoComponent.cs
-@author     m.biniswandi@digipen.edu
+@author     Renfred Lee
 @date       31/01/2026
 @brief      C# ScriptBehaviour wrapper for the engine's VideoComponent, 
             providing script-side control for video playback.

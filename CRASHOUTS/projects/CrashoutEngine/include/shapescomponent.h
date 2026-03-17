@@ -1,6 +1,8 @@
 /*!
 @file       shapescomponent.h
-@author     mohamadamirakmal.b@digipen.edu
+@author     Renfred Lee
+@author     Renfred (RTIS)
+@author     Ranvitha
 @date       28/09/2025
 @brief	    This file defines the ShapesComponent, a simple data structure
             used to store an entity's shape type and variables.

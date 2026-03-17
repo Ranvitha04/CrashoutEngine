@@ -1,6 +1,7 @@
 /*!
 @file       Debug.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
+@author     Shahrin Idzuan
 @date       26/11/2025
 @brief      Debug class for logging and drawing debug shapes.
 

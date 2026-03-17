@@ -1,6 +1,8 @@
 /*!
 @file       debugmenu.h
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Afiq
+@author     Renfred Lee
 @date       14/09/2025
 
 @brief      This header defines the user interface (UI) panels and debug menu

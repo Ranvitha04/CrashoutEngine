@@ -1,6 +1,6 @@
 /*!
 @file       ParallaxLayer.cs
-@author     lee.r@digipen.edu
+@author     Renfred Lee
 @date       04/02/2026
 @brief      Implements parallax scrolling for 2D platformer backgrounds.
 

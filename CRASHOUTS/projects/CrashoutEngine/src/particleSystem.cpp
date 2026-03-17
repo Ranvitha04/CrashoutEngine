@@ -1,6 +1,8 @@
 /*!
 @file       particleSystem.cpp
 @author     Ranvitha
+@author     Renfred Lee
+@author     Renfred (RTIS)
 @date       26/11/2025
 @brief      Particle and trajectory emitters with instanced rendering.
 @details    Implements multiple emitters (Fire, Fireball, Explosion, Trajectory)

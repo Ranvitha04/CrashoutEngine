@@ -1,13 +1,15 @@
 /*!
 @file        camera.h
-@author      lee.r@digipen.edu
+@author      Renfred Lee
+@author      Renfred (RTIS)
+@author      Ranvitha
 @date        29/10/2025
 
 This file
 *//*__________________________________________________________________________*/
 
 /*!
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore.All rights reserved.
 
 //__________________________________________________________________________*/
 

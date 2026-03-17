@@ -1,8 +1,21 @@
+/*!
+@file       SubmitScoreButton.cs
+@author     Renfred Lee
+@author     Renfred (RTIS)
+@date       13/03/2026
+@brief      Submits the player's race time to the leaderboard via a UI button.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 using System;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
+    /*!
+    @brief Reads the player's name input and submits the final time to the leaderboard.
+    */
     public class SubmitScoreButton : ScriptBase
     {
         public Entity submitBtn;       // <-- Drag the Submit Button entity here
@@ -13,12 +26,18 @@ namespace CrashoutsEngine
         private bool isClicking = false;
         private int _clickCooldown = 0;
 
+        /*!
+        @brief Initialize click state.
+        */
         public override void Start()
         {
             isClicking = false;
             _clickCooldown = 0;
         }
 
+        /*!
+        @brief Poll for submit button clicks and trigger score submission.
+        */
         public override void Update() 
         {
             if(!Input.IsMouseButtonDown(0)) isClicking = false;
@@ -36,6 +55,9 @@ namespace CrashoutsEngine
             }
         }
 
+        /*!
+        @brief Collect player name and time, submit them, and refresh the leaderboard UI.
+        */
         private void ExecuteSubmit() 
         {
             string typedName = "Anonymous";
@@ -72,7 +94,11 @@ namespace CrashoutsEngine
             }
         }
 
-        // Brought over from MenuButtons.cs for reliable click detection
+        /*!
+        @brief Check whether a button entity was clicked this frame.
+        @param btnEnt Button entity reference.
+        @return True if clicked, otherwise false.
+        */
         private bool CheckButtonClick(Entity btnEnt)
         {
             if(isClicking) return false;

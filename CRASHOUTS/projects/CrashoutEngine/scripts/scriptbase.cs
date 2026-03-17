@@ -1,6 +1,6 @@
 /*!
 @file       scriptbase.cs
-@author     m.biniswandi@digipen.edu
+@author     Renfred Lee
 @date       29/11/2025
 @brief      the base class for all user-defined scripts in Crashouts Engine
 

@@ -1,11 +1,13 @@
 /*!
 @file       CEMath.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     Ranvitha
 @date       05/09/2025
 @brief      Math utilities for 2D vector operations
 
 Provides common vector math operations and a constant for PI
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 
 #pragma once

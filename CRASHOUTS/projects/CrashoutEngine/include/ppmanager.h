@@ -1,6 +1,8 @@
 /*!
 @file   ppmanager.h
-@author lee.r@digipen.edu
+@author Shahrin Idzuan
+@author Ranvitha
+@author Renfred Lee
 @date   05/11/2025
 
 @brief	This file contains values and functions to manage post-processing.

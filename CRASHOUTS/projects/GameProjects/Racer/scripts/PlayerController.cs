@@ -1,9 +1,23 @@
+/*!
+@file       PlayerController.cs
+@author     Renfred Lee
+@author     Renfred (RTIS)
+@author     Shahrin Idzuan
+@date       13/03/2026
+@brief      Player ship controller for the Racer project, with replay recording support.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 using System;
 using CrashoutsEngine;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
+    /*!
+    @brief Applies thrust/rotation input to a rigidbody and records transforms for ghost replay.
+    */
     public class PlayerController : ScriptBase
     {
         public float ThrustForce = 500.0f;
@@ -15,6 +29,9 @@ namespace CrashoutsEngine
         public float SpaceDrag = 0.98f; 
         private RigidBodyComponent _rigidBody;
 
+        /*!
+        @brief Cache component references and initialize physics settings.
+        */
         public override void Start()
         {
             _rigidBody = Entity.GetComponent<RigidBodyComponent>();
@@ -30,6 +47,9 @@ namespace CrashoutsEngine
             }
         }
 
+        /*!
+        @brief Handle non-physics input such as scene changes.
+        */
         public override void Update()
         {
             // Restart Current Scene
@@ -47,6 +67,9 @@ namespace CrashoutsEngine
             }
         }
 
+        /*!
+        @brief Apply movement forces and record the player's transform during fixed ticks.
+        */
         public override void FixedUpdate()
         {
             if (_rigidBody == null) return;

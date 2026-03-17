@@ -1,6 +1,8 @@
 /*!
 @file       changevaluecommand.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     m.biniswandi
+@author     Ranvitha
 @date       29/11/2025
 @brief      command to change a value with undo/redo support
 All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.

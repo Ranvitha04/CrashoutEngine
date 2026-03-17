@@ -1,7 +1,9 @@
 #pragma once
 /*!
 @file        glslshader.h
-@author      ranvitha@digipen.edu
+@author      Ranvitha
+@author      Renfred Lee
+@author      Renfred (RTIS)
 @date        09/12/2025
 
 This header file declares the GLSLShader class, which provides a comprehensive
@@ -61,7 +63,7 @@ This class serves as the foundation for all shader operations in the CrashoutEng
 providing a safe, efficient, and feature-rich interface for modern OpenGL shader
 programming while maintaining compatibility with automated testing systems.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 

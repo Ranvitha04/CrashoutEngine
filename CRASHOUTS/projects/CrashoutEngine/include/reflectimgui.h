@@ -1,13 +1,15 @@
 /*!
 @file       reflectimgui.h
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     Ranvitha
+@author     Shahrin Idzuan
 @date       28/09/2025
 @brief      Generic ImGui drawers powered by getml/reflect-cpp (rfl::to_view).
 @details    Provides a small set of `draw_field(...)` overloads and one public
             function `draw_reflected(T&)` that iterates the reflected fields
             of any type `T` and renders appropriate ImGui editors.
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

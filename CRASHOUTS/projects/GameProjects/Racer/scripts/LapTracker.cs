@@ -1,9 +1,22 @@
+/*!
+@file       LapTracker.cs
+@author     Renfred (RTIS)
+@author     Renfred Lee
+@date       13/03/2026
+@brief      Tracks lap progression, timing, and ghost recording for the Racer project.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 using System;
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
+    /*!
+    @brief Manages lap/checkpoint progression, UI updates, and end-of-race handling.
+    */
     public class LapTracker : ScriptBase
     {
         public static LapTracker Instance { get; private set; }
@@ -24,6 +37,9 @@ namespace CrashoutsEngine
         private float _currentLapTime = 0f;
         private bool _isWrongWay = false;
 
+        /*!
+        @brief Initialize race state, orient the vehicle, and start ghost recording.
+        */
         public override void Start()
         {
             Instance = this;
@@ -52,6 +68,9 @@ namespace CrashoutsEngine
                 InternalCalls.SetActive(nameInputPanel.ID, false);
         }
 
+        /*!
+        @brief Update the race timer and UI while racing.
+        */
         public override void Update() 
         { 
             if (_isRacing)
@@ -72,6 +91,10 @@ namespace CrashoutsEngine
             }
         }
 
+        /*!
+        @brief Notify the tracker that a checkpoint/finish gate was hit.
+        @param hitID Checkpoint id (0 is treated as the finish line).
+        */
         public void CheckpointHit(int hitID)
         {
             if (!_isRacing) return;
@@ -134,6 +157,10 @@ namespace CrashoutsEngine
             }
         }
 
+        /*!
+        @brief Toggle the wrong-way state and refresh lap UI.
+        @param active True to show wrong-way state, false to clear it.
+        */
         private void SetWrongWay(bool active)
         {
             if (_isWrongWay == active) return; 
@@ -141,6 +168,9 @@ namespace CrashoutsEngine
             UpdateLapUI();
         }
 
+        /*!
+        @brief Update lap/wrong-way text display.
+        */
         private void UpdateLapUI()
         {
             if (lapDisplay == null || lapDisplay.ID == 0) return;
@@ -155,6 +185,9 @@ namespace CrashoutsEngine
             }
         }
 
+        /*!
+        @brief Finalize the race, stop recording, and show the name input UI for score submission.
+        */
         private void CompleteRace()
         {
             _isRacing = false;
@@ -169,6 +202,11 @@ namespace CrashoutsEngine
                 InternalCalls.SetActive(nameInputPanel.ID, true);
         }
 
+        /*!
+        @brief Format a time value (seconds) into a UI-friendly string.
+        @param timeInSeconds Time in seconds.
+        @return Formatted string in MM:SS.xx format.
+        */
         private string FormatTime(float timeInSeconds)
         {
             int minutes = (int)(timeInSeconds / 60f);

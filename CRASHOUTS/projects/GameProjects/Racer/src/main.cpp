@@ -1,3 +1,12 @@
+/*!
+@file       main.cpp
+@author     Renfred (RTIS)
+@date       13/03/2026
+@brief      Windows entry point for the Racer game project.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 
 // Extension loader library's header must be included before GLFW's header!!!
 #pragma warning(push)
@@ -21,6 +30,14 @@
 static CrashoutsEngine::Entity globalSelectedEntity = 0;
 auto& FRC = FrameRateController::GetInstance();
 
+/*!
+@brief Windows application entry point for Racer.
+@param hInstance Application instance handle.
+@param hPrevInstance Previous instance handle (unused).
+@param lpCmdLine Command line string (unused).
+@param nCmdShow Show command (unused).
+@return Process exit code.
+*/
 int WINAPI WinMain(
     [[maybe_unused]] _In_     HINSTANCE hInstance,
     [[maybe_unused]] _In_opt_ HINSTANCE hPrevInstance,

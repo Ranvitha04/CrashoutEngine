@@ -1,6 +1,8 @@
 /*!
 @file       ranscene.h
-@author     ranvitha@digipen.edu
+@author     Ranvitha
+@author     Renfred Lee
+@author     Shahrin Idzuan
 @date       05/09/2025
 
 @brief      Scene management and rendering functions for Ran's test scene.
@@ -24,7 +26,7 @@
 
             Press 'G' to cycle display modes and reinitialize mode-specific data
             as needed. In Mode 6, pressing 'I' cycles duck animation states.
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 
 #pragma once

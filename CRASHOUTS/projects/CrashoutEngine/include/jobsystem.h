@@ -1,7 +1,7 @@
 /*!
 @file       jobsystem.h
+@author     Shahrin Idzuan
 @brief      A simple thread-pool based job system for parallelizing engine tasks.
-@author     
 */
 #pragma once
 

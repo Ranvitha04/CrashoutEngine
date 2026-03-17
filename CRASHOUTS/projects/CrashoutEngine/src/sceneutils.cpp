@@ -1,6 +1,8 @@
 /*!
 @file        sceneutils.cpp
-@author      lee.r@digipen.edu
+@author      Renfred Lee
+@author      Renfred (RTIS)
+@author      Shahrin Idzuan
 @date        29/09/2025
 
 @brief       Implements function calls that run every frame for the scenes for shapes,

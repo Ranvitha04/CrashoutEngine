@@ -1,6 +1,8 @@
 /*!
 @file		audiobindings.cpp
-@author     mohamadamirakmal.b@digipen.edu
+@author     Mohamad Amir Akmal
+@author     mohamadamirakmal.b
+@author     Renfred Lee
 @date       19/11/2025
 @brief		Definition of audio bindings functions
 

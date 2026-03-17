@@ -1,6 +1,6 @@
 /*!
 @file		videobindings.cpp
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
 @date       31/01/2026
 @brief		Exposes Video System functionality to C# scripts via Mono internal calls.
 

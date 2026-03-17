@@ -1,6 +1,7 @@
 /*!
 @file		checkpointbindings.cpp
-@author     m.biniswandi@digipen.edu
+@author     m.biniswandi
+@author     Shahrin Idzuan
 @brief		Definition of checkpoint bindings functions
 */
 #include "checkpointbindings.h"

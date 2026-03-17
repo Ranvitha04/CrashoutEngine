@@ -1,6 +1,6 @@
 /*!
 @file       EndCutsceneScript.cs
-@author     lee.r@digipen.edu
+@author     Renfred (RTIS)
 @date       02/02/2026
 @brief      Script to manage the final cutscene sequence with images and dialogues.
 

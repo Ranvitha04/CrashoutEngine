@@ -1,6 +1,8 @@
 /*!
 @file   buttoncomponent.h
-@author lee.r@digipen.edu
+@author Renfred Lee
+@author Renfred (RTIS)
+@author Shahrin Idzuan
 @date   02/11/2025
 
 @brief	This file defines the ButtonComponent

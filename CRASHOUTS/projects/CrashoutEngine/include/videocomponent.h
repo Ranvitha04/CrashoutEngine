@@ -1,6 +1,6 @@
 /*!
 @file		videocomponent.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
 @date       01/02/2026
 @brief		declaration of Video Component.
 

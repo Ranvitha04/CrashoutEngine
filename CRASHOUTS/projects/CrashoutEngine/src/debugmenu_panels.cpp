@@ -1,6 +1,8 @@
 ﻿/*!
 @file       debugmenu_panels.cpp
-@author     mohamadamirakmal.b@digipen.edu
+@author     Renfred Lee
+@author     Afiq
+@author     Mohamad Amir Akmal
 @date       25/12/2025
 @brief      File containing the implementation of the ECS Debug Panel for the Debug Menu.
 

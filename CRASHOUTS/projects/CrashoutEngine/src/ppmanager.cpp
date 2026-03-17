@@ -1,6 +1,8 @@
 /*!
 @file   ppmanager.cpp
-@author lee.r@digipen.edu
+@author Ranvitha
+@author Shahrin Idzuan
+@author Renfred Lee
 @date   05/11/2025
 
 @brief  This file contains values and functions to manage post-processing.
@@ -185,7 +187,6 @@ namespace CrashoutsEngine {
 
             if (shadowTex == 0) glGenTextures(1, &shadowTex);
 
-#if USE_IMGUI_EDITOR
             if (ppFboID == 0) glGenFramebuffers(1, &ppFboID);
             glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
             if (ppTextureID == 0) glGenTextures(1, &ppTextureID);
@@ -197,7 +198,6 @@ namespace CrashoutsEngine {
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
                 std::cout << "ERROR: Post-Processing Framebuffer is not complete!" << std::endl;
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-#endif
         }
 
         void InitPP() {
@@ -282,10 +282,8 @@ namespace CrashoutsEngine {
             glDeleteVertexArrays(1, &occluderVao);
             glDeleteBuffers(1, &occluderVbo);
 
-#if USE_IMGUI_EDITOR
             glDeleteFramebuffers(1, &ppFboID);
             glDeleteTextures(1, &ppTextureID);
-#endif
             glDeleteFramebuffers(1, &frontLightsFbo);
             glDeleteTextures(2, frontLightsTex);
             glDeleteFramebuffers(1, &behindLightsFbo);

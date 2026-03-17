@@ -1,6 +1,8 @@
 /*!
 @file		scriptsystem.cpp
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     Renfred (RTIS)
 @date       06/11/2025
 @brief		Definition of script system functions
 

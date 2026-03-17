@@ -1,12 +1,14 @@
 /*!
 @file		gamestatemanager.cpp
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     Mohamad Amir Akmal
 @date       13/09/2025
 @brief		Implementation of the game state manager
 
 Handles registration initialization updating and transitions between different game states based on Soroor's Module
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 

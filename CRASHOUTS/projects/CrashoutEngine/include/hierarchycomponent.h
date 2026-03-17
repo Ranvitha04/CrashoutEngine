@@ -1,6 +1,7 @@
 /*!
 @file       hierarchycomponent.h
-@author     lee.r@digipen.edu
+@author     Renfred Lee
+@author     Shahrin Idzuan
 @date       30/12/2025
 @brief      Component definitions for hierarchy system.
 

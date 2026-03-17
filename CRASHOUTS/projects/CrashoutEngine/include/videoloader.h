@@ -1,6 +1,6 @@
 /*!
 @file		videoloader.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
 @date       01/02/2026
 @brief		declaration of Video Loader using FFmpeg and FMOD.
 

@@ -1,6 +1,6 @@
 /*!
 @file       BookUI.cs
-@author     b.mohamadafiq@digipen.edu
+@author     Renfred Lee
 @date       04/02/2026
 @brief      Book UI Script
 

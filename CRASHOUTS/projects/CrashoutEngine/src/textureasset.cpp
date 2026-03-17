@@ -1,6 +1,8 @@
 /*!
 @file        textureasset.cpp
-@author      ranvitha@digipen.edu
+@author      Renfred Lee
+@author      Ranvitha
+@author      Shahrin Idzuan
 
 @brief
 This file implements the texture management and rendering functionality

@@ -1,6 +1,8 @@
 /*!
 @file       particleSystem.h
 @author     Ranvitha
+@author     Renfred Lee
+@author     Renfred (RTIS)
 @date       26/11/2025
 @brief      Declarations for particle and trajectory emitters.
 */

@@ -1,6 +1,8 @@
 /*!
 @file        audioSystem.h
-@author      b.mohamadafiq@digipen.edu
+@author      Mohamad Amir Akmal
+@author      mohamadamirakmal.b
+@author      Renfred Lee
 @date        28/9/2025
 @brief       Header file that defines the AudioSystem class and a simple wrapper around FMOD
 

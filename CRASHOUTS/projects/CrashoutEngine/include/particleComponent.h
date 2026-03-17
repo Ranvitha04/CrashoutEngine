@@ -1,6 +1,8 @@
 /*!
 @file       particlecomponent.h
-@author     Renfred (lee.r@digipen.edu)
+@author     Renfred Lee
+@author     Ranvitha
+@author     Renfred (RTIS)
 @date       01/12/2026
 @brief      Particle Component data.
 @details    Declare data types and functions that would be used for particles.

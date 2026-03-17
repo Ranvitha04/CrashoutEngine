@@ -2,7 +2,9 @@
 
 /*!
 @file   spriteAnimation.h
-@author ranvitha@digipen.edu
+@author Ranvitha
+@author Renfred Lee
+@author Shahrin Idzuan
 @date   30/09/2025
 
 @brief  This file contains the declaration of the `Animator` class and the

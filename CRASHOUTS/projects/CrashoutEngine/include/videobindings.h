@@ -1,6 +1,6 @@
 /*!
 @file		videobindings.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
 @date       01/02/2026
 @brief		declaration of Video Bindings for Mono Integration.
 

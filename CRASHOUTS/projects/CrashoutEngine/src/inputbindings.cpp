@@ -1,10 +1,12 @@
 /*!
 @file		inputbindings.cpp
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred (RTIS)
+@author     Renfred Lee
 @date       06/11/2025
 @brief		Definition of input bindings functions
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 #include "inputbindings.h"

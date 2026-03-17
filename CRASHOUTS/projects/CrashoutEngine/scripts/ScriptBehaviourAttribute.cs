@@ -1,6 +1,6 @@
 /*!
 @file       ScriptBehaviourAttribute.cs
-@author     mohamadamirakmal.b@digipen.edu
+@author     Renfred Lee
 @date       25/11/2025
 @brief      Defines the ScriptBehaviourAttribute class used to mark script behaviour classes.
 

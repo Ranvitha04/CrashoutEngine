@@ -1,6 +1,6 @@
 /*!
 @file		memorypool.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
 @date       06/01/2026
 @brief		im getting cooked here chat
 

@@ -1,6 +1,8 @@
 /*!
 @file   layercomponent.h
-@author lee.r@digipen.edu
+@author Renfred (RTIS)
+@author Ranvitha
+@author Renfred Lee
 @date   05/09/2025
 
 @brief	This file defines the layercomponent used for zordering + game enabling/ grouping

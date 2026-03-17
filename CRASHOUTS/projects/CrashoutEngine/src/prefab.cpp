@@ -1,6 +1,8 @@
 /*!
 @file        prefab.cpp
-@author      b.mohamadafiq@digipen.edu
+@author      Renfred Lee
+@author      Afiq
+@author      Renfred (RTIS)
 @date        28/9/2025
 @brief       Implementation of Prefab Factory and JSON Serialization.
 

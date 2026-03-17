@@ -1,6 +1,6 @@
 /*!
 @file       Animator.cs
-@author     shahrinidzuan.m@digipen.edu
+@author     Renfred Lee
 @date       20/11/2025
 @brief      Animator component class for managing keyframe animations.
 

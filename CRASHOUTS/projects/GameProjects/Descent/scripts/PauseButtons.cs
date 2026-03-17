@@ -1,9 +1,23 @@
+/*!
+@file       PauseButtons.cs
+@author     mohamadamirakmal.b
+@author     Renfred Lee
+@author     Renfred (RTIS)
+@date       13/03/2026
+@brief      Pause menu UI behaviour for the Descent project.
+
+All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+*/
+
 using System;
 using System.Diagnostics;
 
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
+    /*!
+    @brief Handles pausing/unpausing, menu navigation, and related UI screens.
+    */
     public class PauseButtons : ScriptBase
     {
         [SerializeField] private string currentScene;
@@ -20,6 +34,9 @@ namespace CrashoutsEngine
         // NEW: The Trigger Gate
         private bool isMouseReleased = true; 
 
+        /*!
+        @brief Cache entity references for pause UI and buttons.
+        */
         public override void Start()
         {
             playerScript = PlayerMovement.Instance;
@@ -43,6 +60,9 @@ namespace CrashoutsEngine
             SetEntityActive(closedBookScreen, false);
         }
 
+        /*!
+        @brief Handle pause input and pause menu button interactions.
+        */
         public override void Update()
         {
             if (playerScript == null) playerScript = PlayerMovement.Instance;
@@ -75,6 +95,9 @@ namespace CrashoutsEngine
             if (inputCooldown > 0.0f) inputCooldown -= (float)Time.DT;
         }
 
+        /*!
+        @brief Handle the main pause menu button actions.
+        */
         private void HandleMainPauseButtons()
         {
             if (CheckButtonClick(btnResume)) ResumeGame();
@@ -83,6 +106,9 @@ namespace CrashoutsEngine
             else if (CheckButtonClick(btnQuit)) SceneManager.LoadScene("descentmenu", 1.0f);
         }
 
+        /*!
+        @brief Handle the restart confirmation menu buttons.
+        */
         private void HandleRestartConfirmButtons()
         {
             if (CheckButtonClick(btnYes))
@@ -93,6 +119,9 @@ namespace CrashoutsEngine
             else if (CheckButtonClick(btnNo)) CloseRestartMenu();
         }
 
+        /*!
+        @brief Toggle the paused state and update UI and audio effects accordingly.
+        */
         private void TogglePause()
         {
             if (isRestartMenuOpen) { CloseRestartMenu(); return; }
@@ -137,6 +166,9 @@ namespace CrashoutsEngine
             SetEntityActive(openedBookScreen, false);
         }
 
+        /*!
+        @brief Open the settings menu UI.
+        */
         private void OpenSettings()
         {
             isSettingsMenuOpen = true;
@@ -145,6 +177,9 @@ namespace CrashoutsEngine
             inputCooldown = 0.2f;
         }
 
+        /*!
+        @brief Close the settings menu UI.
+        */
         private void CloseSettings()
         {
             isSettingsMenuOpen = false;
@@ -153,10 +188,26 @@ namespace CrashoutsEngine
             inputCooldown = 0.2f;
         }
 
+        /*!
+        @brief Resume the game (alias for toggling pause off).
+        */
         private void ResumeGame() => TogglePause();
+
+        /*!
+        @brief Open the restart confirmation UI.
+        */
         private void OpenRestartMenu() { isRestartMenuOpen = true; SetEntityActive(btnRestart, false); SetEntityActive(restartCheckScreen, true); }
+
+        /*!
+        @brief Close the restart confirmation UI.
+        */
         private void CloseRestartMenu() { isRestartMenuOpen = false; SetEntityActive(restartCheckScreen, false); SetEntityActive(btnRestart, true); }
 
+        /*!
+        @brief Check whether a UI button entity was clicked, using a mouse release gate.
+        @param btnEntity Button entity reference.
+        @return True if clicked, otherwise false.
+        */
         private bool CheckButtonClick(Entity btnEntity)
         {
             if (btnEntity == null) return false;
@@ -171,6 +222,11 @@ namespace CrashoutsEngine
             return false;
         }
 
+        /*!
+        @brief Set an entity active/inactive via internal calls.
+        @param e Entity reference.
+        @param active True to activate, false to deactivate.
+        */
         private void SetEntityActive(Entity e, bool active)
         {
             if (e != null) InternalCalls.SetActive(e.ID, active);

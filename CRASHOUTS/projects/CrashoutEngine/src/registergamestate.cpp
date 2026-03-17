@@ -1,12 +1,14 @@
 /*!
 @file		registergamestate.cpp
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     Renfred (RTIS)
 @date       13/09/2025
 @brief		Registers all available game states
 
 Creates descriptors for each state and registers them with the game state manager
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 */
 

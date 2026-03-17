@@ -1,11 +1,13 @@
 /*!
 @file       CEVec2.h
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
+@author     Renfred Lee
+@author     Ranvitha
 @date       05/09/2025
 @brief      2D vector type with common operations
 
 The file defines a 2D vector structure with basic arithmetic and comparison operations
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content ï¿½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
 //__________________________________________________________________________*/
 
 #pragma once
