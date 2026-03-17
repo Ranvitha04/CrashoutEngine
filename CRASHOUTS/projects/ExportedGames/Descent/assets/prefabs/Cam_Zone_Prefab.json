@@ -1,0 +1,128 @@
+{
+    "prefabs": [
+        {
+            "name": "Cam_Zone_Prefab",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "Cam_Zone_1",
+                    "uuid": 3574140040263968269,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 604.1163330078125,
+                            "y": 1.03143310546875,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "rigidbody": {
+                        "mass": 0.0,
+                        "restitutionCoeff": 0.0,
+                        "maximumVelocity": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "staticFriction": 0.5,
+                        "dynamicFriction": 0.5,
+                        "inertia": 0.0,
+                        "invInertia": 0.0
+                    },
+                    "collider": {
+                        "ColliderType": 1,
+                        "isContinuous": false,
+                        "isTrigger": true,
+                        "enabled": true,
+                        "position": {
+                            "x": -27.78369140625,
+                            "y": 43.431434631347659,
+                            "z": 0.0
+                        },
+                        "offset": {
+                            "x": -631.9000244140625,
+                            "y": 42.400001525878909,
+                            "z": 0.0
+                        },
+                        "min": {
+                            "x": -327.48370361328127,
+                            "y": -81.16856384277344,
+                            "z": 0.0
+                        },
+                        "max": {
+                            "x": 271.91632080078127,
+                            "y": 168.03143310546876,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "CameraZone",
+                                "fields": {
+                                    "lookAtEntity": 152,
+                                    "resetOnExit": true,
+                                    "zoneDampingY": 1.5
+                                }
+                            }
+                        ]
+                    },
+                    "layer": {
+                        "layerName": "",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Zone1_Target",
+                    "uuid": 18326897668472248579,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 604.1163330078125,
+                            "y": -60.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 3574140040263968269,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": -61.53143310546875,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "",
+                        "z": 0
+                    }
+                }
+            ]
+        }
+    ]
+}

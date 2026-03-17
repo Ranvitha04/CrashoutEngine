@@ -1,0 +1,130 @@
+{
+    "prefabs": [
+        {
+            "name": "PressurePlate",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "WinPressurePlate2",
+                    "uuid": 947556529816029662,
+                    "tag": {
+                        "tagMask": 2
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 158.1333465576172,
+                            "y": -457.568603515625,
+                            "z": -1.0
+                        },
+                        "size": {
+                            "x": 32.0,
+                            "y": 50.0
+                        }
+                    },
+                    "rigidbody": {
+                        "mass": 0.0,
+                        "restitutionCoeff": 0.0,
+                        "maximumVelocity": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "staticFriction": 0.5,
+                        "dynamicFriction": 0.5,
+                        "inertia": 0.0,
+                        "invInertia": 0.0
+                    },
+                    "collider": {
+                        "ColliderType": 1,
+                        "isTrigger": true,
+                        "enabled": true,
+                        "position": {
+                            "x": 158.1333465576172,
+                            "y": -479.068603515625,
+                            "z": -1.0
+                        },
+                        "offset": {
+                            "x": 0.0,
+                            "y": -21.5,
+                            "z": 0.0
+                        },
+                        "min": {
+                            "x": 142.1333465576172,
+                            "y": -485.568603515625,
+                            "z": -1.0
+                        },
+                        "max": {
+                            "x": 174.1333465576172,
+                            "y": -472.568603515625,
+                            "z": -1.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/Pressure Plate.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "audio": {
+                        "clips": [
+                            {
+                                "name": "Switch",
+                                "path": "switch_stepon.wav",
+                                "volume": 0.800000011920929,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            }
+                        ]
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "PressurePlate",
+                                "fields": {
+                                    "decrease": 5.0,
+                                    "goalTextName": "GoalText",
+                                    "wallName": "wall"
+                                }
+                            }
+                        ]
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": -10
+                    }
+                }
+            ]
+        }
+    ]
+}

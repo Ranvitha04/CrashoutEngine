@@ -208,6 +208,7 @@ void Settings::SaveEditorSettings(const UI::UIState& uiState) {
     UPDATE_OR_ADD("showGameScene", uiState.showGameScene);
     UPDATE_OR_ADD("showPhysics", uiState.showPhysics);
     UPDATE_OR_ADD("showAudio", uiState.showAudio);
+    UPDATE_OR_ADD("showBuildPanel", uiState.showBuildPanel);
     UPDATE_OR_ADD("drawCollOverlay", uiState.drawCollOverlay);
     UPDATE_OR_ADD("showEngineControl", uiState.showEngineControl);
     UPDATE_OR_ADD("drawQuadTree", uiState.drawQuadTree);
@@ -308,6 +309,7 @@ void Settings::LoadEditorSettings(UI::UIState& uiState) {
     LOAD_BOOL(showGameScene);
     LOAD_BOOL(showPhysics);
     LOAD_BOOL(showAudio);
+    LOAD_BOOL(showBuildPanel);
     LOAD_BOOL(drawCollOverlay);
     LOAD_BOOL(showEngineControl);
     LOAD_BOOL(drawQuadTree);

@@ -27,13 +27,21 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "createprefabcommand.h"
 #include "visualscriptcommands.h"
 #include "undomanager.h"
+#include <thread>
+#include <atomic>
+
 using namespace CrashoutsEngine;
 using namespace Serialization;
 using namespace KeyframeUnity;
 
+#ifdef _WIN32
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 // Raw string for copying template game project items
 namespace {
-	// --- main.cpp Template ---
 	// --- main.cpp Template ---
 	const std::string MAIN_CPP_TEMPLATE = R"(
 // Extension loader library's header must be included before GLFW's header!!!
@@ -98,51 +106,38 @@ int WINAPI WinMain(
 )";
 
 	// --- CMakeLists.txt Template ---
-	// --- CMakeLists.txt Template ---
 	const std::string CMAKELISTS_TEMPLATE = R"(
 cmake_minimum_required(VERSION 3.20)
 project({{GAME_NAME}})
 
 set(project_dir ${CMAKE_CURRENT_LIST_DIR})
 
-file(GLOB_RECURSE all_src_files     "${project_dir}/src/*.cpp")
-file(GLOB_RECURSE all_include_files "${project_dir}/include/*.h")
+file(GLOB_RECURSE src_files "${project_dir}/src/*.cpp")
+file(GLOB_RECURSE inc_files "${project_dir}/include/*.h")
 
 # ======================================================
-# TARGET 1: Standalone Game
+# TARGET 1: The Standalone Game
 # ======================================================
-add_executable(${PROJECT_NAME} WIN32 ${all_src_files} ${all_include_files})
-
-# Link to the CLEAN engine library (USE_IMGUI_EDITOR=0)
+add_executable(${PROJECT_NAME} WIN32 ${src_files} ${inc_files})
 target_link_libraries(${PROJECT_NAME} PRIVATE CrashoutEngine)
-
 target_include_directories(${PROJECT_NAME} PRIVATE 
-    "${project_dir}/include"
+    "${project_dir}/include" 
     "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include"
 )
-
-# Fix for Visual Studio F5: Set Working Directory to output folder
 set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
 
 # ======================================================
-# TARGET 2: Engine Editor
+# TARGET 2: The Engine Editor
 # ======================================================
-add_executable(CrashoutEditor WIN32 ${all_src_files} ${all_include_files})
-
-# Link to the EDITOR engine library (USE_IMGUI_EDITOR=1)
+add_executable(CrashoutEditor WIN32 ${src_files} ${inc_files})
 target_link_libraries(CrashoutEditor PRIVATE CrashoutEngine_Editor)
-
 target_include_directories(CrashoutEditor PRIVATE 
-    "${project_dir}/include"
+    "${project_dir}/include" 
     "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include"
 )
-
-# Fix for Visual Studio F5: Set Working Directory to output folder
 set_target_properties(CrashoutEditor PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:CrashoutEditor>")
 
-# ======================================================
-# Shared Build Steps (C# Scripts & Asset Sync)
-# ======================================================
+# --- C# Build Trigger (Shared) ---
 set(CSPROJ_PATH "${project_dir}/scripts/{{GAME_NAME}}.csproj")
 add_custom_target({{GAME_NAME}}_Scripts ALL
     COMMAND dotnet build "${CSPROJ_PATH}" -c $<CONFIG>
@@ -151,17 +146,16 @@ add_custom_target({{GAME_NAME}}_Scripts ALL
 add_dependencies(${PROJECT_NAME} {{GAME_NAME}}_Scripts)
 add_dependencies(CrashoutEditor {{GAME_NAME}}_Scripts)
 
-# Copy Game Assets
+# --- Asset Sync (Shared) ---
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
 )
-
-# Copy Engine Core Assets
+add_custom_command(TARGET CrashoutEditor POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:CrashoutEditor>/assets"
+)
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/core-assets" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/core-assets"
 )
-
-# Copy compiled C# Script DLL
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>/scripts/${PROJECT_NAME}" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/scripts"
 )
@@ -266,6 +260,335 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 }
 
 namespace UI {
+
+	// ==============================================================================
+	// UNIVERSAL HIDDEN COMMAND EXECUTOR (STRICT WINDOWLESS)
+	// Runs MSBuild/CMake silently and pipes output to the Engine Logger w/ Colors!
+	// ==============================================================================
+	inline int ExecuteCommandHidden(const std::string& cmd) {
+#ifdef _WIN32
+		SECURITY_ATTRIBUTES saAttr;
+		saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+		saAttr.bInheritHandle = TRUE;
+		saAttr.lpSecurityDescriptor = NULL;
+
+		HANDLE hReadPipe = NULL;
+		HANDLE hWritePipe = NULL;
+
+		// Create a pipe for the child process's STDOUT. 
+		if (!CreatePipe(&hReadPipe, &hWritePipe, &saAttr, 0)) {
+			LOGE(Core, "Failed to create output pipe.");
+			return -1;
+		}
+
+		// Ensure the read handle to the pipe for STDOUT is not inherited.
+		if (!SetHandleInformation(hReadPipe, HANDLE_FLAG_INHERIT, 0)) {
+			LOGE(Core, "Failed to set handle information.");
+			return -1;
+		}
+
+		PROCESS_INFORMATION piProcInfo;
+		ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
+
+		STARTUPINFOA siStartInfo;
+		ZeroMemory(&siStartInfo, sizeof(STARTUPINFOA));
+		siStartInfo.cb = sizeof(STARTUPINFOA);
+		siStartInfo.hStdError = hWritePipe;
+		siStartInfo.hStdOutput = hWritePipe;
+		siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+
+		// Create the command string. We MUST prefix with "cmd.exe /c "
+		std::string fullCmd = "cmd.exe /c " + cmd;
+		std::vector<char> cmdBuffer(fullCmd.begin(), fullCmd.end());
+		cmdBuffer.push_back('\0');
+
+		// CREATE_NO_WINDOW is the absolute key to preventing the pop-up in Release mode!
+		BOOL bSuccess = CreateProcessA(
+			NULL,
+			cmdBuffer.data(),
+			NULL,
+			NULL,
+			TRUE,
+			CREATE_NO_WINDOW, // <--- Strictly enforces no console window
+			NULL,
+			NULL,
+			&siStartInfo,
+			&piProcInfo
+		);
+
+		if (!bSuccess) {
+			LOGE(Core, "Failed to create hidden process.");
+			CloseHandle(hWritePipe);
+			CloseHandle(hReadPipe);
+			return -1;
+		}
+
+		// Close the write end of the pipe before reading from the read end of the pipe, 
+		// to ensure read returns false when the child process is done.
+		CloseHandle(hWritePipe);
+
+		DWORD dwRead;
+		CHAR chBuf[256];
+		BOOL bSuccessRead = FALSE;
+		std::string currentLine = "";
+
+		// Read output from the child process's pipe.
+		for (;;) {
+			bSuccessRead = ReadFile(hReadPipe, chBuf, sizeof(chBuf) - 1, &dwRead, NULL);
+			if (!bSuccessRead || dwRead == 0) break;
+
+			chBuf[dwRead] = '\0';
+			for (DWORD i = 0; i < dwRead; ++i) {
+				if (chBuf[i] == '\n') {
+					if (!currentLine.empty() && currentLine.back() == '\r') currentLine.pop_back();
+
+					if (!currentLine.empty()) {
+						std::string lowerLine = currentLine;
+						std::transform(lowerLine.begin(), lowerLine.end(), lowerLine.begin(), ::tolower);
+
+						// Dynamically route the output to the correct color macro
+						if (lowerLine.find("error") != std::string::npos || lowerLine.find("failed") != std::string::npos) {
+							LOGE(Build, currentLine.c_str());
+						}
+						else if (lowerLine.find("success") != std::string::npos || lowerLine.find("succeeded") != std::string::npos) {
+							LOGS(Build, currentLine.c_str());
+						}
+						else {
+							LOGI(Build, currentLine.c_str());
+						}
+					}
+					currentLine.clear();
+				}
+				else {
+					currentLine += chBuf[i];
+				}
+			}
+		}
+
+		// Wait until child process exits.
+		WaitForSingleObject(piProcInfo.hProcess, INFINITE);
+
+		DWORD exitCode;
+		GetExitCodeProcess(piProcInfo.hProcess, &exitCode);
+
+		// Close handles.
+		CloseHandle(piProcInfo.hProcess);
+		CloseHandle(piProcInfo.hThread);
+		CloseHandle(hReadPipe);
+
+		return (int)exitCode;
+#else
+		return std::system(cmd.c_str());
+#endif
+	}
+
+	// Global states for the build thread to communicate with the UI
+	static std::atomic<bool> g_IsBuilding{ false };
+	static char g_BuildStatusMsg[256] = "Idle";
+	static float g_BuildProgress = 0.0f;
+
+	/*!
+	@brief Renders a panel to build and export the standalone game.
+	*/
+	void RenderBuildPanel(UIState& ui) {
+
+		ScopedWindow w("Build & Publish", LockFlags(ui.lockLayout));
+		namespace fs = std::filesystem;
+
+		std::string currentRoot = GetGameRoot();
+		std::string gameName = fs::path(currentRoot).filename().string();
+
+		ImGui::Text("Active Project:");
+		ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "%s", gameName.c_str());
+		ImGui::Separator();
+
+		static char exportPath[256] = { 0 };
+		static std::string lastGameName = "";
+
+		if (lastGameName != gameName) {
+			// parent_path() 3 times to get back to the CRASHOUTS root folder
+			fs::path defaultExportPath = fs::path(currentRoot).parent_path().parent_path().parent_path() / "projects/ExportedGames";
+			std::string pathStr = defaultExportPath.generic_string() + "/";
+			strncpy(exportPath, pathStr.c_str(), sizeof(exportPath) - 1);
+			exportPath[sizeof(exportPath) - 1] = '\0';
+			lastGameName = gameName;
+		}
+
+		ImGui::InputText("Export Directory", exportPath, IM_ARRAYSIZE(exportPath));
+		ImGui::SameLine(); Help("The base folder where your final, playable game will be shipped.");
+		ImGui::Dummy(ImVec2(0, 10));
+
+		if (g_IsBuilding) {
+			ImGui::BeginDisabled();
+			ImGui::Button("Building... Please wait", ImVec2(-1, 30));
+			ImGui::EndDisabled();
+		}
+		else {
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.6f, 0.2f, 1.0f));
+			if (ImGui::Button("Compile & Export Standalone", ImVec2(-1, 30))) {
+
+				g_IsBuilding = true;
+				g_BuildProgress = 0.1f;
+
+#ifdef _DEBUG
+				std::string buildConfig = "Debug";
+#else
+				std::string buildConfig = "Release";
+#endif
+
+				snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Initializing %s build for %s...", buildConfig.c_str(), gameName.c_str());
+				LOGI(Build, g_BuildStatusMsg);
+
+				std::string finalExportDir = std::string(exportPath) + gameName;
+
+				// 3. FIRE OFF BACKGROUND THREAD
+				std::thread([gameName, currentRoot, finalExportDir, buildConfig]() {
+
+					// Helper to run command line tools and stream their output to the Engine Console
+					auto ExecuteCommandAndLog = [](const std::string& cmd) -> int {
+						// Append " 2>&1" to capture BOTH standard output and error output
+						std::string fullCmd = cmd + " 2>&1";
+
+						// Open the pipe in read-only mode
+						FILE* pipe = _popen(fullCmd.c_str(), "r");
+						if (!pipe) {
+							LOGE(Build, "Fatal Error: Failed to open command pipe!");
+							return -1;
+						}
+
+						char buffer[256];
+						// Read the compiler output line-by-line as it generates
+						while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+							std::string line = buffer;
+
+							// Clean up trailing newlines so the ImGui console doesn't double-space
+							if (!line.empty() && line.back() == '\n') line.pop_back();
+							if (!line.empty() && line.back() == '\r') line.pop_back();
+
+							// Skip completely empty lines
+							if (!line.empty()) {
+								// Pipe it directly to your UI console! 
+								// (You could also parse 'line' here to colorize warnings vs errors)
+								LOGI(Build, line.c_str());
+							}
+						}
+
+						// Close the pipe and return the actual compiler exit code
+						return _pclose(pipe);
+						};
+
+
+					// Step back 3 folders to get CRASHOUTS root
+					std::string workspaceRoot = fs::path(currentRoot).parent_path().parent_path().parent_path().generic_string();
+					std::string mainBuildDir = workspaceRoot + "/build";
+
+					// --- STEP A: Build C# Scripts ---
+					snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Compiling C# Scripts (%s)...", buildConfig.c_str());
+					LOGI(Build, g_BuildStatusMsg);
+					g_BuildProgress = 0.3f;
+
+					std::string csProj = currentRoot + "/scripts/" + gameName + ".csproj";
+					std::string buildCS = "dotnet build \"" + csProj + "\" -c " + buildConfig;
+					int csRes = ExecuteCommandAndLog(buildCS);
+					if (csRes != 0) {
+						LOGE(Build, "C# Compilation Failed! See logs above.");
+					}
+
+					// --- STEP B: Build C++ Game Target ---
+					snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Compiling C++ Engine & Game (%s)...", buildConfig.c_str());
+					LOGI(Build, g_BuildStatusMsg);
+					g_BuildProgress = 0.6f;
+
+					// Point CMake AT THE ROOT WORKSPACE to build only the target game
+					std::string buildCPP = "cmake --build \"" + mainBuildDir + "\" --config " + buildConfig + " --target " + gameName;
+					int cppRes = ExecuteCommandAndLog(buildCPP);
+
+					if (cppRes != 0) {
+						snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Build Failed! Check the console window for MSBuild errors.");
+						LOGE(Build, g_BuildStatusMsg);
+						g_IsBuilding = false;
+						return;
+					}
+
+					// --- STEP C: Package Specific Files (Whitelist Method) ---
+					snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Packaging Assets & Executable...");
+					LOGI(Build, g_BuildStatusMsg);
+					g_BuildProgress = 0.8f;
+
+					std::error_code ec; // Use error codes to prevent crashes on locked files
+					if (fs::exists(finalExportDir)) {
+						snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Clearing previous export...");
+						LOGI(Build, g_BuildStatusMsg);
+						fs::remove_all(finalExportDir, ec);
+					}
+
+					fs::create_directories(finalExportDir, ec);
+
+					// Get the exact path to the binaries (e.g. build/x64-Debug or build/x64-Release)
+					fs::path sourceBinaries = fs::path(mainBuildDir) / ("x64-" + buildConfig);
+
+					if (fs::exists(sourceBinaries)) {
+
+						// Helper Lambda to cherry-pick exactly what we need
+						auto copy_item = [&](const std::string& item) {
+							fs::path src = sourceBinaries / item;
+							fs::path dst = fs::path(finalExportDir) / item;
+							std::error_code c_ec;
+							if (fs::exists(src)) {
+								if (fs::is_directory(src)) {
+									fs::create_directories(dst, c_ec);
+									fs::copy(src, dst, fs::copy_options::recursive | fs::copy_options::overwrite_existing, c_ec);
+								}
+								else {
+									fs::copy_file(src, dst, fs::copy_options::overwrite_existing, c_ec);
+								}
+							}
+							};
+
+						// 1. Copy the standalone game components
+						copy_item(gameName + ".exe");
+						copy_item("assets");
+						copy_item("core-assets");
+						copy_item("scripts");
+
+						// --- THE MISSING PIECES ---
+						copy_item("third_party"); // Contains Mono's 'etc' and 'lib' config folders!
+						copy_item("curl-ca-bundle.crt"); // Needed for cURL networking
+
+						// 2. DYNAMICALLY copy ALL .dll files!
+						// This ensures FMOD, Mono, FFmpeg, cURL, and any future libraries all ship cleanly.
+						for (const auto& entry : fs::directory_iterator(sourceBinaries, ec)) {
+							if (entry.is_regular_file() && entry.path().extension() == ".dll") {
+								copy_item(entry.path().filename().string());
+							}
+						}
+
+						snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Success! Game exported to: %s", finalExportDir.c_str());
+						LOGS(Build, g_BuildStatusMsg);
+						g_BuildProgress = 1.0f;
+					}
+					else {
+						snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Error: Could not find CMake output at %s", sourceBinaries.generic_string().c_str());
+						LOGE(Build, g_BuildStatusMsg);
+					}
+
+					g_IsBuilding = false;
+
+					}).detach();
+			}
+			ImGui::PopStyleColor();
+		}
+
+		ImGui::Dummy(ImVec2(0, 5));
+		ImGui::ProgressBar(g_BuildProgress, ImVec2(-1, 0));
+
+		ImVec4 statusColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		if (std::string(g_BuildStatusMsg).find("Success") != std::string::npos) statusColor = ImVec4(0.2f, 1.0f, 0.2f, 1.0f);
+		else if (std::string(g_BuildStatusMsg).find("Failed") != std::string::npos || std::string(g_BuildStatusMsg).find("Error") != std::string::npos) statusColor = ImVec4(1.0f, 0.2f, 0.2f, 1.0f);
+		else if (g_IsBuilding) statusColor = ImVec4(1.0f, 0.8f, 0.2f, 1.0f);
+
+		ImGui::TextColored(statusColor, "Status: %s", g_BuildStatusMsg);
+	}
 
 	// Helper local to this file
 	static void DrawHierarchyNode(ECS& ecs, Entity e, Entity& selected)
@@ -775,7 +1098,7 @@ namespace UI {
 			ImGui::PopID();
 		}
 		ImGui::PopID();
-		}
+	}
 	/*!
 	 @brief Renders the performance panel with profiler results.
 	 @param profiler Frame profiler reference.
@@ -1652,7 +1975,7 @@ namespace UI {
 				std::string buildCmd = "dotnet build \"" + csprojPath.generic_string() + "\" -c " + config;
 				std::cout << "[Editor] Recompiling scripts for " << gameName << " in " << config << " mode...\n";
 
-				int result = std::system(buildCmd.c_str());
+				int result = ExecuteCommandHidden(buildCmd);
 
 				if (result == 0) {
 					std::cout << "[Editor] Compile Success! Hot Reloading...\n";
@@ -1721,7 +2044,7 @@ namespace UI {
 			std::string buildCommand = "dotnet build \"" + csprojPath.generic_string() + "\" -c " + config;
 
 			std::cout << "[Editor] Compiling scripts for " << projName << " in " << config << " mode...\n";
-			int buildResult = std::system(buildCommand.c_str());
+			int buildResult = ExecuteCommandHidden(buildCommand);
 
 			if (buildResult == 0) {
 				std::cout << "[Editor] Script compilation successful!\n";

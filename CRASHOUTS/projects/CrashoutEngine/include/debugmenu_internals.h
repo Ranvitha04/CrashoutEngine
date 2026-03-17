@@ -173,4 +173,5 @@ namespace UI {
     void RenderEngineStateBar(UIState& ui);
     void RenderProjectManager(UIState& ui);
     void RenderVisualScriptingPanel(UIState& ui);
+    void RenderBuildPanel(UIState& ui);
 }

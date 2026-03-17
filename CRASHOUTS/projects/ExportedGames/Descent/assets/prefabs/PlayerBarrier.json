@@ -1,0 +1,79 @@
+{
+    "prefabs": [
+        {
+            "name": "PlayerBarrier",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "PlayerBarrier",
+                    "uuid": 5657094291132750694,
+                    "tag": {
+                        "tagMask": 2
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 397.2041015625,
+                            "y": -256.5416259765625,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "rigidbody": {
+                        "mass": 0.0,
+                        "restitutionCoeff": 0.0,
+                        "maximumVelocity": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "staticFriction": 0.5,
+                        "dynamicFriction": 0.5,
+                        "inertia": 0.0,
+                        "invInertia": 0.0
+                    },
+                    "collider": {
+                        "ColliderType": 3,
+                        "isTrigger": false,
+                        "enabled": true,
+                        "position": {
+                            "x": 397.2041015625,
+                            "y": -255.8416290283203,
+                            "z": 0.0
+                        },
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.699999988079071,
+                            "z": 0.0
+                        },
+                        "p1": {
+                            "x": -14.899999618530274,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 19.200000762939454,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "ConditionalCollider",
+                                "fields": {}
+                            }
+                        ]
+                    },
+                    "layer": {
+                        "layerName": "",
+                        "z": 0
+                    }
+                }
+            ]
+        }
+    ]
+}

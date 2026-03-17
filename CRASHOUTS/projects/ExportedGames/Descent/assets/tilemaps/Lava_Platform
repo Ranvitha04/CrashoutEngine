@@ -1,0 +1,60 @@
+{
+    "layerMask": 4,
+    "tilemap": [
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_00.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 2
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_01.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 10
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_02.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 8
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_12.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 15
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_13.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 13
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_01.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 14
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_00.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 6
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_02.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 12
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_23.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 11
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_24.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 9
+        },
+        {
+            "texAssetName": "spritesheet\\lava platform\\lava platform_22.png",
+            "colliderType": "ColliderType::AABB",
+            "ruleBitMap": 3
+        }
+    ]
+}

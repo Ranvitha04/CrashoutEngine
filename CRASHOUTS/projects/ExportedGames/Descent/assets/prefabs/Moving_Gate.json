@@ -1,0 +1,558 @@
+{
+    "prefabs": [
+        {
+            "name": "Moving_Gate",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "wall",
+                    "uuid": 6270180515953553275,
+                    "tag": {
+                        "tagMask": 2
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -204.47128295898438,
+                            "y": -469.6745300292969,
+                            "z": -5.0
+                        },
+                        "size": {
+                            "x": 200.0,
+                            "y": 25.0
+                        }
+                    },
+                    "collider": {
+                        "ColliderType": 1,
+                        "isTrigger": false,
+                        "enabled": true,
+                        "position": {
+                            "x": -204.47128295898438,
+                            "y": -469.6745300292969,
+                            "z": -5.0
+                        },
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "min": {
+                            "x": -204.97128295898438,
+                            "y": -470.1745300292969,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": -203.97128295898438,
+                            "y": -469.1745300292969,
+                            "z": -5.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "spritesheet\\lava platform\\lava platform_42.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "MovingWall",
+                                "fields": {
+                                    "PlatesActive": 0,
+                                    "PlatesRequired": 2,
+                                    "MoveRight": true,
+                                    "MoveDist": 300.0,
+                                    "MoveSpeed": 40.0,
+                                    "dustBurstDuration": 1.0
+                                }
+                            }
+                        ]
+                    },
+                    "layer": {
+                        "layerName": "Foreground",
+                        "z": 100
+                    },
+                    "particle": {
+                        "isEmitting": true,
+                        "useWorldSpace": true,
+                        "maxParticles": 1000,
+                        "emitRate": 100.0,
+                        "playOnStop": true,
+                        "emissionShape": 2,
+                        "radiusMin": -0.10000000149011612,
+                        "radiusMax": 1.0,
+                        "lengthMin": 0.0,
+                        "lengthMax": 1.0,
+                        "areaMin": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "areaMax": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "startLifeMin": 0.5,
+                        "startLifeMax": 5.0,
+                        "startSpeedMin": 0.0,
+                        "startSpeedMax": 0.0,
+                        "uniformSize": true,
+                        "startSizeXMin": 1.25,
+                        "startSizeXMax": 3.25,
+                        "startSizeYMin": 1.25,
+                        "startSizeYMax": 3.25,
+                        "sizeOverTime": 0.0,
+                        "rotationOverTime": 0.0,
+                        "startRotationMin": 0.0,
+                        "startRotationMax": 360.0,
+                        "startColor": {
+                            "x": 0.7900552749633789,
+                            "y": 0.4297234117984772,
+                            "z": 0.19205762445926667,
+                            "w": 1.0
+                        },
+                        "endColor": {
+                            "x": 0.14364641904830934,
+                            "y": 0.11262043565511704,
+                            "z": 0.05158573016524315,
+                            "w": 0.0
+                        },
+                        "gravity": {
+                            "x": 0.0,
+                            "y": -9.800000190734864,
+                            "z": 0.0
+                        },
+                        "startVelocity": {
+                            "x": 0.0,
+                            "y": -20.0,
+                            "z": 0.0
+                        },
+                        "useTexture": false,
+                        "textureName": "",
+                        "textureUV": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 10523851851417643097,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -284.4712829589844,
+                            "y": -469.6745300292969,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 40.0,
+                            "y": 25.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "images/spritesheet/Rock/Rock_33.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 6270180515953553275,
+                        "localPos": {
+                            "x": -0.4000000059604645,
+                            "y": 0.0,
+                            "z": 5.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Foreground",
+                        "z": 100
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 7514110254017376765,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -244.47128295898438,
+                            "y": -469.6745300292969,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 40.0,
+                            "y": 25.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "spritesheet/Rock/Rock_34.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 6270180515953553275,
+                        "localPos": {
+                            "x": -0.20000000298023225,
+                            "y": 0.0,
+                            "z": 5.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Foreground",
+                        "z": 100
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 8934903555239713206,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -204.47128295898438,
+                            "y": -469.6745300292969,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 40.0,
+                            "y": 25.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "spritesheet/Rock/Rock_34.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 6270180515953553275,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 5.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Foreground",
+                        "z": 100
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 5484290259843125166,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -164.47128295898438,
+                            "y": -469.6745300292969,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 40.0,
+                            "y": 25.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "spritesheet/Rock/Rock_34.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 6270180515953553275,
+                        "localPos": {
+                            "x": 0.20000000298023225,
+                            "y": 0.0,
+                            "z": 5.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Foreground",
+                        "z": 100
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 16907713334951593155,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -124.47128295898438,
+                            "y": -469.6745300292969,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 40.0,
+                            "y": 25.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "spritesheet/Rock/Rock_35.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 6270180515953553275,
+                        "localPos": {
+                            "x": 0.4000000059604645,
+                            "y": 0.0,
+                            "z": 5.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Foreground",
+                        "z": 100
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,1281 @@
+{
+    "prefabs": [
+        {
+            "name": "Player_Prefab",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "Player",
+                    "uuid": 17142618762681968282,
+                    "tag": {
+                        "tagMask": 1
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -218.82041931152345,
+                            "y": -20.576072692871095,
+                            "z": 50.0
+                        },
+                        "size": {
+                            "x": 140.0,
+                            "y": 100.0
+                        }
+                    },
+                    "rigidbody": {
+                        "mass": 2.9000000953674318,
+                        "restitutionCoeff": 0.0,
+                        "maximumVelocity": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "staticFriction": 0.0,
+                        "dynamicFriction": 0.0,
+                        "inertia": 0.0,
+                        "invInertia": 0.0
+                    },
+                    "collider": {
+                        "ColliderType": 1,
+                        "isTrigger": false,
+                        "enabled": true,
+                        "position": {
+                            "x": -218.82041931152345,
+                            "y": -25.576072692871095,
+                            "z": 50.0
+                        },
+                        "offset": {
+                            "x": 0.0,
+                            "y": -5.0,
+                            "z": 0.0
+                        },
+                        "min": {
+                            "x": -227.82041931152345,
+                            "y": -56.076072692871097,
+                            "z": 50.0
+                        },
+                        "max": {
+                            "x": -209.82041931152345,
+                            "y": 4.923927307128906,
+                            "z": 50.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                        "uvSize": {
+                            "x": 0.3333333432674408,
+                            "y": 0.3333333432674408
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "audio": {
+                        "clips": [
+                            {
+                                "name": "footstep1",
+                                "path": "footsteps 1.wav",
+                                "volume": 1.5,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "footstep2",
+                                "path": "footsteps 2.wav",
+                                "volume": 1.5,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "footstep3",
+                                "path": "footsteps 3.wav",
+                                "volume": 1.5,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "footstep4",
+                                "path": "footsteps 4.wav",
+                                "volume": 1.5,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "footstep5",
+                                "path": "footsteps 5.wav",
+                                "volume": 1.5,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "footstep6",
+                                "path": "footsteps 6.wav",
+                                "volume": 1.5,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "footstep7",
+                                "path": "footsteps 7.wav",
+                                "volume": 1.5,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "footstep8",
+                                "path": "footsteps 8.wav",
+                                "volume": 1.5,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "jumpLand",
+                                "path": "jump landing.wav",
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "jumpUp",
+                                "path": "jump.wav",
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "switchMassSound",
+                                "path": "switch state.wav",
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            }
+                        ]
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "PlayerMovement",
+                                "fields": {
+                                    "maxRunSpeed": 150.0,
+                                    "maxAirSpeed": 120.0,
+                                    "acceleration": 10.0,
+                                    "deceleration": 10.0,
+                                    "airAcceleration": 2.0,
+                                    "jumpPower": 50000.0,
+                                    "gravityScale": 2.0,
+                                    "gravityForceMultiplier": 10.0,
+                                    "fallGravityMultiplier": 2.5,
+                                    "footstepInterval": 0.30000001192092898,
+                                    "swapPause": 1.0,
+                                    "energyConsumption": 12.5,
+                                    "coyoteFrames": 6,
+                                    "goalNoOfPlates": 2,
+                                    "currentGoalPlates": 0,
+                                    "landingDustName": "LandingDust",
+                                    "dustBurstDuration": 0.15000000596046449,
+                                    "normalMass": 2.9000000953674318,
+                                    "lightMass": 2.0,
+                                    "groundCheckDistance": 5.0,
+                                    "groundCheckWidth": 10.0,
+                                    "playDialogueOnStart": true,
+                                    "dialogueCooldown": 1.0,
+                                    "isDialogueActive": true,
+                                    "facingRight": true,
+                                    "CurrentEnergy": 75.0,
+                                    "MaxEnergy": 100.0,
+                                    "alive": true,
+                                    "isPaused": false,
+                                    "reloadOnDeath": false,
+                                    "reloadSceneName": ""
+                                }
+                            }
+                        ]
+                    },
+                    "layer": {
+                        "layerName": "Player",
+                        "z": 0
+                    },
+                    "keyframe_animator": {
+                        "current": "playerIdle",
+                        "t": 5.60001802444458,
+                        "playing": true,
+                        "clips": [
+                            {
+                                "name": "playerWalk",
+                                "wrap": 0,
+                                "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
+                                "spriteCols": 3,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.5,
+                                                "v": 2.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.75,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerFall",
+                                "wrap": 0,
+                                "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                                "spriteCols": 2,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerWalkLight",
+                                "wrap": 0,
+                                "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
+                                "spriteCols": 3,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 4.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 5.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.5,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.75,
+                                                "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0,
+                                                "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerFallLight",
+                                "wrap": 0,
+                                "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                                "spriteCols": 2,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerIdle",
+                                "wrap": 0,
+                                "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                                "spriteCols": 3,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.125,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerSwitchLight",
+                                "wrap": 1,
+                                "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                                "spriteCols": 3,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.5,
+                                                "v": 2.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.75,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0,
+                                                "v": 4.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.25,
+                                                "v": 5.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.5,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.75,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerSwitch",
+                                "wrap": 1,
+                                "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
+                                "spriteCols": 3,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.5,
+                                                "v": 2.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.75,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0,
+                                                "v": 4.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.25,
+                                                "v": 5.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.5,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.75,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerIdleLight",
+                                "wrap": 0,
+                                "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                                "spriteCols": 3,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerJump",
+                                "wrap": 0,
+                                "textureAsset": "images/Character\\New Artstyle\\Jump\\Jump spritesheet.png",
+                                "spriteCols": 2,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerJumpLight",
+                                "wrap": 0,
+                                "textureAsset": "images/Character\\New Artstyle\\Jump\\Jump spritesheet.png",
+                                "spriteCols": 2,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "active": false,
+                    "name": "PlayerDialogue_1",
+                    "uuid": 4672454392646077867,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -218.82041931152345,
+                            "y": 37.79383850097656,
+                            "z": 50.0
+                        },
+                        "size": {
+                            "x": 98.0,
+                            "y": 50.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.3960784375667572
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Regular",
+                        "text": "This place is... did I make it? Is this hell?",
+                        "scale": 3.5,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": true,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": true,
+                        "padding": {
+                            "x": 5.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 1.0,
+                        "lineSpacing": 10.0,
+                        "isRevealing": true,
+                        "revealSpeed": 35.0,
+                        "dialogueFilePath": "dialogue/tutorialdialogue.json",
+                        "dialogueID": ""
+                    },
+                    "gui": {
+                        "uiType": 3
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 17142618762681968282,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.583699107170105,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.699999988079071,
+                            "y": 0.5
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": false,
+                    "name": "PlayerDialogue_2",
+                    "uuid": 7400278973642246601,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -218.82041931152345,
+                            "y": 37.79383850097656,
+                            "z": 50.0
+                        },
+                        "size": {
+                            "x": 98.0,
+                            "y": 50.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.3960784375667572
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Regular",
+                        "text": "Heh. It’s less fire and brimstone than I thought.",
+                        "scale": 3.5,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": true,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": true,
+                        "padding": {
+                            "x": 5.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 1.0,
+                        "lineSpacing": 10.0,
+                        "isRevealing": true,
+                        "revealSpeed": 35.0,
+                        "dialogueFilePath": "dialogue/tutorialdialogue.json",
+                        "dialogueID": "1.2"
+                    },
+                    "gui": {
+                        "uiType": 3
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 17142618762681968282,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.583699107170105,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.699999988079071,
+                            "y": 0.5
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": false,
+                    "name": "PlayerDialogue_3",
+                    "uuid": 2995568646537024137,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -218.82041931152345,
+                            "y": 37.79383850097656,
+                            "z": 50.0
+                        },
+                        "size": {
+                            "x": 98.0,
+                            "y": 50.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.3960784375667572
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Regular",
+                        "text": "No better time than the present, I suppose.",
+                        "scale": 3.5,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": true,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": true,
+                        "padding": {
+                            "x": 5.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 1.0,
+                        "lineSpacing": 10.0,
+                        "isRevealing": true,
+                        "revealSpeed": 35.0,
+                        "dialogueFilePath": "dialogue/tutorialdialogue.json",
+                        "dialogueID": "1.3"
+                    },
+                    "gui": {
+                        "uiType": 3
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 17142618762681968282,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.583699107170105,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.699999988079071,
+                            "y": 0.5
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": false,
+                    "name": "PlayerDialogue_4",
+                    "uuid": 6601111284823726429,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -218.82041931152345,
+                            "y": 37.79383850097656,
+                            "z": 50.0
+                        },
+                        "size": {
+                            "x": 98.0,
+                            "y": 50.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.3960784375667572
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Regular",
+                        "text": "I should explore this place as much as I can.",
+                        "scale": 3.5,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": true,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": true,
+                        "padding": {
+                            "x": 5.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 1.0,
+                        "lineSpacing": 10.0,
+                        "isRevealing": true,
+                        "revealSpeed": 35.0,
+                        "dialogueFilePath": "dialogue/tutorialdialogue.json",
+                        "dialogueID": "1.4"
+                    },
+                    "gui": {
+                        "uiType": 3
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 17142618762681968282,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.583699107170105,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.699999988079071,
+                            "y": 0.5
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": false,
+                    "name": "PlayerDialogue_5",
+                    "uuid": 8879151482939062898,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -504.61468505859377,
+                            "y": -219.93362426757813,
+                            "z": 50.0
+                        },
+                        "size": {
+                            "x": 98.0,
+                            "y": 50.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.3960784375667572
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Regular",
+                        "text": "I wonder, if at the end of this journey, I’ll find you, Keiran?",
+                        "scale": 3.5,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": true,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": true,
+                        "padding": {
+                            "x": 5.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 1.0,
+                        "lineSpacing": 10.0,
+                        "isRevealing": true,
+                        "revealSpeed": 35.0,
+                        "dialogueFilePath": "dialogue/tutorialdialogue.json",
+                        "dialogueID": "1.5"
+                    },
+                    "gui": {
+                        "uiType": 3
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 17142618762681968282,
+                        "localPos": {
+                            "x": -2.0413875579833986,
+                            "y": -1.9935754537582398,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.699999988079071,
+                            "y": 0.5
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                }
+            ]
+        }
+    ]
+}

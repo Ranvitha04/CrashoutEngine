@@ -36,4 +36,4 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
  Expands the provided macro @p X for each subsystem.
  This list is used to generate subsystem enums, string names, and filters.
 */
-#define LOG_SYSTEMS(X) X(Core) X(Physics) X(Collision) X(Input) X(AI) X(ECS) X(Renderer) X(UI) X(Audio) X(Debug) X(Scripting)
+#define LOG_SYSTEMS(X) X(Core) X(Physics) X(Collision) X(Input) X(AI) X(ECS) X(Renderer) X(UI) X(Audio) X(Debug) X(Scripting) X(Build)

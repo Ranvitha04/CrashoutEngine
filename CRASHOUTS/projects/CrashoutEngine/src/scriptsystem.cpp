@@ -285,7 +285,7 @@ namespace CrashoutsEngine
 					if (flags & MONO_FIELD_ATTR_STATIC) continue;
 
 					// Check [SerializeField] or Public
-					bool isPublic = (flags & MONO_FIELD_ATTR_PUBLIC);
+					bool isPublic = ((flags & MONO_FIELD_ATTR_FIELD_ACCESS_MASK) == MONO_FIELD_ATTR_PUBLIC);
 					bool hasAttr = false;
 
 					if (attrClass) {
@@ -331,14 +331,8 @@ namespace CrashoutsEngine
 						if (!object) continue;
 
 						// Refresh Class and Method pointers for the inspector
-						MonoImage* image = MonoManager::GetImage();
-						inst.Class = mono_class_from_name(image, "CrashoutsEngine", inst.ClassName.c_str());
+						inst.Class = mono_object_get_class(object);
 						
-						// Try fallback to no namespace if not found
-						if (!inst.Class) {
-							inst.Class = mono_class_from_name(image, "", inst.ClassName.c_str());
-						}
-
 						if (inst.Class) {
 							inst.MethodStart = mono_class_get_method_from_name(inst.Class, "Start", 0);
 							inst.MethodUpdate = mono_class_get_method_from_name(inst.Class, "Update", 0);
@@ -353,7 +347,6 @@ namespace CrashoutsEngine
 							MonoClassField* field = mono_class_get_field_from_name(inst.Class, fieldName.c_str());
 							if (field) {
 								RestoreFieldValue(object, field, value);
-								// std::cout << "[Restore] Applied field: " << className << "." << fieldName << "\n";
 								restoredCount++;
 							}
 						}

@@ -1,0 +1,666 @@
+{
+    "prefabs": [
+        {
+            "name": "Moving_Platform(Sinking)",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "Moving_Platform_3(Sinking)",
+                    "uuid": 13688077741230738189,
+                    "tag": {
+                        "tagMask": 2
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 298.277587890625,
+                            "y": -326.3426513671875,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 100.0,
+                            "y": 16.0
+                        }
+                    },
+                    "rigidbody": {
+                        "mass": 0.0,
+                        "restitutionCoeff": 0.0,
+                        "maximumVelocity": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "staticFriction": 0.5,
+                        "dynamicFriction": 0.5,
+                        "inertia": 0.0,
+                        "invInertia": 0.0
+                    },
+                    "collider": {
+                        "ColliderType": 1,
+                        "isTrigger": false,
+                        "enabled": true,
+                        "position": {
+                            "x": 298.277587890625,
+                            "y": -326.3426513671875,
+                            "z": 0.0
+                        },
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "min": {
+                            "x": 230.777587890625,
+                            "y": -334.3426513671875,
+                            "z": 0.0
+                        },
+                        "max": {
+                            "x": 365.777587890625,
+                            "y": -318.3426513671875,
+                            "z": 0.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "Character/Light Mode/Left/Falling.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "WeightedPlatform",
+                                "fields": {
+                                    "IsMoving": true,
+                                    "MoveRight": true,
+                                    "MovementDistance": 320.0,
+                                    "MoveSpeed": 50.0,
+                                    "VerticalSpeed": 150.0,
+                                    "maxDrop": 140.0
+                                }
+                            }
+                        ]
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 17915313769815814717,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 237.96142578125,
+                            "y": -326.3426513671875,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 20.0,
+                            "y": 16.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "images/spritesheet/Platform/Platform_33.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 13688077741230738189,
+                        "localPos": {
+                            "x": -0.603161633014679,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 13321193731229337476,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 277.9217529296875,
+                            "y": -326.3426513671875,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 20.0,
+                            "y": 16.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "images/spritesheet/Platform/Platform_34.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 13688077741230738189,
+                        "localPos": {
+                            "x": -0.20355835556983949,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 5953325894436258337,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 297.9217529296875,
+                            "y": -326.3426513671875,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 20.0,
+                            "y": 16.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "images/spritesheet/Platform/Platform_34.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 13688077741230738189,
+                        "localPos": {
+                            "x": -0.0035583495628088714,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 7312582744655315001,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 317.9217529296875,
+                            "y": -326.3426513671875,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 20.0,
+                            "y": 16.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "images/spritesheet/Platform/Platform_34.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 13688077741230738189,
+                        "localPos": {
+                            "x": 0.196441650390625,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 2366697314747943560,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 357.9217529296875,
+                            "y": -326.3426513671875,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 20.0,
+                            "y": 16.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "images/spritesheet/Platform/Platform_35.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 13688077741230738189,
+                        "localPos": {
+                            "x": 0.5964416265487671,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 9899996668174202925,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 257.9217529296875,
+                            "y": -326.3426513671875,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 20.0,
+                            "y": 16.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "images/spritesheet/Platform/Platform_34.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 13688077741230738189,
+                        "localPos": {
+                            "x": -0.4035583436489105,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Platform",
+                    "uuid": 2992201926667143655,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 337.9217529296875,
+                            "y": -326.3426513671875,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 20.0,
+                            "y": 16.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "images/spritesheet/Platform/Platform_34.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 13688077741230738189,
+                        "localPos": {
+                            "x": 0.39644163846969607,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Default",
+                        "z": 0
+                    }
+                }
+            ]
+        }
+    ]
+}
