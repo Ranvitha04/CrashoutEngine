@@ -45,7 +45,19 @@ add_custom_command(TARGET CrashoutEditor POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:CrashoutEditor>/assets"
 )
 
+# --- NEW: Copy Engine Core Assets for Standalone ---
+add_custom_command(TARGET Descent POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/core-assets" "$<TARGET_FILE_DIR:Descent>/core-assets"
+)
+
 # Copy compiled C# Script DLL
 add_custom_command(TARGET Descent POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>/scripts/Descent" "$<TARGET_FILE_DIR:Descent>/scripts"
+)
+
+# --- NEW: Copy Runtime DLLs needed for standalone ---
+add_custom_command(TARGET Descent POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/third_party/fmod/bin/x64/fmod.dll" "$<TARGET_FILE_DIR:Descent>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/third_party/fmod/bin/x64/fmodstudio.dll" "$<TARGET_FILE_DIR:Descent>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/third_party/Mono/bin/mono-2.0-sgen.dll" "$<TARGET_FILE_DIR:Descent>"
 )

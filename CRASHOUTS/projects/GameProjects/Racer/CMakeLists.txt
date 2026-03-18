@@ -1,66 +1,63 @@
-
-cmake_minimum_required(VERSION 3.20)
 project(Racer)
-
 set(project_dir ${CMAKE_CURRENT_LIST_DIR})
 
-file(GLOB_RECURSE all_src_files     "${project_dir}/src/*.cpp")
-file(GLOB_RECURSE all_include_files "${project_dir}/include/*.h")
+file(GLOB_RECURSE src_files "${project_dir}/src/*.cpp")
+file(GLOB_RECURSE inc_files "${project_dir}/include/*.h")
 
 # ======================================================
-# TARGET 1: Standalone Game
+# TARGET 1: The Standalone Game
 # ======================================================
-add_executable(${PROJECT_NAME} WIN32 ${all_src_files} ${all_include_files})
-
-# Link to the CLEAN engine library (USE_IMGUI_EDITOR=0)
-target_link_libraries(${PROJECT_NAME} PRIVATE CrashoutEngine)
-
-target_include_directories(${PROJECT_NAME} PRIVATE 
-    "${project_dir}/include"
+add_executable(Racer WIN32 ${src_files} ${inc_files})
+# Link to the standard engine
+target_link_libraries(Racer PRIVATE CrashoutEngine)
+target_include_directories(Racer PRIVATE 
+    "${project_dir}/include" 
     "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include"
 )
-
-# Fix for Visual Studio F5: Set Working Directory to output folder
-set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
+set_target_properties(Racer PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:Racer>")
 
 # ======================================================
-# TARGET 2: Engine Editor
+# TARGET 2: The Engine Editor
 # ======================================================
-add_executable(CrashoutEditor WIN32 ${all_src_files} ${all_include_files})
-
-# Link to the EDITOR engine library (USE_IMGUI_EDITOR=1)
+add_executable(CrashoutEditor WIN32 ${src_files} ${inc_files})
+# Link specifically to the Editor engine
 target_link_libraries(CrashoutEditor PRIVATE CrashoutEngine_Editor)
-
 target_include_directories(CrashoutEditor PRIVATE 
-    "${project_dir}/include"
+    "${project_dir}/include" 
     "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/include"
 )
-
-# Fix for Visual Studio F5: Set Working Directory to output folder
 set_target_properties(CrashoutEditor PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:CrashoutEditor>")
 
-# ======================================================
-# Shared Build Steps (C# Scripts & Asset Sync)
-# ======================================================
+# --- C# Build Trigger (Shared) ---
 set(CSPROJ_PATH "${project_dir}/scripts/Racer.csproj")
 add_custom_target(Racer_Scripts ALL
     COMMAND dotnet build "${CSPROJ_PATH}" -c $<CONFIG>
     WORKING_DIRECTORY "${project_dir}/scripts"
 )
-add_dependencies(${PROJECT_NAME} Racer_Scripts)
+add_dependencies(Racer Racer_Scripts)
 add_dependencies(CrashoutEditor Racer_Scripts)
 
-# Copy Game Assets
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
+# --- Asset Sync (Shared) ---
+add_custom_command(TARGET Racer POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:Racer>/assets"
+)
+add_custom_command(TARGET CrashoutEditor POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${project_dir}/assets" "$<TARGET_FILE_DIR:CrashoutEditor>/assets"
 )
 
-# Copy Engine Core Assets
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/core-assets" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/core-assets"
+# --- NEW: Copy Engine Core Assets for Standalone ---
+add_custom_command(TARGET Racer POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/projects/CrashoutEngine/core-assets" "$<TARGET_FILE_DIR:Racer>/core-assets"
 )
 
 # Copy compiled C# Script DLL
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>/scripts/${PROJECT_NAME}" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/scripts"
+add_custom_command(TARGET Racer POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/build/x64-$<CONFIG>/scripts/Racer" "$<TARGET_FILE_DIR:Racer>/scripts"
+)
+
+# --- NEW: Copy Runtime DLLs needed for standalone ---
+add_custom_command(TARGET Racer POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/third_party/fmod/bin/x64/fmod.dll" "$<TARGET_FILE_DIR:Racer>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/third_party/fmod/bin/x64/fmodstudio.dll" "$<TARGET_FILE_DIR:Racer>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/third_party/Mono/bin/mono-2.0-sgen.dll" "$<TARGET_FILE_DIR:Racer>"
 )

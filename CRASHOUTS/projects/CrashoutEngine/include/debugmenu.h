@@ -139,6 +139,7 @@ namespace UI {
         bool showEngineControl = true;
         bool drawQuadTree = false;
         bool showProjectManager = true;
+        bool showBuildPanel = false;
 
         bool freezeOnCollision = false;
         bool showAnimation = true;

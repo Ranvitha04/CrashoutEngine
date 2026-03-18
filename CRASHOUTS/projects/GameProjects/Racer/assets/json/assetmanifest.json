@@ -69,6 +69,10 @@
     ],
     "scenes": [
         {
+            "name": "descentmenu",
+            "path": "descentmenu"
+        },
+        {
             "name": "Game",
             "path": "Game"
         },
