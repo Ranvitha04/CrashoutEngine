@@ -489,19 +489,39 @@ namespace UI {
 
 					std::string csProj = currentRoot + "/scripts/" + gameName + ".csproj";
 					std::string buildCS = "dotnet build \"" + csProj + "\" -c " + buildConfig;
-					int csRes = ExecuteCommandAndLog(buildCS);
+					int csRes = ExecuteCommandHidden(buildCS);
 					if (csRes != 0) {
 						LOGE(Build, "C# Compilation Failed! See logs above.");
 					}
 
-					// --- STEP B: Build C++ Game Target ---
+					// ==========================================================
+					// --- STEP B.1: Configure CMake for the Active Project ---
+					// ==========================================================
+					snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Configuring CMake for %s...", gameName.c_str());
+					LOGI(Build, g_BuildStatusMsg);
+					g_BuildProgress = 0.4f;
+
+					// Tell the top-level CMake to switch its focus to the active game
+					std::string configCPP = "cmake -S \"" + workspaceRoot + "\" -B \"" + mainBuildDir + "\" -DGAME_TARGET=" + gameName;
+					int configRes = ExecuteCommandHidden(configCPP);
+
+					if (configRes != 0) {
+						snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "CMake Configure Failed! Check the console.");
+						LOGE(Build, g_BuildStatusMsg);
+						g_IsBuilding = false;
+						return;
+					}
+
+					// ==========================================================
+					// --- STEP B.2: Build C++ Game Target ---
+					// ==========================================================
 					snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Compiling C++ Engine & Game (%s)...", buildConfig.c_str());
 					LOGI(Build, g_BuildStatusMsg);
 					g_BuildProgress = 0.6f;
 
 					// Point CMake AT THE ROOT WORKSPACE to build only the target game
 					std::string buildCPP = "cmake --build \"" + mainBuildDir + "\" --config " + buildConfig + " --target " + gameName;
-					int cppRes = ExecuteCommandAndLog(buildCPP);
+					int cppRes = ExecuteCommandHidden(buildCPP);
 
 					if (cppRes != 0) {
 						snprintf(g_BuildStatusMsg, sizeof(g_BuildStatusMsg), "Build Failed! Check the console window for MSBuild errors.");

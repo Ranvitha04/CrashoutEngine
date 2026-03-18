@@ -15192,7 +15192,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "LAP: [0 / 0]",
-                "scale": 16.0,
+                "scale": 25.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -15234,8 +15234,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -64.79560852050781,
-                    "y": -33.043975830078128,
+                    "x": -63.79560852050781,
+                    "y": -35.043975830078128,
                     "z": 0.0
                 },
                 "size": {
@@ -15246,7 +15246,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "00:00:00",
-                "scale": 16.0,
+                "scale": 25.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -15656,7 +15656,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "Enter Name",
-                "scale": 8.0,
+                "scale": 15.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -15870,7 +15870,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "Send",
-                "scale": 8.0,
+                "scale": 15.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -15983,6 +15983,43 @@
                     "z": 1.0,
                     "w": 1.0
                 }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "pp",
+            "uuid": 272275106486828353,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "postprocessing": {
+                "brightness": 0.0,
+                "contrast": 0.0,
+                "saturation": 0.0,
+                "ambient": 1.0,
+                "shadowsEnabled": true,
+                "shadowRays": 128,
+                "bloomEnabled": true,
+                "bloomThreshold": 1.0,
+                "bloomIntensity": 0.800000011920929,
+                "bloomIterations": 6,
+                "active": true
             },
             "layer": {
                 "layerName": "",

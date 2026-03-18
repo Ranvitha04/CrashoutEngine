@@ -1,10 +1,16 @@
 {
     "entities": [],
     "layers": {
-        "Default": 0
+        "Default": 0,
+        "Ground": 2,
+        "Player": 1,
+        "YesNo": 3
     },
     "layer_visibility": {
-        "Default": true
+        "Default": true,
+        "Ground": true,
+        "Player": true,
+        "YesNo": true
     },
     "tag_mapping": {
         "Default": 0,
