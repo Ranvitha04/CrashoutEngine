@@ -26,6 +26,7 @@ namespace CrashoutsEngine
         MonoClass* Class = nullptr;
         MonoMethod* MethodStart = nullptr;
         MonoMethod* MethodUpdate = nullptr;
+        MonoMethod* MethodLateUpdate = nullptr;
         MonoMethod* MethodFixedUpdate = nullptr;
         MonoMethod* MethodOnDrawGizmos = nullptr;
 		MonoMethod* MethodOnDestroy = nullptr;
@@ -60,6 +61,7 @@ namespace Component {
         static void ResetThunks();
         void Start();
         void Update();
+        void LateUpdate();
         void FixedUpdate();
         void DrawGizmos();
         void Destroy();

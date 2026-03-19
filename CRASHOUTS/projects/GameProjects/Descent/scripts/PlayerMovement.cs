@@ -65,7 +65,7 @@ namespace CrashoutsEngine
         public static bool RespawnNextLoad = false;
         public float CurrentEnergy = 0.0f;
         public float MaxEnergy = 100.0f;
-        [SerializeField] private bool unlimitedEnergy = false;
+
         private RigidBodyComponent rb;
         private TransformComponent tf;
         private Animator anim;
@@ -127,6 +127,7 @@ namespace CrashoutsEngine
         private Entity pauseScreenEntity;
         private Entity gameOverScreen;
         private CEVec3 storedVelocity;
+        private float storedAngularVelocity = 0.0f;
         [SerializeField] private bool reloadOnDeath = false;
         [SerializeField] private string reloadSceneName = "";
         [SerializeField] private string gameOverSceneName = "Defeat";
@@ -139,10 +140,18 @@ namespace CrashoutsEngine
             if (isPaused)
             {
                 storedVelocity = rb.LinearVelocity;
+                storedAngularVelocity = rb.AngularVelocity;
                 rb.LinearVelocity = new CEVec3(0, 0, 0);
+                rb.AngularVelocity = 0.0f;
+                rb.SetDynamic(false);
                 anim.Play("playerIdle" + (isLight ? "Light" : ""));
             }
-            else { rb.LinearVelocity = storedVelocity; }
+            else
+            {
+                rb.SetDynamic(true);
+                rb.LinearVelocity = storedVelocity;
+                rb.AngularVelocity = storedAngularVelocity;
+            }
         }
 
         private void ApplyFlipping()
@@ -156,7 +165,7 @@ namespace CrashoutsEngine
         public override void Start()
         {
             string currentLevel = SceneManager.GetActiveSceneName();
-            unlimitedEnergy = false;
+
             currentGoalPlates = 0;
             Instance = this;
             rb = Entity.GetComponent<RigidBodyComponent>();
@@ -220,10 +229,7 @@ namespace CrashoutsEngine
         {
 
             if (tf == null || rb == null) return;
-            if (unlimitedEnergy)
-                CurrentEnergy = MaxEnergy;
-            if (Input.IsKeyTriggered(Key.F1))
-                unlimitedEnergy = !unlimitedEnergy;
+
             AudioManager.SetListenerPosition(tf.Position);
             if (isDying)
             {
@@ -237,8 +243,9 @@ namespace CrashoutsEngine
 
             if (isPaused || !alive) return;
 
-            if (Input.IsKeyPressed(Key.A) && !isDialogueActive) facingRight = false;
-            else if (Input.IsKeyPressed(Key.D) && !isDialogueActive) facingRight = true;
+            float moveInputX = isDialogueActive ? 0.0f : Input.GetAxis("MoveX");
+            if (moveInputX < -0.01f) facingRight = false;
+            else if (moveInputX > 0.01f) facingRight = true;
             ApplyFlipping();
 
             if (playDialogueOnStart && isDialogueActive)
@@ -254,13 +261,9 @@ namespace CrashoutsEngine
                 return;
             }
 
-            if (Input.IsKeyTriggered(Key.E) && IsGrounded && (unlimitedEnergy || CurrentEnergy >= energyConsumption) && swapPauseTimer <= 0.0f)
+            if (Input.GetActionTriggered("SwapMass") && IsGrounded && CurrentEnergy >= energyConsumption && swapPauseTimer <= 0.0f)
             {
-                if (!unlimitedEnergy)
-                    RemoveEnergy(energyConsumption);
-                else
-                    CurrentEnergy = MaxEnergy;
-
+                RemoveEnergy(energyConsumption);
                 switchStartIsLight = isLight;
                 switchTargetIsLight = !isLight;
                 swapPauseTimer = swapPause;
@@ -276,9 +279,7 @@ namespace CrashoutsEngine
                 return;
             }
 
-            horizontalInput = 0f;
-            if (Input.IsKeyPressed(Key.A)) horizontalInput = -1f;
-            else if (Input.IsKeyPressed(Key.D)) horizontalInput = 1f;
+            horizontalInput = moveInputX;
 
             bool wasGroundedThisFrame = IsGrounded;
             CheckGround();
@@ -300,7 +301,7 @@ namespace CrashoutsEngine
             }
 
             // Drop down trigger (S Key)
-            if (Input.IsKeyHeld(Key.S) && IsGrounded && !isPhasing)
+            if (Input.GetAction("DropDown") && IsGrounded && !isPhasing)
             {
                 isPhasing = true;
                 passthroughOverlapTimer = 0.1f; // Kickstart the heartbeat so we don't immediately un-phase
@@ -309,7 +310,7 @@ namespace CrashoutsEngine
             // ---------------------------------------------------------
             // 7. JUMP LOGIC
             // ---------------------------------------------------------
-            if (Input.IsKeyTriggered(Key.Space) && (IsGrounded || coyoteTimeTimer > 0.0f) && jumpReady && !isPhasing) 
+            if (Input.GetActionTriggered("Jump") && (IsGrounded || coyoteTimeTimer > 0.0f) && jumpReady && !isPhasing) 
             {
                 jumpRequested = true;
                 jumpReady = false; 
@@ -533,7 +534,7 @@ namespace CrashoutsEngine
             if (currentDialogueIndex >= dialogueEntities.Length) { isDialogueActive = false; return; }
             Entity ent = dialogueEntities[currentDialogueIndex];
             if (ent == null) { isDialogueActive = false; return; }
-            if (Input.IsKeyTriggered(Key.Space) || (InternalCalls.IsTextFinished(ent.ID) && (dialogueTimer += (float)Time.DT) >= dialogueCooldown))
+            if (Input.GetActionTriggered("Jump") || (InternalCalls.IsTextFinished(ent.ID) && (dialogueTimer += (float)Time.DT) >= dialogueCooldown))
             {
                 InternalCalls.SetActive(ent.ID, false); currentDialogueIndex++; dialogueTimer = 0.0f;
                 if (currentDialogueIndex < dialogueEntities.Length && dialogueEntities[currentDialogueIndex] != null)
@@ -563,22 +564,6 @@ namespace CrashoutsEngine
             if (dustTf != null) dustTf.Position = new CEVec3(tf.Position.x, tf.Position.y - Math.Abs(tf.Size.y) * 0.5f, dustTf.Position.z); 
             InternalCalls.Particle_SetEmitting(landingDustID, true); 
             landingDustTimer = dustBurstDuration; 
-        }
-        public void VS_RemoveEnergy25()
-        {
-            RemoveEnergy(25.0f);
-            Debug.Log("Removed 25 energy. CurrentEnergy = " + CurrentEnergy);
-        }
-
-        public void VS_AddEnergy25()
-        {
-            AddEnergy(25.0f);
-            Debug.Log("Added 25 energy. CurrentEnergy = " + CurrentEnergy);
-        }
-
-        public void VS_PrintEnergy()
-        {
-            Debug.Log("CurrentEnergy = " + CurrentEnergy);
         }
         //Death Anim
         private void HandleDeath()
@@ -641,16 +626,7 @@ namespace CrashoutsEngine
             }
         }
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
-        public void RemoveEnergy(float amount)
-        {
-            if (unlimitedEnergy)
-            {
-                CurrentEnergy = MaxEnergy;
-                return;
-            }
-
-            CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f);
-        }
+        public void RemoveEnergy(float amount) { CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f); }
         public void UpdateCheckpoint(CEVec3 newPos) 
         { 
             respawnPos = newPos; 

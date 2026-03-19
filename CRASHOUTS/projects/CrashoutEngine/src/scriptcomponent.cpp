@@ -83,6 +83,7 @@ namespace CrashoutsEngine
 			// Cache methods
 			script.MethodStart = mono_class_get_method_from_name(script.Class, "Start", 0);
 			script.MethodUpdate = mono_class_get_method_from_name(script.Class, "Update", 0);
+            script.MethodLateUpdate = mono_class_get_method_from_name(script.Class, "LateUpdate", 0);
 			// Cache FixedUpdate()
 			script.MethodFixedUpdate = mono_class_get_method_from_name(script.Class, "FixedUpdate", 0);
 			// Cache OnDrawGizmos()
@@ -186,6 +187,7 @@ namespace CrashoutsEngine
 			script.Class = nullptr;
 			script.MethodStart = nullptr;
 			script.MethodUpdate = nullptr;
+			script.MethodLateUpdate = nullptr;
 			script.MethodFixedUpdate = nullptr;
 			script.MethodOnDestroy = nullptr;
 			script.Started = false;
@@ -309,12 +311,119 @@ namespace Component {
 
 	void ScriptComponent::Update()
 	{
-		// NO-OP: Handled by ScriptManager batch update
+        uint32_t myEntityID = this->EntityID;
+        std::vector<ScriptInstance> scriptsCopy = Scripts;
+
+        for (auto& script : scriptsCopy)
+        {
+            auto* ecs = ECS::getInstance();
+            if (!ecs) return;
+
+            if (!ecs->HasComponent<ScriptComponent>(myEntityID)) {
+                return;
+            }
+
+            ScriptComponent* liveComp = ecs->GetComponent<ScriptComponent>(myEntityID);
+            if (!liveComp) return;
+
+            bool stillAlive = false;
+            for (const auto& liveScript : liveComp->Scripts) {
+                if (liveScript.GCHandle == script.GCHandle) {
+                    stillAlive = true;
+                    break;
+                }
+            }
+            if (!stillAlive) continue;
+
+            if (!script.MethodUpdate || !script.GCHandle)
+                continue;
+
+            MonoObject* target = mono_gchandle_get_target(script.GCHandle);
+            if (!target) continue;
+
+            MonoObject* exc = nullptr;
+            mono_runtime_invoke(script.MethodUpdate, target, nullptr, &exc);
+
+            if (exc) mono_print_unhandled_exception(exc);
+        }
 	}
+
+    void ScriptComponent::LateUpdate()
+    {
+        uint32_t myEntityID = this->EntityID;
+        std::vector<ScriptInstance> scriptsCopy = Scripts;
+
+        for (auto& script : scriptsCopy)
+        {
+            auto* ecs = ECS::getInstance();
+            if (!ecs) return;
+
+            if (!ecs->HasComponent<ScriptComponent>(myEntityID)) {
+                return;
+            }
+
+            ScriptComponent* liveComp = ecs->GetComponent<ScriptComponent>(myEntityID);
+            if (!liveComp) return;
+
+            bool stillAlive = false;
+            for (const auto& liveScript : liveComp->Scripts) {
+                if (liveScript.GCHandle == script.GCHandle) {
+                    stillAlive = true;
+                    break;
+                }
+            }
+            if (!stillAlive) continue;
+
+            if (!script.MethodLateUpdate || !script.GCHandle)
+                continue;
+
+            MonoObject* target = mono_gchandle_get_target(script.GCHandle);
+            if (!target) continue;
+
+            MonoObject* exc = nullptr;
+            mono_runtime_invoke(script.MethodLateUpdate, target, nullptr, &exc);
+
+            if (exc) mono_print_unhandled_exception(exc);
+        }
+    }
 
 	void ScriptComponent::FixedUpdate()
 	{
-		// NO-OP: Handled by ScriptManager batch update
+        uint32_t myEntityID = this->EntityID;
+        std::vector<ScriptInstance> scriptsCopy = Scripts;
+
+        for (auto& script : scriptsCopy)
+        {
+            auto* ecs = ECS::getInstance();
+            if (!ecs) return;
+
+            if (!ecs->HasComponent<ScriptComponent>(myEntityID)) {
+                return;
+            }
+
+            ScriptComponent* liveComp = ecs->GetComponent<ScriptComponent>(myEntityID);
+            if (!liveComp) return;
+
+            bool stillAlive = false;
+            for (const auto& liveScript : liveComp->Scripts) {
+                if (liveScript.GCHandle == script.GCHandle) {
+                    stillAlive = true;
+                    break;
+                }
+            }
+            if (!stillAlive) continue;
+
+            if (!script.MethodFixedUpdate || !script.GCHandle)
+                continue;
+
+            MonoObject* target = mono_gchandle_get_target(script.GCHandle);
+            if (!target) continue;
+
+            MonoObject* exc = nullptr;
+            mono_runtime_invoke(script.MethodFixedUpdate, target, nullptr, &exc);
+
+            if (exc) mono_print_unhandled_exception(exc);
+        }
 	}
 
 	void ScriptComponent::DrawGizmos()

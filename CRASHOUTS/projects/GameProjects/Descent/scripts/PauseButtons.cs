@@ -30,6 +30,8 @@ namespace CrashoutsEngine
         private bool isRestartMenuOpen = false;
         private bool isSettingsMenuOpen = false;
         private float inputCooldown = 0.0f;
+        private int selectedButtonIndex = 0;
+        private float menuNavigationCooldown = 0.0f;
 
         // NEW: The Trigger Gate
         private bool isMouseReleased = true; 
@@ -58,6 +60,7 @@ namespace CrashoutsEngine
             SetEntityActive(restartCheckScreen, false);
             SetEntityActive(openedBookScreen, false);
             SetEntityActive(closedBookScreen, false);
+            InternalCalls.UI_ClearForcedHoveredButton();
         }
 
         /*!
@@ -68,7 +71,7 @@ namespace CrashoutsEngine
             if (playerScript == null) playerScript = PlayerMovement.Instance;
 
             // 1. Pause Input
-            if (Input.IsKeyTriggered(Key.Escape) || Input.IsKeyTriggered(Key.P))
+            if (Input.GetActionTriggered("Pause"))
             {
                 if (playerScript != null && playerScript.isDialogueActive) return;
                 TogglePause();
@@ -87,12 +90,14 @@ namespace CrashoutsEngine
                 if (isRestartMenuOpen) HandleRestartConfirmButtons();
                 else if (isSettingsMenuOpen)
                 {
-                    if (CheckButtonClick(btnCloseBook)) CloseSettings();
+                    UpdateControllerSelection(new Entity[] { btnCloseBook });
+                    if (CheckButtonClick(btnCloseBook) || IsControllerSubmit(new Entity[] { btnCloseBook }, btnCloseBook)) CloseSettings();
                 }
                 else HandleMainPauseButtons();
             }
 
             if (inputCooldown > 0.0f) inputCooldown -= (float)Time.DT;
+            if (menuNavigationCooldown > 0.0f) menuNavigationCooldown -= (float)Time.DT;
         }
 
         /*!
@@ -100,10 +105,13 @@ namespace CrashoutsEngine
         */
         private void HandleMainPauseButtons()
         {
-            if (CheckButtonClick(btnResume)) ResumeGame();
-            else if (CheckButtonClick(btnRestart)) OpenRestartMenu();
-            else if (CheckButtonClick(btnSettings)) OpenSettings();
-            else if (CheckButtonClick(btnQuit)) SceneManager.LoadScene("descentmenu", 1.0f);
+            Entity[] buttons = { btnResume, btnRestart, btnSettings, btnQuit };
+            UpdateControllerSelection(buttons);
+
+            if (CheckButtonClick(btnResume) || IsControllerSubmit(buttons, btnResume)) ResumeGame();
+            else if (CheckButtonClick(btnRestart) || IsControllerSubmit(buttons, btnRestart)) OpenRestartMenu();
+            else if (CheckButtonClick(btnSettings) || IsControllerSubmit(buttons, btnSettings)) OpenSettings();
+            else if (CheckButtonClick(btnQuit) || IsControllerSubmit(buttons, btnQuit)) SceneManager.LoadScene("descentmenu", 1.0f);
         }
 
         /*!
@@ -111,12 +119,15 @@ namespace CrashoutsEngine
         */
         private void HandleRestartConfirmButtons()
         {
-            if (CheckButtonClick(btnYes))
+            Entity[] buttons = { btnYes, btnNo };
+            UpdateControllerSelection(buttons);
+
+            if (CheckButtonClick(btnYes) || IsControllerSubmit(buttons, btnYes))
             {
                 if (string.IsNullOrEmpty(currentScene)) currentScene = "Level1";
                 SceneManager.LoadScene(currentScene, 1.0f);
             }
-            else if (CheckButtonClick(btnNo)) CloseRestartMenu();
+            else if (CheckButtonClick(btnNo) || IsControllerSubmit(buttons, btnNo)) CloseRestartMenu();
         }
 
         /*!
@@ -129,6 +140,7 @@ namespace CrashoutsEngine
 
             isPaused = !isPaused;
             if (playerScript != null) playerScript.SetPauseState(isPaused);
+            Input.ClearState();
 
             if (isPaused)
             {
@@ -164,6 +176,9 @@ namespace CrashoutsEngine
             isSettingsMenuOpen = false;
             SetEntityActive(restartCheckScreen, false);
             SetEntityActive(openedBookScreen, false);
+
+            if (isPaused) ResetControllerSelection();
+            else InternalCalls.UI_ClearForcedHoveredButton();
         }
 
         /*!
@@ -175,6 +190,7 @@ namespace CrashoutsEngine
             SetEntityActive(openedBookScreen, true);
             SetEntityActive(closedBookScreen, false);
             inputCooldown = 0.2f;
+            selectedButtonIndex = 0;
         }
 
         /*!
@@ -186,6 +202,7 @@ namespace CrashoutsEngine
             SetEntityActive(openedBookScreen, false);
             SetEntityActive(closedBookScreen, true);
             inputCooldown = 0.2f;
+            ResetControllerSelection();
         }
 
         /*!
@@ -196,12 +213,12 @@ namespace CrashoutsEngine
         /*!
         @brief Open the restart confirmation UI.
         */
-        private void OpenRestartMenu() { isRestartMenuOpen = true; SetEntityActive(btnRestart, false); SetEntityActive(restartCheckScreen, true); }
+        private void OpenRestartMenu() { isRestartMenuOpen = true; SetEntityActive(btnRestart, false); SetEntityActive(restartCheckScreen, true); selectedButtonIndex = 0; }
 
         /*!
         @brief Close the restart confirmation UI.
         */
-        private void CloseRestartMenu() { isRestartMenuOpen = false; SetEntityActive(restartCheckScreen, false); SetEntityActive(btnRestart, true); }
+        private void CloseRestartMenu() { isRestartMenuOpen = false; SetEntityActive(restartCheckScreen, false); SetEntityActive(btnRestart, true); ResetControllerSelection(); }
 
         /*!
         @brief Check whether a UI button entity was clicked, using a mouse release gate.
@@ -222,6 +239,61 @@ namespace CrashoutsEngine
             return false;
         }
 
+        private void ResetControllerSelection()
+        {
+            selectedButtonIndex = 0;
+            menuNavigationCooldown = 0.0f;
+        }
+
+        private void UpdateControllerSelection(Entity[] buttons)
+        {
+            if (buttons == null || buttons.Length == 0)
+            {
+                InternalCalls.UI_ClearForcedHoveredButton();
+                return;
+            }
+
+            float menuY = Input.GetAxis("MenuY");
+            if (menuNavigationCooldown <= 0.0f)
+            {
+                if (Input.GetActionTriggered("UIDown") || menuY <= -0.5f)
+                {
+                    selectedButtonIndex = (selectedButtonIndex + 1) % buttons.Length;
+                    menuNavigationCooldown = 0.2f;
+                }
+                else if (Input.GetActionTriggered("UIUp") || menuY >= 0.5f)
+                {
+                    selectedButtonIndex = (selectedButtonIndex - 1 + buttons.Length) % buttons.Length;
+                    menuNavigationCooldown = 0.2f;
+                }
+            }
+
+            if (selectedButtonIndex < 0 || selectedButtonIndex >= buttons.Length)
+            {
+                selectedButtonIndex = 0;
+            }
+
+            Entity selected = buttons[selectedButtonIndex];
+            if (selected != null && selected.IsActive())
+            {
+                InternalCalls.UI_SetForcedHoveredButton(selected.ID);
+            }
+            else
+            {
+                InternalCalls.UI_ClearForcedHoveredButton();
+            }
+        }
+
+        private bool IsControllerSubmit(Entity[] buttons, Entity target)
+        {
+            if (target == null || buttons == null || selectedButtonIndex < 0 || selectedButtonIndex >= buttons.Length)
+            {
+                return false;
+            }
+
+            return buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit");
+        }
+
         /*!
         @brief Set an entity active/inactive via internal calls.
         @param e Entity reference.
@@ -230,6 +302,11 @@ namespace CrashoutsEngine
         private void SetEntityActive(Entity e, bool active)
         {
             if (e != null) InternalCalls.SetActive(e.ID, active);
+        }
+
+        public override void OnDestroy()
+        {
+            InternalCalls.UI_ClearForcedHoveredButton();
         }
     }
 }
