@@ -69,7 +69,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -33.0,
-                    "y": 24.745193481445314,
+                    "y": 23.4244384765625,
                     "z": 0.0
                 },
                 "size": {
@@ -80,7 +80,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "RACER",
-                "scale": 10.0,
+                "scale": 25.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -123,7 +123,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -33.0,
-                    "y": 11.56730842590332,
+                    "y": 9.56730842590332,
                     "z": 0.0
                 },
                 "size": {
@@ -168,7 +168,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "Start Race",
-                "scale": 8.0,
+                "scale": 15.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -265,7 +265,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -33.0,
-                    "y": 2.4330005645751955,
+                    "y": -0.5669994354248047,
                     "z": 0.0
                 },
                 "size": {
@@ -310,7 +310,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "Quit Game",
-                "scale": 8.0,
+                "scale": 15.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -418,7 +418,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "How-To-Play:\n\nw - boost\na - turn left\nd - turn right\ns - reverse",
-                "scale": 8.0,
+                "scale": 15.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -516,7 +516,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "LEADERBOARD",
-                "scale": 8.0,
+                "scale": 18.0,
                 "offset": {
                     "x": 0.0,
                     "y": -5.0
@@ -649,7 +649,7 @@
             "text": {
                 "font": "Exo2-Regular",
                 "text": "1.  Test  -  00:45.96",
-                "scale": 8.0,
+                "scale": 12.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -722,8 +722,8 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "2.  renfred  -  00:46.76",
-                "scale": 8.0,
+                "text": "2.  WhyNot  -  00:46.62",
+                "scale": 12.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -796,8 +796,8 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "3.  Amirul  -  00:48.27",
-                "scale": 8.0,
+                "text": "3.  renfred  -  00:46.76",
+                "scale": 12.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -870,8 +870,8 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "4.  Rain  -  00:49.64",
-                "scale": 8.0,
+                "text": "4.  Enter NameElimino  -  00:47.67",
+                "scale": 12.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -954,8 +954,8 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "5.  Loser  -  00:49.98",
-                "scale": 8.0,
+                "text": "5.  Renfred  -  00:47.81",
+                "scale": 12.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -1028,8 +1028,8 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "6.  Rain  -  00:50.46",
-                "scale": 8.0,
+                "text": "6.  Rain  -  00:48.25",
+                "scale": 12.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -1102,8 +1102,8 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "7.  Player1  -  00:51.33",
-                "scale": 8.0,
+                "text": "7.  Amirul  -  00:48.27",
+                "scale": 12.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -1176,8 +1176,8 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "8.  Rain  -  00:53.84",
-                "scale": 8.0,
+                "text": "8.  Speed Racer Man  -  00:49.50",
+                "scale": 12.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -1250,8 +1250,8 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "9.  Joses!  -  00:55.83",
-                "scale": 8.0,
+                "text": "9.  Rain  -  00:49.64",
+                "scale": 12.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -1324,8 +1324,8 @@
             },
             "text": {
                 "font": "Exo2-Regular",
-                "text": "10.  elijah  -  00:55.89",
-                "scale": 8.0,
+                "text": "10.  Loser  -  00:49.98",
+                "scale": 12.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -1385,6 +1385,43 @@
             "layer": {
                 "layerName": "",
                 "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "pp",
+            "uuid": 14140135729596997234,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "postprocessing": {
+                "brightness": 0.0,
+                "contrast": 0.0,
+                "saturation": 0.0,
+                "ambient": 1.0,
+                "shadowsEnabled": false,
+                "shadowRays": 128,
+                "bloomEnabled": false,
+                "bloomThreshold": 1.0,
+                "bloomIntensity": 0.800000011920929,
+                "bloomIterations": 6,
+                "active": true
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

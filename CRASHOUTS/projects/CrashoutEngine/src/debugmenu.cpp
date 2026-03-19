@@ -311,6 +311,7 @@ namespace UI { // --------------------------------------------------------------
 				ImGui::MenuItem("Game State", nullptr, &ui.showGameState);
 				ImGui::MenuItem("Game Scene", nullptr, &ui.showGameScene);
 				ImGui::MenuItem("Project Manager", nullptr, &ui.showProjectManager);
+				ImGui::MenuItem("Build Settings", nullptr, &ui.showBuildPanel);
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -501,6 +502,9 @@ namespace UI { // --------------------------------------------------------------
 		}
 		if (ui.showVisualScripting) {
 			RenderVisualScriptingPanel(ui);
+		}
+		if (ui.showBuildPanel) {
+			RenderBuildPanel(ui);
 		}
 		//EndFrame();
 
