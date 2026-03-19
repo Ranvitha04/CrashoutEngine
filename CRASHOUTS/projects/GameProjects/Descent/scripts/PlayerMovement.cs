@@ -65,7 +65,7 @@ namespace CrashoutsEngine
         public static bool RespawnNextLoad = false;
         public float CurrentEnergy = 0.0f;
         public float MaxEnergy = 100.0f;
-
+        [SerializeField] private bool unlimitedEnergy = false;
         private RigidBodyComponent rb;
         private TransformComponent tf;
         private Animator anim;
@@ -156,7 +156,7 @@ namespace CrashoutsEngine
         public override void Start()
         {
             string currentLevel = SceneManager.GetActiveSceneName();
-
+            unlimitedEnergy = false;
             currentGoalPlates = 0;
             Instance = this;
             rb = Entity.GetComponent<RigidBodyComponent>();
@@ -220,7 +220,10 @@ namespace CrashoutsEngine
         {
 
             if (tf == null || rb == null) return;
-
+            if (unlimitedEnergy)
+                CurrentEnergy = MaxEnergy;
+            if (Input.IsKeyTriggered(Key.F1))
+                unlimitedEnergy = !unlimitedEnergy;
             AudioManager.SetListenerPosition(tf.Position);
             if (isDying)
             {
@@ -251,9 +254,13 @@ namespace CrashoutsEngine
                 return;
             }
 
-            if (Input.IsKeyTriggered(Key.E) && IsGrounded && CurrentEnergy >= energyConsumption && swapPauseTimer <= 0.0f)
+            if (Input.IsKeyTriggered(Key.E) && IsGrounded && (unlimitedEnergy || CurrentEnergy >= energyConsumption) && swapPauseTimer <= 0.0f)
             {
-                RemoveEnergy(energyConsumption);
+                if (!unlimitedEnergy)
+                    RemoveEnergy(energyConsumption);
+                else
+                    CurrentEnergy = MaxEnergy;
+
                 switchStartIsLight = isLight;
                 switchTargetIsLight = !isLight;
                 swapPauseTimer = swapPause;
@@ -557,6 +564,22 @@ namespace CrashoutsEngine
             InternalCalls.Particle_SetEmitting(landingDustID, true); 
             landingDustTimer = dustBurstDuration; 
         }
+        public void VS_RemoveEnergy25()
+        {
+            RemoveEnergy(25.0f);
+            Debug.Log("Removed 25 energy. CurrentEnergy = " + CurrentEnergy);
+        }
+
+        public void VS_AddEnergy25()
+        {
+            AddEnergy(25.0f);
+            Debug.Log("Added 25 energy. CurrentEnergy = " + CurrentEnergy);
+        }
+
+        public void VS_PrintEnergy()
+        {
+            Debug.Log("CurrentEnergy = " + CurrentEnergy);
+        }
         //Death Anim
         private void HandleDeath()
         {
@@ -618,7 +641,16 @@ namespace CrashoutsEngine
             }
         }
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
-        public void RemoveEnergy(float amount) { CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f); }
+        public void RemoveEnergy(float amount)
+        {
+            if (unlimitedEnergy)
+            {
+                CurrentEnergy = MaxEnergy;
+                return;
+            }
+
+            CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f);
+        }
         public void UpdateCheckpoint(CEVec3 newPos) 
         { 
             respawnPos = newPos; 
