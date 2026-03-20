@@ -22,7 +22,7 @@ namespace ParticleSystem {
     */
     enum class ParticleShape { LINE, CIRCLE, SQUARE };
 
-    enum class ParticlePreset { Custom = 0, Smoke = 1, Fire = 2, Explosion = 3, SuperheroLanding = 4 };
+    enum class ParticlePreset { Custom = 0, Smoke = 1, Fire = 2, Explosion = 3, SuperheroLanding = 4, Lava = 5 };
 
     enum class ParticleRenderShape { Square = 0, Circle = 1, Triangle = 2 };
 }
@@ -35,6 +35,7 @@ namespace Component {
     struct ParticleState {
         // Current live count
         size_t activeCount{ 0 };
+        size_t nextSpawnIndex{ 0 };
 
 		// Individual particle attributes
         std::vector<CEVec3> positions;
@@ -45,6 +46,8 @@ namespace Component {
         std::vector<CEVec2>  scales;
 		std::vector<f32>  lives;          // Current life remaining
 		std::vector<f32>  maxLives;       // Maximum life assigned
+        std::vector<f32>  spawnTimes;
+        std::vector<CrashoutsEngine::Entity> emberLightEntities;
     };
 
     /*
@@ -77,6 +80,20 @@ namespace Component {
 		int maxParticles{ 1000 };
 		f32 emitRate{ 100.f };                      // Particles per second
         f32 emitAccumulator = 0.0f;
+        f32 runtimeTime = 0.0f;
+        bool gpuSimulation{ true };
+
+        float flowStrength = 0.0f;
+        float flowSpeed = 0.0f;
+        float flowFrequency = 0.0f;
+
+        bool emberLightsEnabled{ false };
+        int emberLightCount{ 0 };
+        float emberLightIntensity{ 1.0f };
+        float emberLightRadius{ 20.0f };
+        CEColor emberLightColor{ 1.0f, 0.5f, 0.1f, 1.0f };
+        bool emberLightAffectBloom{ true };
+        bool emberLightRenderBehind{ true };
 
         // Initial values
         f32 startLifeMin = 1.f, startLifeMax = 1.f;

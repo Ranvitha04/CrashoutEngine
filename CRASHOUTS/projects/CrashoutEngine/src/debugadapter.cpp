@@ -3460,7 +3460,16 @@ namespace CrashoutsEngine
 
 		// Remove component
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::ParticleComponent>(e);
+			if (has(ecs, e)) {
+				auto* pc = ecs.GetComponent<Component::ParticleComponent>(e);
+				if (pc) {
+					for (auto le : pc->data.emberLightEntities) {
+						if (le) ecs.DestroyEntity(le);
+					}
+					pc->data.emberLightEntities.clear();
+				}
+				ecs.RemoveComponent<Component::ParticleComponent>(e);
+			}
 		}
 
 		// Draw Inspector UI
@@ -3469,7 +3478,7 @@ namespace CrashoutsEngine
 			if (!pc) return;
 
 			ImGui::SeparatorText("Preset");
-			const char* presetNames[] = { "Custom", "Smoke", "Fire", "Explosion", "Superhero Landing" };
+			const char* presetNames[] = { "Custom", "Smoke", "Fire", "Explosion", "Superhero Landing", "Lava" };
 			int preset = static_cast<int>(pc->preset);
 			if (ImGui::Combo("##ParticlePreset", &preset, presetNames, IM_ARRAYSIZE(presetNames))) {
 				ParticleSystem::ApplyPreset(*pc, static_cast<ParticleSystem::ParticlePreset>(preset));
@@ -3503,6 +3512,8 @@ namespace CrashoutsEngine
 				UIHelpers::DrawUndoableBool("Emitting", pc->isEmitting);
 				ImGui::SameLine();
 				UIHelpers::DrawUndoableBool("World Space", pc->useWorldSpace);
+				ImGui::SameLine();
+				UIHelpers::DrawUndoableBool("GPU Sim", pc->gpuSimulation);
 				ImGui::PopItemWidth();
 
 				int prevMax = pc->maxParticles;
@@ -3654,6 +3665,14 @@ namespace CrashoutsEngine
 				// Draw colors full width
 				UIHelpers::DrawUndoableColor("Start", pc->startcolor);
 				UIHelpers::DrawUndoableColor("End", pc->endColor);
+			}
+
+			if (pc->preset == ParticleSystem::ParticlePreset::Lava) {
+				if (ImGui::CollapsingHeader("Lava")) {
+					UIHelpers::DrawUndoableFloat("Flow Strength", pc->flowStrength, 0.01f, 0.0f, 10.0f);
+					UIHelpers::DrawUndoableFloat("Flow Speed", pc->flowSpeed, 0.01f, 0.0f, 20.0f);
+					UIHelpers::DrawUndoableFloat("Flow Frequency", pc->flowFrequency, 0.01f, 0.0f, 20.0f);
+				}
 			}
 
 			// --- 5. Rendering (Collapsing) ---

@@ -34,10 +34,22 @@ namespace ParticleSystem {
 
 	void ApplyPreset(Component::ParticleComponent& comp, ParticlePreset preset) {
 		comp.preset = preset;
+		comp.flowStrength = 0.0f;
+		comp.flowSpeed = 0.0f;
+		comp.flowFrequency = 0.0f;
+		comp.emberLightsEnabled = false;
+		comp.emberLightCount = 0;
 
 		auto ResetRuntime = [&]() {
+			auto* ecs = CrashoutsEngine::ECS::getInstance();
+			for (auto ent : comp.data.emberLightEntities) {
+				if (ent) ecs->DestroyEntity(ent);
+			}
+			comp.data.emberLightEntities.clear();
 			comp.emitAccumulator = 0.0f;
 			comp.data.activeCount = 0;
+			comp.data.nextSpawnIndex = 0;
+			comp.runtimeTime = 0.0f;
 			ParticleInit(comp);
 		};
 
@@ -228,6 +240,59 @@ namespace ParticleSystem {
 
 			ResetRuntime();
 		} break;
+		case ParticlePreset::Lava: {
+			comp.isEmitting = true;
+			comp.playOnStop = true;
+			comp.useWorldSpace = true;
+
+			comp.gpuSimulation = true;
+
+			comp.renderShape = ParticleRenderShape::Circle;
+			comp.circleSegments = 48;
+			comp.circleRadiusMultiplier = 1.0f;
+
+			comp.maxParticles = 2000;
+			comp.emitRate = 420.0f;
+
+			comp.emissionShape = ParticleShape::LINE;
+			comp.lengthMin = 10.0f;
+			comp.lengthMax = 14.0f;
+
+			comp.startLifeMin = 0.35f;
+			comp.startLifeMax = 1.45f;
+			comp.startSpeedMin = 0.6f;
+			comp.startSpeedMax = 3.4f;
+
+			comp.uniformSize = true;
+			comp.startSizeXMin = 0.2f;
+			comp.startSizeXMax = 0.65f;
+			comp.startSizeYMin = 0.2f;
+			comp.startSizeYMax = 0.65f;
+
+			comp.sizeOverTime = 0.25f;
+			comp.rotationOverTime = 40.0f;
+			comp.startRotationMin = 0.0f;
+			comp.startRotationMax = 360.0f;
+
+			comp.gravity = { 0.0f, 0.8f, 0.0f };
+			comp.startVelocity = { 0.0f, 0.8f, 0.0f };
+
+			comp.useTexture = false;
+			comp.textureName.clear();
+			comp.textureUV = { 1.0f, 1.0f };
+
+			comp.startcolor = { 1.0f, 0.35f, 0.05f, 0.9f };
+			comp.endColor = { 0.35f, 0.05f, 0.0f, 0.0f };
+
+			comp.flowStrength = 1.0f;
+			comp.flowSpeed = 1.0f;
+			comp.flowFrequency = 0.06f;
+
+			comp.emberLightsEnabled = false;
+			comp.emberLightCount = 0;
+
+			ResetRuntime();
+		} break;
 		case ParticlePreset::Custom:
 		default:
 			break;
@@ -246,16 +311,21 @@ namespace ParticleSystem {
 		data.scales.resize(maxParticles);
 		data.lives.resize(maxParticles);
 		data.maxLives.resize(maxParticles);
+		data.spawnTimes.resize(maxParticles);
 
 		// If we shrunk the arrays, we must reduce the active count to match.
 		// Otherwise, the Update loop will access out-of-bounds memory.
 		if (data.activeCount > maxParticles) {
 			data.activeCount = maxParticles;
 		}
+		if (data.nextSpawnIndex > maxParticles) {
+			data.nextSpawnIndex = 0;
+		}
 	}
 
 	void ParticleUpdate(CrashoutsEngine::Entity const entityId, Component::ParticleComponent& comp, f32 dt) {
 		auto& data = comp.data;
+		comp.runtimeTime += dt;
 
 		// Get the TRUE capacity of the vectors.
 		size_t actualCapacity = data.positions.size();
@@ -306,14 +376,16 @@ namespace ParticleSystem {
 
 			// If can emit base on time and rate
 			while (comp.emitAccumulator >= secondsPerParticle) {
-				if (data.activeCount < comp.maxParticles && data.activeCount < actualCapacity) {
-					// Init new particle at the activeCount index
-					size_t i = data.activeCount;
+				size_t capacity = std::min(static_cast<size_t>(comp.maxParticles), actualCapacity);
+				if (capacity > 0) {
+					bool useGpu = comp.gpuSimulation && comp.preset != ParticlePreset::SuperheroLanding;
+					size_t i = useGpu ? data.nextSpawnIndex : data.activeCount;
+					if (!useGpu && data.activeCount >= capacity) break;
 
-					// Random initial values based on component 
 					f32 startLife = RandomRange(comp.startLifeMin, comp.startLifeMax);
 					data.lives[i] = startLife;
 					data.maxLives[i] = startLife;
+					data.spawnTimes[i] = comp.runtimeTime;
 
 					f32 speed = RandomRange(comp.startSpeedMin, comp.startSpeedMax);
 
@@ -373,6 +445,11 @@ namespace ParticleSystem {
 					}
 					}
 
+					if (comp.preset == ParticlePreset::Lava) {
+						f32 theta = RandomRange(-0.75f, 0.75f) + (CEMath::PI * 0.5f);
+						localDir = { cosf(theta), sinf(theta), 0.0f };
+					}
+
 					// --- ROTATION (Applies to both) ---
 					// Rotate the local offset so it matches the emitter's orientation
 					f32 rads = t->rotation * (CEMath::PI / 180.0f);
@@ -423,11 +500,19 @@ namespace ParticleSystem {
 					// Velocity
 					speed = RandomRange(comp.startSpeedMin, comp.startSpeedMax);
 					data.velocities[i] = comp.startVelocity + (rotatedDir * speed);
+					if (comp.preset == ParticlePreset::Lava) {
+						CEVec3 jitter{
+							RandomRange(-1.0f, 1.0f) * speed * 0.35f,
+							RandomRange(-0.25f, 0.65f) * speed * 0.25f,
+							0.0f
+						};
+						data.velocities[i] = data.velocities[i] + jitter;
+					}
 
 					// Properties
-					data.lives[i] = RandomRange(comp.startLifeMin, comp.startLifeMax);
-					data.maxLives[i] = data.lives[i];
-					data.colors[i] = comp.startcolor;
+					data.lives[i] = startLife;
+					data.maxLives[i] = startLife;
+					data.colors[i] = useGpu ? CEColor(1.0f, 1.0f, 1.0f, startLife) : comp.startcolor;
 					if (comp.uniformSize) {
 						f32 size = RandomRange(comp.startSizeXMin, comp.startSizeXMax);
 						data.scales[i] = CEVec2(size, size);
@@ -440,7 +525,13 @@ namespace ParticleSystem {
 					}
 					data.rotations[i] = RandomRange(comp.startRotationMin, comp.startRotationMax);
 
-					data.activeCount++;
+					if (useGpu) {
+						if (data.activeCount < capacity) data.activeCount++;
+						data.nextSpawnIndex = (data.nextSpawnIndex + 1) % capacity;
+					}
+					else {
+						data.activeCount++;
+					}
 				}
 				comp.emitAccumulator -= secondsPerParticle;
 			}
@@ -451,6 +542,10 @@ namespace ParticleSystem {
 		}
 
 		// 2. Simulation & Recycling
+		if (comp.gpuSimulation && comp.preset != ParticlePreset::SuperheroLanding) {
+			return;
+		}
+
 		for (size_t i = 0; i < data.activeCount;) {
 			// Update lifetime
 			data.lives[i] -= dt;

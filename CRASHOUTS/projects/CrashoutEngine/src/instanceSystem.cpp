@@ -34,6 +34,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <cmath>
 #include "instanceSystem.h"
 #include "shapes.h"
+#include "assetmanager.h"
+#include "shaderasset.h"
 #include "CEMath.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <random>
@@ -1974,6 +1976,246 @@ namespace InstancingSystem {
 				params.tint, params.uvSize
 			);
 		}
+	}
+
+	static void SetParticleUniforms(GLuint program, const ParticleShaderParams& p) {
+		Component::Rendering& renderer = Component::Rendering::Get();
+		glUniformMatrix4fv(glGetUniformLocation(program, "uView"), 1, GL_FALSE, glm::value_ptr(renderer.viewMatrix));
+		glUniformMatrix4fv(glGetUniformLocation(program, "uProjection"), 1, GL_FALSE, glm::value_ptr(renderer.projectionMatrix));
+		glUniform1f(glGetUniformLocation(program, "u_time"), p.time);
+		glUniform3f(glGetUniformLocation(program, "u_gravity"), p.gravity.x, p.gravity.y, p.gravity.z);
+		glUniform4f(glGetUniformLocation(program, "u_startColor"), p.startColor.r, p.startColor.g, p.startColor.b, p.startColor.a);
+		glUniform4f(glGetUniformLocation(program, "u_endColor"), p.endColor.r, p.endColor.g, p.endColor.b, p.endColor.a);
+		glUniform1f(glGetUniformLocation(program, "u_sizeOverTime"), p.sizeOverTime);
+		glUniform1f(glGetUniformLocation(program, "u_rotationOverTime"), p.rotationOverTime);
+		glUniform1f(glGetUniformLocation(program, "u_flowStrength"), p.flowStrength);
+		glUniform1f(glGetUniformLocation(program, "u_flowSpeed"), p.flowSpeed);
+		glUniform1f(glGetUniformLocation(program, "u_flowFrequency"), p.flowFrequency);
+		glUniform1i(glGetUniformLocation(program, "u_renderShape"), p.renderShape);
+		glUniform1f(glGetUniformLocation(program, "u_squareSizeMultiplier"), p.squareSizeMultiplier);
+		glUniform1f(glGetUniformLocation(program, "u_circleRadiusMultiplier"), p.circleRadiusMultiplier);
+		glUniform1f(glGetUniformLocation(program, "u_triangleWidthMultiplier"), p.triangleWidthMultiplier);
+		glUniform1f(glGetUniformLocation(program, "u_triangleHeightMultiplier"), p.triangleHeightMultiplier);
+		glUniform1i(glGetUniformLocation(program, "u_useLocalSpace"), p.useLocalSpace);
+		glUniform3f(glGetUniformLocation(program, "u_parentPos"), p.parentPos.x, p.parentPos.y, p.parentPos.z);
+		glUniform1f(glGetUniformLocation(program, "u_parentRotDeg"), p.parentRotDeg);
+		glUniform2f(glGetUniformLocation(program, "u_parentScale"), p.parentScale.x, p.parentScale.y);
+	}
+
+	void RenderParticleRectanglesBatch(
+		const CEVec3* positions,
+		const float* spawnTimes,
+		const float* maxLives,
+		const float* rotations,
+		const float* widths,
+		const float* heights,
+		const CEVec2* velocities,
+		int count,
+		const InstancedParams& params,
+		const ParticleShaderParams& particleParams
+	) {
+		if (count <= 0) return;
+
+		if (!s_rectInstanceBuffersInitialized) {
+			CEVec3 p0; CEColor c0; float f0 = 0.0f; CEVec2 u0;
+			CreateInstancedRectangles(&p0, &c0, &f0, &f0, &f0, &f0, &u0, 0);
+		}
+
+		std::vector<RectInstanceData> instanceData(count);
+		for (int i = 0; i < count; ++i) {
+			instanceData[i].position = positions[i];
+			instanceData[i].color = CEColor(1.0f, 1.0f, 1.0f, maxLives[i]);
+			instanceData[i].rotation = rotations[i];
+			instanceData[i].scale = spawnTimes[i];
+			instanceData[i].width = widths[i];
+			instanceData[i].height = heights[i];
+			instanceData[i].uvOffset = velocities ? velocities[i] : CEVec2(0.0f, 0.0f);
+		}
+
+		glBindVertexArray(s_rectInstanceVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, s_rectInstanceDataVBO);
+		glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(RectInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
+
+		auto* shaderAsset = CrashoutsEngine::Assets::AssetManager::GetInstance().Get<CrashoutsEngine::Assets::ShaderAsset>("ParticleShader");
+		if (!shaderAsset) {
+			glBindVertexArray(0);
+			return;
+		}
+		auto& shader = shaderAsset->shaderObject;
+		shader.Use();
+
+		shader.SetUniform("uModel", glm::mat4(1.0f));
+		GLuint program = shader.GetHandle();
+
+		glUniform1i(glGetUniformLocation(program, "u_useTexture"), params.textured ? 1 : 0);
+		glUniform4f(glGetUniformLocation(program, "u_tint"), params.tint.r, params.tint.g, params.tint.b, params.tint.a);
+		glUniform2f(glGetUniformLocation(program, "u_uvSize"), params.uvSize.x, params.uvSize.y);
+
+		SetParticleUniforms(program, particleParams);
+
+		GLuint handle = params.textureHandle;
+		if (handle == 0 && params.textured && !params.textureName.empty()) {
+			handle = Component::TextureRenderer::GetTextureHandle(params.textureName);
+		}
+		if (params.textured) {
+			glBindTextureUnit(0, handle);
+		}
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_CULL_FACE);
+
+		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
+		Component::Rendering::Get().drawCalls++;
+
+		if (params.textured) {
+			glBindTextureUnit(0, 0);
+		}
+		glBindVertexArray(0);
+		glEnable(GL_CULL_FACE);
+	}
+
+	void RenderParticleTrianglesBatch(
+		const CEVec3* positions,
+		const float* spawnTimes,
+		const float* maxLives,
+		const float* rotations,
+		const float* widths,
+		const float* heights,
+		const CEVec2* velocities,
+		int count,
+		const InstancedParams& params,
+		const ParticleShaderParams& particleParams
+	) {
+		if (count <= 0) return;
+
+		if (!s_triInstanceBuffersInitialized) {
+			CEVec3 p0; CEColor c0; float f0 = 0.0f; CEVec2 u0;
+			CreateInstancedTriangles(&p0, &c0, &f0, &f0, &f0, &f0, &u0, 0);
+		}
+
+		std::vector<RectInstanceData> instanceData(count);
+		for (int i = 0; i < count; ++i) {
+			instanceData[i].position = positions[i];
+			instanceData[i].color = CEColor(1.0f, 1.0f, 1.0f, maxLives[i]);
+			instanceData[i].rotation = rotations[i];
+			instanceData[i].scale = spawnTimes[i];
+			instanceData[i].width = widths[i];
+			instanceData[i].height = heights[i];
+			instanceData[i].uvOffset = velocities ? velocities[i] : CEVec2(0.0f, 0.0f);
+		}
+
+		glBindVertexArray(s_triInstanceVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, s_triInstanceDataVBO);
+		glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(RectInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
+
+		auto* shaderAsset = CrashoutsEngine::Assets::AssetManager::GetInstance().Get<CrashoutsEngine::Assets::ShaderAsset>("ParticleShader");
+		if (!shaderAsset) {
+			glBindVertexArray(0);
+			return;
+		}
+		auto& shader = shaderAsset->shaderObject;
+		shader.Use();
+		shader.SetUniform("uModel", glm::mat4(1.0f));
+		GLuint program = shader.GetHandle();
+
+		glUniform1i(glGetUniformLocation(program, "u_useTexture"), params.textured ? 1 : 0);
+		glUniform4f(glGetUniformLocation(program, "u_tint"), params.tint.r, params.tint.g, params.tint.b, params.tint.a);
+		glUniform2f(glGetUniformLocation(program, "u_uvSize"), params.uvSize.x, params.uvSize.y);
+
+		SetParticleUniforms(program, particleParams);
+
+		GLuint handle = params.textureHandle;
+		if (handle == 0 && params.textured && !params.textureName.empty()) {
+			handle = Component::TextureRenderer::GetTextureHandle(params.textureName);
+		}
+		if (params.textured) {
+			glBindTextureUnit(0, handle);
+		}
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_CULL_FACE);
+
+		glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0, count);
+		Component::Rendering::Get().drawCalls++;
+
+		if (params.textured) {
+			glBindTextureUnit(0, 0);
+		}
+		glBindVertexArray(0);
+		glEnable(GL_CULL_FACE);
+	}
+
+	void RenderParticleCirclesBatch(
+		const CEVec3* positions,
+		const float* spawnTimes,
+		const float* maxLives,
+		const float* rotations,
+		const float* widths,
+		const float* heights,
+		const CEVec2* velocities,
+		int count,
+		int segments,
+		const InstancedParams& params,
+		const ParticleShaderParams& particleParams
+	) {
+		if (count <= 0) return;
+		if (segments < 3) segments = 3;
+		if (!s_circInstanceBuffersInitialized || s_circSegmentsCurrent != segments) {
+			CEVec3 p0; CEColor c0; float f0 = 0.0f; CEVec2 u0;
+			CreateInstancedCircles(&p0, &c0, &f0, &f0, &f0, &u0, 0, segments);
+		}
+
+		std::vector<CircleInstanceData> instanceData(count);
+		for (int i = 0; i < count; ++i) {
+			instanceData[i].position = positions[i];
+			instanceData[i].color = CEColor(1.0f, 1.0f, 1.0f, maxLives[i]);
+			instanceData[i].rotation = rotations[i];
+			instanceData[i].scale = spawnTimes[i];
+			instanceData[i].radius = widths[i];
+			instanceData[i].padding = heights[i];
+			instanceData[i].uvOffset = velocities ? velocities[i] : CEVec2(0.0f, 0.0f);
+		}
+
+		glBindVertexArray(s_circInstanceVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, s_circInstanceDataVBO);
+		glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(CircleInstanceData), instanceData.data(), GL_DYNAMIC_DRAW);
+
+		auto* shaderAsset = CrashoutsEngine::Assets::AssetManager::GetInstance().Get<CrashoutsEngine::Assets::ShaderAsset>("ParticleShader");
+		if (!shaderAsset) {
+			glBindVertexArray(0);
+			return;
+		}
+		auto& shader = shaderAsset->shaderObject;
+		shader.Use();
+		shader.SetUniform("uModel", glm::mat4(1.0f));
+		GLuint program = shader.GetHandle();
+
+		glUniform1i(glGetUniformLocation(program, "u_useTexture"), params.textured ? 1 : 0);
+		glUniform4f(glGetUniformLocation(program, "u_tint"), params.tint.r, params.tint.g, params.tint.b, params.tint.a);
+		glUniform2f(glGetUniformLocation(program, "u_uvSize"), params.uvSize.x, params.uvSize.y);
+
+		SetParticleUniforms(program, particleParams);
+
+		GLuint handle = params.textureHandle;
+		if (handle == 0 && params.textured && !params.textureName.empty()) {
+			handle = Component::TextureRenderer::GetTextureHandle(params.textureName);
+		}
+		if (params.textured) {
+			glBindTextureUnit(0, handle);
+		}
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_CULL_FACE);
+
+		int elements = segments * 3;
+		glDrawElementsInstanced(GL_TRIANGLES, elements, GL_UNSIGNED_SHORT, 0, count);
+		Component::Rendering::Get().drawCalls++;
+
+		if (params.textured) {
+			glBindTextureUnit(0, 0);
+		}
+		glBindVertexArray(0);
+		glEnable(GL_CULL_FACE);
 	}
 
 	void ShutdownInstancing() {

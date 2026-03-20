@@ -32,14 +32,12 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "particlecomponent.h"
 #include "shapescomponent.h"
 #include "transformcomponent.h"
-//#include "namecomponent.h"
 #include "textcomponent.h"
 #include "shapes.h"
 #include "uilayoutcomponent.h"
 #include "textinputcomponent.h"
 #include "buttoncomponent.h"
 //#include "tilemapcomponent.h"
-#include "activecomponent.h"
 #include "particleSystem.h"
 #include "spriteAnimation.h"
 #include "jobsystem.h"
@@ -740,6 +738,97 @@ namespace Scene {
 			if (!pc || pc->data.activeCount == 0) return;
 
 			size_t count = pc->data.activeCount;
+
+			if (pc->gpuSimulation && pc->preset != ParticleSystem::ParticlePreset::SuperheroLanding) {
+				if (s_scaleXBuffer.size() < count) s_scaleXBuffer.resize(count);
+				if (s_scaleYBuffer.size() < count) s_scaleYBuffer.resize(count);
+				if (s_uvOffsetBuffer.size() < count) s_uvOffsetBuffer.resize(count, { 0.f, 0.f });
+
+				for (size_t k = 0; k < count; ++k) {
+					s_scaleXBuffer[k] = pc->data.scales[k].x;
+					s_scaleYBuffer[k] = pc->data.scales[k].y;
+					s_uvOffsetBuffer[k] = { pc->data.velocities[k].x, pc->data.velocities[k].y };
+				}
+
+				InstancingSystem::InstancedParams params;
+				params.textured = pc->useTexture;
+				params.textureName = pc->textureName;
+				params.uvSize = pc->textureUV;
+				params.tint = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+				InstancingSystem::ParticleShaderParams p;
+				p.time = pc->runtimeTime;
+				p.gravity = pc->gravity;
+				p.startColor = pc->startcolor;
+				p.endColor = pc->endColor;
+				p.sizeOverTime = pc->sizeOverTime;
+				p.rotationOverTime = pc->rotationOverTime;
+				p.flowStrength = pc->flowStrength;
+				p.flowSpeed = pc->flowSpeed;
+				p.flowFrequency = pc->flowFrequency;
+				p.renderShape = static_cast<int>(pc->renderShape);
+				p.squareSizeMultiplier = pc->squareSizeMultiplier;
+				p.circleRadiusMultiplier = pc->circleRadiusMultiplier;
+				p.triangleWidthMultiplier = pc->triangleWidthMultiplier;
+				p.triangleHeightMultiplier = pc->triangleHeightMultiplier;
+
+				bool isLocal = (!pc->useWorldSpace && tc);
+				p.useLocalSpace = isLocal ? 1 : 0;
+				if (isLocal) {
+					p.parentPos = tc->position;
+					p.parentRotDeg = tc->rotation;
+					p.parentScale = tc->size;
+				}
+
+				if (pc->renderShape == ParticleSystem::ParticleRenderShape::Circle) {
+					int segments = pc->circleSegments;
+					if (segments < 3) segments = 3;
+					if (segments > 128) segments = 128;
+					InstancingSystem::RenderParticleCirclesBatch(
+						pc->data.positions.data(),
+						pc->data.spawnTimes.data(),
+						pc->data.maxLives.data(),
+						pc->data.rotations.data(),
+						s_scaleXBuffer.data(),
+						s_scaleYBuffer.data(),
+						s_uvOffsetBuffer.data(),
+						static_cast<int>(count),
+						segments,
+						params,
+						p
+					);
+				}
+				else if (pc->renderShape == ParticleSystem::ParticleRenderShape::Triangle) {
+					InstancingSystem::RenderParticleTrianglesBatch(
+						pc->data.positions.data(),
+						pc->data.spawnTimes.data(),
+						pc->data.maxLives.data(),
+						pc->data.rotations.data(),
+						s_scaleXBuffer.data(),
+						s_scaleYBuffer.data(),
+						s_uvOffsetBuffer.data(),
+						static_cast<int>(count),
+						params,
+						p
+					);
+				}
+				else {
+					InstancingSystem::RenderParticleRectanglesBatch(
+						pc->data.positions.data(),
+						pc->data.spawnTimes.data(),
+						pc->data.maxLives.data(),
+						pc->data.rotations.data(),
+						s_scaleXBuffer.data(),
+						s_scaleYBuffer.data(),
+						s_uvOffsetBuffer.data(),
+						static_cast<int>(count),
+						params,
+						p
+					);
+				}
+
+				return;
+			}
 
 			// 1. Resize Temp Buffers
 			if (s_scaleXBuffer.size() < count) s_scaleXBuffer.resize(count);

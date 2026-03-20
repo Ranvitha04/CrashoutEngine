@@ -870,6 +870,19 @@ namespace CrashoutsEngine {
 				pVal.AddMember("textureName", rapidjson::Value(pc.textureName.c_str(), allocator), allocator);
 				WriteVec2(pVal, "textureUV", pc.textureUV, allocator);
 
+				pVal.AddMember("gpuSimulation", pc.gpuSimulation, allocator);
+				pVal.AddMember("flowStrength", pc.flowStrength, allocator);
+				pVal.AddMember("flowSpeed", pc.flowSpeed, allocator);
+				pVal.AddMember("flowFrequency", pc.flowFrequency, allocator);
+
+				pVal.AddMember("emberLightsEnabled", pc.emberLightsEnabled, allocator);
+				pVal.AddMember("emberLightCount", pc.emberLightCount, allocator);
+				pVal.AddMember("emberLightIntensity", pc.emberLightIntensity, allocator);
+				pVal.AddMember("emberLightRadius", pc.emberLightRadius, allocator);
+				WriteColor(pVal, "emberLightColor", pc.emberLightColor, allocator);
+				pVal.AddMember("emberLightAffectBloom", pc.emberLightAffectBloom, allocator);
+				pVal.AddMember("emberLightRenderBehind", pc.emberLightRenderBehind, allocator);
+
 				entityValue.AddMember(rapidjson::StringRef(Keys::PARTICLE_COMPONENT), pVal, allocator);
 			}
 
@@ -1515,6 +1528,19 @@ namespace CrashoutsEngine {
 				pc.useTexture = GetBool(v, "useTexture", false);
 				pc.textureName = GetString(v, "textureName", "");
 				if (v.HasMember("textureUV")) pc.textureUV = ReadVec2(v["textureUV"], { 1.f, 1.f });
+
+				pc.gpuSimulation = GetBool(v, "gpuSimulation", true);
+				pc.flowStrength = GetFloat(v, "flowStrength", 0.f);
+				pc.flowSpeed = GetFloat(v, "flowSpeed", 0.f);
+				pc.flowFrequency = GetFloat(v, "flowFrequency", 0.f);
+
+				pc.emberLightsEnabled = GetBool(v, "emberLightsEnabled", false);
+				pc.emberLightCount = GetInt(v, "emberLightCount", 0);
+				pc.emberLightIntensity = GetFloat(v, "emberLightIntensity", 1.f);
+				pc.emberLightRadius = GetFloat(v, "emberLightRadius", 20.f);
+				if (v.HasMember("emberLightColor")) pc.emberLightColor = ReadColor(v["emberLightColor"], { 1, 0.5f, 0.1f, 1 });
+				pc.emberLightAffectBloom = GetBool(v, "emberLightAffectBloom", true);
+				pc.emberLightRenderBehind = GetBool(v, "emberLightRenderBehind", true);
 
 				ParticleSystem::ParticleInit(pc);
 			}
