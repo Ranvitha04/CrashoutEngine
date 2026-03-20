@@ -114,6 +114,55 @@ macro(import_imguizmo)
     endif()
 endmacro()
 
+# -------------------- SDL2 --------------------
+macro(import_sdl2)
+    if(NOT TARGET sdl2)
+        set(SDL_SHARED OFF CACHE BOOL "" FORCE)
+        set(SDL_STATIC ON CACHE BOOL "" FORCE)
+        set(SDL_TEST OFF CACHE BOOL "" FORCE)
+        set(SDL_TEST_LIBRARY OFF CACHE BOOL "" FORCE)
+        set(SDL_DISABLE_INSTALL ON CACHE BOOL "" FORCE)
+
+        FetchContent_Declare(
+            sdl2_src
+            GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+            GIT_TAG release-2.30.11
+        )
+        FetchContent_MakeAvailable(sdl2_src)
+
+        if(TARGET SDL2-static)
+            disable_warnings_for(SDL2-static)
+        endif()
+
+        if(TARGET SDL2)
+            disable_warnings_for(SDL2)
+        endif()
+
+        if(TARGET SDL2::SDL2)
+            add_library(sdl2 INTERFACE)
+            target_link_libraries(sdl2 INTERFACE SDL2::SDL2)
+        elseif(TARGET SDL2-static)
+            add_library(sdl2 INTERFACE)
+            target_link_libraries(sdl2 INTERFACE SDL2-static)
+            if(NOT TARGET SDL2::SDL2)
+                add_library(SDL2::SDL2 ALIAS SDL2-static)
+            endif()
+        elseif(TARGET SDL2)
+            add_library(sdl2 INTERFACE)
+            target_link_libraries(sdl2 INTERFACE SDL2)
+            if(NOT TARGET SDL2::SDL2)
+                add_library(SDL2::SDL2 ALIAS SDL2)
+            endif()
+        else()
+            message(FATAL_ERROR "[SDL2] SDL targets were not created by FetchContent.")
+        endif()
+
+        if(TARGET SDL2::SDL2)
+            get_target_property(_SDL2_INC SDL2::SDL2 INTERFACE_INCLUDE_DIRECTORIES)
+        endif()
+    endif()
+endmacro()
+
 # -------------------- stb (header-only) --------------------
 macro(import_stb)
     if(NOT TARGET stb)
@@ -386,6 +435,9 @@ macro(importDependencies)
 
     import_imguizmo()
     message(STATUS "ImGuizmo imported successfully.")
+
+    import_sdl2()
+    message(STATUS "SDL2 imported successfully.")
 
     import_stb()
     message(STATUS "stb imported successfully.")

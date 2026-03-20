@@ -64,6 +64,7 @@ namespace Scene {
 	using namespace CrashoutsEngine::Assets;
 
 	static std::unique_ptr<TextRenderer> gTextRenderer = nullptr;
+    static Entity gForcedHoveredButton = 0;
 
 	CEVec3 GetMouseInWorld() {
 
@@ -85,6 +86,14 @@ namespace Scene {
 	// UI SUB-NAMESPACE
 	// ============================================================================
 	namespace UI {
+
+        void SetForcedHoveredButton(Entity entity) {
+            gForcedHoveredButton = entity;
+        }
+
+        void ClearForcedHoveredButton() {
+            gForcedHoveredButton = 0;
+        }
 
 		void LoadDialogue(TextComponent& tc) {
 			if (tc.dialogueFilePath.empty() || tc.dialogueID.empty()) return;
@@ -416,6 +425,40 @@ namespace Scene {
 			mouseUI.y = ndcY * (baseHeight * 0.5f);
 
 			const ECS::ComponentArray<ButtonComponent>& buttonArray = globalECS.GetComponentArray<ButtonComponent>();
+            bool isMouseHoveringAnyButton = false;
+
+            for (const Entity& id : buttonArray.indexToEntity) {
+                if (!IsEntityActive(globalECS, id)) continue;
+
+                GuiComponent* g = globalECS.GetComponent<GuiComponent>(id);
+                ButtonComponent* b = globalECS.GetComponent<ButtonComponent>(id);
+                TransformComponent* t = globalECS.GetComponent<TransformComponent>(id);
+                if (g == nullptr || b == nullptr || t == nullptr) continue;
+
+                UILayoutComponent* u = globalECS.GetComponent<UILayoutComponent>(id);
+                ShapeComponent* s = globalECS.GetComponent<ShapeComponent>(id);
+                TextComponent* txt = globalECS.GetComponent<TextComponent>(id);
+
+                CEVec2 checkPos = mouseWorld;
+                bool isUI = false;
+                if (s && !s->isWorldSpace) isUI = true;
+                else if (txt && !txt->isWorldSpace) isUI = true;
+                if (isUI) {
+                    checkPos = mouseUI;
+                }
+
+                CEVec2 finalPos = CalculateLayoutPosition(t, u, CEVec2{ 0.0f, 0.0f });
+                float halfW = t->size.x * 0.5f;
+                float halfH = t->size.y * 0.5f;
+                CEVec2 aa{ finalPos.x - halfW, finalPos.y - halfH };
+                CEVec2 bb{ finalPos.x + halfW, finalPos.y + halfH };
+
+                if (checkPos.x >= aa.x && checkPos.x <= bb.x &&
+                    checkPos.y >= aa.y && checkPos.y <= bb.y) {
+                    isMouseHoveringAnyButton = true;
+                    break;
+                }
+            }
 
 			for (const Entity& id : buttonArray.indexToEntity) {
 				if (!IsEntityActive(globalECS, id)) continue;
@@ -460,6 +503,9 @@ namespace Scene {
 
 				bool isHovering = (checkPos.x >= aa.x && checkPos.x <= bb.x &&
 					checkPos.y >= aa.y && checkPos.y <= bb.y);
+                if (!isHovering && !isMouseHoveringAnyButton && gForcedHoveredButton == id) {
+                    isHovering = true;
+                }
 
 				// Base Scale (assumes 1.0 is default/normal scale multiplier)
 				float targetScale = 1.0f;

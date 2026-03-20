@@ -1,0 +1,21 @@
+{
+  "deadzone": 0.2,
+  "actions": {
+    "Pause": [
+      { "type": "key", "key": "Escape" },
+      { "type": "controller_button", "button": "Start" }
+    ]
+  },
+  "axes": {
+    "MoveX": [
+      { "type": "key_axis", "negative": "A", "positive": "D" },
+      { "type": "key_axis", "negative": "Left", "positive": "Right" },
+      { "type": "controller_axis", "axis": "Left_X", "deadzone": 0.2 }
+    ],
+    "MoveY": [
+      { "type": "key_axis", "negative": "S", "positive": "W" },
+      { "type": "key_axis", "negative": "Down", "positive": "Up" },
+      { "type": "controller_axis", "axis": "Left_Y", "deadzone": 0.2, "invert": true }
+    ]
+  }
+}

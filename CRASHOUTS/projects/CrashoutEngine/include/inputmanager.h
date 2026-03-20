@@ -15,9 +15,17 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 #include <GLFW/glfw3.h>
 #include <unordered_map>
+#include <memory>
+#include <vector>
+#include <rapidjson/document.h>
 #include "key.h"
 #include "CEVec2.h"
 #include <string>
+
+namespace CrashoutEngine
+{
+    class ControllerManager;
+}
 
 /*!
 @class InputManager
@@ -109,6 +117,13 @@ public:
 
     static bool IsKeyTriggered(Key key);
 
+    // Unified gameplay-facing queries. Keyboard/mouse still come from GLFW,
+    // while controllers are sourced from SDL2's GameController API.
+    static bool GetAction(const std::string& actionName);
+    static bool GetActionTriggered(const std::string& actionName);
+    static bool GetActionReleased(const std::string& actionName);
+    static float GetAxis(const std::string& axisName);
+
     static void ClearInputs();
 
     // --- EDITOR / GAME VIEWPORT SUPPORT ---
@@ -128,6 +143,41 @@ public:
     static void InjectMouseButton(Key button, bool isPressed);
 
 private:
+    struct DigitalBinding
+    {
+        enum class Type
+        {
+            Key,
+            MouseButton,
+            ControllerButton,
+            ControllerAxis
+        };
+
+        Type type = Type::Key;
+        int key = 0;
+        int mouseButton = 0;
+        int controllerButton = -1;
+        int controllerAxis = -1;
+        float threshold = 0.5f;
+        int direction = 1;
+    };
+
+    struct AxisBinding
+    {
+        enum class Type
+        {
+            KeyAxis,
+            ControllerAxis
+        };
+
+        Type type = Type::KeyAxis;
+        int negativeKey = 0;
+        int positiveKey = 0;
+        int controllerAxis = -1;
+        float deadzone = -1.0f;
+        bool invert = false;
+    };
+
     /// Pointer to the GLFW window
     static GLFWwindow* Window;
 
@@ -166,7 +216,29 @@ private:
     */
     static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
+    static float GetKeyboardAxis(int negativeKey, int positiveKey);
+    static bool EvaluateDigitalBinding(const DigitalBinding& binding);
+    static bool EvaluateDigitalBindingTriggered(const DigitalBinding& binding);
+    static bool EvaluateDigitalBindingReleased(const DigitalBinding& binding);
+    static float EvaluateAxisBinding(const AxisBinding& binding);
+    static std::string GetBindingsPath();
+    static bool LoadBindings(const std::string& path);
+    static bool ParseDigitalBinding(const rapidjson::Value& value, DigitalBinding& binding);
+    static bool ParseAxisBinding(const rapidjson::Value& value, AxisBinding& binding);
+    static int ParseKeyName(const std::string& keyName);
+    static int ParseMouseButtonName(const std::string& buttonName);
+    static int ParseControllerButtonName(const std::string& buttonName);
+    static int ParseControllerAxisName(const std::string& axisName);
+    static std::string ToUpper(std::string value);
+    static float ClampAxis(float value);
+    static float ChooseDominantAxis(float currentValue, float candidateValue);
+
     // This holds the "Ghost's" currently held buttons across multiple frames
     static std::unordered_map<int, bool> s_replayKeys;
     static std::unordered_map<int, bool> s_replayMouseButtons;
+
+    static std::unique_ptr<CrashoutEngine::ControllerManager> s_controllerManager;
+    static std::unordered_map<std::string, std::vector<DigitalBinding>> s_actionBindings;
+    static std::unordered_map<std::string, std::vector<AxisBinding>> s_axisBindings;
+    static float s_defaultDeadzone;
 };

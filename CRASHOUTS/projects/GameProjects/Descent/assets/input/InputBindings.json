@@ -1,0 +1,66 @@
+{
+  "deadzone": 0.2,
+  "actions": {
+    "Jump": [
+      { "type": "key", "key": "Space" },
+      { "type": "controller_button", "button": "A" }
+    ],
+    "SwapMass": [
+      { "type": "key", "key": "E" },
+      { "type": "controller_button", "button": "X" }
+    ],
+    "Pause": [
+      { "type": "key", "key": "Escape" },
+      { "type": "key", "key": "P" },
+      { "type": "controller_button", "button": "Start" }
+    ],
+    "DropDown": [
+      { "type": "key", "key": "S" },
+      { "type": "key", "key": "Down" },
+      { "type": "controller_button", "button": "Dpad_Down" },
+      { "type": "controller_axis", "axis": "Left_Y", "direction": "positive", "threshold": 0.5 }
+    ],
+    "GrabSlime": [
+      { "type": "mouse_button", "button": "Left" },
+      { "type": "controller_axis", "axis": "RT", "direction": "positive", "threshold": 0.5 }
+    ],
+    "UISubmit": [
+      { "type": "key", "key": "Enter" },
+      { "type": "key", "key": "Space" },
+      { "type": "controller_button", "button": "A" }
+    ],
+    "UIUp": [
+      { "type": "key", "key": "W" },
+      { "type": "key", "key": "Up" },
+      { "type": "controller_button", "button": "Dpad_Up" }
+    ],
+    "UIDown": [
+      { "type": "key", "key": "S" },
+      { "type": "key", "key": "Down" },
+      { "type": "controller_button", "button": "Dpad_Down" }
+    ]
+  },
+  "axes": {
+    "MoveX": [
+      { "type": "key_axis", "negative": "A", "positive": "D" },
+      { "type": "key_axis", "negative": "Left", "positive": "Right" },
+      { "type": "controller_axis", "axis": "Left_X", "deadzone": 0.2 }
+    ],
+    "MoveY": [
+      { "type": "key_axis", "negative": "S", "positive": "W" },
+      { "type": "key_axis", "negative": "Down", "positive": "Up" },
+      { "type": "controller_axis", "axis": "Left_Y", "deadzone": 0.2, "invert": true }
+    ],
+    "AimX": [
+      { "type": "controller_axis", "axis": "Right_X", "deadzone": 0.2 }
+    ],
+    "AimY": [
+      { "type": "controller_axis", "axis": "Right_Y", "deadzone": 0.2, "invert": true }
+    ],
+    "MenuY": [
+      { "type": "key_axis", "negative": "S", "positive": "W" },
+      { "type": "key_axis", "negative": "Down", "positive": "Up" },
+      { "type": "controller_axis", "axis": "Left_Y", "deadzone": 0.2, "invert": true }
+    ]
+  }
+}
