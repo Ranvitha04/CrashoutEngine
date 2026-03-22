@@ -22,7 +22,7 @@ namespace ParticleSystem {
     */
     enum class ParticleShape { LINE, CIRCLE, SQUARE };
 
-    enum class ParticlePreset { Custom = 0, Smoke = 1, Fire = 2, Explosion = 3, SuperheroLanding = 4, Lava = 5 };
+    enum class ParticlePreset { Custom = 0, Smoke = 1, Fire = 2, Explosion = 3, SuperheroLanding = 4, Lava = 5, Ember = 6 };
 
     enum class ParticleRenderShape { Square = 0, Circle = 1, Triangle = 2 };
 }
@@ -47,7 +47,6 @@ namespace Component {
 		std::vector<f32>  lives;          // Current life remaining
 		std::vector<f32>  maxLives;       // Maximum life assigned
         std::vector<f32>  spawnTimes;
-        std::vector<CrashoutsEngine::Entity> emberLightEntities;
     };
 
     /*
@@ -86,14 +85,10 @@ namespace Component {
         float flowStrength = 0.0f;
         float flowSpeed = 0.0f;
         float flowFrequency = 0.0f;
-
-        bool emberLightsEnabled{ false };
-        int emberLightCount{ 0 };
-        float emberLightIntensity{ 1.0f };
-        float emberLightRadius{ 20.0f };
-        CEColor emberLightColor{ 1.0f, 0.5f, 0.1f, 1.0f };
-        bool emberLightAffectBloom{ true };
-        bool emberLightRenderBehind{ true };
+        bool additiveBlend{ false };
+        bool emberRandomDirections{ false };
+        CEVec2 prevEmitterScale{ 1.0f, 1.0f };
+        bool prevEmitterScaleValid{ false };
 
         // Initial values
         f32 startLifeMin = 1.f, startLifeMax = 1.f;

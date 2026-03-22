@@ -1196,6 +1196,15 @@
                 "ambient": 1.0,
                 "shadowsEnabled": true,
                 "shadowRays": 128,
+                "shadowDarkness": 1.0,
+                "shadowColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "shadowColorStrength": 1.0,
+                "shadowMapStrength": 1.0,
+                "raymarchShadowStrength": 1.0,
                 "bloomEnabled": true,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,

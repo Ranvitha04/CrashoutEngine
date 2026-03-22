@@ -128,6 +128,7 @@ namespace InstancingSystem {
         GLuint textureHandle{ 0 }; // Raw handle override
         CEColor tint{ 1.0f, 1.0f, 1.0f };
         CEVec2 uvSize{ 1.0f, 1.0f };
+        bool additiveBlend{ false };
     };
 
     struct ParticleShaderParams {

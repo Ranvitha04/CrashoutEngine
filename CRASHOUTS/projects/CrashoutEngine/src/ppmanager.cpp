@@ -22,6 +22,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "ppmanager.h"
 #include "engine.h"
 #include "camera.h"
+#include "glapp.h"
 #include "activecomponent.h"
 #include "transformcomponent.h"
 #include "shapescomponent.h"
@@ -55,6 +56,12 @@ namespace CrashoutsEngine {
         int g_bloomIterations = 4;
         bool g_shadowsEnabled = true;
         int g_shadowRays = 48;
+        float g_shadowDarkness = 1.0f;
+        CEVec3 g_shadowColor{ 0.0f, 0.0f, 0.0f };
+        float g_shadowColorStrength = 1.0f;
+        float g_shadowMapStrength = 1.0f;
+        float g_raymarchShadowStrength = 1.0f;
+        float g_timeSeconds = 0.0f;
         bool active = false;
 
         GLuint quadvao = 0;
@@ -94,6 +101,9 @@ namespace CrashoutsEngine {
             int shadowTechnique{ 0 };
             int raymarchSteps{ 24 };
             float raymarchThreshold{ 0.5f };
+            bool flickerEnabled{ false };
+            float flickerStrength{ 0.0f };
+            float flickerSpeed{ 0.0f };
             glm::vec2 uvCenter{ 0.0f, 0.0f };
             float radiusUV{ 0.0f };
             CEVec3 worldPos{ 0.0f, 0.0f, 0.0f };
@@ -116,6 +126,8 @@ namespace CrashoutsEngine {
             float shadowTechnique;
             float raymarchSteps;
             float raymarchThreshold;
+            float flickerStrength;
+            float flickerSpeed;
         };
 
 
@@ -219,44 +231,52 @@ namespace CrashoutsEngine {
             glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)0);
             glVertexAttribDivisor(2, 1);
 
             glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(2 * sizeof(float)));
+            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(2 * sizeof(float)));
             glVertexAttribDivisor(3, 1);
 
             glEnableVertexAttribArray(4);
-            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
+            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(3 * sizeof(float)));
             glVertexAttribDivisor(4, 1);
 
             glEnableVertexAttribArray(5);
-            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(6 * sizeof(float)));
+            glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(6 * sizeof(float)));
             glVertexAttribDivisor(5, 1);
 
             glEnableVertexAttribArray(6);
-            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(7 * sizeof(float)));
+            glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(7 * sizeof(float)));
             glVertexAttribDivisor(6, 1);
 
             // layout(location = 7) float iAffectBloom
             glEnableVertexAttribArray(7);
-            glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(8 * sizeof(float)));
+            glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(8 * sizeof(float)));
             glVertexAttribDivisor(7, 1);
 
             // layout(location = 8) float iShadowTechnique
             glEnableVertexAttribArray(8);
-            glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(9 * sizeof(float)));
+            glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(9 * sizeof(float)));
             glVertexAttribDivisor(8, 1);
 
             // layout(location = 9) float iRaymarchSteps
             glEnableVertexAttribArray(9);
-            glVertexAttribPointer(9, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(10 * sizeof(float)));
+            glVertexAttribPointer(9, 1, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(10 * sizeof(float)));
             glVertexAttribDivisor(9, 1);
 
             // layout(location = 10) float iRaymarchThreshold
             glEnableVertexAttribArray(10);
-            glVertexAttribPointer(10, 1, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(11 * sizeof(float)));
+            glVertexAttribPointer(10, 1, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
             glVertexAttribDivisor(10, 1);
+
+            glEnableVertexAttribArray(11);
+            glVertexAttribPointer(11, 1, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(12 * sizeof(float)));
+            glVertexAttribDivisor(11, 1);
+
+            glEnableVertexAttribArray(12);
+            glVertexAttribPointer(12, 1, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(13 * sizeof(float)));
+            glVertexAttribDivisor(12, 1);
 
             glBindVertexArray(0); // Unbind
 
@@ -319,6 +339,7 @@ namespace CrashoutsEngine {
                     return;
                 }
 
+                g_timeSeconds += static_cast<float>(GLApp::delta_time);
                 if (g_brightness != p.brightness) g_brightness = p.brightness;
                 if (g_contrast != p.contrast) g_contrast = p.contrast;
                 if (g_saturation != p.saturation) g_saturation = p.saturation;
@@ -329,6 +350,11 @@ namespace CrashoutsEngine {
                 if (g_bloomIterations != p.bloomIterations) g_bloomIterations = p.bloomIterations;
                 if (g_shadowsEnabled != p.shadowsEnabled) g_shadowsEnabled = p.shadowsEnabled;
                 if (g_shadowRays != p.shadowRays) g_shadowRays = p.shadowRays;
+                if (g_shadowDarkness != p.shadowDarkness) g_shadowDarkness = p.shadowDarkness;
+                if (g_shadowColor != p.shadowColor) g_shadowColor = p.shadowColor;
+                if (g_shadowColorStrength != p.shadowColorStrength) g_shadowColorStrength = p.shadowColorStrength;
+                if (g_shadowMapStrength != p.shadowMapStrength) g_shadowMapStrength = p.shadowMapStrength;
+                if (g_raymarchShadowStrength != p.raymarchShadowStrength) g_raymarchShadowStrength = p.raymarchShadowStrength;
                 if (active != p.active) active = p.active;
             }
         }
@@ -412,12 +438,20 @@ namespace CrashoutsEngine {
             float camHeight = currentCamera.GetVisibleWorldHeight();
 
             static GLint loc_worldSize = -1, loc_useShadows = -1, loc_shadowTexHeight = -1, loc_shadowTex = -1, loc_sceneOccluder = -1;
+            static GLint loc_shadowDarkness = -1, loc_shadowMapStrength = -1, loc_raymarchShadowStrength = -1;
+            static GLint loc_lightFlickerStrength = -1, loc_lightFlickerSpeed = -1, loc_time = -1;
             if (loc_worldSize == -1) {
                 loc_worldSize = glGetUniformLocation(lightShader.GetHandle(), "uWorldSize");
                 loc_useShadows = glGetUniformLocation(lightShader.GetHandle(), "uUseShadows");
                 loc_shadowTexHeight = glGetUniformLocation(lightShader.GetHandle(), "uShadowTexHeight");
                 loc_shadowTex = glGetUniformLocation(lightShader.GetHandle(), "uShadowTex");
                 loc_sceneOccluder   = glGetUniformLocation(lightShader.GetHandle(), "uSceneOccluder");
+                loc_shadowDarkness = glGetUniformLocation(lightShader.GetHandle(), "uShadowDarkness");
+                loc_shadowMapStrength = glGetUniformLocation(lightShader.GetHandle(), "uShadowMapStrength");
+                loc_raymarchShadowStrength = glGetUniformLocation(lightShader.GetHandle(), "uRaymarchShadowStrength");
+                loc_lightFlickerStrength = glGetUniformLocation(lightShader.GetHandle(), "uLightFlickerStrength");
+                loc_lightFlickerSpeed = glGetUniformLocation(lightShader.GetHandle(), "uLightFlickerSpeed");
+                loc_time = glGetUniformLocation(lightShader.GetHandle(), "uTime");
             }
 
             glUniform2f(loc_worldSize, camWidth, camHeight);
@@ -425,6 +459,10 @@ namespace CrashoutsEngine {
             glUniform1f(loc_shadowTexHeight, (float)shadowTexHeight);
             glUniform1i(loc_shadowTex, 1);
             glUniform1i(loc_sceneOccluder, 5);
+            if (loc_shadowDarkness != -1) glUniform1f(loc_shadowDarkness, g_shadowDarkness);
+            if (loc_shadowMapStrength != -1) glUniform1f(loc_shadowMapStrength, g_shadowMapStrength);
+            if (loc_raymarchShadowStrength != -1) glUniform1f(loc_raymarchShadowStrength, g_raymarchShadowStrength);
+            if (loc_time != -1) glUniform1f(loc_time, g_timeSeconds);
 
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, shadowTex);
@@ -434,6 +472,9 @@ namespace CrashoutsEngine {
             static std::vector<LightInstance> instances;
             instances.clear();
             instances.reserve(lightDraws.size());
+
+            float flickerStrengthUniform = 0.0f;
+            float flickerSpeedUniform = 0.0f;
 
             for (size_t i = 0; i < lightDraws.size(); ++i) {
                 const auto& ld = lightDraws[i];
@@ -452,8 +493,18 @@ namespace CrashoutsEngine {
                 inst.raymarchSteps = (float)ld.raymarchSteps;
                 inst.raymarchThreshold = ld.raymarchThreshold;
                 inst.shadowIndex = (ld.shadowTechnique == 0 && shadowRowByLight[i] >= 0) ? (float)shadowRowByLight[i] : -1.0f;
+                inst.flickerStrength = ld.flickerStrength;
+                inst.flickerSpeed = ld.flickerSpeed;
                 instances.push_back(inst);
+
+                if (flickerStrengthUniform <= 0.0001f && ld.flickerEnabled) {
+                    flickerStrengthUniform = ld.flickerStrength;
+                    flickerSpeedUniform = ld.flickerSpeed;
+                }
             }
+
+            if (loc_lightFlickerStrength != -1) glUniform1f(loc_lightFlickerStrength, flickerStrengthUniform);
+            if (loc_lightFlickerSpeed != -1) glUniform1f(loc_lightFlickerSpeed, flickerSpeedUniform);
 
             if (!instances.empty()) {
                 glBindVertexArray(quadvao);
@@ -537,6 +588,9 @@ namespace CrashoutsEngine {
                         lightDraws[i].shadowTechnique = lc->shadowTechnique;
                         lightDraws[i].raymarchSteps = lc->raymarchSteps;
                         lightDraws[i].raymarchThreshold = lc->raymarchThreshold;
+                        lightDraws[i].flickerEnabled = lc->flickerEnabled;
+                        lightDraws[i].flickerStrength = lc->flickerEnabled ? lc->flickerStrength : 0.0f;
+                        lightDraws[i].flickerSpeed = lc->flickerSpeed;
 
                         // Occluder rectangles are built on the main thread after this pass.
                     }
@@ -1001,9 +1055,13 @@ namespace CrashoutsEngine {
                 GLSLShader& combineShader = combineAsset->shaderObject;
                 combineShader.Use();
 
-                static GLint loc_cAmbient = -1, loc_cLightBehind = -1, loc_cOccluder = -1, loc_cScene = -1, loc_cLight = -1;
+                static GLint loc_cAmbient = -1, loc_cShadowDarkness = -1, loc_cShadowColor = -1, loc_cShadowColorStrength = -1;
+                static GLint loc_cLightBehind = -1, loc_cOccluder = -1, loc_cScene = -1, loc_cLight = -1;
                 if (loc_cAmbient == -1) {
                     loc_cAmbient = glGetUniformLocation(combineShader.GetHandle(), "uAmbient");
+                    loc_cShadowDarkness = glGetUniformLocation(combineShader.GetHandle(), "uShadowDarkness");
+                    loc_cShadowColor = glGetUniformLocation(combineShader.GetHandle(), "uShadowColor");
+                    loc_cShadowColorStrength = glGetUniformLocation(combineShader.GetHandle(), "uShadowColorStrength");
                     loc_cLightBehind = glGetUniformLocation(combineShader.GetHandle(), "uLightBehind");
                     loc_cOccluder = glGetUniformLocation(combineShader.GetHandle(), "uOccluderMask");
                     loc_cScene = glGetUniformLocation(combineShader.GetHandle(), "uScene");
@@ -1011,6 +1069,9 @@ namespace CrashoutsEngine {
                 }
 
                 glUniform1f(loc_cAmbient, g_ambient);
+                if (loc_cShadowDarkness != -1) glUniform1f(loc_cShadowDarkness, g_shadowDarkness);
+                if (loc_cShadowColor != -1) glUniform3f(loc_cShadowColor, g_shadowColor.x, g_shadowColor.y, g_shadowColor.z);
+                if (loc_cShadowColorStrength != -1) glUniform1f(loc_cShadowColorStrength, g_shadowColorStrength);
                 glUniform1i(loc_cLightBehind, 2);
                 glUniform1i(loc_cOccluder, 3);
                 glActiveTexture(GL_TEXTURE2);
@@ -1106,6 +1167,7 @@ namespace CrashoutsEngine {
                 static GLint loc_fUseBloom = -1, loc_fBloomInt = -1, loc_fActive = -1, loc_fBright = -1;
                 static GLint loc_fContrast = -1, loc_fSat = -1, loc_fNoBloomL = -1, loc_fNoBloomB = -1, loc_fOcc = -1;
                 static GLint loc_fScene = -1, loc_fBloom = -1;
+                static GLint loc_fShadowDarkness = -1, loc_fShadowColor = -1, loc_fShadowColorStrength = -1;
 
                 if (loc_fUseBloom == -1) {
                     loc_fUseBloom = glGetUniformLocation(finalShader.GetHandle(), "uUseBloom");
@@ -1119,6 +1181,9 @@ namespace CrashoutsEngine {
                     loc_fOcc = glGetUniformLocation(finalShader.GetHandle(), "uOccluderMask");
                     loc_fScene = glGetUniformLocation(finalShader.GetHandle(), "uScene");
                     loc_fBloom = glGetUniformLocation(finalShader.GetHandle(), "uBloom");
+                    loc_fShadowDarkness = glGetUniformLocation(finalShader.GetHandle(), "uShadowDarkness");
+                    loc_fShadowColor = glGetUniformLocation(finalShader.GetHandle(), "uShadowColor");
+                    loc_fShadowColorStrength = glGetUniformLocation(finalShader.GetHandle(), "uShadowColorStrength");
                 }
 
                 glUniform1i(loc_fUseBloom, g_bloomEnabled ? 1 : 0);
@@ -1127,6 +1192,9 @@ namespace CrashoutsEngine {
                 glUniform1f(loc_fBright, g_brightness);
                 glUniform1f(loc_fContrast, g_contrast + 1.f);
                 glUniform1f(loc_fSat, g_saturation + 1.f);
+                if (loc_fShadowDarkness != -1) glUniform1f(loc_fShadowDarkness, g_shadowDarkness);
+                if (loc_fShadowColor != -1) glUniform3f(loc_fShadowColor, g_shadowColor.x, g_shadowColor.y, g_shadowColor.z);
+                if (loc_fShadowColorStrength != -1) glUniform1f(loc_fShadowColorStrength, g_shadowColorStrength);
                 glUniform1i(loc_fNoBloomL, 2);
                 glUniform1i(loc_fNoBloomB, 3);
                 glUniform1i(loc_fOcc, 4);

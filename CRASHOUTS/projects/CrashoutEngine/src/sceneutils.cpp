@@ -790,9 +790,16 @@ namespace Scene {
 				if (s_scaleYBuffer.size() < count) s_scaleYBuffer.resize(count);
 				if (s_uvOffsetBuffer.size() < count) s_uvOffsetBuffer.resize(count, { 0.f, 0.f });
 
+				float worldScaleX = 1.0f;
+				float worldScaleY = 1.0f;
+				if (pc->useWorldSpace && tc) {
+					worldScaleX = tc->size.x;
+					worldScaleY = tc->size.y;
+				}
+
 				for (size_t k = 0; k < count; ++k) {
-					s_scaleXBuffer[k] = pc->data.scales[k].x;
-					s_scaleYBuffer[k] = pc->data.scales[k].y;
+					s_scaleXBuffer[k] = pc->data.scales[k].x * worldScaleX;
+					s_scaleYBuffer[k] = pc->data.scales[k].y * worldScaleY;
 					s_uvOffsetBuffer[k] = { pc->data.velocities[k].x, pc->data.velocities[k].y };
 				}
 
@@ -801,6 +808,7 @@ namespace Scene {
 				params.textureName = pc->textureName;
 				params.uvSize = pc->textureUV;
 				params.tint = { 1.0f, 1.0f, 1.0f, 1.0f };
+				params.additiveBlend = pc->additiveBlend;
 
 				InstancingSystem::ParticleShaderParams p;
 				p.time = pc->runtimeTime;

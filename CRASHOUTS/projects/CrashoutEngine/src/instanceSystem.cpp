@@ -2061,7 +2061,7 @@ namespace InstancingSystem {
 			glBindTextureUnit(0, handle);
 		}
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, params.additiveBlend ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_CULL_FACE);
 
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, count);
@@ -2132,7 +2132,7 @@ namespace InstancingSystem {
 			glBindTextureUnit(0, handle);
 		}
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, params.additiveBlend ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_CULL_FACE);
 
 		glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0, count);
@@ -2204,7 +2204,7 @@ namespace InstancingSystem {
 			glBindTextureUnit(0, handle);
 		}
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, params.additiveBlend ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_CULL_FACE);
 
 		int elements = segments * 3;

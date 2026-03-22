@@ -10854,6 +10854,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.5607843399047852,
                     "y": 0.19607843458652497,
@@ -11400,21 +11403,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -11609,21 +11602,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -11740,21 +11723,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -11871,21 +11844,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -12002,21 +11965,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -12133,21 +12086,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -15983,6 +15926,15 @@
                 "ambient": 0.15000000596046449,
                 "shadowsEnabled": true,
                 "shadowRays": 128,
+                "shadowDarkness": 1.0,
+                "shadowColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "shadowColorStrength": 1.0,
+                "shadowMapStrength": 1.0,
+                "raymarchShadowStrength": 1.0,
                 "bloomEnabled": true,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,
@@ -20206,7 +20158,7 @@
                 },
                 "max": {
                     "x": -170.00357055664063,
-                    "y": -6.632822036743164,
+                    "y": -6.632820129394531,
                     "z": 0.0
                 }
             },
@@ -20535,9 +20487,12 @@
                 "renderBehind": true,
                 "ignoreParentOccluders": true,
                 "ignoreOccluders": true,
-                "shadowTechnique": 0,
+                "shadowTechnique": 1,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": true,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.9058823585510254,
                     "y": 0.7921568751335144,
@@ -21914,21 +21869,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -25889,6 +25834,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.8823529481887817,
                     "y": 0.08650518953800202,
@@ -25951,6 +25899,15 @@
                 "ambient": 0.6000000238418579,
                 "shadowsEnabled": true,
                 "shadowRays": 512,
+                "shadowDarkness": 1.0,
+                "shadowColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "shadowColorStrength": 1.0,
+                "shadowMapStrength": 0.6399999856948853,
+                "raymarchShadowStrength": 1.0,
                 "bloomEnabled": false,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,
@@ -25994,6 +25951,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.7941176891326904,
                     "y": 1.0,
@@ -26100,21 +26060,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -26745,6 +26695,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.1427335888147354,
                     "y": 0.22974756360054017,
@@ -26997,6 +26950,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.1427335888147354,
                     "y": 0.22974756360054017,
@@ -27848,21 +27804,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -28516,21 +28462,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -28593,7 +28529,7 @@
         },
         {
             "active": true,
-            "name": "Entity 2096",
+            "name": "Lava Bubbling",
             "uuid": 15212498793787820023,
             "tag": {
                 "tagMask": 64
@@ -28601,13 +28537,33 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 490.6391906738281,
-                    "y": -478.90863037109377,
+                    "x": 820.991455078125,
+                    "y": -477.2546691894531,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 12.699999809265137,
-                    "y": 13.199999809265137
+                    "x": 24.700000762939454,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13809352314349269047,
+                "localPos": {
+                    "x": 820.991455078125,
+                    "y": -477.2546691894531,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 24.700000762939454,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 }
             },
             "layer": {
@@ -28627,14 +28583,14 @@
                 "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
-                "maxParticles": 2067,
-                "emitRate": 420.0,
+                "maxParticles": 2161,
+                "emitRate": 410.0,
                 "playOnStop": true,
                 "emissionShape": 0,
                 "radiusMin": 0.0,
                 "radiusMax": 5.0,
-                "lengthMin": 35.0,
-                "lengthMax": 30.100000381469728,
+                "lengthMin": 47.400001525878909,
+                "lengthMax": 1.2000000476837159,
                 "areaMin": {
                     "x": 0.0,
                     "y": 0.0
@@ -28685,21 +28641,132 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
-                "flowStrength": 1.7200000286102296,
-                "flowSpeed": 2.809999942779541,
-                "flowFrequency": 1.1799999475479127,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 2.559999942779541,
+                "flowSpeed": 2.990000009536743,
+                "flowFrequency": 2.180000066757202
+            }
+        },
+        {
+            "active": true,
+            "name": "Embers",
+            "uuid": 1229336579179272022,
+            "tag": {
+                "tagMask": 64
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 789.570556640625,
+                    "y": -453.9128112792969,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 56.20000076293945,
+                    "y": 74.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13809352314349269047,
+                "localPos": {
+                    "x": 789.570556640625,
+                    "y": -453.9128112792969,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 56.20000076293945,
+                    "y": 74.0
+                },
+                "inheritColor": false,
+                "colorMul": {
                     "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 0
+            },
+            "particle": {
+                "preset": 6,
+                "burstCount": 0,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.440000057220459,
+                "circleSegments": 24,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 824,
+                "emitRate": 240.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": 0.0,
+                "radiusMax": 0.5,
+                "lengthMin": 8.600000381469727,
+                "lengthMax": 8.600000381469727,
+                "areaMin": {
+                    "x": 18.5,
+                    "y": 0.30000001192092898
+                },
+                "areaMax": {
+                    "x": 7.300000190734863,
+                    "y": 6.0
+                },
+                "startLifeMin": 0.6000000238418579,
+                "startLifeMax": 1.7999999523162842,
+                "startSpeedMin": 0.20000000298023225,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.05000000074505806,
+                "startSizeXMax": 0.14000000059604646,
+                "startSizeYMin": 0.05000000074505806,
+                "startSizeYMax": 0.14000000059604646,
+                "sizeOverTime": -0.019999999552965165,
+                "rotationOverTime": 120.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 0.75,
+                    "z": 0.20000000298023225,
                     "w": 1.0
                 },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "endColor": {
+                    "x": 0.2199999988079071,
+                    "y": 0.029999999329447748,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.25,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.550000011920929,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": true,
+                "emberRandomDirections": true,
+                "flowStrength": 3.369999885559082,
+                "flowSpeed": 3.0,
+                "flowFrequency": 0.5699999928474426
             }
         }
     ],

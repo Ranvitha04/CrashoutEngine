@@ -155,6 +155,10 @@
     ],
     "shaders": [
         {
+            "name": "ParticleShader",
+            "path": "ParticleShader"
+        },
+        {
             "name": "BloomCompositeShader",
             "path": "BloomCompositeShader"
         },
@@ -165,10 +169,6 @@
         {
             "name": "BlurShader",
             "path": "BlurShader"
-        },
-        {
-            "name": "PPShader",
-            "path": "PPShader"
         },
         {
             "name": "BrightShader",
@@ -185,6 +185,10 @@
         {
             "name": "CrashoutShader",
             "path": "CrashoutShader"
+        },
+        {
+            "name": "PPShader",
+            "path": "PPShader"
         },
         {
             "name": "TextShader",

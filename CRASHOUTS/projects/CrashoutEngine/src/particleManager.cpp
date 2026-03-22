@@ -37,15 +37,9 @@ namespace ParticleSystem {
 		comp.flowStrength = 0.0f;
 		comp.flowSpeed = 0.0f;
 		comp.flowFrequency = 0.0f;
-		comp.emberLightsEnabled = false;
-		comp.emberLightCount = 0;
+		comp.additiveBlend = false;
 
 		auto ResetRuntime = [&]() {
-			auto* ecs = CrashoutsEngine::ECS::getInstance();
-			for (auto ent : comp.data.emberLightEntities) {
-				if (ent) ecs->DestroyEntity(ent);
-			}
-			comp.data.emberLightEntities.clear();
 			comp.emitAccumulator = 0.0f;
 			comp.data.activeCount = 0;
 			comp.data.nextSpawnIndex = 0;
@@ -246,6 +240,7 @@ namespace ParticleSystem {
 			comp.useWorldSpace = true;
 
 			comp.gpuSimulation = true;
+			comp.additiveBlend = false;
 
 			comp.renderShape = ParticleRenderShape::Circle;
 			comp.circleSegments = 48;
@@ -288,8 +283,57 @@ namespace ParticleSystem {
 			comp.flowSpeed = 1.0f;
 			comp.flowFrequency = 0.06f;
 
-			comp.emberLightsEnabled = false;
-			comp.emberLightCount = 0;
+			ResetRuntime();
+		} break;
+		case ParticlePreset::Ember: {
+			comp.isEmitting = true;
+			comp.playOnStop = true;
+			comp.useWorldSpace = true;
+
+			comp.gpuSimulation = true;
+			comp.additiveBlend = true;
+			comp.emberRandomDirections = false;
+
+			comp.renderShape = ParticleRenderShape::Circle;
+			comp.circleSegments = 24;
+			comp.circleRadiusMultiplier = 1.0f;
+
+			comp.maxParticles = 900;
+			comp.emitRate = 240.0f;
+
+			comp.emissionShape = ParticleShape::CIRCLE;
+			comp.radiusMin = 0.0f;
+			comp.radiusMax = 0.5f;
+
+			comp.startLifeMin = 0.6f;
+			comp.startLifeMax = 1.8f;
+			comp.startSpeedMin = 0.2f;
+			comp.startSpeedMax = 1.0f;
+
+			comp.uniformSize = true;
+			comp.startSizeXMin = 0.05f;
+			comp.startSizeXMax = 0.14f;
+			comp.startSizeYMin = 0.05f;
+			comp.startSizeYMax = 0.14f;
+
+			comp.sizeOverTime = -0.02f;
+			comp.rotationOverTime = 120.0f;
+			comp.startRotationMin = 0.0f;
+			comp.startRotationMax = 360.0f;
+
+			comp.gravity = { 0.0f, 0.25f, 0.0f };
+			comp.startVelocity = { 0.0f, 0.55f, 0.0f };
+
+			comp.useTexture = false;
+			comp.textureName.clear();
+			comp.textureUV = { 1.0f, 1.0f };
+
+			comp.startcolor = { 1.0f, 0.75f, 0.2f, 1.0f };
+			comp.endColor = { 0.22f, 0.03f, 0.0f, 0.0f };
+
+			comp.flowStrength = 0.18f;
+			comp.flowSpeed = 3.0f;
+			comp.flowFrequency = 0.0f;
 
 			ResetRuntime();
 		} break;
@@ -358,6 +402,47 @@ namespace ParticleSystem {
 		f32 scaleX = t->size.x;
 		f32 scaleY = t->size.y;
 
+		if (comp.preset == ParticlePreset::Ember) {
+			if (!comp.prevEmitterScaleValid) {
+				comp.prevEmitterScale = t->size;
+				comp.prevEmitterScaleValid = true;
+			}
+			else {
+				float prevX = comp.prevEmitterScale.x;
+				float prevY = comp.prevEmitterScale.y;
+				if (prevX <= 0.0001f) prevX = 0.0001f;
+				if (prevY <= 0.0001f) prevY = 0.0001f;
+
+				float fx = t->size.x / prevX;
+				float fy = t->size.y / prevY;
+
+				if (fabsf(fx - 1.0f) > 0.0001f || fabsf(fy - 1.0f) > 0.0001f) {
+					size_t n = std::min(data.activeCount, actualCapacity);
+					if (comp.gpuSimulation && comp.preset != ParticlePreset::SuperheroLanding) {
+						n = std::min(static_cast<size_t>(comp.maxParticles), actualCapacity);
+					}
+
+					for (size_t i = 0; i < n; ++i) {
+						if (comp.useWorldSpace) {
+							CEVec3 rel = data.positions[i] - t->position;
+							rel.x *= fx;
+							rel.y *= fy;
+							data.positions[i] = t->position + rel;
+						}
+						else {
+							data.positions[i].x *= fx;
+							data.positions[i].y *= fy;
+						}
+
+						data.velocities[i].x *= fx;
+						data.velocities[i].y *= fy;
+					}
+
+					comp.prevEmitterScale = t->size;
+				}
+			}
+		}
+
 		// 1. Emission
 		bool stopEmittingAfterThisEmissionStage = false;
 		if (comp.burstRequested && comp.burstCount > 0) {
@@ -411,7 +496,12 @@ namespace ParticleSystem {
 						f32 angle = RandomRange(0, 2.0f * 3.14159f);
                         
                         // Get random radius
-                        f32 baseRadius = RandomRange(comp.radiusMin, comp.radiusMax);
+                        f32 r0 = std::min(comp.radiusMin, comp.radiusMax);
+                        f32 r1 = std::max(comp.radiusMin, comp.radiusMax);
+                        if (r0 < 0.0f) r0 = 0.0f;
+                        if (r1 < r0) r1 = r0;
+                        f32 u = RandomRange(0.0f, 1.0f);
+                        f32 baseRadius = std::sqrt(r0 * r0 + (r1 * r1 - r0 * r0) * u);
 
                         // Ellipse Logic: Scale X and Y independently based on Transform
                         // If scaleX == scaleY, it remains a perfect circle.
@@ -447,6 +537,12 @@ namespace ParticleSystem {
 
 					if (comp.preset == ParticlePreset::Lava) {
 						f32 theta = RandomRange(-0.75f, 0.75f) + (CEMath::PI * 0.5f);
+						localDir = { cosf(theta), sinf(theta), 0.0f };
+					}
+					else if (comp.preset == ParticlePreset::Ember) {
+						f32 theta = comp.emberRandomDirections
+							? RandomRange(0.0f, 2.0f * CEMath::PI)
+							: (RandomRange(-0.35f, 0.35f) + (CEMath::PI * 0.5f));
 						localDir = { cosf(theta), sinf(theta), 0.0f };
 					}
 
@@ -504,6 +600,14 @@ namespace ParticleSystem {
 						CEVec3 jitter{
 							RandomRange(-1.0f, 1.0f) * speed * 0.35f,
 							RandomRange(-0.25f, 0.65f) * speed * 0.25f,
+							0.0f
+						};
+						data.velocities[i] = data.velocities[i] + jitter;
+					}
+					else if (comp.preset == ParticlePreset::Ember) {
+						CEVec3 jitter{
+							RandomRange(-1.0f, 1.0f) * speed * 0.22f,
+							RandomRange(-0.15f, 0.35f) * speed * 0.10f,
 							0.0f
 						};
 						data.velocities[i] = data.velocities[i] + jitter;
@@ -609,4 +713,3 @@ namespace ParticleSystem {
 	}
 
 }
-

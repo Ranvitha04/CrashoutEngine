@@ -6046,6 +6046,44 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -6098,7 +6136,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -6112,21 +6150,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -6158,37 +6189,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -9499,6 +9499,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.906862735748291,
                     "y": 0.7912821769714356,
@@ -9519,37 +9522,6 @@
                 "t": 31.799686431884767,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -9603,7 +9575,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -9617,14 +9589,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -9677,6 +9649,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -10642,21 +10645,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -15459,21 +15452,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -16092,21 +16075,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -16725,21 +16698,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -17361,7 +17324,7 @@
             },
             "light": {
                 "active": true,
-                "intensity": 5.5,
+                "intensity": 0.5,
                 "radius": 23.0,
                 "affectBloom": true,
                 "useTransform": true,
@@ -17372,6 +17335,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.9843137264251709,
                     "y": 0.5176470875740051,
@@ -17392,37 +17358,6 @@
                 "t": 37.14960479736328,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "slimeHold",
                         "wrap": 0,
@@ -17455,7 +17390,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -17469,21 +17404,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -17536,6 +17464,44 @@
                                     {
                                         "t": 0.6000000238418579,
                                         "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -18844,6 +18810,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.1427335888147354,
                     "y": 0.22974756360054017,
@@ -19234,21 +19203,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
-                "flowFrequency": 0.0,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 0.0
             }
         },
         {
@@ -19385,6 +19344,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.8823529481887817,
                     "y": 0.08627451211214066,
@@ -19433,6 +19395,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.9852941036224365,
                     "y": 0.5192113518714905,
@@ -19501,6 +19466,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.9852941036224365,
                     "y": 0.5192113518714905,

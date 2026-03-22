@@ -2707,6 +2707,14 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableFloat("Ambient", ppc->ambient, 0.01f, 0.0f, 1.0f);
 			UIHelpers::DrawUndoableBool("Shadows Enabled", ppc->shadowsEnabled);
 			ImGui::SliderInt("Shadow Rays", &ppc->shadowRays, 8, 512);
+			UIHelpers::DrawUndoableFloat("Shadow Darkness (Global)", ppc->shadowDarkness, 0.05f, 0.0f, 5.0f);
+			float shadowCol[3] = { ppc->shadowColor.x, ppc->shadowColor.y, ppc->shadowColor.z };
+			if (ImGui::ColorEdit3("Shadow Color", shadowCol)) {
+				ppc->shadowColor = { shadowCol[0], shadowCol[1], shadowCol[2] };
+			}
+			UIHelpers::DrawUndoableFloat("Shadow Color Strength", ppc->shadowColorStrength, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Shadow Map Occlusion", ppc->shadowMapStrength, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Raymarch Occlusion", ppc->raymarchShadowStrength, 0.01f, 0.0f, 1.0f);
 			UIHelpers::DrawUndoableBool("Bloom Enabled", ppc->bloomEnabled);
 			UIHelpers::DrawUndoableFloat("Bloom Threshold", ppc->bloomThreshold, 0.01f, 0.0f, 5.0f);
 			UIHelpers::DrawUndoableFloat("Bloom Intensity", ppc->bloomIntensity, 0.01f, 0.0f, 5.0f);
@@ -2717,6 +2725,11 @@ namespace CrashoutsEngine
 				ppc->ambient = 0.15f;
 				ppc->shadowsEnabled = true;
 				ppc->shadowRays = 128;
+				ppc->shadowDarkness = 1.0f;
+				ppc->shadowColor = { 0.0f, 0.0f, 0.0f };
+				ppc->shadowColorStrength = 1.0f;
+				ppc->shadowMapStrength = 1.0f;
+				ppc->raymarchShadowStrength = 1.0f;
 				ppc->bloomEnabled = true;
 				ppc->bloomThreshold = 1.0f;
 				ppc->bloomIntensity = 0.8f;
@@ -2773,6 +2786,10 @@ namespace CrashoutsEngine
 				UIHelpers::DrawUndoableInt("Raymarch Steps", lc->raymarchSteps, 1.0f, 4, 128);
 				UIHelpers::DrawUndoableFloat("Raymarch Threshold", lc->raymarchThreshold, 0.01f, 0.01f, 1.0f);
 			}
+
+			UIHelpers::DrawUndoableBool("Flicker Enabled", lc->flickerEnabled);
+			UIHelpers::DrawUndoableFloat("Flicker Strength", lc->flickerStrength, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Flicker Speed", lc->flickerSpeed, 0.05f, 0.0f, 50.0f);
 		}
 	};
 
@@ -3461,13 +3478,6 @@ namespace CrashoutsEngine
 		// Remove component
 		void remove(ECS& ecs, Entity e) override {
 			if (has(ecs, e)) {
-				auto* pc = ecs.GetComponent<Component::ParticleComponent>(e);
-				if (pc) {
-					for (auto le : pc->data.emberLightEntities) {
-						if (le) ecs.DestroyEntity(le);
-					}
-					pc->data.emberLightEntities.clear();
-				}
 				ecs.RemoveComponent<Component::ParticleComponent>(e);
 			}
 		}
@@ -3478,7 +3488,7 @@ namespace CrashoutsEngine
 			if (!pc) return;
 
 			ImGui::SeparatorText("Preset");
-			const char* presetNames[] = { "Custom", "Smoke", "Fire", "Explosion", "Superhero Landing", "Lava" };
+			const char* presetNames[] = { "Custom", "Smoke", "Fire", "Explosion", "Superhero Landing", "Lava", "Ember" };
 			int preset = static_cast<int>(pc->preset);
 			if (ImGui::Combo("##ParticlePreset", &preset, presetNames, IM_ARRAYSIZE(presetNames))) {
 				ParticleSystem::ApplyPreset(*pc, static_cast<ParticleSystem::ParticlePreset>(preset));
@@ -3674,10 +3684,19 @@ namespace CrashoutsEngine
 					UIHelpers::DrawUndoableFloat("Flow Frequency", pc->flowFrequency, 0.01f, 0.0f, 20.0f);
 				}
 			}
+			else if (pc->preset == ParticleSystem::ParticlePreset::Ember) {
+				if (ImGui::CollapsingHeader("Ember")) {
+					UIHelpers::DrawUndoableBool("Random Directions", pc->emberRandomDirections);
+					UIHelpers::DrawUndoableFloat("Drift Strength", pc->flowStrength, 0.01f, 0.0f, 10.0f);
+					UIHelpers::DrawUndoableFloat("Flicker Speed", pc->flowSpeed, 0.01f, 0.0f, 20.0f);
+					UIHelpers::DrawUndoableFloat("Drift Frequency", pc->flowFrequency, 0.01f, 0.0f, 20.0f);
+				}
+			}
 
 			// --- 5. Rendering (Collapsing) ---
 			if (ImGui::CollapsingHeader("Texture & UVs")) {
 				UIHelpers::DrawUndoableBool("Use Texture", pc->useTexture);
+				UIHelpers::DrawUndoableBool("Additive Blend", pc->additiveBlend);
 
 				if (pc->useTexture) {
 					// Texture Selection Row

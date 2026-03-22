@@ -44,6 +44,11 @@ namespace Component {
         bool shadowsEnabled{ true };
         // Raycast shadow quality
         int shadowRays{ 128 };
+        float shadowDarkness{ 1.0f };
+        CEVec3 shadowColor{ 0.0f, 0.0f, 0.0f };
+        float shadowColorStrength{ 1.0f };
+        float shadowMapStrength{ 1.0f };
+        float raymarchShadowStrength{ 1.0f };
     };
 
     /*!
@@ -65,5 +70,8 @@ namespace Component {
         int shadowTechnique{ 0 }; // 0 = Shadow Map (per-light), 1 = Raymarch (screen mask)
         int raymarchSteps{ 24 };
         float raymarchThreshold{ 0.5f };
+        bool flickerEnabled{ false };
+        float flickerStrength{ 0.5f };
+        float flickerSpeed{ 6.0f };
     };
 }

@@ -661,6 +661,11 @@ namespace CrashoutsEngine {
 				val.AddMember("ambient", c.ambient, allocator);
 				val.AddMember("shadowsEnabled", c.shadowsEnabled, allocator);
 				val.AddMember("shadowRays", c.shadowRays, allocator);
+				val.AddMember("shadowDarkness", c.shadowDarkness, allocator);
+				WriteVec3(val, "shadowColor", c.shadowColor, allocator);
+				val.AddMember("shadowColorStrength", c.shadowColorStrength, allocator);
+				val.AddMember("shadowMapStrength", c.shadowMapStrength, allocator);
+				val.AddMember("raymarchShadowStrength", c.raymarchShadowStrength, allocator);
 				val.AddMember("bloomEnabled", c.bloomEnabled, allocator);
 				val.AddMember("bloomThreshold", c.bloomThreshold, allocator);
 				val.AddMember("bloomIntensity", c.bloomIntensity, allocator);
@@ -684,6 +689,9 @@ namespace CrashoutsEngine {
 				val.AddMember("shadowTechnique", c.shadowTechnique, allocator);
 				val.AddMember("raymarchSteps", c.raymarchSteps, allocator);
 				val.AddMember("raymarchThreshold", c.raymarchThreshold, allocator);
+				val.AddMember("flickerEnabled", c.flickerEnabled, allocator);
+				val.AddMember("flickerStrength", c.flickerStrength, allocator);
+				val.AddMember("flickerSpeed", c.flickerSpeed, allocator);
 				WriteVec3(val, "color", c.color, allocator);
 				WriteVec3(val, "position", c.position, allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::LIGHT_COMPONENT), val, allocator);
@@ -871,17 +879,11 @@ namespace CrashoutsEngine {
 				WriteVec2(pVal, "textureUV", pc.textureUV, allocator);
 
 				pVal.AddMember("gpuSimulation", pc.gpuSimulation, allocator);
+				pVal.AddMember("additiveBlend", pc.additiveBlend, allocator);
+				pVal.AddMember("emberRandomDirections", pc.emberRandomDirections, allocator);
 				pVal.AddMember("flowStrength", pc.flowStrength, allocator);
 				pVal.AddMember("flowSpeed", pc.flowSpeed, allocator);
 				pVal.AddMember("flowFrequency", pc.flowFrequency, allocator);
-
-				pVal.AddMember("emberLightsEnabled", pc.emberLightsEnabled, allocator);
-				pVal.AddMember("emberLightCount", pc.emberLightCount, allocator);
-				pVal.AddMember("emberLightIntensity", pc.emberLightIntensity, allocator);
-				pVal.AddMember("emberLightRadius", pc.emberLightRadius, allocator);
-				WriteColor(pVal, "emberLightColor", pc.emberLightColor, allocator);
-				pVal.AddMember("emberLightAffectBloom", pc.emberLightAffectBloom, allocator);
-				pVal.AddMember("emberLightRenderBehind", pc.emberLightRenderBehind, allocator);
 
 				entityValue.AddMember(rapidjson::StringRef(Keys::PARTICLE_COMPONENT), pVal, allocator);
 			}
@@ -1316,6 +1318,11 @@ namespace CrashoutsEngine {
 				p.ambient = GetFloat(v, "ambient", p.ambient);
 				p.shadowsEnabled = GetBool(v, "shadowsEnabled", p.shadowsEnabled);
 				p.shadowRays = GetInt(v, "shadowRays", p.shadowRays);
+				p.shadowDarkness = GetFloat(v, "shadowDarkness", p.shadowDarkness);
+				if (v.HasMember("shadowColor")) p.shadowColor = ReadVec3(v["shadowColor"], p.shadowColor);
+				p.shadowColorStrength = GetFloat(v, "shadowColorStrength", p.shadowColorStrength);
+				p.shadowMapStrength = GetFloat(v, "shadowMapStrength", p.shadowMapStrength);
+				p.raymarchShadowStrength = GetFloat(v, "raymarchShadowStrength", p.raymarchShadowStrength);
 				p.bloomEnabled = GetBool(v, "bloomEnabled", p.bloomEnabled);
 				p.bloomThreshold = GetFloat(v, "bloomThreshold", p.bloomThreshold);
 				p.bloomIntensity = GetFloat(v, "bloomIntensity", p.bloomIntensity);
@@ -1339,6 +1346,9 @@ namespace CrashoutsEngine {
 				l.shadowTechnique = GetInt(v, "shadowTechnique", l.shadowTechnique);
 				l.raymarchSteps = GetInt(v, "raymarchSteps", l.raymarchSteps);
 				l.raymarchThreshold = GetFloat(v, "raymarchThreshold", l.raymarchThreshold);
+				l.flickerEnabled = GetBool(v, "flickerEnabled", l.flickerEnabled);
+				l.flickerStrength = GetFloat(v, "flickerStrength", l.flickerStrength);
+				l.flickerSpeed = GetFloat(v, "flickerSpeed", l.flickerSpeed);
 				if (v.HasMember("color")) l.color = ReadVec3(v["color"], l.color);
 				if (v.HasMember("position")) l.position = ReadVec3(v["position"], l.position);
 			}
@@ -1530,17 +1540,11 @@ namespace CrashoutsEngine {
 				if (v.HasMember("textureUV")) pc.textureUV = ReadVec2(v["textureUV"], { 1.f, 1.f });
 
 				pc.gpuSimulation = GetBool(v, "gpuSimulation", true);
+				pc.additiveBlend = GetBool(v, "additiveBlend", false);
+				pc.emberRandomDirections = GetBool(v, "emberRandomDirections", false);
 				pc.flowStrength = GetFloat(v, "flowStrength", 0.f);
 				pc.flowSpeed = GetFloat(v, "flowSpeed", 0.f);
 				pc.flowFrequency = GetFloat(v, "flowFrequency", 0.f);
-
-				pc.emberLightsEnabled = GetBool(v, "emberLightsEnabled", false);
-				pc.emberLightCount = GetInt(v, "emberLightCount", 0);
-				pc.emberLightIntensity = GetFloat(v, "emberLightIntensity", 1.f);
-				pc.emberLightRadius = GetFloat(v, "emberLightRadius", 20.f);
-				if (v.HasMember("emberLightColor")) pc.emberLightColor = ReadColor(v["emberLightColor"], { 1, 0.5f, 0.1f, 1 });
-				pc.emberLightAffectBloom = GetBool(v, "emberLightAffectBloom", true);
-				pc.emberLightRenderBehind = GetBool(v, "emberLightRenderBehind", true);
 
 				ParticleSystem::ParticleInit(pc);
 			}
