@@ -71,7 +71,14 @@ int WINAPI WinMain(
 
     InstallCrashLogger("CrashoutsEngine");
 
+    // --- DYNAMIC ROOT DETECTION ---
+    // If we are running the Editor, we need to point back to the source files.
+    // If we are running the Standalone Game, we look at our own current directory!
+#if USE_IMGUI_EDITOR
     SetGameRoot("../../projects/GameProjects/Descent");
+#else
+    SetGameRoot(".");
+#endif
 
     Init();
     double fixedDT = FRC.FixedDT();
