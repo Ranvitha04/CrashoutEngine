@@ -155,10 +155,6 @@
     ],
     "shaders": [
         {
-            "name": "ParticleShader",
-            "path": "ParticleShader"
-        },
-        {
             "name": "BloomCompositeShader",
             "path": "BloomCompositeShader"
         },
@@ -185,6 +181,14 @@
         {
             "name": "CrashoutShader",
             "path": "CrashoutShader"
+        },
+        {
+            "name": "HeatDistortion",
+            "path": "HeatDistortion"
+        },
+        {
+            "name": "ParticleShader",
+            "path": "ParticleShader"
         },
         {
             "name": "PPShader",

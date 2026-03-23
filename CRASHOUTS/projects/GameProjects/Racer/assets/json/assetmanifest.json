@@ -29,6 +29,14 @@
             "path": "CombineShader"
         },
         {
+            "name": "HeatDistortion",
+            "path": "HeatDistortion"
+        },
+        {
+            "name": "DistortionShader",
+            "path": "DistortionShader"
+        },
+        {
             "name": "CrashoutShader",
             "path": "CrashoutShader"
         },

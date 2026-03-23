@@ -604,21 +604,44 @@ namespace CrashoutsEngine {
 
 						// 2. Reconstruct actual file paths
 						fs::path dir(fullDirPath);
-						std::string vertPath = (dir / (relativeDir + ".vert")).generic_string();
-						std::string fragPath = (dir / (relativeDir + ".frag")).generic_string();
+						std::string dirName = fs::path(relativeDir).filename().string();
+						std::string vertPath = (dir / (dirName + ".vert")).generic_string();
+						std::string fragPath = (dir / (dirName + ".frag")).generic_string();
 
 						// 3. LOG HERE to see if we reached this point
 						std::cout << "[DEBUG] Found shader files:\nV: " << vertPath << "\nF: " << fragPath << std::endl;
 
-						if (fs::exists(vertPath) && fs::exists(fragPath)) {
-							std::unique_ptr<ShaderAsset> newShader = ShaderAsset::Create(vertPath, fragPath);
+						auto tryLoad = [&](const std::string& vPath, const std::string& fPath) {
+							std::unique_ptr<ShaderAsset> newShader = ShaderAsset::Create(vPath, fPath);
 							if (newShader) {
-								// Pass vertPath to mark it as CORE if it's in core-assets
-								Load(name, std::move(newShader), vertPath);
+								Load(name, std::move(newShader), vPath);
+								return true;
 							}
+							return false;
+							};
+
+						if (fs::exists(vertPath) && fs::exists(fragPath)) {
+							tryLoad(vertPath, fragPath);
 						}
 						else {
-							std::cerr << "[AssetManager] Missing shader files in " << fullDirPath << std::endl;
+							std::vector<std::pair<std::string, std::string>> candidates;
+							for (const auto& entry : fs::directory_iterator(dir)) {
+								if (!entry.is_regular_file()) continue;
+								if (entry.path().extension() != ".vert") continue;
+								fs::path frag = entry.path();
+								frag.replace_extension(".frag");
+								if (fs::exists(frag)) {
+									candidates.emplace_back(entry.path().generic_string(), frag.generic_string());
+								}
+							}
+
+							if (candidates.size() == 1) {
+								std::cout << "[AssetManager] Using shader pair fallback:\nV: " << candidates[0].first << "\nF: " << candidates[0].second << std::endl;
+								tryLoad(candidates[0].first, candidates[0].second);
+							}
+							else {
+								std::cerr << "[AssetManager] Missing shader files in " << fullDirPath << std::endl;
+							}
 						}
 					}
 				}

@@ -30,6 +30,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "scriptcomponent.h"
 #include "collisionmanager.h"
 #include "hierarchycomponent.h"
+#include "namecomponent.h"
 #include "jobsystem.h"
 #include "performanceSystem.h" // <--- ADDED PROFiler HEADER
 #include <iostream>
@@ -62,6 +63,33 @@ namespace CrashoutsEngine {
         float g_shadowMapStrength = 1.0f;
         float g_raymarchShadowStrength = 1.0f;
         float g_timeSeconds = 0.0f;
+        Entity g_ppSourceEntity = 0;
+        Entity g_ppOverrideEntity = 0;
+        bool g_heatEnabled = false;
+        bool g_heatDebugMarker = false;
+        float g_heatStrength = 0.003f;
+        float g_heatSpeed = 2.0f;
+        float g_heatScale = 20.0f;
+        CEVec3 g_heatTintColor{ 1.0f, 0.5f, 0.1f };
+        float g_heatTintStrength = 0.0f;
+        bool g_distortionEnabled = false;
+        bool g_distortionDebugMarker = false;
+        float g_distortionStrength = 0.003f;
+        float g_distortionSpeed = 2.0f;
+        float g_distortionWaveScale1 = 20.0f;
+        float g_distortionWaveScale2 = 10.0f;
+        float g_distortionNoiseStrength = 0.8f;
+        float g_distortionLavaHeight = 0.3f;
+        float g_distortionLavaBoost = 2.5f;
+        CEVec2 g_distortionPlayerPos{ 0.5f, 0.5f };
+        float g_distortionPlayerRadius = 0.1f;
+        float g_distortionPlayerStrength = 0.01f;
+        CEVec3 g_distortionGlowColor{ 1.0f, 0.4f, 0.1f };
+        float g_distortionGlowStrength = 1.0f;
+        bool g_distortionShockEnabled = false;
+        CEVec2 g_distortionShockPos{ 0.5f, 0.0f };
+        float g_distortionShockTime = 999.0f;
+        float g_distortionShockStrength = 0.02f;
         bool active = false;
 
         GLuint quadvao = 0;
@@ -333,29 +361,108 @@ namespace CrashoutsEngine {
             ECS::ComponentArray<PPComponent>& ppArray = gECS.GetComponentArray<PPComponent>();
 
             if (ppArray.indexToEntity.size() > 0) {
-                PPComponent& p = *ppArray.dense.back();
-                if (!p.active) {
-                    if (active != p.active) active = p.active;
-                    return;
+                PPComponent* chosen = nullptr;
+                Entity chosenEnt = 0;
+                Entity fallbackEnt = ppArray.indexToEntity.back();
+                PPComponent* fallback = ppArray.dense.back();
+
+                if (g_ppOverrideEntity != 0 && gECS.HasComponent<PPComponent>(g_ppOverrideEntity)) {
+                    chosen = gECS.GetComponent<PPComponent>(g_ppOverrideEntity);
+                    chosenEnt = g_ppOverrideEntity;
                 }
 
+                for (size_t i = 0; !chosen && i < ppArray.indexToEntity.size(); ++i) {
+                    Entity e = ppArray.indexToEntity[i];
+                    PPComponent* c = ppArray.dense[i];
+                    if (!c) continue;
+                    if (gECS.HasComponent<NameComponent>(e)) {
+                        const std::string& n = gECS.GetComponent<NameComponent>(e)->name;
+                        if (n == "Post-Processing") {
+                            chosen = c;
+                            chosenEnt = e;
+                            break;
+                        }
+                    }
+                }
+
+                if (!chosen) {
+                    for (size_t i = 0; i < ppArray.indexToEntity.size(); ++i) {
+                        Entity e = ppArray.indexToEntity[i];
+                        PPComponent* c = ppArray.dense[i];
+                        if (!c) continue;
+                        if (gECS.HasComponent<NameComponent>(e)) {
+                            const std::string& n = gECS.GetComponent<NameComponent>(e)->name;
+                            if (n == "Post-Process Volume") {
+                                chosen = c;
+                                chosenEnt = e;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!chosen) {
+                    for (size_t i = 0; i < ppArray.indexToEntity.size(); ++i) {
+                        Entity e = ppArray.indexToEntity[i];
+                        PPComponent* c = ppArray.dense[i];
+                        if (!c) continue;
+                        if (c->active) {
+                            chosen = c;
+                            chosenEnt = e;
+                            break;
+                        }
+                    }
+                }
+
+                if (!chosen) {
+                    chosen = fallback;
+                    chosenEnt = fallbackEnt;
+                }
+
+                PPComponent& p = *chosen;
+                g_ppSourceEntity = chosenEnt;
                 g_timeSeconds += static_cast<float>(GLApp::delta_time);
-                if (g_brightness != p.brightness) g_brightness = p.brightness;
-                if (g_contrast != p.contrast) g_contrast = p.contrast;
-                if (g_saturation != p.saturation) g_saturation = p.saturation;
-                if (g_ambient != p.ambient) g_ambient = p.ambient;
-                if (g_bloomEnabled != p.bloomEnabled) g_bloomEnabled = p.bloomEnabled;
-                if (g_bloomThreshold != p.bloomThreshold) g_bloomThreshold = p.bloomThreshold;
-                if (g_bloomIntensity != p.bloomIntensity) g_bloomIntensity = p.bloomIntensity;
-                if (g_bloomIterations != p.bloomIterations) g_bloomIterations = p.bloomIterations;
-                if (g_shadowsEnabled != p.shadowsEnabled) g_shadowsEnabled = p.shadowsEnabled;
-                if (g_shadowRays != p.shadowRays) g_shadowRays = p.shadowRays;
-                if (g_shadowDarkness != p.shadowDarkness) g_shadowDarkness = p.shadowDarkness;
-                if (g_shadowColor != p.shadowColor) g_shadowColor = p.shadowColor;
-                if (g_shadowColorStrength != p.shadowColorStrength) g_shadowColorStrength = p.shadowColorStrength;
-                if (g_shadowMapStrength != p.shadowMapStrength) g_shadowMapStrength = p.shadowMapStrength;
-                if (g_raymarchShadowStrength != p.raymarchShadowStrength) g_raymarchShadowStrength = p.raymarchShadowStrength;
-                if (active != p.active) active = p.active;
+                g_brightness = p.brightness;
+                g_contrast = p.contrast;
+                g_saturation = p.saturation;
+                g_ambient = p.ambient;
+                g_bloomEnabled = p.bloomEnabled;
+                g_bloomThreshold = p.bloomThreshold;
+                g_bloomIntensity = p.bloomIntensity;
+                g_bloomIterations = p.bloomIterations;
+                g_shadowsEnabled = p.shadowsEnabled;
+                g_shadowRays = p.shadowRays;
+                g_shadowDarkness = p.shadowDarkness;
+                g_shadowColor = p.shadowColor;
+                g_shadowColorStrength = p.shadowColorStrength;
+                g_shadowMapStrength = p.shadowMapStrength;
+                g_raymarchShadowStrength = p.raymarchShadowStrength;
+                g_heatEnabled = p.heatDistortionEnabled;
+                g_heatDebugMarker = p.heatDebugMarker;
+                g_heatStrength = p.heatStrength;
+                g_heatSpeed = p.heatSpeed;
+                g_heatScale = p.heatScale;
+                g_heatTintColor = p.heatTintColor;
+                g_heatTintStrength = p.heatTintStrength;
+                g_distortionEnabled = p.distortionEnabled;
+                g_distortionDebugMarker = p.distortionDebugMarker;
+                g_distortionStrength = p.distortionStrength;
+                g_distortionSpeed = p.distortionSpeed;
+                g_distortionWaveScale1 = p.distortionWaveScale1;
+                g_distortionWaveScale2 = p.distortionWaveScale2;
+                g_distortionNoiseStrength = p.distortionNoiseStrength;
+                g_distortionLavaHeight = p.distortionLavaHeight;
+                g_distortionLavaBoost = p.distortionLavaBoost;
+                g_distortionPlayerPos = p.distortionPlayerPos;
+                g_distortionPlayerRadius = p.distortionPlayerRadius;
+                g_distortionPlayerStrength = p.distortionPlayerStrength;
+                g_distortionGlowColor = p.distortionGlowColor;
+                g_distortionGlowStrength = p.distortionGlowStrength;
+                g_distortionShockEnabled = p.distortionShockEnabled;
+                g_distortionShockPos = p.distortionShockPos;
+                g_distortionShockTime = p.distortionShockTime;
+                g_distortionShockStrength = p.distortionShockStrength;
+                active = p.active;
             }
         }
 
@@ -1211,6 +1318,181 @@ namespace CrashoutsEngine {
 
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
             } // END GPU COMPOSITE
+
+            if (g_heatDebugMarker || g_distortionDebugMarker) {
+                glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
+                glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                glEnable(GL_SCISSOR_TEST);
+
+                const int size = 48;
+                const int xPad = 8;
+                const int yPad = 8;
+
+                if (g_heatDebugMarker) {
+                    glScissor(xPad, gameTextureHeight - size - yPad, size, size);
+                    glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+                    glClear(GL_COLOR_BUFFER_BIT);
+                }
+
+                if (g_distortionDebugMarker) {
+                    glScissor(gameTextureWidth - size - xPad, gameTextureHeight - size - yPad, size, size);
+                    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+                    glClear(GL_COLOR_BUFFER_BIT);
+                }
+
+                glDisable(GL_SCISSOR_TEST);
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            }
+
+            if (g_heatEnabled || g_distortionEnabled) {
+                auto* copyAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("PPShader");
+
+                if (g_heatEnabled) {
+                    glBindFramebuffer(GL_FRAMEBUFFER, combineFbo);
+                    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                    glClear(GL_COLOR_BUFFER_BIT);
+
+                    auto* heatAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("HeatDistortion");
+                    if (heatAsset) {
+                        GLSLShader& heatShader = heatAsset->shaderObject;
+                        heatShader.Use();
+
+                        static GLint loc_hScene = -1, loc_hTime = -1, loc_hStrength = -1, loc_hSpeed = -1, loc_hScale = -1, loc_hTintColor = -1, loc_hTintStrength = -1, loc_hDebug = -1;
+                        if (loc_hScene == -1) {
+                            loc_hScene = glGetUniformLocation(heatShader.GetHandle(), "uScene");
+                            loc_hTime = glGetUniformLocation(heatShader.GetHandle(), "uTime");
+                            loc_hStrength = glGetUniformLocation(heatShader.GetHandle(), "uStrength");
+                            loc_hSpeed = glGetUniformLocation(heatShader.GetHandle(), "uSpeed");
+                            loc_hScale = glGetUniformLocation(heatShader.GetHandle(), "uScale");
+                            loc_hTintColor = glGetUniformLocation(heatShader.GetHandle(), "uTintColor");
+                            loc_hTintStrength = glGetUniformLocation(heatShader.GetHandle(), "uTintStrength");
+                            loc_hDebug = glGetUniformLocation(heatShader.GetHandle(), "uDebug");
+                        }
+
+                        if (loc_hTime != -1) glUniform1f(loc_hTime, g_timeSeconds);
+                        if (loc_hStrength != -1) glUniform1f(loc_hStrength, g_heatStrength);
+                        if (loc_hSpeed != -1) glUniform1f(loc_hSpeed, g_heatSpeed);
+                        if (loc_hScale != -1) glUniform1f(loc_hScale, g_heatScale);
+                        if (loc_hTintColor != -1) glUniform3f(loc_hTintColor, g_heatTintColor.x, g_heatTintColor.y, g_heatTintColor.z);
+                        if (loc_hTintStrength != -1) glUniform1f(loc_hTintStrength, g_heatTintStrength);
+                        if (loc_hDebug != -1) glUniform1i(loc_hDebug, g_heatDebugMarker ? 1 : 0);
+
+                        RenderFullscreenCached(heatShader, ppTextureID, loc_hScene);
+                    }
+
+                    glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
+                    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                    glClear(GL_COLOR_BUFFER_BIT);
+
+                    if (copyAsset) {
+                        GLSLShader& copyShader = copyAsset->shaderObject;
+                        copyShader.Use();
+
+                        static GLint loc_cActive = -1, loc_cBright = -1, loc_cContrast = -1, loc_cSaturation = -1, loc_cScene = -1;
+                        if (loc_cScene == -1) {
+                            loc_cActive = glGetUniformLocation(copyShader.GetHandle(), "u_active");
+                            loc_cBright = glGetUniformLocation(copyShader.GetHandle(), "u_brightness");
+                            loc_cContrast = glGetUniformLocation(copyShader.GetHandle(), "u_contrast");
+                            loc_cSaturation = glGetUniformLocation(copyShader.GetHandle(), "u_saturation");
+                            loc_cScene = glGetUniformLocation(copyShader.GetHandle(), "u_sceneTexture");
+                        }
+
+                        if (loc_cActive != -1) glUniform1i(loc_cActive, 0);
+                        if (loc_cBright != -1) glUniform1f(loc_cBright, 0.0f);
+                        if (loc_cContrast != -1) glUniform1f(loc_cContrast, 0.0f);
+                        if (loc_cSaturation != -1) glUniform1f(loc_cSaturation, 0.0f);
+
+                        RenderFullscreenCached(copyShader, combineTexture, loc_cScene);
+                    }
+                }
+
+                if (g_distortionEnabled) {
+                    auto* distAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("DistortionShader");
+                    if (distAsset) {
+                        glBindFramebuffer(GL_FRAMEBUFFER, combineFbo);
+                        glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                        glClear(GL_COLOR_BUFFER_BIT);
+
+                        GLSLShader& distShader = distAsset->shaderObject;
+                        distShader.Use();
+
+                        static GLint loc_dScene = -1, loc_dTime = -1;
+                        static GLint loc_dStrength = -1, loc_dSpeed = -1, loc_dWave1 = -1, loc_dWave2 = -1, loc_dNoise = -1;
+                        static GLint loc_dPlayerPos = -1, loc_dPlayerRadius = -1, loc_dPlayerStrength = -1;
+                        static GLint loc_dLavaHeight = -1, loc_dLavaBoost = -1;
+                        static GLint loc_dShockPos = -1, loc_dShockTime = -1, loc_dShockStrength = -1;
+                        static GLint loc_dGlowColor = -1, loc_dGlowStrength = -1;
+                        static GLint loc_dDebug = -1;
+
+                        if (loc_dScene == -1) {
+                            loc_dScene = glGetUniformLocation(distShader.GetHandle(), "uScene");
+                            loc_dTime = glGetUniformLocation(distShader.GetHandle(), "uTime");
+                            loc_dStrength = glGetUniformLocation(distShader.GetHandle(), "uStrength");
+                            loc_dSpeed = glGetUniformLocation(distShader.GetHandle(), "uSpeed");
+                            loc_dWave1 = glGetUniformLocation(distShader.GetHandle(), "uWaveScale1");
+                            loc_dWave2 = glGetUniformLocation(distShader.GetHandle(), "uWaveScale2");
+                            loc_dNoise = glGetUniformLocation(distShader.GetHandle(), "uNoiseStrength");
+                            loc_dPlayerPos = glGetUniformLocation(distShader.GetHandle(), "uPlayerPos");
+                            loc_dPlayerRadius = glGetUniformLocation(distShader.GetHandle(), "uPlayerRadius");
+                            loc_dPlayerStrength = glGetUniformLocation(distShader.GetHandle(), "uPlayerStrength");
+                            loc_dLavaHeight = glGetUniformLocation(distShader.GetHandle(), "uLavaHeight");
+                            loc_dLavaBoost = glGetUniformLocation(distShader.GetHandle(), "uLavaBoost");
+                            loc_dShockPos = glGetUniformLocation(distShader.GetHandle(), "uShockPos");
+                            loc_dShockTime = glGetUniformLocation(distShader.GetHandle(), "uShockTime");
+                            loc_dShockStrength = glGetUniformLocation(distShader.GetHandle(), "uShockStrength");
+                            loc_dGlowColor = glGetUniformLocation(distShader.GetHandle(), "uGlowColor");
+                            loc_dGlowStrength = glGetUniformLocation(distShader.GetHandle(), "uGlowStrength");
+                            loc_dDebug = glGetUniformLocation(distShader.GetHandle(), "uDebug");
+                        }
+
+                        if (loc_dTime != -1) glUniform1f(loc_dTime, g_timeSeconds);
+                        if (loc_dStrength != -1) glUniform1f(loc_dStrength, g_distortionStrength);
+                        if (loc_dSpeed != -1) glUniform1f(loc_dSpeed, g_distortionSpeed);
+                        if (loc_dWave1 != -1) glUniform1f(loc_dWave1, g_distortionWaveScale1);
+                        if (loc_dWave2 != -1) glUniform1f(loc_dWave2, g_distortionWaveScale2);
+                        if (loc_dNoise != -1) glUniform1f(loc_dNoise, g_distortionNoiseStrength);
+                        if (loc_dPlayerPos != -1) glUniform2f(loc_dPlayerPos, g_distortionPlayerPos.x, g_distortionPlayerPos.y);
+                        if (loc_dPlayerRadius != -1) glUniform1f(loc_dPlayerRadius, g_distortionPlayerRadius);
+                        if (loc_dPlayerStrength != -1) glUniform1f(loc_dPlayerStrength, g_distortionPlayerStrength);
+                        if (loc_dLavaHeight != -1) glUniform1f(loc_dLavaHeight, g_distortionLavaHeight);
+                        if (loc_dLavaBoost != -1) glUniform1f(loc_dLavaBoost, g_distortionLavaBoost);
+                        if (loc_dShockPos != -1) glUniform2f(loc_dShockPos, g_distortionShockPos.x, g_distortionShockPos.y);
+                        if (loc_dShockTime != -1) glUniform1f(loc_dShockTime, g_distortionShockEnabled ? g_distortionShockTime : 999.0f);
+                        if (loc_dShockStrength != -1) glUniform1f(loc_dShockStrength, g_distortionShockStrength);
+                        if (loc_dGlowColor != -1) glUniform3f(loc_dGlowColor, g_distortionGlowColor.x, g_distortionGlowColor.y, g_distortionGlowColor.z);
+                        if (loc_dGlowStrength != -1) glUniform1f(loc_dGlowStrength, g_distortionGlowStrength);
+                        if (loc_dDebug != -1) glUniform1i(loc_dDebug, g_distortionDebugMarker ? 1 : 0);
+
+                        RenderFullscreenCached(distShader, ppTextureID, loc_dScene);
+                        glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
+                        glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                        glClear(GL_COLOR_BUFFER_BIT);
+
+                        if (copyAsset) {
+                            GLSLShader& copyShader = copyAsset->shaderObject;
+                            copyShader.Use();
+
+                            static GLint loc_cActive2 = -1, loc_cBright2 = -1, loc_cContrast2 = -1, loc_cSaturation2 = -1, loc_cScene2 = -1;
+                            if (loc_cScene2 == -1) {
+                                loc_cActive2 = glGetUniformLocation(copyShader.GetHandle(), "u_active");
+                                loc_cBright2 = glGetUniformLocation(copyShader.GetHandle(), "u_brightness");
+                                loc_cContrast2 = glGetUniformLocation(copyShader.GetHandle(), "u_contrast");
+                                loc_cSaturation2 = glGetUniformLocation(copyShader.GetHandle(), "u_saturation");
+                                loc_cScene2 = glGetUniformLocation(copyShader.GetHandle(), "u_sceneTexture");
+                            }
+
+                            if (loc_cActive2 != -1) glUniform1i(loc_cActive2, 0);
+                            if (loc_cBright2 != -1) glUniform1f(loc_cBright2, 0.0f);
+                            if (loc_cContrast2 != -1) glUniform1f(loc_cContrast2, 0.0f);
+                            if (loc_cSaturation2 != -1) glUniform1f(loc_cSaturation2, 0.0f);
+
+                            RenderFullscreenCached(copyShader, combineTexture, loc_cScene2);
+                        }
+                    }
+                }
+
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            }
         }
     }
 }

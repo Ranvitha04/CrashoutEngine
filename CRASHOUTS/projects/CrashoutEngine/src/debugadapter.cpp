@@ -2715,6 +2715,39 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableFloat("Shadow Color Strength", ppc->shadowColorStrength, 0.01f, 0.0f, 1.0f);
 			UIHelpers::DrawUndoableFloat("Shadow Map Occlusion", ppc->shadowMapStrength, 0.01f, 0.0f, 1.0f);
 			UIHelpers::DrawUndoableFloat("Raymarch Occlusion", ppc->raymarchShadowStrength, 0.01f, 0.0f, 1.0f);
+
+			UIHelpers::DrawUndoableBool("Heat Distortion Enabled", ppc->heatDistortionEnabled);
+			UIHelpers::DrawUndoableBool("Heat Debug Marker", ppc->heatDebugMarker);
+			UIHelpers::DrawUndoableFloat("Heat Strength", ppc->heatStrength, 0.0001f, 0.0f, 0.05f);
+			UIHelpers::DrawUndoableFloat("Heat Speed", ppc->heatSpeed, 0.01f, 0.0f, 20.0f);
+			UIHelpers::DrawUndoableFloat("Heat Scale", ppc->heatScale, 0.1f, 0.0f, 200.0f);
+			float heatCol[3] = { ppc->heatTintColor.x, ppc->heatTintColor.y, ppc->heatTintColor.z };
+			if (ImGui::ColorEdit3("Heat Tint", heatCol)) {
+				ppc->heatTintColor = { heatCol[0], heatCol[1], heatCol[2] };
+			}
+			UIHelpers::DrawUndoableFloat("Heat Tint Strength", ppc->heatTintStrength, 0.01f, 0.0f, 1.0f);
+
+			UIHelpers::DrawUndoableBool("Distortion Enabled", ppc->distortionEnabled);
+			UIHelpers::DrawUndoableBool("Distortion Debug Marker", ppc->distortionDebugMarker);
+			UIHelpers::DrawUndoableFloat("Distortion Strength", ppc->distortionStrength, 0.0001f, 0.0f, 0.05f);
+			UIHelpers::DrawUndoableFloat("Distortion Speed", ppc->distortionSpeed, 0.01f, 0.0f, 20.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Wave Scale 1", ppc->distortionWaveScale1, 0.1f, 0.0f, 200.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Wave Scale 2", ppc->distortionWaveScale2, 0.1f, 0.0f, 200.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Noise Strength", ppc->distortionNoiseStrength, 0.01f, 0.0f, 5.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Lava Height", ppc->distortionLavaHeight, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Lava Boost", ppc->distortionLavaBoost, 0.05f, 0.0f, 10.0f);
+			ImGui::DragFloat2("Distortion Player Pos", &ppc->distortionPlayerPos.x, 0.001f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Player Radius", ppc->distortionPlayerRadius, 0.001f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Player Strength", ppc->distortionPlayerStrength, 0.0001f, 0.0f, 0.1f);
+			float dGlow[3] = { ppc->distortionGlowColor.x, ppc->distortionGlowColor.y, ppc->distortionGlowColor.z };
+			if (ImGui::ColorEdit3("Distortion Glow Color", dGlow)) {
+				ppc->distortionGlowColor = { dGlow[0], dGlow[1], dGlow[2] };
+			}
+			UIHelpers::DrawUndoableFloat("Distortion Glow Strength", ppc->distortionGlowStrength, 0.01f, 0.0f, 5.0f);
+			UIHelpers::DrawUndoableBool("Distortion Shock Enabled", ppc->distortionShockEnabled);
+			ImGui::DragFloat2("Distortion Shock Pos", &ppc->distortionShockPos.x, 0.001f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Shock Time", ppc->distortionShockTime, 0.01f, 0.0f, 5.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Shock Strength", ppc->distortionShockStrength, 0.0001f, 0.0f, 0.1f);
 			UIHelpers::DrawUndoableBool("Bloom Enabled", ppc->bloomEnabled);
 			UIHelpers::DrawUndoableFloat("Bloom Threshold", ppc->bloomThreshold, 0.01f, 0.0f, 5.0f);
 			UIHelpers::DrawUndoableFloat("Bloom Intensity", ppc->bloomIntensity, 0.01f, 0.0f, 5.0f);
@@ -2730,6 +2763,31 @@ namespace CrashoutsEngine
 				ppc->shadowColorStrength = 1.0f;
 				ppc->shadowMapStrength = 1.0f;
 				ppc->raymarchShadowStrength = 1.0f;
+				ppc->heatDistortionEnabled = false;
+				ppc->heatDebugMarker = false;
+				ppc->heatStrength = 0.003f;
+				ppc->heatSpeed = 2.0f;
+				ppc->heatScale = 20.0f;
+				ppc->heatTintColor = { 1.0f, 0.5f, 0.1f };
+				ppc->heatTintStrength = 0.0f;
+				ppc->distortionEnabled = false;
+				ppc->distortionDebugMarker = false;
+				ppc->distortionStrength = 0.003f;
+				ppc->distortionSpeed = 2.0f;
+				ppc->distortionWaveScale1 = 20.0f;
+				ppc->distortionWaveScale2 = 10.0f;
+				ppc->distortionNoiseStrength = 0.8f;
+				ppc->distortionLavaHeight = 0.3f;
+				ppc->distortionLavaBoost = 2.5f;
+				ppc->distortionPlayerPos = { 0.5f, 0.5f };
+				ppc->distortionPlayerRadius = 0.1f;
+				ppc->distortionPlayerStrength = 0.01f;
+				ppc->distortionGlowColor = { 1.0f, 0.4f, 0.1f };
+				ppc->distortionGlowStrength = 1.0f;
+				ppc->distortionShockEnabled = false;
+				ppc->distortionShockPos = { 0.5f, 0.0f };
+				ppc->distortionShockTime = 999.0f;
+				ppc->distortionShockStrength = 0.02f;
 				ppc->bloomEnabled = true;
 				ppc->bloomThreshold = 1.0f;
 				ppc->bloomIntensity = 0.8f;
