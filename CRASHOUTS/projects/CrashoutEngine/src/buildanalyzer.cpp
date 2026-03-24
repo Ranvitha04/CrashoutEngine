@@ -365,6 +365,108 @@ namespace UI {
     static std::string g_EstimatedSize = "Calculating...";
 
     /*!
+ * @brief Saves the current build configuration into the shared settings.json file.
+ * @note We use a Read-Modify-Write pattern so we don't accidentally overwrite
+ * the UI toggles or audio volumes managed by settings.cpp!
+ */
+    static void SaveBuildSettings(const std::string& projectRoot, const std::string& exportDir, const std::vector<ExportAssetInfo>& assetList) {
+        std::string path = projectRoot + "/assets/settings.json";
+        rapidjson::Document doc;
+
+        // 1. Read existing settings file first to preserve standard editor states
+        std::ifstream ifs(path);
+        if (ifs.is_open()) {
+            rapidjson::IStreamWrapper isw(ifs);
+            doc.ParseStream(isw);
+            ifs.close();
+        }
+
+        // 2. Ensure it's a valid JSON object
+        if (!doc.IsObject()) {
+            doc.SetObject();
+        }
+
+        rapidjson::Document::AllocatorType& allocator = doc.GetAllocator();
+
+        // 3. Update or Add Export Path
+        if (doc.HasMember("ExportPath")) {
+            doc["ExportPath"].SetString(exportDir.c_str(), allocator);
+        }
+        else {
+            doc.AddMember("ExportPath", rapidjson::Value(exportDir.c_str(), allocator), allocator);
+        }
+
+        // 4. Update or Add Deselected Assets Array
+        rapidjson::Value deselectedArray(rapidjson::kArrayType);
+        for (const auto& asset : assetList) {
+            if (!asset.isSelected) {
+                deselectedArray.PushBack(rapidjson::Value(asset.relativePath.c_str(), allocator), allocator);
+            }
+        }
+
+        if (doc.HasMember("DeselectedAssets")) {
+            doc["DeselectedAssets"] = deselectedArray;
+        }
+        else {
+            doc.AddMember("DeselectedAssets", deselectedArray, allocator);
+        }
+
+        // 5. Write everything back to disk
+        std::ofstream ofs(path);
+        if (!ofs.is_open()) {
+            LOGE(Core, "Failed to save build configuration to settings.json");
+            return;
+        }
+
+        rapidjson::OStreamWrapper osw(ofs);
+        rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
+        doc.Accept(writer);
+    }
+
+    /*!
+     * @brief Loads the build configuration from the shared settings.json file.
+     */
+    static void LoadBuildSettings(const std::string& projectRoot, char* exportDirBuf, size_t exportDirBufSize, std::vector<ExportAssetInfo>& assetList) {
+        std::string path = projectRoot + "/assets/settings.json";
+        if (!std::filesystem::exists(path)) return;
+
+        std::ifstream ifs(path);
+        if (!ifs.is_open()) return;
+
+        rapidjson::IStreamWrapper isw(ifs);
+        rapidjson::Document doc;
+        doc.ParseStream(isw);
+        ifs.close();
+
+        if (doc.HasParseError() || !doc.IsObject()) return;
+
+        // Restore the target export folder
+        if (doc.HasMember("ExportPath") && doc["ExportPath"].IsString()) {
+            std::string savedPath = doc["ExportPath"].GetString();
+            if (!savedPath.empty()) {
+                strncpy(exportDirBuf, savedPath.c_str(), exportDirBufSize - 1);
+                exportDirBuf[exportDirBufSize - 1] = '\0';
+            }
+        }
+
+        // Restore the unchecked assets via instant unordered_set lookup
+        if (doc.HasMember("DeselectedAssets") && doc["DeselectedAssets"].IsArray()) {
+            std::unordered_set<std::string> deselectedSet;
+            for (const auto& item : doc["DeselectedAssets"].GetArray()) {
+                if (item.IsString()) {
+                    deselectedSet.insert(item.GetString());
+                }
+            }
+
+            for (auto& asset : assetList) {
+                if (deselectedSet.find(asset.relativePath) != deselectedSet.end()) {
+                    asset.isSelected = false;
+                }
+            }
+        }
+    }
+
+    /*!
      * @brief Formats byte counts into human-readable KB or MB strings.
      */
     static std::string FormatBytes(uintmax_t bytes) {
@@ -471,6 +573,9 @@ namespace UI {
                 }
             }
 
+            // Load Custom Settings from Disk to Override Defaults
+            LoadBuildSettings(currentRoot, exportPath, sizeof(exportPath), s_AssetList);
+
             // 2. Pre-calculate the engine's core dependencies to provide a baseline file size.
             s_EssentialsSizeBytes = 0;
             fs::path coreAssetsPath = fs::path(workspaceRoot) / "projects/CrashoutEngine/core-assets";
@@ -529,6 +634,9 @@ namespace UI {
                 if (chosenFolder.back() != '/') chosenFolder += '/';
                 strncpy(exportPath, chosenFolder.c_str(), sizeof(exportPath) - 1);
                 exportPath[sizeof(exportPath) - 1] = '\0';
+
+                // Save immediately if they change the folder manually
+                SaveBuildSettings(currentRoot, exportPath, s_AssetList);
             }
         }
         ImGui::SameLine();
@@ -592,12 +700,15 @@ namespace UI {
                     fs::path p(asset->relativePath);
                     std::string fileName = p.filename().generic_string();
 
-                    // --- NEW: Check if this specific asset is our Start Scene ---
+                    // Check if this specific asset is our Start Scene 
                     bool isStartScene = (fileName == startSceneFilename);
 
                     // Gray out the checkbox if it's the start scene so the user can't click it
                     if (isStartScene) ImGui::BeginDisabled();
-                    ImGui::Checkbox(("##" + asset->relativePath).c_str(), &asset->isSelected);
+                    if (ImGui::Checkbox(("##" + asset->relativePath).c_str(), &asset->isSelected)) {
+                        // Save immediately when a checkbox is toggled 
+                        SaveBuildSettings(currentRoot, exportPath, s_AssetList);
+                    }
                     if (isStartScene) ImGui::EndDisabled();
 
                     ImGui::SameLine();
@@ -642,6 +753,9 @@ namespace UI {
         else {
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.6f, 0.2f, 1.0f));
             if (ImGui::Button("Compile & Export Standalone", ImVec2(-1, 30))) {
+
+                // Auto-save settings the moment they hit build just to be 100% safe 
+                SaveBuildSettings(currentRoot, exportPath, s_AssetList);
 
                 g_IsBuilding = true;
                 g_BuildProgress = 0.1f;
