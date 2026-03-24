@@ -358,10 +358,9 @@ void Init() {
             }
         }
     );
-
-
+    
 #if USE_IMGUI_EDITOR == FALSE 
-    GLApp::ToggleFullscreen();
+    GLApp::ToggleFullscreen(); 
 #endif
 
     std::string manifestPath;
