@@ -659,15 +659,19 @@ namespace UI {
         }
 
         ImGui::SeparatorText("Game Assets to Package");
-        if (ImGui::Button("Select All")) { for (auto& a : s_AssetList) a.isSelected = true; }
+        if (ImGui::Button("Select All")) {
+            for (auto& a : s_AssetList) a.isSelected = true;
+            SaveBuildSettings(currentRoot, exportPath, s_AssetList);
+        }
         ImGui::SameLine();
         if (ImGui::Button("Deselect All")) {
             for (auto& a : s_AssetList) {
-                // I explicitly prevent "Deselect All" from unchecking the critical Start Scene
+                // Explicitly prevent "Deselect All" from unchecking the critical Start Scene
                 if (std::filesystem::path(a.relativePath).filename().generic_string() != startSceneFilename) {
                     a.isSelected = false;
                 }
             }
+            SaveBuildSettings(currentRoot, exportPath, s_AssetList);
         }
 
         // Group the assets by their parent folder into a map

@@ -490,8 +490,8 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int
 
     switch (key) {
     case GLFW_KEY_F11: ToggleFullscreen(); break;
-    case GLFW_KEY_F10: ToggleMaximize(); break;
-    case GLFW_KEY_F9:  Minimize(); break;
+    //case GLFW_KEY_F10: ToggleMaximize(); break;
+    //case GLFW_KEY_F9:  Minimize(); break;
         // case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(pwin, GLFW_TRUE); break;
     default: break; // ignore all other keys
     }
