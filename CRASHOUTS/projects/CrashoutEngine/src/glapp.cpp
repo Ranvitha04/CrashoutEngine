@@ -132,7 +132,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
     // default behavior: colorbuffer is 32-bit RGBA, depthbuffer is 24-bits
     // don't change size of window
-    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+    //glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
 #if !USE_IMGUI_EDITOR
