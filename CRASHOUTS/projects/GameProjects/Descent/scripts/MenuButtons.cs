@@ -18,6 +18,7 @@ namespace CrashoutsEngine
     public class MenuButtons : ScriptBase
     {
         private const string MenuControllerName = "MenuScript";
+        private const string SettingsControllerName = "SettingsScript";
 
         public Entity StartBtn;
         public Entity SettingsBtn;
@@ -228,9 +229,10 @@ namespace CrashoutsEngine
 
         private bool IsMenuController()
         {
+            string controllerName = InternalCalls.GetName(Entity.ID);
             return Entity != null &&
                    Entity.ID != 0 &&
-                   InternalCalls.GetName(Entity.ID) == MenuControllerName &&
+                   (controllerName == MenuControllerName || controllerName == SettingsControllerName) &&
                    HasConfiguredButtons();
         }
 
