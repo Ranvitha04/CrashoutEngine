@@ -818,6 +818,21 @@ namespace CrashoutsEngine
                 simVel.y += (-simVel.y * airDrag * 0.2f) * dt;
                 CEVec3 nextPos = currentPos + (simVel * dt);
 
+                uint hitID;
+                if (InternalCalls.Raycast(ref currentPos, ref nextPos, out hitID, Entity.ID))
+                {
+                    Entity hitEnt = new Entity(hitID);
+                    var hitTag = hitEnt.GetComponent<TagComponent>();
+
+                    // Ignore the player so the preview does not terminate immediately while the
+                    // slime is being held inside the player's merged carry collider.
+                    if (hitTag == null || !hitTag.HasTag("Player"))
+                    {
+                        activePath.Add(currentPos);
+                        break;
+                    }
+                }
+
                 if (playerScript != null && nextPos.y < playerScript.Entity.GetComponent<TransformComponent>().Position.y - 200.0f)
                     break;
 
