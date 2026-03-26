@@ -20,6 +20,8 @@ namespace CrashoutsEngine
     */
     public class PauseButtons : ScriptBase
     {
+        private const string PauseControllerName = "PauseScript";
+
         [SerializeField] private string currentScene;
 
         private Entity pauseScreen, restartCheckScreen, openedBookScreen, closedBookScreen;
@@ -30,6 +32,7 @@ namespace CrashoutsEngine
         private bool isRestartMenuOpen = false;
         private bool isSettingsMenuOpen = false;
         private float inputCooldown = 0.0f;
+        private float pauseToggleCooldown = 0.0f;
         private int selectedButtonIndex = 0;
         private float menuNavigationCooldown = 0.0f;
 
@@ -41,6 +44,8 @@ namespace CrashoutsEngine
         */
         public override void Start()
         {
+            if (!IsPauseController()) return;
+
             playerScript = PlayerMovement.Instance;
 
             pauseScreen = Entity.Find("Pause");
@@ -68,13 +73,17 @@ namespace CrashoutsEngine
         */
         public override void Update()
         {
+            if (!IsPauseController()) return;
+
             if (playerScript == null) playerScript = PlayerMovement.Instance;
+            if (pauseToggleCooldown > 0.0f) pauseToggleCooldown -= (float)Time.DT;
 
             // 1. Pause Input
-            if (Input.GetActionTriggered("Pause"))
+            if (pauseToggleCooldown <= 0.0f && Input.GetActionTriggered("Pause"))
             {
                 if (playerScript != null && playerScript.isDialogueActive) return;
                 TogglePause();
+                pauseToggleCooldown = 0.2f;
                 return;
             }
 
@@ -294,6 +303,13 @@ namespace CrashoutsEngine
             return buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit");
         }
 
+        private bool IsPauseController()
+        {
+            return Entity != null &&
+                   Entity.ID != 0 &&
+                   InternalCalls.GetName(Entity.ID) == PauseControllerName;
+        }
+
         /*!
         @brief Set an entity active/inactive via internal calls.
         @param e Entity reference.
@@ -306,7 +322,7 @@ namespace CrashoutsEngine
 
         public override void OnDestroy()
         {
-            InternalCalls.UI_ClearForcedHoveredButton();
+            if (IsPauseController()) InternalCalls.UI_ClearForcedHoveredButton();
         }
     }
 }

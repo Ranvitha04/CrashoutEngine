@@ -1,4 +1,3 @@
-
 /*!
 @file        glapp.cpp
 @author      Renfred Lee
@@ -13,7 +12,7 @@ window and start up an OpenGL context and to extract function pointers
 to OpenGL implementations. It also includes new functions for ImGui
 integration.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 *//*__________________________________________________________________________*/
 
@@ -45,6 +44,32 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "frameratecontroller.h"
 #include "key.h"
 
+#ifdef _WIN32
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+
+// --- Custom Window Procedure Hook to disable drag-resizing ---
+static WNDPROC originalWndProc = nullptr;
+
+static LRESULT CALLBACK EngineWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    if (uMsg == WM_NCHITTEST) {
+        LRESULT hit = CallWindowProc(originalWndProc, hwnd, uMsg, wParam, lParam);
+
+        // If the OS says the mouse is on a resizing edge or corner, lie to it!
+        if (hit == HTLEFT || hit == HTRIGHT || hit == HTTOP || hit == HTBOTTOM ||
+            hit == HTTOPLEFT || hit == HTTOPRIGHT || hit == HTBOTTOMLEFT || hit == HTBOTTOMRIGHT) {
+            return HTBORDER; // Tells Windows it's just a static border, not grabbable
+        }
+        return hit;
+    }
+    return CallWindowProc(originalWndProc, hwnd, uMsg, wParam, lParam);
+}
+// -------------------------------------------------------------
+#endif
+
 // Before asking GLFW to create an OpenGL context, we specify the minimum constraints
 // in that context:
 constexpr int GL_MINOR{ 5 };
@@ -63,7 +88,6 @@ GLFWwindow* GLApp::ptr_window{ nullptr };
 Component::Rendering model;
 Component::Shapes shapes;
 //Component::TextureAsset texture;
-
 
 std::array<CEVec3, 4> clr_vtx{
     CEVec3(1.f, 1.f, 1.f), // Center - white
@@ -100,14 +124,6 @@ String printed to window's title bar
 @return bool
 true if OpenGL context and GLEW were successfully initialized.
 false otherwise.
-
-Uses GLFW to create OpenGL context. GLFW's initialization follows from here:
-http://www.glfw.org/docs/latest/quick.html
-a window of size width x height pixels
-and its associated OpenGL context that matches a core profile that is
-compatible with OpenGL 4.5 and doesn't support "old" OpenGL, has 32-bit RGBA,
-double-buffered color buffer, 24-bit depth buffer and 8-bit stencil buffer
-with each buffer of size width x height pixels
 */
 bool GLApp::init(GLint w, GLint h, std::string t) {
     GLApp::width = w;
@@ -131,7 +147,8 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     // applications will be double-buffered ...
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
     // default behavior: colorbuffer is 32-bit RGBA, depthbuffer is 24-bits
-    // don't change size of window
+
+    // KEEP THIS TRUE so the maximize button works
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
@@ -169,6 +186,13 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
 
     // make the previously created OpenGL context current ...
     glfwMakeContextCurrent(GLApp::ptr_window);
+
+    // --- Inject our Windows hook here ---
+#ifdef _WIN32
+    HWND hwnd = glfwGetWin32Window(GLApp::ptr_window);
+    originalWndProc = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)EngineWindowProc);
+#endif
+    // ------------------------------------
 
     glfwSetDropCallback(ptr_window, [](GLFWwindow*, int count, const char** paths) {
         namespace fs = std::filesystem;
@@ -212,7 +236,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
         using namespace CrashoutsEngine::Assets;
         GenerateAssetManifest(assetManifestPath);
         AssetManager::GetInstance().LoadManifestAssets(assetManifestPath);
-    });
+        });
 
     // set callback for events associated with window size changes; keyboard;
     // mouse buttons, cursor position, and scroller
@@ -290,8 +314,7 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #endif
-    //model.Setup_VAO();
-    
+
     return true;
 }
 
@@ -343,15 +366,11 @@ void GLApp::Minimize() {
 @param none
 
 @return none
-
-For now, there is nothing to do except to write appropriate information
-to window title bar.
 */
-// method: void GLApp::Update()
 void GLApp::Update() {
     // write window title with current fps ...
     std::stringstream sstr;
-    sstr << std::fixed << std::setprecision(2) << GLApp::title;// << " | " << FrameRateController::GetInstance().FPS();
+    sstr << std::fixed << std::setprecision(2) << GLApp::title;
     glfwSetWindowTitle(GLApp::ptr_window, sstr.str().c_str());
 
     GLint w{ GLApp::width }, h{ GLApp::height };
@@ -365,11 +384,6 @@ void GLApp::Update() {
         old_w = w;
         old_h = h;
     }
-
-    // NEW: Update scene per-frame (handles duck movement)
-    //UpdateRan();
-
-    // Sprite animation Update logic is now handled in ran.cpp
 }
 
 /* _________________________________________________________________________ */
@@ -378,22 +392,9 @@ void GLApp::Update() {
 @param none
 
 @return none
-
-For now, there is nothing to do except set the back buffer fill color
-as black.
 */
 void GLApp::draw() {
-
-    //// Calculate offsets and sizes (can be done here or cached if static)
-    //GLsizei position_attribute_size = sizeof(glm::vec3);
-    //GLsizei position_data_size = position_attribute_size * 4;
-    //GLsizei color_data_offset = position_data_size;
-    //GLsizei color_attribute_size = sizeof(glm::vec3);
-    //GLsizei color_data_size = color_attribute_size * static_cast<GLsizei>(clr_vtx.size());
-    //
-    //// Update the color data in the VBO right before drawing
-    //glNamedBufferSubData(model.vbo_hdl, color_data_offset,
-    //    color_data_size, clr_vtx.data());
+    // Empty for now, logic handled in Scene::RenderScene
 }
 
 /* _________________________________________________________________________ */
@@ -402,21 +403,12 @@ void GLApp::draw() {
 @param none
 
 @return none
-
-For now, there are no resources allocated by the application program.
-The only task is to have GLFW return resources back to the system and
-gracefully terminate.
 */
 void GLApp::cleanup() {
-
-    //Component::TextureAsset::Cleanup();
-
     Component::Rendering::Cleanup();
-
     Component::TextureRenderer::Cleanup();
 
 #ifdef USE_IMGUI_EDITOR
-
     if (gameFboID != 0) {
         glDeleteFramebuffers(1, &gameFboID);
         gameFboID = 0;
@@ -429,13 +421,10 @@ void GLApp::cleanup() {
         glDeleteRenderbuffers(1, &gameRboDepthStencil);
         gameRboDepthStencil = 0;
     }
-
 #endif
 
     glfwTerminate();
-
 }
-
 
 /* _________________________________________________________________________*/
 /*! key_cb
@@ -445,22 +434,6 @@ Handle to window that is receiving event
 
 @param int
 the keyboard key that was pressed or released
-
-@parm int
-Platform-specific scancode of the key
-
-@parm int
-GLFW_PRESS, GLFW_REPEAT or GLFW_RELEASE
-action will be GLFW_KEY_UNKNOWN if GLFW lacks a key token for it,
-for example E-mail and Play keys.
-
-@parm int
-bit-field describing which modifier keys (shift, alt, control)
-were held down
-
-@return none
-
-This function is called when keyboard buttons are pressed.
 */
 void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mod) {
     (void)pwin;
@@ -469,7 +442,6 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int
     if (key < 0 || key > GLFW_KEY_LAST) return;
 
 #ifdef _DEBUG
-    // Only cast if within valid Key enum range
     Key k = static_cast<Key>(key);
 
     if (action == GLFW_PRESS) {
@@ -490,37 +462,16 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int
 
     switch (key) {
     case GLFW_KEY_F11: ToggleFullscreen(); break;
-    case GLFW_KEY_F10: ToggleMaximize(); break;
-    case GLFW_KEY_F9:  Minimize(); break;
-        // case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(pwin, GLFW_TRUE); break;
+        //case GLFW_KEY_F10: ToggleMaximize(); break;
+        //case GLFW_KEY_F9:  Minimize(); break;
     default: break; // ignore all other keys
     }
 }
 
 /* _________________________________________________________________________*/
 /*! mousebutton_cb
-
-@param GLFWwindow*
-Handle to window that is receiving event
-
-@param int
-the mouse button that was pressed or released
-GLFW_MOUSE_BUTTON_LEFT and GLFW_MOUSE_BUTTON_RIGHT specifying left and right
-mouse buttons are most useful
-
-@parm int
-action is either GLFW_PRESS or GLFW_RELEASE
-
-@parm int
-bit-field describing which modifier keys (shift, alt, control)
-were held down
-
-@return none
-
-This function is called when mouse buttons are pressed.
 */
 void GLApp::mousebutton_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] int button, [[maybe_unused]] int action, [[maybe_unused]] int mod) {
-    //ImGui_ImplGlfw_MouseButtonCallback(pwin, button, action, mod);
 #ifdef DEBUG
     Key k = static_cast<Key>(button);
 
@@ -532,53 +483,11 @@ void GLApp::mousebutton_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] i
     }
 #endif
 }
-	/*
-    switch (button) {
-    case GLFW_MOUSE_BUTTON_LEFT:
-#ifdef _DEBUG
-        //LOGI(Input, "Left Mouse button ");
-#endif
-        break;
-    case GLFW_MOUSE_BUTTON_RIGHT:
-#ifdef _DEBUG
-        //LOGI(Input, "Right Mouse button ");
-#endif
-        break;
-    }
-    switch (action) {
-    case GLFW_PRESS:
-#ifdef _DEBUG
-        //LOGI(Input, "is pressed!");
-#endif
-        break;
-    case GLFW_RELEASE:
-#ifdef _DEBUG
-        //LOGI(Input, "is released!");
-#endif
-        break;
-    }
-}
-*/
 
 /* _________________________________________________________________________*/
 /*! mousepos_cb
-
-@param GLFWwindow*
-Handle to window that is receiving event
-
-@param double
-new cursor x-coordinate, relative to the left edge of the client area
-
-@param double
-new cursor y-coordinate, relative to the top edge of the client area
-
-@return none
-
-This functions receives the cursor position, measured in screen coordinates but
-relative to the top-left corner of the window client area.
 */
 void GLApp::mousepos_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] double xpos, [[maybe_unused]] double ypos) {
-    //ImGui_ImplGlfw_CursorPosCallback(pwin, xpos, ypos);
 #ifdef _DEBUG
     //std::cout << "Mouse cursor position: (" << xpos << ", " << ypos << ")" << std::endl;
 #endif
@@ -586,24 +495,8 @@ void GLApp::mousepos_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] doub
 
 /* _________________________________________________________________________*/
 /*! mousescroll_cb
-
-@param GLFWwindow*
-Handle to window that is receiving event
-
-@param double
-Scroll offset along X-axis
-
-@param double
-Scroll offset along Y-axis
-
-@return none
-
-This function is called when the user scrolls, whether with a mouse wheel or
-touchpad gesture. Although the function receives 2D scroll offsets, a simple
-mouse scroll wheel, being vertical, provides offsets only along the Y-axis.
 */
 void GLApp::mousescroll_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] double xoffset, [[maybe_unused]] double yoffset) {
-    //ImGui_ImplGlfw_ScrollCallback(pwin, xoffset, yoffset);
 #ifdef _DEBUG
     //std::cout << "Mouse scroll wheel offset: ("
     //    << xoffset << ", " << yoffset << ")" << std::endl;
@@ -612,17 +505,6 @@ void GLApp::mousescroll_cb([[maybe_unused]] GLFWwindow* pwin, [[maybe_unused]] d
 
 /* _________________________________________________________________________ */
 /*! error_cb
-
-@param int
-GLFW error code
-
-@parm char const*
-Human-readable description of the code
-
-@return none
-
-The error callback receives a human-readable description of the error and
-(when possible) its cause.
 */
 void GLApp::error_cb([[maybe_unused]] int error, char const* description) {
     LOGE(Core, description);
@@ -630,20 +512,6 @@ void GLApp::error_cb([[maybe_unused]] int error, char const* description) {
 
 /* _________________________________________________________________________ */
 /*! fbsize_cb
-
-@param GLFWwindow*
-Handle to window that is being resized
-
-@parm int
-Width in pixels of new window size
-
-@parm int
-Height in pixels of new window size
-
-@return none
-
-This function is called when the window is resized - it receives the new size
-of the window in pixels.
 */
 void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbHeight) {
     // 1. Update Global State
@@ -652,7 +520,6 @@ void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbH
 
 #if !USE_IMGUI_EDITOR
     // GAME MODE: Handle Aspect Ratio Resize immediately to prevent visual glitches
-    // This ensures that if a render happens mid-resize, the camera matrix is correct.
 
     const float targetAspectRatio = 16.0f / 9.0f;
     float currentAspectRatio = (float)fbWidth / (float)fbHeight;
@@ -675,10 +542,6 @@ void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbH
     engineCamera.UpdateMatrices(vpW, vpH);
     gameCamera.UpdateMatrices(vpW, vpH);
 
-    // Force viewport Update immediately so the very next draw call is correct
-    // (Optional, but helps with flicker on some drivers)
-    // glViewport(0, 0, fbWidth, fbHeight); 
-
 #else
     // EDITOR MODE: Just use full size
     using namespace CrashoutsEngine::RenderCamera;
@@ -686,23 +549,8 @@ void GLApp::fbsize_cb([[maybe_unused]] GLFWwindow* ptr_win, int fbWidth, int fbH
 #endif
 }
 
-
 /* _________________________________________________________________________*/
 /*! update_time
-
-@param double
-fps: computed frames per second
-
-@param double
-fps_calc_interval: the interval (in seconds) at which fps is to be
-calculated
-
-@return none
-
-This function must be first called once during initialization and once
-per game loop. It uses GLFW's time functions to compute:
-1. interval in seconds between each frame
-2. frames per second every "fps_calc_interval" seconds
 */
 void GLApp::update_time(double fps_calc_interval) {
     // get elapsed time (in seconds) between previous and current frames
@@ -728,4 +576,3 @@ void GLApp::update_time(double fps_calc_interval) {
         count = 0.0;
     }
 }
-

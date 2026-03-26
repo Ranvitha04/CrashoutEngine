@@ -291,6 +291,7 @@ void SetupConsole() {
 
 */
 void Init() {
+
     glfwSwapInterval(0); // disable vsync
 
     using namespace Messaging;
@@ -357,6 +358,10 @@ void Init() {
             }
         }
     );
+    
+#if USE_IMGUI_EDITOR == FALSE 
+    GLApp::ToggleFullscreen(); 
+#endif
 
     std::string manifestPath;
 

@@ -331,7 +331,7 @@
         },
         {
             "active": true,
-            "name": "Entity 93",
+            "name": "Sound Test for Effects",
             "uuid": 3253177804276888684,
             "tag": {
                 "tagMask": 0
@@ -351,13 +351,23 @@
             "audio": {
                 "clips": [
                     {
-                        "name": "Sound 1",
-                        "path": "",
+                        "name": "Tester",
+                        "path": "book interaction.wav",
                         "volume": 1.0,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "SoundEffectTest",
+                        "fields": {
+                            "selectedTest": 9
+                        }
                     }
                 ]
             },
@@ -728,8 +738,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 22.24860382080078,
+                    "x": -98.9565658569336,
+                    "y": 3.4761910438537599,
                     "z": 50.0
                 },
                 "size": {
@@ -756,8 +766,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 17.24860382080078,
+                    "x": -98.9565658569336,
+                    "y": -1.57936429977417,
                     "z": 50.0
                 },
                 "offset": {
@@ -766,13 +776,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -235.2585906982422,
-                    "y": -13.251396179199219,
+                    "x": -117.7566146850586,
+                    "y": -32.07936477661133,
                     "z": 50.0
                 },
                 "max": {
-                    "x": -197.6584930419922,
-                    "y": 47.74860382080078,
+                    "x": -80.1565170288086,
+                    "y": 28.920635223388673,
                     "z": 50.0
                 }
             },
@@ -817,7 +827,7 @@
                         "path": "footsteps 1.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -826,7 +836,7 @@
                         "path": "footsteps 2.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -835,7 +845,7 @@
                         "path": "footsteps 3.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -844,7 +854,7 @@
                         "path": "footsteps 4.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -853,7 +863,7 @@
                         "path": "footsteps 5.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -862,7 +872,7 @@
                         "path": "footsteps 6.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -871,7 +881,7 @@
                         "path": "footsteps 7.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -880,7 +890,7 @@
                         "path": "footsteps 8.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -889,7 +899,7 @@
                         "path": "jump landing.wav",
                         "volume": 0.4000000059604645,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -907,7 +917,7 @@
                         "path": "switch state.wav",
                         "volume": 1.0,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     }
@@ -941,11 +951,16 @@
                             "groundCheckWidth": 10.0,
                             "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
-                            "isDialogueActive": true,
+                            "isDialogueActive": false,
                             "facingRight": true,
+                            "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 100.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
+                            "normalDeathAnimName": "playerDeathNoBook",
+                            "changedMassDeathAnimName": "playerDeath",
+                            "normalDeathDelay": 2.0,
+                            "changedMassDeathDelay": 2.0,
                             "isPaused": false,
                             "reloadOnDeath": false,
                             "reloadSceneName": "",
@@ -1015,9 +1030,40 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 0.699999988079071,
+                "t": 12.866641998291016,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -1071,7 +1117,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -1085,14 +1131,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -1145,37 +1191,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -1458,7 +1473,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "PlayerDialogue_1",
             "uuid": 225047415224189460,
             "tag": {
@@ -1467,8 +1482,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 80.6185073852539,
+                    "x": -98.9565658569336,
+                    "y": 61.7905387878418,
                     "z": 50.0
                 },
                 "size": {
@@ -1585,8 +1600,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 80.6185073852539,
+                    "x": -98.9565658569336,
+                    "y": 61.7905387878418,
                     "z": 50.0
                 },
                 "size": {
@@ -1703,8 +1718,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 80.6185073852539,
+                    "x": -98.9565658569336,
+                    "y": 61.7905387878418,
                     "z": 50.0
                 },
                 "size": {
@@ -1821,8 +1836,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -216.4585418701172,
-                    "y": 80.6185073852539,
+                    "x": -98.9565658569336,
+                    "y": 61.7905387878418,
                     "z": 50.0
                 },
                 "size": {
@@ -1939,8 +1954,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -502.2528076171875,
-                    "y": -177.10894775390626,
+                    "x": -384.7508239746094,
+                    "y": -195.93690490722657,
                     "z": 50.0
                 },
                 "size": {
@@ -2057,8 +2072,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -214.19773864746095,
-                    "y": -25.87029266357422,
+                    "x": -96.69576263427735,
+                    "y": -44.69826126098633,
                     "z": 0.0
                 },
                 "size": {
@@ -2172,12 +2187,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 212.71139526367188,
-                    "y": -31.952878952026368,
+                    "x": 248.3810577392578,
+                    "y": -50.55736541748047,
                     "z": 50.0
                 },
                 "size": {
-                    "x": 53.0,
+                    "x": -53.0,
                     "y": 49.29999923706055
                 }
             },
@@ -2200,8 +2215,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 213.41139221191407,
-                    "y": -35.452880859375,
+                    "x": 249.0810546875,
+                    "y": -54.65792465209961,
                     "z": 50.0
                 },
                 "offset": {
@@ -2210,13 +2225,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 198.51136779785157,
-                    "y": -45.65289306640625,
+                    "x": 234.1810302734375,
+                    "y": -64.85794067382813,
                     "z": 50.0
                 },
                 "max": {
-                    "x": 228.31141662597657,
-                    "y": -25.25286865234375,
+                    "x": 263.9810791015625,
+                    "y": -44.45791244506836,
                     "z": 50.0
                 }
             },
@@ -2234,7 +2249,7 @@
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.5,
+                    "x": 0.25,
                     "y": 0.3333333432674408
                 },
                 "color": {
@@ -2261,7 +2276,7 @@
                         "path": "slime 1.wav",
                         "volume": 0.6000000238418579,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -2270,7 +2285,7 @@
                         "path": "slime 2.wav",
                         "volume": 0.6000000238418579,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -2279,7 +2294,7 @@
                         "path": "slime 3.wav",
                         "volume": 0.6000000238418579,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -2288,7 +2303,7 @@
                         "path": "slime 4.wav",
                         "volume": 0.6000000238418579,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -2297,7 +2312,7 @@
                         "path": "slime 5.wav",
                         "volume": 0.6000000238418579,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     },
@@ -2306,7 +2321,7 @@
                         "path": "slime impact.wav",
                         "volume": 0.800000011920929,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false
                     }
@@ -2329,6 +2344,7 @@
                             "minThrowSpeed": 300.0,
                             "maxThrowSpeed": 1000.0,
                             "maxMouseDragDist": 400.0,
+                            "controllerAimDeadzone": 0.20000000298023225,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
                             "pickAnimDuration": 60.0,
@@ -2394,40 +2410,9 @@
             },
             "keyframe_animator": {
                 "current": "slimeWalk",
-                "t": 5.866688251495361,
+                "t": 21.166515350341798,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "slimeHold",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "slimeStunned",
                         "wrap": 0,
@@ -2451,6 +2436,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeHold",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 3.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
