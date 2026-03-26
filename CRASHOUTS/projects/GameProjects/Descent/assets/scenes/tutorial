@@ -20110,7 +20110,7 @@
                 },
                 "max": {
                     "x": -170.00357055664063,
-                    "y": -6.632822036743164,
+                    "y": -6.632820129394531,
                     "z": 0.0
                 }
             },
@@ -20269,6 +20269,7 @@
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "coyoteTime": 0.15000000596046449,
+                            "tutorialDoorName": "tutorial1door",
                             "goalNoOfPlates": 2,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
@@ -20287,6 +20288,8 @@
                             "alive": true,
                             "normalDeathAnimName": "playerDeathNoBook",
                             "changedMassDeathAnimName": "playerDeath",
+                            "unlimitedEnergy": false,
+                            "godMode": false,
                             "normalDeathDelay": 2.0,
                             "changedMassDeathDelay": 2.0,
                             "isPaused": false,
@@ -28113,7 +28116,7 @@
         },
         {
             "active": true,
-            "name": "tutorial1door",
+            "name": "nextleveldoor",
             "uuid": 402810734385389546,
             "tag": {
                 "tagMask": 0
