@@ -663,7 +663,7 @@ namespace CrashoutsEngine
 
             tf.Position = new CEVec3(
                 doorTf.Position.x,
-                doorTf.Position.y + 120.0f,
+                doorTf.Position.y + 60.0f,
                 doorTf.Position.z
             );
 
