@@ -553,6 +553,10 @@
             "path": "Cutscenes/EndCutscene_3.png"
         },
         {
+            "name": "restart yellow",
+            "path": "UI/settings/restart yellow.png"
+        },
+        {
             "name": "spikes_23",
             "path": "spritesheet/spikes/spikes_23.png"
         },
@@ -1573,6 +1577,10 @@
             "path": "spritesheet/Rock/Rock_00.png"
         },
         {
+            "name": "resume yellow",
+            "path": "UI/settings/resume yellow.png"
+        },
+        {
             "name": "Rock_01",
             "path": "spritesheet/Rock/Rock_01.png"
         },
@@ -1663,6 +1671,10 @@
         {
             "name": "Slime spritesheet_01",
             "path": "spritesheet/Slime spritesheet/Slime spritesheet_01.png"
+        },
+        {
+            "name": "quit yellow",
+            "path": "UI/settings/quit yellow.png"
         },
         {
             "name": "spikes_29",
@@ -2029,6 +2041,10 @@
             "path": "UI/Handle.png"
         },
         {
+            "name": "settings yellow",
+            "path": "UI/settings/settings yellow.png"
+        },
+        {
             "name": "Icon",
             "path": "UI/Icon.png"
         },
@@ -2051,6 +2067,30 @@
         {
             "name": "Resume game hover",
             "path": "UI/Resume game hover.png"
+        },
+        {
+            "name": "back",
+            "path": "UI/settings/back.png"
+        },
+        {
+            "name": "mana drain 1-Sheet-sheet",
+            "path": "UI/settings/mana drain 1-Sheet-sheet.png"
+        },
+        {
+            "name": "tut_text_9",
+            "path": "UI/Tutorial/tut_text_9.png"
+        },
+        {
+            "name": "mouse click-Sheet-sheet",
+            "path": "UI/settings/mouse click-Sheet-sheet.png"
+        },
+        {
+            "name": "next",
+            "path": "UI/settings/next.png"
+        },
+        {
+            "name": "throw 1-Sheet-sheet",
+            "path": "UI/settings/throw 1-Sheet-sheet.png"
         },
         {
             "name": "tut_text_10",
@@ -2139,10 +2179,6 @@
         {
             "name": "tut_text_8",
             "path": "UI/Tutorial/tut_text_8.png"
-        },
-        {
-            "name": "tut_text_9",
-            "path": "UI/Tutorial/tut_text_9.png"
         }
     ],
     "prefabs": [
