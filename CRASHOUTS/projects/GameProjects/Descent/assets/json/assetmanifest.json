@@ -665,12 +665,24 @@
             "path": "Character/Run.gif"
         },
         {
+            "name": "spikes_17",
+            "path": "spritesheet/spikes/spikes_17.png"
+        },
+        {
+            "name": "Checkpoint Marker",
+            "path": "Checkpoint Marker.png"
+        },
+        {
             "name": "Cutscene_1",
             "path": "Cutscenes/Cutscene_1.png"
         },
         {
             "name": "Cutscene_3",
             "path": "Cutscenes/Cutscene_3.png"
+        },
+        {
+            "name": "throw 1 (1)",
+            "path": "UI/throw 1 (1).png"
         },
         {
             "name": "EndCutscene_1",
@@ -735,6 +747,10 @@
         {
             "name": "Monsters(6)",
             "path": "Monsters/Monsters(6).png"
+        },
+        {
+            "name": "throw 3",
+            "path": "UI/throw 3.png"
         },
         {
             "name": "Emp 1",
@@ -1261,6 +1277,10 @@
             "path": "spritesheet/lava platform/lava platform_12.png"
         },
         {
+            "name": "throw 2 (1)",
+            "path": "UI/throw 2 (1).png"
+        },
+        {
             "name": "Platform_22",
             "path": "spritesheet/Platform/Platform_22.png"
         },
@@ -1729,10 +1749,6 @@
             "path": "spritesheet/spikes/spikes_16.png"
         },
         {
-            "name": "spikes_17",
-            "path": "spritesheet/spikes/spikes_17.png"
-        },
-        {
             "name": "spikes_18",
             "path": "spritesheet/spikes/spikes_18.png"
         },
@@ -2021,6 +2037,14 @@
             "path": "UI/mana UI single.png"
         },
         {
+            "name": "mouse click 2 (1)",
+            "path": "UI/mouse click 2 (1).png"
+        },
+        {
+            "name": "mouse click",
+            "path": "UI/mouse click.png"
+        },
+        {
             "name": "pause settings text",
             "path": "UI/pause settings text.png"
         },
@@ -2047,6 +2071,10 @@
         {
             "name": "updated settings large",
             "path": "UI/settings/updated settings large.png"
+        },
+        {
+            "name": "throw 4 (1)",
+            "path": "UI/throw 4 (1).png"
         },
         {
             "name": "Title",
@@ -2165,6 +2193,10 @@
         {
             "name": "NextLevelDoor_Prefab",
             "path": "NextLevelDoor_Prefab.json"
+        },
+        {
+            "name": "OpenBookPause_Prefab",
+            "path": "OpenBookPause_Prefab.json"
         },
         {
             "name": "PlayerBarrier",

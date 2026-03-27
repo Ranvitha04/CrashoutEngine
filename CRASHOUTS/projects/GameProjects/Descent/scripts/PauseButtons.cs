@@ -25,12 +25,15 @@ namespace CrashoutsEngine
         [SerializeField] private string currentScene;
 
         private Entity pauseScreen, restartCheckScreen, openedBookScreen, closedBookScreen;
-        private Entity btnResume, btnRestart, btnSettings, btnQuit, btnYes, btnNo, btnCloseBook;
+        private Entity howTo1Screen, howTo2Screen;
+        private Entity btnResume, btnRestart, btnSettings, btnQuit, btnYes, btnNo, btnCloseBook, btnNext, btnBack;
 
         private PlayerMovement playerScript;
         private bool isPaused = false;
         private bool isRestartMenuOpen = false;
         private bool isSettingsMenuOpen = false;
+        private bool isHowTo1Open = false;
+        private bool isHowTo2Open = false;
         private float inputCooldown = 0.0f;
         private float pauseToggleCooldown = 0.0f;
         private int selectedButtonIndex = 0;
@@ -52,6 +55,8 @@ namespace CrashoutsEngine
             restartCheckScreen = Entity.Find("RestartCheck");
             openedBookScreen = Entity.Find("OpenedBook");
             closedBookScreen = Entity.Find("ClosedBook");
+            howTo1Screen = Entity.Find("HowTo1");
+            howTo2Screen = Entity.Find("HowTo2");
 
             btnResume = Entity.Find("ResumeButton");
             btnRestart = Entity.Find("RestartLevelButton");
@@ -60,11 +65,15 @@ namespace CrashoutsEngine
             btnYes = Entity.Find("Yes");
             btnNo = Entity.Find("No");
             btnCloseBook = Entity.Find("CloseBookBtn");
+            btnNext = Entity.Find("NextPageBtn");
+            btnBack = Entity.Find("BackBtn");
 
             SetEntityActive(pauseScreen, false);
             SetEntityActive(restartCheckScreen, false);
             SetEntityActive(openedBookScreen, false);
             SetEntityActive(closedBookScreen, false);
+            SetEntityActive(howTo1Screen, false);
+            SetEntityActive(howTo2Screen, false);
             InternalCalls.UI_ClearForcedHoveredButton();
         }
 
@@ -99,8 +108,26 @@ namespace CrashoutsEngine
                 if (isRestartMenuOpen) HandleRestartConfirmButtons();
                 else if (isSettingsMenuOpen)
                 {
-                    UpdateControllerSelection(new Entity[] { btnCloseBook });
-                    if (CheckButtonClick(btnCloseBook) || IsControllerSubmit(new Entity[] { btnCloseBook }, btnCloseBook)) CloseSettings();
+                    if (isHowTo2Open)
+                    {
+                        Entity[] buttons = { btnBack };
+                        UpdateControllerSelection(buttons);
+                        if (CheckButtonClick(btnBack) || IsControllerSubmit(buttons, btnBack)) OpenHowTo1();
+                    }
+                    else if (isHowTo1Open)
+                    {
+                        Entity[] buttons = { btnNext, btnBack };
+                        UpdateControllerSelection(buttons);
+                        if (CheckButtonClick(btnNext) || IsControllerSubmit(buttons, btnNext)) OpenHowTo2();
+                        else if (CheckButtonClick(btnBack) || IsControllerSubmit(buttons, btnBack)) OpenSettings();
+                    }
+                    else
+                    {
+                        Entity[] buttons = { btnCloseBook, btnNext };
+                        UpdateControllerSelection(buttons);
+                        if (CheckButtonClick(btnCloseBook) || IsControllerSubmit(buttons, btnCloseBook)) CloseSettings();
+                        else if (CheckButtonClick(btnNext) || IsControllerSubmit(buttons, btnNext)) OpenHowTo1();
+                    }
                 }
                 else HandleMainPauseButtons();
             }
@@ -183,8 +210,12 @@ namespace CrashoutsEngine
             
             isRestartMenuOpen = false;
             isSettingsMenuOpen = false;
+            isHowTo1Open = false;
+            isHowTo2Open = false;
             SetEntityActive(restartCheckScreen, false);
             SetEntityActive(openedBookScreen, false);
+            SetEntityActive(howTo1Screen, false);
+            SetEntityActive(howTo2Screen, false);
 
             if (isPaused) ResetControllerSelection();
             else InternalCalls.UI_ClearForcedHoveredButton();
@@ -196,7 +227,11 @@ namespace CrashoutsEngine
         private void OpenSettings()
         {
             isSettingsMenuOpen = true;
+            isHowTo1Open = false;
+            isHowTo2Open = false;
             SetEntityActive(openedBookScreen, true);
+            SetEntityActive(howTo1Screen, false);
+            SetEntityActive(howTo2Screen, false);
             SetEntityActive(closedBookScreen, false);
             inputCooldown = 0.2f;
             selectedButtonIndex = 0;
@@ -208,10 +243,35 @@ namespace CrashoutsEngine
         private void CloseSettings()
         {
             isSettingsMenuOpen = false;
+            isHowTo1Open = false;
+            isHowTo2Open = false;
             SetEntityActive(openedBookScreen, false);
+            SetEntityActive(howTo1Screen, false);
+            SetEntityActive(howTo2Screen, false);
             SetEntityActive(closedBookScreen, true);
             inputCooldown = 0.2f;
             ResetControllerSelection();
+        }
+
+        private void OpenHowTo1()
+        {
+            isHowTo1Open = true;
+            isHowTo2Open = false;
+            SetEntityActive(openedBookScreen, false);
+            SetEntityActive(howTo1Screen, true);
+            SetEntityActive(howTo2Screen, false);
+            inputCooldown = 0.2f;
+            selectedButtonIndex = 0;
+        }
+
+        private void OpenHowTo2()
+        {
+            isHowTo1Open = false;
+            isHowTo2Open = true;
+            SetEntityActive(howTo1Screen, false);
+            SetEntityActive(howTo2Screen, true);
+            inputCooldown = 0.2f;
+            selectedButtonIndex = 0;
         }
 
         /*!

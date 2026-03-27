@@ -366,7 +366,10 @@
                     {
                         "className": "SoundEffectTest",
                         "fields": {
-                            "selectedTest": 9
+                            "selectedTest": 9,
+                            "lowPassCutoff": 500.0,
+                            "distortionLevel": 0.800000011920929,
+                            "echoDelay": 500.0
                         }
                     }
                 ]
@@ -777,12 +780,12 @@
                 },
                 "min": {
                     "x": -117.7566146850586,
-                    "y": -32.07936477661133,
+                    "y": -32.023807525634769,
                     "z": 50.0
                 },
                 "max": {
                     "x": -80.1565170288086,
-                    "y": 28.920635223388673,
+                    "y": 28.9761905670166,
                     "z": 50.0
                 }
             },
@@ -941,6 +944,7 @@
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "coyoteTime": 0.15000000596046449,
+                            "tutorialDoorName": "tutorial1door",
                             "goalNoOfPlates": 1,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
@@ -959,6 +963,8 @@
                             "alive": true,
                             "normalDeathAnimName": "playerDeathNoBook",
                             "changedMassDeathAnimName": "playerDeath",
+                            "unlimitedEnergy": false,
+                            "godMode": false,
                             "normalDeathDelay": 2.0,
                             "changedMassDeathDelay": 2.0,
                             "isPaused": false,
@@ -1034,37 +1040,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -1117,7 +1092,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -1131,14 +1106,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -1191,6 +1166,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -1483,7 +1489,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -98.9565658569336,
-                    "y": 61.7905387878418,
+                    "y": 61.84609603881836,
                     "z": 50.0
                 },
                 "size": {
@@ -1601,7 +1607,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -98.9565658569336,
-                    "y": 61.7905387878418,
+                    "y": 61.84609603881836,
                     "z": 50.0
                 },
                 "size": {
@@ -1719,7 +1725,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -98.9565658569336,
-                    "y": 61.7905387878418,
+                    "y": 61.84609603881836,
                     "z": 50.0
                 },
                 "size": {
@@ -1837,7 +1843,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -98.9565658569336,
-                    "y": 61.7905387878418,
+                    "y": 61.84609603881836,
                     "z": 50.0
                 },
                 "size": {
@@ -1955,7 +1961,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -384.7508239746094,
-                    "y": -195.93690490722657,
+                    "y": -195.88134765625,
                     "z": 50.0
                 },
                 "size": {
@@ -2073,7 +2079,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -96.69576263427735,
-                    "y": -44.69826126098633,
+                    "y": -44.642704010009769,
                     "z": 0.0
                 },
                 "size": {
@@ -2226,12 +2232,12 @@
                 },
                 "min": {
                     "x": 234.1810302734375,
-                    "y": -64.85794067382813,
+                    "y": -64.25737762451172,
                     "z": 50.0
                 },
                 "max": {
                     "x": 263.9810791015625,
-                    "y": -44.45791244506836,
+                    "y": -43.85735321044922,
                     "z": 50.0
                 }
             },
@@ -2414,37 +2420,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeHold",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -2467,6 +2442,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -2583,6 +2589,1017 @@
                         ]
                     }
                 ]
+            }
+        },
+        {
+            "active": false,
+            "name": "OpenedBook",
+            "uuid": 7347668816106769576,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 192.0,
+                    "y": 108.00000762939453
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pause Menu Open.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 5
+            }
+        },
+        {
+            "active": true,
+            "name": "CloseBookBtn",
+            "uuid": 5821118723107034805,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 30.146766662597658,
+                    "y": 17.496002197265626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 7.679999828338623,
+                    "y": 6.4800004959106449
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Bold",
+                "text": "X",
+                "scale": 20.983123779296876,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.8232043981552124
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {
+                            "StartBtn": 2241071384,
+                            "SettingsBtn": 2241071384,
+                            "CloseBtn": 2241071384,
+                            "QuitBtn": 2241071384,
+                            "QuitCheckPanel": 2241071384,
+                            "YesBtn": 2241071384,
+                            "NoBtn": 2241071384
+                        }
+                    }
+                ]
+            },
+            "button": {
+                "buttonState": 0,
+                "shapeNormalColor": {
+                    "x": 0.6795580387115479,
+                    "y": 0.6795580387115479,
+                    "z": 0.6795580387115479,
+                    "w": 0.0
+                },
+                "shapeHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "shapePressedColor": {
+                    "x": 0.699999988079071,
+                    "y": 0.699999988079071,
+                    "z": 0.699999988079071,
+                    "w": 0.0
+                },
+                "textNormalColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.6298342943191528
+                },
+                "textHoveredColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.7569060921669006
+                },
+                "textPressedColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.8232043981552124
+                },
+                "textureNormal": "",
+                "textureHovered": "",
+                "texturePressed": "",
+                "hoverScale": 1.100000023841858,
+                "pressedScale": 0.949999988079071
+            },
+            "gui": {
+                "uiType": 7
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 7347668816106769576,
+                "localPos": {
+                    "x": 0.1570144146680832,
+                    "y": 0.16200001537799836,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.03999999910593033,
+                    "y": 0.05999999865889549
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "SFX",
+            "uuid": 6998578887839216625,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 10.377264976501465,
+                    "y": 4.787303924560547,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "SFX",
+                "scale": 25.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.22745098173618318,
+                    "y": 0.09803921729326248,
+                    "z": 0.0117647061124444,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 7347668816106769576,
+                "localPos": {
+                    "x": 0.05404825508594513,
+                    "y": 0.04432688653469086,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "SFXSlider",
+            "uuid": 15102712200398153792,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 5.760000228881836,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 191.82264709472657,
+                    "y": 108.00000762939453
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "VolumeSlider",
+                        "fields": {
+                            "isMusicVolume": false,
+                            "smoothingSpeed": 15.0,
+                            "clickWidth": 24.0,
+                            "clickHeight": 3.0
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 7347668816106769576,
+                "localPos": {
+                    "x": 0.030000001192092897,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.9990763068199158,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "SFXBar_Child",
+            "uuid": 12283198819501237547,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 17.461181640625,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 23.97783088684082,
+                    "y": 2.2680001258850099
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 15102712200398153792,
+                "localPos": {
+                    "x": 0.061000000685453418,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.125,
+                    "y": 0.020999999716877939
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 61
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicSlider",
+            "uuid": 2494882221023163762,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -28.994773864746095,
+                    "y": 0.10120868682861328,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 191.80880737304688,
+                    "y": 108.00000762939453
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "VolumeSlider",
+                        "fields": {
+                            "isMusicVolume": true,
+                            "smoothingSpeed": 15.0,
+                            "clickWidth": 24.0,
+                            "clickHeight": 3.0
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 7347668816106769576,
+                "localPos": {
+                    "x": -0.15101444721221925,
+                    "y": 0.0009371173800900579,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.9990041851997376,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBar_Child",
+            "uuid": 12704758146324085833,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -17.29166603088379,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 23.97610092163086,
+                    "y": 2.2680001258850099
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 2494882221023163762,
+                "localPos": {
+                    "x": 0.06101444363594055,
+                    "y": -0.0009371173800900579,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.125,
+                    "y": 0.020999999716877939
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 150
+            }
+        },
+        {
+            "active": true,
+            "name": "Music",
+            "uuid": 4401329978279594584,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -17.669189453125,
+                    "y": 4.787303924560547,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Music",
+                "scale": 25.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.22745098173618318,
+                    "y": 0.09803921729326248,
+                    "z": 0.0117647061124444,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 7347668816106769576,
+                "localPos": {
+                    "x": -0.09202703088521958,
+                    "y": 0.04432688653469086,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "SFXBar_BG",
+            "uuid": 12682334409260327921,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 17.65673065185547,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 24.0,
+                    "y": 2.2680001258850099
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.28194689750671389,
+                    "y": 0.22087237238883973,
+                    "z": 0.37016576528549197,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 7347668816106769576,
+                "localPos": {
+                    "x": 0.09196213632822037,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.125,
+                    "y": 0.020999999716877939
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 58
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBar_BG",
+            "uuid": 548879217370083558,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -17.346961975097658,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 24.0,
+                    "y": 2.3004000186920168
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI\\Bar_Area.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.28194689750671389,
+                    "y": 0.22087237238883973,
+                    "z": 0.37016576528549197,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 7347668816106769576,
+                "localPos": {
+                    "x": -0.0903487578034401,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.125,
+                    "y": 0.021299999207258226
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 15
+            }
+        },
+        {
+            "active": true,
+            "name": "Click_Anim",
+            "uuid": 9387317139625399797,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -56.71907424926758,
+                    "y": 30.729827880859376,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 77.30000305175781,
+                    "y": 12.899999618530274
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/mana drain 1-Sheet-sheet.png",
+                "uvSize": {
+                    "x": 0.4000000059604645,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "keyframe_animator": {
+                "current": "manadrain_anim_1",
+                "t": 0.0,
+                "playing": false,
+                "clips": [
+                    {
+                        "name": "manadrain_anim_1",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\settings\\mana drain 1-Sheet-sheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 77.30000305175781,
+                        "targetHeight": 12.899999618530274,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "active": true,
+            "name": "Throw_Anim",
+            "uuid": 9788856052442105821,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],
