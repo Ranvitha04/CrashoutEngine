@@ -1905,6 +1905,10 @@
             "path": "spritesheet/spikes updated/spikes updated_27.png"
         },
         {
+            "name": "new open book",
+            "path": "UI/new open book.png"
+        },
+        {
             "name": "spikes updated_28",
             "path": "spritesheet/spikes updated/spikes updated_28.png"
         },
@@ -2203,12 +2207,8 @@
             "path": "Door_Prefab.json"
         },
         {
-            "name": "RestartBtn_Template",
-            "path": "RestartBtn_Template.json"
-        },
-        {
-            "name": "Moving_Gate",
-            "path": "Moving_Gate.json"
+            "name": "Empty_HowTo",
+            "path": "Empty_HowTo.json"
         },
         {
             "name": "InstructionPanel",
@@ -2223,8 +2223,20 @@
             "path": "EnergyBall_Prefab.json"
         },
         {
+            "name": "RestartBtn_Template",
+            "path": "RestartBtn_Template.json"
+        },
+        {
+            "name": "Moving_Gate",
+            "path": "Moving_Gate.json"
+        },
+        {
             "name": "Moving_Platform(Sinking)",
             "path": "Moving_Platform(Sinking).json"
+        },
+        {
+            "name": "NextPageBtn",
+            "path": "NextPageBtn.json"
         },
         {
             "name": "NextLevelDoor_Prefab",

@@ -505,6 +505,7 @@ namespace Scene {
 
 				bool isHovering = (checkPos.x >= aa.x && checkPos.x <= bb.x &&
 					checkPos.y >= aa.y && checkPos.y <= bb.y);
+				bool actualMouseHover = isHovering;
                 if (!isHovering && !isMouseHoveringAnyButton && gForcedHoveredButton == id) {
                     isHovering = true;
                 }
@@ -518,7 +519,7 @@ namespace Scene {
 				targetTexture = b->textureNormal;
 
 				if (isHovering) {
-					if (InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+					if (actualMouseHover && InputManager::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 						b->buttonState = ButtonState::PRESSED;
 						if (s) s->color = b->shapePressedColor;
 						if (txt) txt->color = b->textPressedColor;

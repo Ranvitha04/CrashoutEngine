@@ -38,6 +38,8 @@ namespace CrashoutsEngine
         private float pauseToggleCooldown = 0.0f;
         private int selectedButtonIndex = 0;
         private float menuNavigationCooldown = 0.0f;
+        private bool useForcedSelection = false;
+        private CEVec2 lastMousePos;
 
         // NEW: The Trigger Gate
         private bool isMouseReleased = true; 
@@ -50,6 +52,7 @@ namespace CrashoutsEngine
             if (!IsPauseController()) return;
 
             playerScript = PlayerMovement.Instance;
+            lastMousePos = Input.GetMousePosition();
 
             pauseScreen = Entity.Find("Pause");
             restartCheckScreen = Entity.Find("RestartCheck");
@@ -102,31 +105,41 @@ namespace CrashoutsEngine
                 isMouseReleased = true;
             }
 
-            // 3. Logic: Only process if mouse was released first
-            if (isPaused && isMouseReleased)
+            // 3. Logic: Only process if mouse was released first and cooldown has passed
+            if (isPaused && isMouseReleased && inputCooldown <= 0.0f)
             {
                 if (isRestartMenuOpen) HandleRestartConfirmButtons();
                 else if (isSettingsMenuOpen)
                 {
                     if (isHowTo2Open)
                     {
-                        Entity[] buttons = { btnBack };
+                        Entity backBtn = Entity.Find("HowTo2_BackBtn");
+                        if (backBtn == null) backBtn = Entity.Find("BackBtn"); // Fallback
+                        Entity[] buttons = { backBtn };
                         UpdateControllerSelection(buttons);
-                        if (CheckButtonClick(btnBack) || IsControllerSubmit(buttons, btnBack)) OpenHowTo1();
+                        if (CheckButtonClick(backBtn) || IsControllerSubmit(buttons, backBtn)) OpenHowTo1();
                     }
                     else if (isHowTo1Open)
                     {
-                        Entity[] buttons = { btnNext, btnBack };
+                        Entity nextBtn = Entity.Find("HowTo1_NextBtn");
+                        if (nextBtn == null) nextBtn = Entity.Find("NextPageBtn"); // Fallback
+                        Entity backBtn = Entity.Find("HowTo1_BackBtn");
+                        if (backBtn == null) backBtn = Entity.Find("BackBtn"); // Fallback
+                        Entity[] buttons = { nextBtn, backBtn };
                         UpdateControllerSelection(buttons);
-                        if (CheckButtonClick(btnNext) || IsControllerSubmit(buttons, btnNext)) OpenHowTo2();
-                        else if (CheckButtonClick(btnBack) || IsControllerSubmit(buttons, btnBack)) OpenSettings();
+
+                        if (CheckButtonClick(nextBtn) || IsControllerSubmit(buttons, nextBtn)) OpenHowTo2();
+                        else if (CheckButtonClick(backBtn) || IsControllerSubmit(buttons, backBtn)) OpenSettings();
                     }
                     else
                     {
-                        Entity[] buttons = { btnCloseBook, btnNext };
+                        Entity nextBtn = Entity.Find("SettingsNextBtn");
+                        if (nextBtn == null) nextBtn = Entity.Find("NextPageBtn"); // Fallback
+                        Entity[] buttons = { btnCloseBook, nextBtn };
                         UpdateControllerSelection(buttons);
+
                         if (CheckButtonClick(btnCloseBook) || IsControllerSubmit(buttons, btnCloseBook)) CloseSettings();
-                        else if (CheckButtonClick(btnNext) || IsControllerSubmit(buttons, btnNext)) OpenHowTo1();
+                        else if (CheckButtonClick(nextBtn) || IsControllerSubmit(buttons, nextBtn)) OpenHowTo1();
                     }
                 }
                 else HandleMainPauseButtons();
@@ -255,22 +268,30 @@ namespace CrashoutsEngine
 
         private void OpenHowTo1()
         {
+            if (howTo1Screen == null) howTo1Screen = Entity.Find("HowTo1");
+            if (howTo1Screen == null) return;
+
             isHowTo1Open = true;
             isHowTo2Open = false;
+            isMouseReleased = false; // Lock gate to prevent carryover
             SetEntityActive(openedBookScreen, false);
             SetEntityActive(howTo1Screen, true);
             SetEntityActive(howTo2Screen, false);
-            inputCooldown = 0.2f;
+            inputCooldown = 0.3f;
             selectedButtonIndex = 0;
         }
 
         private void OpenHowTo2()
         {
+            if (howTo2Screen == null) howTo2Screen = Entity.Find("HowTo2");
+            if (howTo2Screen == null) return;
+
             isHowTo1Open = false;
             isHowTo2Open = true;
+            isMouseReleased = false; // Lock gate to prevent carryover
             SetEntityActive(howTo1Screen, false);
             SetEntityActive(howTo2Screen, true);
-            inputCooldown = 0.2f;
+            inputCooldown = 0.3f;
             selectedButtonIndex = 0;
         }
 
@@ -312,6 +333,8 @@ namespace CrashoutsEngine
         {
             selectedButtonIndex = 0;
             menuNavigationCooldown = 0.0f;
+            useForcedSelection = false;
+            InternalCalls.UI_ClearForcedHoveredButton();
         }
 
         private void UpdateControllerSelection(Entity[] buttons)
@@ -322,7 +345,30 @@ namespace CrashoutsEngine
                 return;
             }
 
+            // 1. Detect Mouse Movement to Disable Forced Selection
+            CEVec2 currentMousePos = Input.GetMousePosition();
+            if (Math.Abs(currentMousePos.x - lastMousePos.x) > 0.1f || Math.Abs(currentMousePos.y - lastMousePos.y) > 0.1f)
+            {
+                useForcedSelection = false;
+            }
+            lastMousePos = currentMousePos;
+
+            // 2. Detect Controller/Keyboard Input to Enable Forced Selection
             float menuY = Input.GetAxis("MenuY");
+            bool navInput = Input.GetActionTriggered("UIDown") || Input.GetActionTriggered("UIUp") || Math.Abs(menuY) > 0.5f;
+
+            if (navInput)
+            {
+                useForcedSelection = true;
+            }
+
+            if (!useForcedSelection)
+            {
+                InternalCalls.UI_ClearForcedHoveredButton();
+                return;
+            }
+
+            // 3. Navigation Logic
             if (menuNavigationCooldown <= 0.0f)
             {
                 if (Input.GetActionTriggered("UIDown") || menuY <= -0.5f)
