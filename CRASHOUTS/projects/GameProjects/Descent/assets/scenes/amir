@@ -3601,6 +3601,210 @@
                 "layerName": "",
                 "z": 0
             }
+        },
+        {
+            "active": true,
+            "name": "Tile_UpDown",
+            "uuid": 12991246634432299456,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -204.7440948486328,
+                    "y": -193.56549072265626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "tilemap": {
+                "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
+                "activeAsset": "tilemaps/Spike",
+                "tileAssetNames": [],
+                "gridData": [
+                    {
+                        "x": -8,
+                        "y": -4,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": -7,
+                        "y": -13,
+                        "asset": ""
+                    },
+                    {
+                        "x": -7,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -7,
+                        "y": -4,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": -6,
+                        "y": -13,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -6,
+                        "y": -4,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": -5,
+                        "y": -13,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -5,
+                        "y": -4,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": -4,
+                        "y": -13,
+                        "asset": ""
+                    },
+                    {
+                        "x": -4,
+                        "y": -7,
+                        "asset": "tilemaps/Lava_Platform"
+                    },
+                    {
+                        "x": -4,
+                        "y": -4,
+                        "asset": "tilemaps/Darker_Platform"
+                    },
+                    {
+                        "x": -3,
+                        "y": -13,
+                        "asset": ""
+                    },
+                    {
+                        "x": 0,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 0,
+                        "y": -13,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 0,
+                        "y": -11,
+                        "asset": "tilemaps/Platform"
+                    },
+                    {
+                        "x": 0,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 1,
+                        "y": -13,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 1,
+                        "y": -11,
+                        "asset": "tilemaps/Platform"
+                    },
+                    {
+                        "x": 1,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 2,
+                        "y": -13,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 2,
+                        "y": -11,
+                        "asset": "tilemaps/Platform"
+                    },
+                    {
+                        "x": 2,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 3,
+                        "y": -13,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 3,
+                        "y": -11,
+                        "asset": "tilemaps/Platform"
+                    },
+                    {
+                        "x": 3,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -15,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": 4,
+                        "y": -13,
+                        "asset": "tilemaps/Passthrough_Floor"
+                    },
+                    {
+                        "x": 4,
+                        "y": -11,
+                        "asset": "tilemaps/Platform"
+                    },
+                    {
+                        "x": 4,
+                        "y": -8,
+                        "asset": "tilemaps/Rock"
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
         }
     ],
     "layers": {

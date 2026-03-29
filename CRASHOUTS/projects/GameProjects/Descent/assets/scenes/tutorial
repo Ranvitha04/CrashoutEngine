@@ -13771,7 +13771,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Medium",
-                "text": "Activated Pressure PLates: [0/2]",
+                "text": "Activated Pressure Plates: [0/2]",
                 "scale": 22.5,
                 "offset": {
                     "x": 0.0,
@@ -16523,7 +16523,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "Pause",
             "uuid": 3899499466856881947,
             "tag": {
@@ -16601,7 +16601,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "ClosedBook",
             "uuid": 8605457662790260227,
             "tag": {
@@ -16848,7 +16848,7 @@
                     "w": 0.5
                 },
                 "textureNormal": "UI/settings/updated resume.png",
-                "textureHovered": "UI/settings/updated resume large.png",
+                "textureHovered": "UI/settings/resume yellow.png",
                 "texturePressed": "UI/settings/updated resume.png",
                 "hoverScale": 1.25,
                 "pressedScale": 0.949999988079071
@@ -16980,7 +16980,7 @@
                     "w": 0.5
                 },
                 "textureNormal": "UI/settings/updated restart.png",
-                "textureHovered": "UI/settings/updated restart large.png",
+                "textureHovered": "UI/settings/restart yellow.png",
                 "texturePressed": "UI/settings/updated restart.png",
                 "hoverScale": 1.149999976158142,
                 "pressedScale": 0.949999988079071
@@ -17112,7 +17112,7 @@
                     "w": 0.5
                 },
                 "textureNormal": "UI/settings/updated settings.png",
-                "textureHovered": "UI/settings/updated settings large.png",
+                "textureHovered": "UI/settings/settings yellow.png",
                 "texturePressed": "UI/settings/updated settings.png",
                 "hoverScale": 1.2999999523162842,
                 "pressedScale": 0.949999988079071
@@ -17244,7 +17244,7 @@
                     "w": 0.5
                 },
                 "textureNormal": "UI/settings/updated quit.png",
-                "textureHovered": "UI/settings/updated quit large.png",
+                "textureHovered": "UI/settings/quit yellow.png",
                 "texturePressed": "UI/settings/updated quit.png",
                 "hoverScale": 1.2999999523162842,
                 "pressedScale": 0.949999988079071
@@ -26786,7 +26786,7 @@
                 "enabled": true,
                 "position": {
                     "x": 96.24138641357422,
-                    "y": -707.2046508789063,
+                    "y": -706.8206176757813,
                     "z": 0.0
                 },
                 "offset": {
@@ -26797,7 +26797,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 96.24138641357422,
-                    "y": -707.2046508789063,
+                    "y": -706.8206176757813,
                     "z": 0.0
                 }
             },
@@ -29174,6 +29174,3438 @@
             "layer": {
                 "layerName": "UIButtons",
                 "z": 59
+            }
+        },
+        {
+            "active": true,
+            "name": "Control",
+            "uuid": 3463209874916728433,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -17.379493713378908,
+                    "y": 19.33418846130371,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Bold",
+                "text": "CONTROLS",
+                "scale": 18.600000381469728,
+                "offset": {
+                    "x": 0.30000001192092898,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.8999999761581421,
+                    "y": 3.4000000953674318
+                },
+                "letterSpacing": 1.2000000476837159,
+                "lineSpacing": 0.10000000149011612,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": -0.09051819890737534,
+                    "y": 0.1790202558040619,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Run_Anim",
+            "uuid": 9112527772803979408,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -13.472479820251465,
+                    "y": 12.163886070251465,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "to run",
+                "scale": 12.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": -0.5,
+                    "y": 3.4000000953674318
+                },
+                "letterSpacing": 0.550000011920929,
+                "lineSpacing": 0.10000000149011612,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": -0.07016916573047638,
+                    "y": 0.11262856423854828,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Fall_Anim",
+            "uuid": 7498782094097989537,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -13.472484588623047,
+                    "y": 4.225339412689209,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "to fall",
+                "scale": 12.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": -0.5,
+                    "y": 3.4000000953674318
+                },
+                "letterSpacing": 0.550000011920929,
+                "lineSpacing": 0.10000000149011612,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": -0.07016918808221817,
+                    "y": 0.03912350907921791,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Change_Anim",
+            "uuid": 5428128093510908039,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -10.91271686553955,
+                    "y": -3.4571096897125246,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.15999984741211,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "to change weights",
+                "scale": 12.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": -0.5,
+                    "y": 3.4000000953674318
+                },
+                "letterSpacing": 0.550000011920929,
+                "lineSpacing": 0.10000000149011612,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": -0.056837067008018497,
+                    "y": -0.0320102721452713,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.10499999672174454,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Jump_Anim",
+            "uuid": 8275506999665170485,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -12.79885482788086,
+                    "y": -10.499361991882325,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "to jump",
+                "scale": 12.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": -0.5,
+                    "y": 3.4000000953674318
+                },
+                "letterSpacing": 0.550000011920929,
+                "lineSpacing": 0.10000000149011612,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": -0.06666070222854614,
+                    "y": -0.09721630811691284,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Click_Text",
+            "uuid": 18249579044953909062,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 17.648902893066408,
+                    "y": 8.706789016723633,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "When in range,",
+                "scale": 12.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 4.400000095367432,
+                    "y": 7.900000095367432
+                },
+                "letterSpacing": 0.44999998807907107,
+                "lineSpacing": -4.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": 0.091921366751194,
+                    "y": 0.08061841130256653,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Click_Text_1",
+            "uuid": 647031588899762341,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 17.648902893066408,
+                    "y": 6.658117771148682,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "click to drag slime",
+                "scale": 12.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 4.400000095367432,
+                    "y": 7.900000095367432
+                },
+                "letterSpacing": 0.44999998807907107,
+                "lineSpacing": -4.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": 0.091921366751194,
+                    "y": 0.06164923310279846,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Click_Text_2",
+            "uuid": 15873871152853939705,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 17.648902893066408,
+                    "y": 4.481415748596191,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "to pick it up",
+                "scale": 12.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 4.400000095367432,
+                    "y": 7.900000095367432
+                },
+                "letterSpacing": 0.44999998807907107,
+                "lineSpacing": -4.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": 0.091921366751194,
+                    "y": 0.04149458557367325,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Throw_Text",
+            "uuid": 4898084442546681880,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 17.648902893066408,
+                    "y": -8.450712203979493,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "Control throwing arc",
+                "scale": 12.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 4.400000095367432,
+                    "y": 7.900000095367432
+                },
+                "letterSpacing": 0.44999998807907107,
+                "lineSpacing": -4.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": 0.091921366751194,
+                    "y": -0.07824733108282089,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Throw_Text_1",
+            "uuid": 16180940298941770700,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 17.648902893066408,
+                    "y": -10.75544548034668,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "with mouse, release",
+                "scale": 12.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 4.400000095367432,
+                    "y": 7.900000095367432
+                },
+                "letterSpacing": 0.44999998807907107,
+                "lineSpacing": -4.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": 0.091921366751194,
+                    "y": -0.09958744794130326,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Throw_Text_2",
+            "uuid": 9797877601924829739,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 17.648902893066408,
+                    "y": -12.804099082946778,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Regular",
+                "text": "to throw",
+                "scale": 12.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 4.400000095367432,
+                    "y": 7.900000095367432
+                },
+                "letterSpacing": 0.44999998807907107,
+                "lineSpacing": -4.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": 0.091921366751194,
+                    "y": -0.11855646222829819,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Key_A",
+            "uuid": 3305066105959607869,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -28.83106231689453,
+                    "y": 12.035860061645508,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5.759999752044678,
+                    "y": 5.40000057220459
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/key_A.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": -0.15016178786754609,
+                    "y": 0.11144313961267472,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.029999999329447748,
+                    "y": 0.05000000074505806
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Key_D",
+            "uuid": 18007539008692940579,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -22.364288330078126,
+                    "y": 12.035860061645508,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5.759999752044678,
+                    "y": 5.40000057220459
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/key_D.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": -0.11648067086935044,
+                    "y": 0.11144313961267472,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.029999999329447748,
+                    "y": 0.05000000074505806
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Key_S",
+            "uuid": 7369212052475796827,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -25.867122650146486,
+                    "y": 4.0973076820373539,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5.759999752044678,
+                    "y": 5.40000057220459
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/key_S.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": -0.13472460210323335,
+                    "y": 0.03793803229928017,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.029999999329447748,
+                    "y": 0.05000000074505806
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Key_E",
+            "uuid": 17110401972222098411,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -25.867122650146486,
+                    "y": -3.58514666557312,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5.759999752044678,
+                    "y": 5.40000057220459
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/key_E.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": -0.13472460210323335,
+                    "y": -0.033195801079273227,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.029999999329447748,
+                    "y": 0.05000000074505806
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Key_Space",
+            "uuid": 7131279319886031998,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -26.00183868408203,
+                    "y": -10.499364852905274,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 11.519999504089356,
+                    "y": 4.320000171661377
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/spacebar.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 5914769519443866891,
+                "localPos": {
+                    "x": -0.13542623817920686,
+                    "y": -0.09721633791923523,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.05999999865889549,
+                    "y": 0.03999999910593033
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Grey_PP",
+            "uuid": 4881630364155579120,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -29.23524284362793,
+                    "y": 9.090913772583008,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5.759999752044678,
+                    "y": 7.560000419616699
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pressure Plate.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": -0.15226688981056214,
+                    "y": 0.08417512476444245,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.029999999329447748,
+                    "y": 0.07000000029802323
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Blue_PP",
+            "uuid": 6189484517682757779,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -29.23524284362793,
+                    "y": 15.621002197265625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5.759999752044678,
+                    "y": 7.560000419616699
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pressure Plate.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.4274509847164154,
+                    "y": 0.7450980544090271,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": -0.15226688981056214,
+                    "y": 0.14463889598846436,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.029999999329447748,
+                    "y": 0.07000000029802323
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "PP_Big_Text",
+            "uuid": 1660977117698240599,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -17.379493713378908,
+                    "y": 19.33418846130371,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Bold",
+                "text": "PRESSURE  PLATES",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.30000001192092898,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.8999999761581421,
+                    "y": 3.4000000953674318
+                },
+                "letterSpacing": 1.2000000476837159,
+                "lineSpacing": 0.10000000149011612,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": -0.09051819890737534,
+                    "y": 0.1790202558040619,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Grey_PP_Text",
+            "uuid": 4955493567060990662,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -13.203023910522461,
+                    "y": 5.889883995056152,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.15999984741211,
+                    "y": -9.82800006866455
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Grey pressure plates opens door at the end of level",
+                "scale": 8.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.16022098064422608,
+                    "y": 0.12357570230960846,
+                    "z": 0.10799425840377808,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 1.7000000476837159,
+                    "y": 3.299999952316284
+                },
+                "letterSpacing": 1.850000023841858,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": -0.06876575201749802,
+                    "y": 0.05453595891594887,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.10499999672174454,
+                    "y": -0.09099999070167542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Blue_PP_Text",
+            "uuid": 8737555831597232522,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -13.203023910522461,
+                    "y": 12.804093360900879,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.15999984741211,
+                    "y": -9.82800006866455
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Blue pressure plates opens door immediately",
+                "scale": 8.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.16022098064422608,
+                    "y": 0.12357570230960846,
+                    "z": 0.10799425840377808,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 1.7000000476837159,
+                    "y": 3.299999952316284
+                },
+                "letterSpacing": 1.850000023841858,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": -0.06876575201749802,
+                    "y": 0.11855641007423401,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.10499999672174454,
+                    "y": -0.09099999070167542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Counter_PP_Text",
+            "uuid": 10862700781448949578,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -13.203023910522461,
+                    "y": -2.17669415473938,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.15999984741211,
+                    "y": -9.82800006866455
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Watch the counter to see how many grey plates you still need to activate",
+                "scale": 8.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.16022098064422608,
+                    "y": 0.12357570230960846,
+                    "z": 0.10799425840377808,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 1.7000000476837159,
+                    "y": 3.299999952316284
+                },
+                "letterSpacing": 1.850000023841858,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": -0.06876575201749802,
+                    "y": -0.020154574885964395,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.10499999672174454,
+                    "y": -0.09099999070167542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Slime_PP_Text",
+            "uuid": 12317719778943011598,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -17.110036849975587,
+                    "y": -10.627405166625977,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 31.65999984741211,
+                    "y": -9.82800006866455
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "*Slimes can be used to activate plates Dante can't reach",
+                "scale": 8.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.16022098064422608,
+                    "y": 0.12357570230960846,
+                    "z": 0.10799425840377808,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 1.2000000476837159,
+                    "y": 3.299999952316284
+                },
+                "letterSpacing": 1.850000023841858,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": -0.08911477774381638,
+                    "y": -0.09840188920497894,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.16489583253860475,
+                    "y": -0.09099999070167542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Counter_PP",
+            "uuid": 17675493152120311253,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -29.10053253173828,
+                    "y": -2.17669415473938,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 4.800000190734863,
+                    "y": 2.1600000858306886
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.501960813999176
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "[0/2]",
+                "scale": 9.100000381469727,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 1.7000000476837159,
+                    "y": 3.299999952316284
+                },
+                "letterSpacing": 1.850000023841858,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": -0.15156526863574983,
+                    "y": -0.020154574885964395,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.02500000037252903,
+                    "y": 0.019999999552965165
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform_Big_Text",
+            "uuid": 4546248751349054734,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 16.97528839111328,
+                    "y": 19.33418846130371,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Bold",
+                "text": "PLATFORM",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.30000001192092898,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.8999999761581421,
+                    "y": 3.4000000953674318
+                },
+                "letterSpacing": 1.2000000476837159,
+                "lineSpacing": 0.10000000149011612,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": 0.08841296285390854,
+                    "y": 0.1790202558040619,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Plat_UpDown",
+            "uuid": 15134538403291100151,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 6.466794013977051,
+                    "y": 5.6338090896606449,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 9.600000381469727,
+                    "y": 3.2400002479553224
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/platform_tut.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": 0.03368121758103371,
+                    "y": 0.052164893597364429,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.05000000074505806,
+                    "y": 0.029999999329447748
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Plat_LeftRight",
+            "uuid": 15195570506823454080,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 6.466794013977051,
+                    "y": 12.804107666015625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 9.600000381469727,
+                    "y": 3.2400002479553224
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/platform_tut1.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": 0.03368121758103371,
+                    "y": 0.11855654418468476,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.05000000074505806,
+                    "y": 0.029999999329447748
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform_LeftRight_Text",
+            "uuid": 14264072923802265022,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 22.903181076049806,
+                    "y": 12.804093360900879,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.15999984741211,
+                    "y": -9.82800006866455
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "These platforms only move left & right",
+                "scale": 8.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.16022098064422608,
+                    "y": 0.12357570230960846,
+                    "z": 0.10799425840377808,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 1.7000000476837159,
+                    "y": 3.299999952316284
+                },
+                "letterSpacing": 1.850000023841858,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": 0.1192874014377594,
+                    "y": 0.11855641007423401,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.10499999672174454,
+                    "y": -0.09099999070167542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Platform_UpDown_Text",
+            "uuid": 17131644199643412022,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 22.903181076049806,
+                    "y": 5.505760192871094,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 20.15999984741211,
+                    "y": -9.82800006866455
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "These platforms can sink according to dante's weight",
+                "scale": 8.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.16022098064422608,
+                    "y": 0.12357570230960846,
+                    "z": 0.10799425840377808,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 1.7000000476837159,
+                    "y": 3.299999952316284
+                },
+                "letterSpacing": 1.850000023841858,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": 0.1192874014377594,
+                    "y": 0.05097925662994385,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.10499999672174454,
+                    "y": -0.09099999070167542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "General_Big_Text",
+            "uuid": 16002806723598935096,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 16.97528839111328,
+                    "y": -0.12803411483764649,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Bold",
+                "text": "GENERAL",
+                "scale": 16.0,
+                "offset": {
+                    "x": 0.30000001192092898,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.1767956018447876,
+                    "y": 0.103510782122612,
+                    "z": 0.040047623217105868,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": false,
+                "padding": {
+                    "x": 0.8999999761581421,
+                    "y": 3.4000000953674318
+                },
+                "letterSpacing": 1.2000000476837159,
+                "lineSpacing": 0.10000000149011612,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": 0.08841296285390854,
+                    "y": -0.0011855009943246842,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "General_Energy_Text",
+            "uuid": 11069161084223432032,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 21.421201705932618,
+                    "y": -6.274013519287109,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 22.15999984741211,
+                    "y": -9.82800006866455
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Energy Balls restore mana and refill itself overtime",
+                "scale": 8.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.16022098064422608,
+                    "y": 0.12357570230960846,
+                    "z": 0.10799425840377808,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.800000011920929,
+                    "y": 3.299999952316284
+                },
+                "letterSpacing": 1.850000023841858,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": 0.11156875640153885,
+                    "y": -0.058092713356018069,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.11541666835546494,
+                    "y": -0.09099999070167542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "General_Checkpoint_Text",
+            "uuid": 1394045503361262515,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 21.421201705932618,
+                    "y": -13.700384140014649,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 22.15999984741211,
+                    "y": -9.82800006866455
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "AlegreyaSC-Medium",
+                "text": "Dante can respawn at checkpoints scattered throughout the levels if he dies",
+                "scale": 8.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.16022098064422608,
+                    "y": 0.12357570230960846,
+                    "z": 0.10799425840377808,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": false,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.800000011920929,
+                    "y": 3.299999952316284
+                },
+                "letterSpacing": 1.850000023841858,
+                "lineSpacing": 0.0,
+                "isRevealing": false,
+                "revealSpeed": 10.0,
+                "dialogueFilePath": "",
+                "dialogueID": ""
+            },
+            "gui": {
+                "uiType": 3
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": 0.11156875640153885,
+                    "y": -0.12685540318489076,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.11541666835546494,
+                    "y": -0.09099999070167542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 26
+            }
+        },
+        {
+            "active": true,
+            "name": "Energy_Ball",
+            "uuid": 9562791250476188370,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 6.062632083892822,
+                    "y": -5.5057573318481449,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 6.720000267028809,
+                    "y": 10.80000114440918
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Energy Ball/1.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": 0.031576208770275119,
+                    "y": -0.05097923055291176,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.10000000149011612
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Checkypoint",
+            "uuid": 3912703927530903048,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 6.062631607055664,
+                    "y": -12.80409049987793,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5.759999752044678,
+                    "y": 8.640000343322754
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Checkpoint Marker.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14016840200763474298,
+                "localPos": {
+                    "x": 0.03157620504498482,
+                    "y": -0.11855638772249222,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.029999999329447748,
+                    "y": 0.07999999821186066
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
             }
         }
     ],

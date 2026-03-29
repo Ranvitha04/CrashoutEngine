@@ -653,6 +653,10 @@
             "path": "Cutscenes/Cutscene_2.png"
         },
         {
+            "name": "key_A",
+            "path": "UI/settings/key_A.png"
+        },
+        {
             "name": "spikes updated_20",
             "path": "spritesheet/spikes updated/spikes updated_20.png"
         },
@@ -1893,6 +1897,10 @@
             "path": "spritesheet/spikes updated/spikes updated_24.png"
         },
         {
+            "name": "key_D",
+            "path": "UI/settings/key_D.png"
+        },
+        {
             "name": "spikes updated_25",
             "path": "spritesheet/spikes updated/spikes updated_25.png"
         },
@@ -2077,6 +2085,14 @@
             "path": "UI/settings/back.png"
         },
         {
+            "name": "key_S",
+            "path": "UI/Tutorial/key_S.png"
+        },
+        {
+            "name": "key_W",
+            "path": "UI/settings/key_W.png"
+        },
+        {
             "name": "mana drain 1-Sheet-sheet",
             "path": "UI/settings/mana drain 1-Sheet-sheet.png"
         },
@@ -2131,10 +2147,6 @@
         {
             "name": "first",
             "path": "UI/Tutorial/first.png"
-        },
-        {
-            "name": "key_S",
-            "path": "UI/Tutorial/key_S.png"
         },
         {
             "name": "ninth",
