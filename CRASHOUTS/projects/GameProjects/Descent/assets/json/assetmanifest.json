@@ -2215,6 +2215,10 @@
             "path": "AudioManager_Prefab.json"
         },
         {
+            "name": "HowTo1_no_anim",
+            "path": "HowTo1_no_anim.json"
+        },
+        {
             "name": "Camera_Prefab",
             "path": "Camera_Prefab.json"
         },
@@ -2231,16 +2235,20 @@
             "path": "Empty_HowTo.json"
         },
         {
-            "name": "InstructionPanel",
-            "path": "InstructionPanel.json"
-        },
-        {
             "name": "FilledAudioManager_Prefab",
             "path": "FilledAudioManager_Prefab.json"
         },
         {
             "name": "EnergyBall_Prefab",
             "path": "EnergyBall_Prefab.json"
+        },
+        {
+            "name": "HowTo2_no_anim",
+            "path": "HowTo2_no_anim.json"
+        },
+        {
+            "name": "InstructionPanel",
+            "path": "InstructionPanel.json"
         },
         {
             "name": "RestartBtn_Template",
@@ -2253,6 +2261,10 @@
         {
             "name": "Moving_Platform(Sinking)",
             "path": "Moving_Platform(Sinking).json"
+        },
+        {
+            "name": "MusicUI_Prefab",
+            "path": "MusicUI_Prefab.json"
         },
         {
             "name": "NextPageBtn",
@@ -2289,6 +2301,10 @@
         {
             "name": "Scuff_WinDoor_Prefab",
             "path": "Scuff_WinDoor_Prefab.json"
+        },
+        {
+            "name": "SFXUI_Prefab",
+            "path": "SFXUI_Prefab.json"
         },
         {
             "name": "Slime V4",
