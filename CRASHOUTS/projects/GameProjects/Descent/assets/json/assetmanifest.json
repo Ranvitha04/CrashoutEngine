@@ -1841,6 +1841,10 @@
             "path": "spritesheet/spikes updated/spikes updated_09.png"
         },
         {
+            "name": "platform_tut1",
+            "path": "UI/settings/platform_tut1.png"
+        },
+        {
             "name": "spikes updated_10",
             "path": "spritesheet/spikes updated/spikes updated_10.png"
         },
@@ -2107,6 +2111,10 @@
         {
             "name": "next",
             "path": "UI/settings/next.png"
+        },
+        {
+            "name": "platform_tut",
+            "path": "UI/settings/platform_tut.png"
         },
         {
             "name": "throw 1-Sheet-sheet",
