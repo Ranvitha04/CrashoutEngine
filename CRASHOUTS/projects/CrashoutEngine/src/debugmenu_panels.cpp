@@ -147,7 +147,7 @@ namespace UI {
                     }
                     ImGui::EndCombo();
                 }
-                if (ImGui::Button("Create Prefab##Prefab")) {
+                if (ImGui::Button("Clone Prefab##Prefab")) {
                     UndoManager::GetInstance().AddCommand(
                         std::make_unique<CreatePrefabCommand>(names[sel])
                     );

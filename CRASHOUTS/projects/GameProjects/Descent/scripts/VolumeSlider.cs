@@ -4,7 +4,7 @@
 @author     Renfred (RTIS)
 @author     m.biniswandi
 @date       26/11/2025
-@brief      Handles volume slider UI logic for music and SFX volume control.
+@brief      Handles volume slider UI logic for music and SFX volume control using segmented UI balls.
 */
 using System;
 using System.Diagnostics;
@@ -19,6 +19,15 @@ namespace CrashoutsEngine
 
         [SerializeField] private float clickWidth = 30.0f;
         [SerializeField] private float clickHeight = 10.0f;
+
+        // --- UI Ball References ---
+        [SerializeField] private int totalBalls = 10;
+        [SerializeField] private string ballBaseName = "VolumeBall_"; // e.g. VolumeBall_0, VolumeBall_1...
+        [SerializeField] private float activeAlpha = 1.0f;
+        [SerializeField] private float inactiveAlpha = 0.2f;
+
+        private uint[] ballShapes;
+        // --------------------------
 
         private bool _isDragging = false;
         private bool wasDraggingLastFrame = false;
@@ -35,9 +44,13 @@ namespace CrashoutsEngine
             _currentT = isMusicVolume ? AudioManager.playerMusVol : AudioManager.playerSFXVol;
             _targetT = _currentT;
             
-            // Sync local scale immediately
-            CEVec2 initialScale = new CEVec2(_currentT, 1.0f);
-            InternalCalls.TransformSetLocalScale(Entity.ID, ref initialScale);
+            // Initialize ball UI references
+            ballShapes = new uint[totalBalls];
+            for (int i = 0; i < totalBalls; i++)
+            {
+                uint id = InternalCalls.FindEntityByName(ballBaseName + i);
+                ballShapes[i] = id;
+            }
         }
 
         public override void Update()
@@ -92,9 +105,43 @@ namespace CrashoutsEngine
             }
             wasDraggingLastFrame = _isDragging;
 
-            // 6. Update Visual Scale
-            CEVec2 newLocalScale = new CEVec2(_currentT, 1.0f);
-            InternalCalls.TransformSetLocalScale(Entity.ID, ref newLocalScale);
+            // 6. Update Visual Alpha based on _currentT (Ranges from 0.0 to 1.0)
+            float volumePerBall = 1.0f / totalBalls;
+
+            for (int i = 0; i < totalBalls; i++)
+            {
+                if (ballShapes[i] == uint.MaxValue) continue;
+
+                Entity ballEnt = new Entity(ballShapes[i]);
+                ShapeComponent sc = ballEnt.GetComponent<ShapeComponent>();
+                if (sc == null) continue;
+
+                float ballMin = i * volumePerBall;
+                float ballMax = (i + 1) * volumePerBall;
+
+                float targetAlpha = inactiveAlpha;
+
+                if (_currentT >= ballMax)
+                {
+                    // Case 1: Volume is fully past this ball -> Full Brightness
+                    targetAlpha = activeAlpha;
+                }
+                else if (_currentT > ballMin)
+                {
+                    // Case 2: Volume is INSIDE this ball -> Fraction transparency
+                    float remainder = _currentT - ballMin;
+                    float fraction = remainder / volumePerBall;
+
+                    targetAlpha = inactiveAlpha + (fraction * (activeAlpha - inactiveAlpha));
+                }
+                else
+                {
+                    // Case 3: Volume hasn't reached this ball -> Dim/Background
+                    targetAlpha = inactiveAlpha;
+                }
+
+                sc.Alpha = targetAlpha;
+            }
         }
     }
 }

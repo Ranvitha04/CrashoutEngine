@@ -1,0 +1,1955 @@
+{
+    "prefabs": [
+        {
+            "name": "MusicUI_Prefab",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "Music",
+                    "uuid": 319885568702901279,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -33.87775802612305,
+                            "y": 8.213550567626954,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "text": {
+                        "font": "AlegreyaSC-Medium",
+                        "text": "Music",
+                        "scale": 24.5,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 7.86299991607666
+                        },
+                        "color": {
+                            "x": 0.22745098173618318,
+                            "y": 0.09803921729326248,
+                            "z": 0.0117647061124444,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": false,
+                        "padding": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "letterSpacing": 0.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBar",
+                    "uuid": 16205914714424912053,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -42.67787170410156,
+                            "y": 9.381607055664063,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "missing.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "VolumeSlider",
+                                "fields": {
+                                    "isMusicVolume": true,
+                                    "smoothingSpeed": 15.0,
+                                    "clickWidth": 37.0,
+                                    "clickHeight": 5.0,
+                                    "totalBalls": 10,
+                                    "ballBaseName": "MusicBall_",
+                                    "activeAlpha": 1.0,
+                                    "inactiveAlpha": 0.20000000298023225
+                                }
+                            }
+                        ]
+                    },
+                    "parent": {
+                        "parentUUID": 319885568702901279,
+                        "localPos": {
+                            "x": -8.800113677978516,
+                            "y": 1.1680564880371094,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Music_Child",
+                    "uuid": 1900213493319747789,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -24.199087142944337,
+                            "y": 9.176276206970215,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 37.82414627075195,
+                            "y": 5.337149620056152
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI\\Bar_Area.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 16205914714424912053,
+                        "localPos": {
+                            "x": 18.478784561157228,
+                            "y": -0.20533084869384767,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 37.82414627075195,
+                            "y": 5.337149620056152
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 2
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBallUI",
+                    "uuid": 17208570787537684222,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 22.397109985351564,
+                            "y": -17.133440017700197,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 0.75,
+                            "y": 0.75
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "missing.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": []
+                    },
+                    "parent": {
+                        "parentUUID": 16205914714424912053,
+                        "localPos": {
+                            "x": 65.07498168945313,
+                            "y": -26.515047073364259,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.75,
+                            "y": 0.75
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 100
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_0",
+                    "uuid": 9034390769555525404,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -39.85289001464844,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single empty.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17208570787537684222,
+                        "localPos": {
+                            "x": -83.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBall_0",
+                    "uuid": 3717969595411960361,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -39.85289001464844,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 9034390769555525404,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_9",
+                    "uuid": 13196252778603078978,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -6.1028900146484379,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single empty.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17208570787537684222,
+                        "localPos": {
+                            "x": -38.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBall_9",
+                    "uuid": 11058279986693005617,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -6.1028900146484379,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 13196252778603078978,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_8",
+                    "uuid": 17366850554625266566,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -9.852890014648438,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single empty.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17208570787537684222,
+                        "localPos": {
+                            "x": -43.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBall_8",
+                    "uuid": 8737695226991790116,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -9.852890014648438,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17366850554625266566,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_7",
+                    "uuid": 3066761884155940153,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -13.602890014648438,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single empty.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17208570787537684222,
+                        "localPos": {
+                            "x": -48.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBall_7",
+                    "uuid": 7482857046122197776,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -13.602890014648438,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 3066761884155940153,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_6",
+                    "uuid": 14483392074451423526,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -17.352890014648439,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single empty.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17208570787537684222,
+                        "localPos": {
+                            "x": -53.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBall_6",
+                    "uuid": 1161844581220371238,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -17.352890014648439,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 14483392074451423526,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_5",
+                    "uuid": 12099445605848586371,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -21.102890014648439,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single empty.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17208570787537684222,
+                        "localPos": {
+                            "x": -58.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBall_5",
+                    "uuid": 12254536372148450000,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -21.102890014648439,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 12099445605848586371,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_4",
+                    "uuid": 10564830055389575836,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -24.852890014648439,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single empty.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17208570787537684222,
+                        "localPos": {
+                            "x": -63.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBall_4",
+                    "uuid": 9180314857140450109,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -24.852890014648439,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 10564830055389575836,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_3",
+                    "uuid": 9971056837408302711,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -28.602890014648439,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single empty.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17208570787537684222,
+                        "localPos": {
+                            "x": -68.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBall_3",
+                    "uuid": 2840787459992120567,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -28.602890014648439,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 9971056837408302711,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_2",
+                    "uuid": 5022464709879845162,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -32.35289001464844,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single empty.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17208570787537684222,
+                        "localPos": {
+                            "x": -73.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBall_2",
+                    "uuid": 1151371972456499395,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -32.35289001464844,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 5022464709879845162,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_1",
+                    "uuid": 17572230899612966578,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -36.10289001464844,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single empty.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17208570787537684222,
+                        "localPos": {
+                            "x": -78.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBall_1",
+                    "uuid": 17925845099662791740,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -36.10289001464844,
+                            "y": 7.616559982299805,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 22.5,
+                            "y": 11.25
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/mana UI single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17572230899612966578,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "MusicBar_BG",
+                    "uuid": 4463449195138966460,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -24.198999404907228,
+                            "y": 9.176238059997559,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 37.82400131225586,
+                            "y": 5.336999893188477
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI\\Bar_Area.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.28194689750671389,
+                            "y": 0.22087237238883973,
+                            "z": 0.37016576528549197,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 319885568702901279,
+                        "localPos": {
+                            "x": 9.67875862121582,
+                            "y": 0.9626874923706055,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 37.82400131225586,
+                            "y": 5.336999893188477
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 1
+                    }
+                }
+            ]
+        }
+    ]
+}
