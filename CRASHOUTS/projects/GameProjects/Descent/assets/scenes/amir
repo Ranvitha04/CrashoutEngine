@@ -3543,6 +3543,16 @@
                     "z": 0.0
                 }
             },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "LoopingAnimation",
+                        "fields": {
+                            "animationName": "manadrain_anim_1"
+                        }
+                    }
+                ]
+            },
             "layer": {
                 "layerName": "",
                 "z": 0
@@ -3573,7 +3583,14 @@
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.25,
+                                        "t": 0.5,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
                                         "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
@@ -3601,13 +3618,102 @@
                     "z": 0.0
                 },
                 "size": {
+                    "x": 12.0,
+                    "y": 12.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/settings/mouse click-Sheet-sheet.png",
+                "uvSize": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "LoopingAnimation",
+                        "fields": {
+                            "animationName": "clicky"
+                        }
+                    }
+                ]
             },
             "layer": {
                 "layerName": "",
                 "z": 0
+            },
+            "keyframe_animator": {
+                "current": "clicky",
+                "t": 0.0,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "clicky",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\settings\\mouse click-Sheet-sheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 12.0,
+                        "targetHeight": 12.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 2.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         },
         {
