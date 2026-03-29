@@ -17783,7 +17783,7 @@
                         "fields": {
                             "StartBtn": 2241071384,
                             "SettingsBtn": 2241071384,
-                            "CloseBtn": 2241071384,
+                            "CloseBtn": 82,
                             "QuitBtn": 2241071384,
                             "QuitCheckPanel": 2241071384,
                             "YesBtn": 2241071384,
@@ -18006,7 +18006,11 @@
                             "isMusicVolume": false,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0
+                            "clickHeight": 3.0,
+                            "totalBalls": 10,
+                            "ballBaseName": "SFXBall_",
+                            "activeAlpha": 1.0,
+                            "inactiveAlpha": 0.20000000298023225
                         }
                     }
                 ]
@@ -18097,7 +18101,11 @@
                             "isMusicVolume": true,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0
+                            "clickHeight": 3.0,
+                            "totalBalls": 10,
+                            "ballBaseName": "MusicBall_",
+                            "activeAlpha": 1.0,
+                            "inactiveAlpha": 0.20000000298023225
                         }
                     }
                 ]
@@ -18137,7 +18145,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -17.669189453125,
+                    "x": -22.038684844970704,
                     "y": 4.787303924560547,
                     "z": 0.0
                 },
@@ -18179,7 +18187,7 @@
             "parent": {
                 "parentUUID": 4082988418873241213,
                 "localPos": {
-                    "x": -0.09202703088521958,
+                    "x": -0.11478481441736222,
                     "y": 0.04432688653469086,
                     "z": 0.0
                 },
@@ -18203,21 +18211,21 @@
         },
         {
             "active": true,
-            "name": "SFXBar_BG",
-            "uuid": 15062977002731457703,
+            "name": "SFXBall_5",
+            "uuid": 14823327649817308752,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 17.65673065185547,
-                    "y": 0.0,
+                    "x": 18.743547439575197,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 24.0,
-                    "y": 2.2680001258850099
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -18228,7 +18236,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI\\Bar_Area.png",
+                "textureName": "UI/mana UI single.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -18238,9 +18246,9 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.28194689750671389,
-                    "y": 0.22087237238883973,
-                    "z": 0.37016576528549197,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
                     "w": 1.0
                 },
                 "p1": {
@@ -18255,16 +18263,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 4082988418873241213,
+                "parentUUID": 580701898160574956,
                 "localPos": {
-                    "x": 0.09196213632822037,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.125,
-                    "y": 0.020999999716877939
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -18276,26 +18284,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 58
+                "z": 2
             }
         },
         {
             "active": true,
-            "name": "MusicBar_BG",
-            "uuid": 5220832060266396817,
+            "name": "BallBG_4",
+            "uuid": 5551651703832180729,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -17.346961975097658,
-                    "y": 0.0,
+                    "x": 16.34576416015625,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 24.0,
-                    "y": 2.3004000186920168
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -18306,7 +18314,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI\\Bar_Area.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -18316,9 +18324,9 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.28194689750671389,
-                    "y": 0.22087237238883973,
-                    "z": 0.37016576528549197,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
                     "w": 1.0
                 },
                 "p1": {
@@ -18333,16 +18341,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 4082988418873241213,
+                "parentUUID": 8454518309760976708,
                 "localPos": {
-                    "x": -0.0903487578034401,
-                    "y": 0.0,
+                    "x": -63.0,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.125,
-                    "y": 0.021299999207258226
+                    "x": 30.0,
+                    "y": 15.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -18354,7 +18362,7 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 15
+                "z": 1
             }
         },
         {
@@ -18397,7 +18405,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -18475,7 +18483,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -28494,21 +28502,21 @@
         },
         {
             "active": true,
-            "name": "SettingsNextBtn",
-            "uuid": 11905290199370368257,
+            "name": "SFXBall_4",
+            "uuid": 13000799836953406297,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 28.638469696044923,
-                    "y": -15.236944198608399,
+                    "x": 16.34576416015625,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 4.800000190734863,
-                    "y": 2.700000286102295
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -28519,7 +28527,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/next.png",
+                "textureName": "UI/mana UI single.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -28529,10 +28537,10 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -28545,71 +28553,17 @@
                     "z": 0.0
                 }
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "UI/settings/next.png",
-                "textureHovered": "UI/settings/next.png",
-                "texturePressed": "UI/settings/next.png",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "gui": {
-                "uiType": 5
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
             "parent": {
-                "parentUUID": 4082988418873241213,
+                "parentUUID": 5551651703832180729,
                 "localPos": {
-                    "x": 0.14915870130062104,
-                    "y": -0.14108280837535859,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.02500000037252903,
-                    "y": 0.02500000037252903
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -28621,26 +28575,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 59
+                "z": 2
             }
         },
         {
-            "active": false,
-            "name": "HowTo1",
-            "uuid": 5914769519443866891,
+            "active": true,
+            "name": "SFXBall_3",
+            "uuid": 258754213511806625,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
+                    "x": 13.947978973388672,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 192.0,
-                    "y": 108.00000762939453
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -28651,7 +28605,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/new open book.png",
+                "textureName": "UI/mana UI single.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -28678,7 +28632,7 @@
                 }
             },
             "parent": {
-                "parentUUID": 3899499466856881947,
+                "parentUUID": 18024575150375993831,
                 "localPos": {
                     "x": 0.0,
                     "y": 0.0,
@@ -28686,50 +28640,128 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.9599999785423279,
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 2
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_2",
+            "uuid": 11464699305934044154,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 11.55019760131836,
+                    "y": -1.0799999237060547,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 8454518309760976708,
+                "localPos": {
+                    "x": -73.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBallUI",
+            "uuid": 12270486645002309345,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 12.697563171386719,
+                    "y": -18.78089141845703,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 0.4795220196247101,
                     "y": 0.5400000214576721
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UI",
-                "z": 5
-            }
-        },
-        {
-            "active": true,
-            "name": "HowTo1_NextBtn",
-            "uuid": 1891569993015266298,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 29.100521087646486,
-                    "y": -15.621000289916993,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 4.800000190734863,
-                    "y": 2.700000286102295
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": false,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/next.png",
+                "textureName": "missing.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -28742,7 +28774,7 @@
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0,
-                    "w": 1.0
+                    "w": 0.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -28755,71 +28787,20 @@
                     "z": 0.0
                 }
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "UI/settings/next.png",
-                "textureHovered": "UI/settings/next.png",
-                "texturePressed": "UI/settings/next.png",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "gui": {
-                "uiType": 5
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
+            "script": {
+                "scripts": []
             },
             "parent": {
-                "parentUUID": 5914769519443866891,
+                "parentUUID": 3577795423813420893,
                 "localPos": {
-                    "x": 0.15156520903110505,
-                    "y": -0.14463888108730317,
+                    "x": 0.21736404299736024,
+                    "y": -0.1748342365026474,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.02500000037252903,
-                    "y": 0.02500000037252903
+                    "x": 0.0024999999441206457,
+                    "y": 0.004999999888241291
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -28831,26 +28812,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 59
+                "z": 100
             }
         },
         {
             "active": true,
-            "name": "HowTo1_BackBtn",
-            "uuid": 11439662465429275092,
+            "name": "BallBG_0",
+            "uuid": 12119142644074985921,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -28.396671295166017,
-                    "y": -15.348483085632325,
+                    "x": -27.102764129638673,
+                    "y": -0.9608898162841797,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 4.800000190734863,
-                    "y": 2.700000286102295
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -28861,7 +28842,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/back.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -28887,71 +28868,17 @@
                     "z": 0.0
                 }
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "UI/settings/back.png",
-                "textureHovered": "UI/settings/back.png",
-                "texturePressed": "UI/settings/back.png",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "gui": {
-                "uiType": 5
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
             "parent": {
-                "parentUUID": 5914769519443866891,
+                "parentUUID": 12270486645002309345,
                 "localPos": {
-                    "x": -0.147899329662323,
-                    "y": -0.14211557805538178,
+                    "x": -83.0,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.02500000037252903,
-                    "y": 0.02500000037252903
+                    "x": 30.0,
+                    "y": 15.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -28963,26 +28890,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 59
+                "z": 0
             }
         },
         {
-            "active": false,
-            "name": "HowTo2",
-            "uuid": 14016840200763474298,
+            "active": true,
+            "name": "MusicBall_0",
+            "uuid": 15703438264734470668,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
+                    "x": -27.102764129638673,
+                    "y": -0.9608898162841797,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 192.0,
-                    "y": 108.00000762939453
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -28993,7 +28920,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/new open book.png",
+                "textureName": "UI/mana UI single.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -29020,7 +28947,7 @@
                 }
             },
             "parent": {
-                "parentUUID": 3899499466856881947,
+                "parentUUID": 12119142644074985921,
                 "localPos": {
                     "x": 0.0,
                     "y": 0.0,
@@ -29028,8 +28955,1805 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.9599999785423279,
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_9",
+            "uuid": 3372794973105085857,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -5.524272918701172,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12270486645002309345,
+                "localPos": {
+                    "x": -38.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBall_9",
+            "uuid": 9400641561515203674,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -5.524272918701172,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 3372794973105085857,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_8",
+            "uuid": 15604622581302131984,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -7.921884536743164,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12270486645002309345,
+                "localPos": {
+                    "x": -43.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBall_8",
+            "uuid": 13721132242888037636,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -7.921884536743164,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 15604622581302131984,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_7",
+            "uuid": 1244676687892688565,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -10.319494247436524,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12270486645002309345,
+                "localPos": {
+                    "x": -48.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBall_7",
+            "uuid": 18249659488659630058,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -10.319494247436524,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 1244676687892688565,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_6",
+            "uuid": 4736809734649680989,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -12.717103958129883,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12270486645002309345,
+                "localPos": {
+                    "x": -53.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBall_6",
+            "uuid": 12122179039525519149,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -12.717103958129883,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 4736809734649680989,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_5",
+            "uuid": 7784183366345715953,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -15.114713668823243,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12270486645002309345,
+                "localPos": {
+                    "x": -58.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBall_5",
+            "uuid": 7800526318069166834,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -15.114713668823243,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 7784183366345715953,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_4",
+            "uuid": 18076358241451614332,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -17.5123233795166,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12270486645002309345,
+                "localPos": {
+                    "x": -63.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBall_4",
+            "uuid": 15497859747726646119,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -17.5123233795166,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 18076358241451614332,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_3",
+            "uuid": 16024684748645296440,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -19.909934997558595,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12270486645002309345,
+                "localPos": {
+                    "x": -68.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBall_3",
+            "uuid": 2385863607739084896,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -19.909934997558595,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 16024684748645296440,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_2",
+            "uuid": 14755834311900380644,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -22.307544708251954,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12270486645002309345,
+                "localPos": {
+                    "x": -73.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBall_2",
+            "uuid": 1838684688485046115,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -22.307544708251954,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14755834311900380644,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_1",
+            "uuid": 14199348918784913086,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -24.705154418945314,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 12270486645002309345,
+                "localPos": {
+                    "x": -78.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "MusicBall_1",
+            "uuid": 15165341085211739283,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -24.705154418945314,
+                    "y": -0.9608898162841797,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.385660171508789,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14199348918784913086,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_3",
+            "uuid": 18024575150375993831,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 13.947978973388672,
+                    "y": -1.0799999237060547,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 8454518309760976708,
+                "localPos": {
+                    "x": -68.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "SFXBall_2",
+            "uuid": 12709282390674138137,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 11.55019760131836,
+                    "y": -1.0799999237060547,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 11464699305934044154,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 2
+            }
+        },
+        {
+            "active": true,
+            "name": "SFXBall_1",
+            "uuid": 11929161244365545003,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 9.152416229248047,
+                    "y": -1.0799999237060547,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 844662597668843947,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 2
+            }
+        },
+        {
+            "active": true,
+            "name": "BallBG_1",
+            "uuid": 844662597668843947,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 9.152416229248047,
+                    "y": -1.0799999237060547,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/mana UI single empty.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 8454518309760976708,
+                "localPos": {
+                    "x": -78.0,
+                    "y": 33.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 30.0,
+                    "y": 15.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "SFXBallUI",
+            "uuid": 8454518309760976708,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 46.557830810546878,
+                    "y": -18.900001525878908,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 0.4795566201210022,
                     "y": 0.5400000214576721
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "missing.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": []
+            },
+            "parent": {
+                "parentUUID": 9367769150656733250,
+                "localPos": {
+                    "x": 0.21268515288829804,
+                    "y": -0.17499999701976777,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0024999999441206457,
+                    "y": 0.004999999888241291
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -29040,27 +30764,27 @@
                 }
             },
             "layer": {
-                "layerName": "UI",
-                "z": 5
+                "layerName": "UIButtons",
+                "z": 100
             }
         },
         {
             "active": true,
-            "name": "HowTo2_BackBtn",
-            "uuid": 13120099206006745311,
+            "name": "BallBG_0",
+            "uuid": 15313096689448501268,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -28.396671295166017,
-                    "y": -15.348483085632325,
+                    "x": 6.754631042480469,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 4.800000190734863,
-                    "y": 2.700000286102295
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -29071,7 +30795,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/back.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -29097,71 +30821,17 @@
                     "z": 0.0
                 }
             },
-            "button": {
-                "buttonState": 0,
-                "shapeNormalColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "shapeHoveredColor": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.5
-                },
-                "shapePressedColor": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
-                },
-                "textNormalColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.30000001192092898,
-                    "z": 0.30000001192092898,
-                    "w": 0.699999988079071
-                },
-                "textHoveredColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "textPressedColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.5
-                },
-                "textureNormal": "UI/settings/back.png",
-                "textureHovered": "UI/settings/back.png",
-                "texturePressed": "UI/settings/back.png",
-                "hoverScale": 1.100000023841858,
-                "pressedScale": 0.949999988079071
-            },
-            "gui": {
-                "uiType": 5
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
             "parent": {
-                "parentUUID": 14016840200763474298,
+                "parentUUID": 8454518309760976708,
                 "localPos": {
-                    "x": -0.147899329662323,
-                    "y": -0.14211557805538178,
+                    "x": -83.0,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.02500000037252903,
-                    "y": 0.02500000037252903
+                    "x": 30.0,
+                    "y": 15.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -29173,1214 +30843,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 59
+                "z": 1
             }
         },
         {
             "active": true,
-            "name": "Control",
-            "uuid": 3463209874916728433,
+            "name": "SFXBall_0",
+            "uuid": 5478498483640574615,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -17.379493713378908,
-                    "y": 19.33418846130371,
+                    "x": 6.754631042480469,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Bold",
-                "text": "CONTROLS",
-                "scale": 18.600000381469728,
-                "offset": {
-                    "x": 0.30000001192092898,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 0.8999999761581421,
-                    "y": 3.4000000953674318
-                },
-                "letterSpacing": 1.2000000476837159,
-                "lineSpacing": 0.10000000149011612,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": -0.09051819890737534,
-                    "y": 0.1790202558040619,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Run_Anim",
-            "uuid": 9112527772803979408,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -13.472479820251465,
-                    "y": 12.163886070251465,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to run",
-                "scale": 12.5,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": -0.5,
-                    "y": 3.4000000953674318
-                },
-                "letterSpacing": 0.550000011920929,
-                "lineSpacing": 0.10000000149011612,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": -0.07016916573047638,
-                    "y": 0.11262856423854828,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Fall_Anim",
-            "uuid": 7498782094097989537,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -13.472484588623047,
-                    "y": 4.225339412689209,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to fall",
-                "scale": 12.5,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": -0.5,
-                    "y": 3.4000000953674318
-                },
-                "letterSpacing": 0.550000011920929,
-                "lineSpacing": 0.10000000149011612,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": -0.07016918808221817,
-                    "y": 0.03912350907921791,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Change_Anim",
-            "uuid": 5428128093510908039,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -10.91271686553955,
-                    "y": -3.4571096897125246,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.15999984741211,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to change weights",
-                "scale": 12.5,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": -0.5,
-                    "y": 3.4000000953674318
-                },
-                "letterSpacing": 0.550000011920929,
-                "lineSpacing": 0.10000000149011612,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": -0.056837067008018497,
-                    "y": -0.0320102721452713,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.10499999672174454,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Jump_Anim",
-            "uuid": 8275506999665170485,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -12.79885482788086,
-                    "y": -10.499361991882325,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to jump",
-                "scale": 12.5,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": -0.5,
-                    "y": 3.4000000953674318
-                },
-                "letterSpacing": 0.550000011920929,
-                "lineSpacing": 0.10000000149011612,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": -0.06666070222854614,
-                    "y": -0.09721630811691284,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Click_Text",
-            "uuid": 18249579044953909062,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 17.648902893066408,
-                    "y": 8.706789016723633,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "When in range,",
-                "scale": 12.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 4.400000095367432,
-                    "y": 7.900000095367432
-                },
-                "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": 0.091921366751194,
-                    "y": 0.08061841130256653,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Click_Text_1",
-            "uuid": 647031588899762341,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 17.648902893066408,
-                    "y": 6.658117771148682,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "click to drag slime",
-                "scale": 12.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 4.400000095367432,
-                    "y": 7.900000095367432
-                },
-                "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": 0.091921366751194,
-                    "y": 0.06164923310279846,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Click_Text_2",
-            "uuid": 15873871152853939705,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 17.648902893066408,
-                    "y": 4.481415748596191,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to pick it up",
-                "scale": 12.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 4.400000095367432,
-                    "y": 7.900000095367432
-                },
-                "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": 0.091921366751194,
-                    "y": 0.04149458557367325,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Throw_Text",
-            "uuid": 4898084442546681880,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 17.648902893066408,
-                    "y": -8.450712203979493,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "Control throwing arc",
-                "scale": 12.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 4.400000095367432,
-                    "y": 7.900000095367432
-                },
-                "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": 0.091921366751194,
-                    "y": -0.07824733108282089,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Throw_Text_1",
-            "uuid": 16180940298941770700,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 17.648902893066408,
-                    "y": -10.75544548034668,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "with mouse, release",
-                "scale": 12.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 4.400000095367432,
-                    "y": 7.900000095367432
-                },
-                "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": 0.091921366751194,
-                    "y": -0.09958744794130326,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Throw_Text_2",
-            "uuid": 9797877601924829739,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 17.648902893066408,
-                    "y": -12.804099082946778,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to throw",
-                "scale": 12.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 4.400000095367432,
-                    "y": 7.900000095367432
-                },
-                "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 5914769519443866891,
-                "localPos": {
-                    "x": 0.091921366751194,
-                    "y": -0.11855646222829819,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Key_A",
-            "uuid": 3305066105959607869,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -28.83106231689453,
-                    "y": 12.035860061645508,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 5.759999752044678,
-                    "y": 5.40000057220459
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -30391,7 +30873,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/key_A.png",
+                "textureName": "UI/mana UI single.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -30418,16 +30900,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 5914769519443866891,
+                "parentUUID": 15313096689448501268,
                 "localPos": {
-                    "x": -0.15016178786754609,
-                    "y": 0.11144313961267472,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.029999999329447748,
-                    "y": 0.05000000074505806
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -30439,26 +30921,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 0
+                "z": 2
             }
         },
         {
             "active": true,
-            "name": "Key_D",
-            "uuid": 18007539008692940579,
+            "name": "BallBG_9",
+            "uuid": 6001526058548543960,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -22.364288330078126,
-                    "y": 12.035860061645508,
+                    "x": 28.334678649902345,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 5.759999752044678,
-                    "y": 5.40000057220459
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -30469,7 +30951,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/key_D.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -30496,16 +30978,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 5914769519443866891,
+                "parentUUID": 8454518309760976708,
                 "localPos": {
-                    "x": -0.11648067086935044,
-                    "y": 0.11144313961267472,
+                    "x": -38.0,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.029999999329447748,
-                    "y": 0.05000000074505806
+                    "x": 30.0,
+                    "y": 15.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -30517,26 +30999,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 0
+                "z": 1
             }
         },
         {
             "active": true,
-            "name": "Key_S",
-            "uuid": 7369212052475796827,
+            "name": "SFXBall_9",
+            "uuid": 6386023467645878086,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -25.867122650146486,
-                    "y": 4.0973076820373539,
+                    "x": 28.334678649902345,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 5.759999752044678,
-                    "y": 5.40000057220459
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -30547,7 +31029,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/key_S.png",
+                "textureName": "UI/mana UI single.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -30574,16 +31056,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 5914769519443866891,
+                "parentUUID": 6001526058548543960,
                 "localPos": {
-                    "x": -0.13472460210323335,
-                    "y": 0.03793803229928017,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.029999999329447748,
-                    "y": 0.05000000074505806
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -30595,26 +31077,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 0
+                "z": 2
             }
         },
         {
             "active": true,
-            "name": "Key_E",
-            "uuid": 17110401972222098411,
+            "name": "BallBG_8",
+            "uuid": 14433876176705570579,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -25.867122650146486,
-                    "y": -3.58514666557312,
+                    "x": 25.9368953704834,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 5.759999752044678,
-                    "y": 5.40000057220459
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -30625,7 +31107,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/key_E.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -30652,16 +31134,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 5914769519443866891,
+                "parentUUID": 8454518309760976708,
                 "localPos": {
-                    "x": -0.13472460210323335,
-                    "y": -0.033195801079273227,
+                    "x": -43.0,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.029999999329447748,
-                    "y": 0.05000000074505806
+                    "x": 30.0,
+                    "y": 15.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -30673,26 +31155,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 0
+                "z": 1
             }
         },
         {
             "active": true,
-            "name": "Key_Space",
-            "uuid": 7131279319886031998,
+            "name": "SFXBall_8",
+            "uuid": 17977334781721749753,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -26.00183868408203,
-                    "y": -10.499364852905274,
+                    "x": 25.9368953704834,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 11.519999504089356,
-                    "y": 4.320000171661377
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -30703,7 +31185,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/spacebar.png",
+                "textureName": "UI/mana UI single.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -30730,16 +31212,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 5914769519443866891,
+                "parentUUID": 14433876176705570579,
                 "localPos": {
-                    "x": -0.13542623817920686,
-                    "y": -0.09721633791923523,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.05999999865889549,
-                    "y": 0.03999999910593033
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -30751,26 +31233,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 0
+                "z": 2
             }
         },
         {
             "active": true,
-            "name": "Grey_PP",
-            "uuid": 4881630364155579120,
+            "name": "BallBG_7",
+            "uuid": 10559736833268431999,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -29.23524284362793,
-                    "y": 9.090913772583008,
+                    "x": 23.539112091064454,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 5.759999752044678,
-                    "y": 7.560000419616699
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -30781,7 +31263,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/Pressure Plate.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -30808,16 +31290,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 14016840200763474298,
+                "parentUUID": 8454518309760976708,
                 "localPos": {
-                    "x": -0.15226688981056214,
-                    "y": 0.08417512476444245,
+                    "x": -48.0,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.029999999329447748,
-                    "y": 0.07000000029802323
+                    "x": 30.0,
+                    "y": 15.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -30829,26 +31311,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 0
+                "z": 1
             }
         },
         {
             "active": true,
-            "name": "Blue_PP",
-            "uuid": 6189484517682757779,
+            "name": "SFXBall_7",
+            "uuid": 11093357143022136841,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -29.23524284362793,
-                    "y": 15.621002197265625,
+                    "x": 23.539112091064454,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 5.759999752044678,
-                    "y": 7.560000419616699
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -30859,7 +31341,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/Pressure Plate.png",
+                "textureName": "UI/mana UI single.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -30869,8 +31351,8 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.4274509847164154,
-                    "y": 0.7450980544090271,
+                    "x": 1.0,
+                    "y": 1.0,
                     "z": 1.0,
                     "w": 1.0
                 },
@@ -30886,16 +31368,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 14016840200763474298,
+                "parentUUID": 10559736833268431999,
                 "localPos": {
-                    "x": -0.15226688981056214,
-                    "y": 0.14463889598846436,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.029999999329447748,
-                    "y": 0.07000000029802323
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -30907,832 +31389,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 0
+                "z": 2
             }
         },
         {
             "active": true,
-            "name": "PP_Big_Text",
-            "uuid": 1660977117698240599,
+            "name": "BallBG_6",
+            "uuid": 16827796577098054119,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -17.379493713378908,
-                    "y": 19.33418846130371,
+                    "x": 21.14133071899414,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Bold",
-                "text": "PRESSURE  PLATES",
-                "scale": 16.0,
-                "offset": {
-                    "x": 0.30000001192092898,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 0.8999999761581421,
-                    "y": 3.4000000953674318
-                },
-                "letterSpacing": 1.2000000476837159,
-                "lineSpacing": 0.10000000149011612,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": -0.09051819890737534,
-                    "y": 0.1790202558040619,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Grey_PP_Text",
-            "uuid": 4955493567060990662,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -13.203023910522461,
-                    "y": 5.889883995056152,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.15999984741211,
-                    "y": -9.82800006866455
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Medium",
-                "text": "Grey pressure plates opens door at the end of level",
-                "scale": 8.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.16022098064422608,
-                    "y": 0.12357570230960846,
-                    "z": 0.10799425840377808,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 1.7000000476837159,
-                    "y": 3.299999952316284
-                },
-                "letterSpacing": 1.850000023841858,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "gui": {
-                "uiType": 3
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": -0.06876575201749802,
-                    "y": 0.05453595891594887,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.10499999672174454,
-                    "y": -0.09099999070167542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Blue_PP_Text",
-            "uuid": 8737555831597232522,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -13.203023910522461,
-                    "y": 12.804093360900879,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.15999984741211,
-                    "y": -9.82800006866455
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Medium",
-                "text": "Blue pressure plates opens door immediately",
-                "scale": 8.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.16022098064422608,
-                    "y": 0.12357570230960846,
-                    "z": 0.10799425840377808,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 1.7000000476837159,
-                    "y": 3.299999952316284
-                },
-                "letterSpacing": 1.850000023841858,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "gui": {
-                "uiType": 3
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": -0.06876575201749802,
-                    "y": 0.11855641007423401,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.10499999672174454,
-                    "y": -0.09099999070167542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Counter_PP_Text",
-            "uuid": 10862700781448949578,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -13.203023910522461,
-                    "y": -2.17669415473938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.15999984741211,
-                    "y": -9.82800006866455
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Medium",
-                "text": "Watch the counter to see how many grey plates you still need to activate",
-                "scale": 8.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.16022098064422608,
-                    "y": 0.12357570230960846,
-                    "z": 0.10799425840377808,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 1.7000000476837159,
-                    "y": 3.299999952316284
-                },
-                "letterSpacing": 1.850000023841858,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "gui": {
-                "uiType": 3
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": -0.06876575201749802,
-                    "y": -0.020154574885964395,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.10499999672174454,
-                    "y": -0.09099999070167542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Slime_PP_Text",
-            "uuid": 12317719778943011598,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -17.110036849975587,
-                    "y": -10.627405166625977,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 31.65999984741211,
-                    "y": -9.82800006866455
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Medium",
-                "text": "*Slimes can be used to activate plates Dante can't reach",
-                "scale": 8.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.16022098064422608,
-                    "y": 0.12357570230960846,
-                    "z": 0.10799425840377808,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 1.2000000476837159,
-                    "y": 3.299999952316284
-                },
-                "letterSpacing": 1.850000023841858,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "gui": {
-                "uiType": 3
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": -0.08911477774381638,
-                    "y": -0.09840188920497894,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.16489583253860475,
-                    "y": -0.09099999070167542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Counter_PP",
-            "uuid": 17675493152120311253,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -29.10053253173828,
-                    "y": -2.17669415473938,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 4.800000190734863,
-                    "y": 2.1600000858306886
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.501960813999176
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Medium",
-                "text": "[0/2]",
-                "scale": 9.100000381469727,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 1.7000000476837159,
-                    "y": 3.299999952316284
-                },
-                "letterSpacing": 1.850000023841858,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "gui": {
-                "uiType": 3
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": -0.15156526863574983,
-                    "y": -0.020154574885964395,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.02500000037252903,
-                    "y": 0.019999999552965165
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform_Big_Text",
-            "uuid": 4546248751349054734,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 16.97528839111328,
-                    "y": 19.33418846130371,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Bold",
-                "text": "PLATFORM",
-                "scale": 16.0,
-                "offset": {
-                    "x": 0.30000001192092898,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 0.8999999761581421,
-                    "y": 3.4000000953674318
-                },
-                "letterSpacing": 1.2000000476837159,
-                "lineSpacing": 0.10000000149011612,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": 0.08841296285390854,
-                    "y": 0.1790202558040619,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Plat_UpDown",
-            "uuid": 15134538403291100151,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 6.466794013977051,
-                    "y": 5.6338090896606449,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 9.600000381469727,
-                    "y": 3.2400002479553224
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -31743,7 +31419,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/platform_tut.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -31770,16 +31446,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 14016840200763474298,
+                "parentUUID": 8454518309760976708,
                 "localPos": {
-                    "x": 0.03368121758103371,
-                    "y": 0.052164893597364429,
+                    "x": -53.0,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.05000000074505806,
-                    "y": 0.029999999329447748
+                    "x": 30.0,
+                    "y": 15.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -31791,26 +31467,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 0
+                "z": 1
             }
         },
         {
             "active": true,
-            "name": "Plat_LeftRight",
-            "uuid": 15195570506823454080,
+            "name": "SFXBall_6",
+            "uuid": 8218727654514634836,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 6.466794013977051,
-                    "y": 12.804107666015625,
+                    "x": 21.14133071899414,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 9.600000381469727,
-                    "y": 3.2400002479553224
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -31821,7 +31497,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/settings/platform_tut1.png",
+                "textureName": "UI/mana UI single.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -31848,16 +31524,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 14016840200763474298,
+                "parentUUID": 16827796577098054119,
                 "localPos": {
-                    "x": 0.03368121758103371,
-                    "y": 0.11855654418468476,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.05000000074505806,
-                    "y": 0.029999999329447748
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -31869,606 +31545,26 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 0
+                "z": 2
             }
         },
         {
             "active": true,
-            "name": "Platform_LeftRight_Text",
-            "uuid": 14264072923802265022,
+            "name": "BallBG_5",
+            "uuid": 580701898160574956,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 22.903181076049806,
-                    "y": 12.804093360900879,
+                    "x": 18.743547439575197,
+                    "y": -1.0799999237060547,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.15999984741211,
-                    "y": -9.82800006866455
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Medium",
-                "text": "These platforms only move left & right",
-                "scale": 8.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.16022098064422608,
-                    "y": 0.12357570230960846,
-                    "z": 0.10799425840377808,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 1.7000000476837159,
-                    "y": 3.299999952316284
-                },
-                "letterSpacing": 1.850000023841858,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "gui": {
-                "uiType": 3
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": 0.1192874014377594,
-                    "y": 0.11855641007423401,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.10499999672174454,
-                    "y": -0.09099999070167542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Platform_UpDown_Text",
-            "uuid": 17131644199643412022,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 22.903181076049806,
-                    "y": 5.505760192871094,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 20.15999984741211,
-                    "y": -9.82800006866455
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Medium",
-                "text": "These platforms can sink according to dante's weight",
-                "scale": 8.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.16022098064422608,
-                    "y": 0.12357570230960846,
-                    "z": 0.10799425840377808,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 1.7000000476837159,
-                    "y": 3.299999952316284
-                },
-                "letterSpacing": 1.850000023841858,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "gui": {
-                "uiType": 3
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": 0.1192874014377594,
-                    "y": 0.05097925662994385,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.10499999672174454,
-                    "y": -0.09099999070167542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "General_Big_Text",
-            "uuid": 16002806723598935096,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 16.97528839111328,
-                    "y": -0.12803411483764649,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Bold",
-                "text": "GENERAL",
-                "scale": 16.0,
-                "offset": {
-                    "x": 0.30000001192092898,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 0.8999999761581421,
-                    "y": 3.4000000953674318
-                },
-                "letterSpacing": 1.2000000476837159,
-                "lineSpacing": 0.10000000149011612,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": 0.08841296285390854,
-                    "y": -0.0011855009943246842,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "General_Energy_Text",
-            "uuid": 11069161084223432032,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 21.421201705932618,
-                    "y": -6.274013519287109,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 22.15999984741211,
-                    "y": -9.82800006866455
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Medium",
-                "text": "Energy Balls restore mana and refill itself overtime",
-                "scale": 8.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.16022098064422608,
-                    "y": 0.12357570230960846,
-                    "z": 0.10799425840377808,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 0.800000011920929,
-                    "y": 3.299999952316284
-                },
-                "letterSpacing": 1.850000023841858,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "gui": {
-                "uiType": 3
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": 0.11156875640153885,
-                    "y": -0.058092713356018069,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.11541666835546494,
-                    "y": -0.09099999070167542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "General_Checkpoint_Text",
-            "uuid": 1394045503361262515,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 21.421201705932618,
-                    "y": -13.700384140014649,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 22.15999984741211,
-                    "y": -9.82800006866455
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Medium",
-                "text": "Dante can respawn at checkpoints scattered throughout the levels if he dies",
-                "scale": 8.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.16022098064422608,
-                    "y": 0.12357570230960846,
-                    "z": 0.10799425840377808,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 0.800000011920929,
-                    "y": 3.299999952316284
-                },
-                "letterSpacing": 1.850000023841858,
-                "lineSpacing": 0.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "gui": {
-                "uiType": 3
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": 0.11156875640153885,
-                    "y": -0.12685540318489076,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.11541666835546494,
-                    "y": -0.09099999070167542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Energy_Ball",
-            "uuid": 9562791250476188370,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 6.062632083892822,
-                    "y": -5.5057573318481449,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 6.720000267028809,
-                    "y": 10.80000114440918
+                    "x": 14.386698722839356,
+                    "y": 8.100000381469727
                 }
             },
             "shape": {
@@ -32479,7 +31575,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/Energy Ball/1.png",
+                "textureName": "UI/mana UI single empty.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -32506,16 +31602,16 @@
                 }
             },
             "parent": {
-                "parentUUID": 14016840200763474298,
+                "parentUUID": 8454518309760976708,
                 "localPos": {
-                    "x": 0.031576208770275119,
-                    "y": -0.05097923055291176,
+                    "x": -58.0,
+                    "y": 33.0,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.03500000014901161,
-                    "y": 0.10000000149011612
+                    "x": 30.0,
+                    "y": 15.0
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -32527,85 +31623,7 @@
             },
             "layer": {
                 "layerName": "UIButtons",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Checkypoint",
-            "uuid": 3912703927530903048,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 6.062631607055664,
-                    "y": -12.80409049987793,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 5.759999752044678,
-                    "y": 8.640000343322754
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "Checkpoint Marker.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 14016840200763474298,
-                "localPos": {
-                    "x": 0.03157620504498482,
-                    "y": -0.11855638772249222,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.029999999329447748,
-                    "y": 0.07999999821186066
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 0
+                "z": 1
             }
         }
     ],
