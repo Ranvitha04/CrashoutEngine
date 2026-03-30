@@ -389,15 +389,12 @@
             "script": {
                 "scripts": [
                     {
-                        "className": "MenuButtons",
+                        "className": "GameOverMenu",
                         "fields": {
-                            "StartBtn": 0,
-                            "SettingsBtn": 0,
-                            "CloseBtn": 3,
-                            "QuitBtn": 0,
-                            "QuitCheckPanel": 2,
-                            "YesBtn": 0,
-                            "NoBtn": 0
+                            "RestartBtn": 2,
+                            "QuitBtn": 3,
+                            "quitScene": "descentmenu",
+                            "quitTransition": 0.5
                         }
                     }
                 ]

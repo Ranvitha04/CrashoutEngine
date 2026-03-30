@@ -73,6 +73,13 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalGetActionReleased(string actionName);
 
+        public static void SetControllerVibration(float lowFrequency, float highFrequency, float durationSeconds)
+        {
+            InternalSetControllerVibration(lowFrequency, highFrequency, durationSeconds);
+        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void InternalSetControllerVibration(float lowFrequency, float highFrequency, float durationSeconds);
+
         public static CEVec2 GetMousePosition()
         {
             CEVec2 pos;

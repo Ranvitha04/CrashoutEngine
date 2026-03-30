@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 #include <utility>
 
 namespace
@@ -22,9 +23,22 @@ namespace CrashoutEngine
 
     bool ControllerManager::Initialize()
     {
+        SDL_SetHint(SDL_HINT_JOYSTICK_HIDAPI, "1");
+        SDL_SetHint(SDL_HINT_JOYSTICK_HIDAPI_PS5, "1");
+        SDL_SetHint(SDL_HINT_JOYSTICK_HIDAPI_PS4_RUMBLE, "1");
+        SDL_SetHint(SDL_HINT_JOYSTICK_HIDAPI_PS5_RUMBLE, "1");
+
         if ((SDL_WasInit(SDL_INIT_EVENTS) & SDL_INIT_EVENTS) == 0U)
         {
             if (SDL_InitSubSystem(SDL_INIT_EVENTS) != 0)
+            {
+                return false;
+            }
+        }
+
+        if ((SDL_WasInit(SDL_INIT_JOYSTICK) & SDL_INIT_JOYSTICK) == 0U)
+        {
+            if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0)
             {
                 return false;
             }
@@ -38,6 +52,11 @@ namespace CrashoutEngine
             {
                 return false;
             }
+        }
+
+        if ((SDL_WasInit(SDL_INIT_HAPTIC) & SDL_INIT_HAPTIC) == 0U)
+        {
+            SDL_InitSubSystem(SDL_INIT_HAPTIC);
         }
 
         m_initialized = true;
@@ -59,6 +78,12 @@ namespace CrashoutEngine
         for (auto& [instanceId, controller] : m_controllers)
         {
             (void)instanceId;
+            if (controller.haptic != nullptr)
+            {
+                SDL_HapticClose(controller.haptic);
+                controller.haptic = nullptr;
+            }
+
             if (controller.handle != nullptr)
             {
                 SDL_GameControllerClose(controller.handle);
@@ -215,6 +240,72 @@ namespace CrashoutEngine
         return value;
     }
 
+    void ControllerManager::SetVibration(float lowFrequency, float highFrequency, std::uint32_t durationMs) const
+    {
+        const float clampedLow = std::clamp(lowFrequency, 0.0f, 1.0f);
+        const float clampedHigh = std::clamp(highFrequency, 0.0f, 1.0f);
+        const Uint16 low = static_cast<Uint16>(clampedLow * 65535.0f);
+        const Uint16 high = static_cast<Uint16>(clampedHigh * 65535.0f);
+        bool rumbleSent = false;
+
+        for (const auto& [instanceId, controller] : m_controllers)
+        {
+            (void)instanceId;
+            if (controller.handle == nullptr)
+            {
+                continue;
+            }
+
+            if (SDL_GameControllerRumble(controller.handle, low, high, durationMs) == 0)
+            {
+                rumbleSent = true;
+                continue;
+            }
+
+            SDL_Joystick* joystick = SDL_GameControllerGetJoystick(controller.handle);
+            if (joystick != nullptr && SDL_JoystickRumble(joystick, low, high, durationMs) == 0)
+            {
+                rumbleSent = true;
+                continue;
+            }
+
+            if (controller.haptic != nullptr)
+            {
+                if ((SDL_HapticQuery(controller.haptic) & SDL_HAPTIC_LEFTRIGHT) != 0)
+                {
+                    SDL_HapticEffect effectUnion{};
+                    effectUnion.leftright.type = SDL_HAPTIC_LEFTRIGHT;
+                    effectUnion.leftright.length = durationMs;
+                    effectUnion.leftright.large_magnitude = low;
+                    effectUnion.leftright.small_magnitude = high;
+
+                    if (SDL_HapticEffectSupported(controller.haptic, &effectUnion) == SDL_TRUE)
+                    {
+                        const int effectId = SDL_HapticNewEffect(controller.haptic, &effectUnion);
+                        if (effectId >= 0)
+                        {
+                            if (SDL_HapticRunEffect(controller.haptic, effectId, 1) == 0)
+                            {
+                                rumbleSent = true;
+                            }
+
+                            SDL_HapticDestroyEffect(controller.haptic, effectId);
+                        }
+                    }
+                }
+                
+                if (!rumbleSent && SDL_HapticRumbleSupported(controller.haptic) == SDL_TRUE)
+                {
+                    const float strength = clampedLow > clampedHigh ? clampedLow : clampedHigh;
+                    if (SDL_HapticRumblePlay(controller.haptic, strength, durationMs) == 0)
+                    {
+                        rumbleSent = true;
+                    }
+                }
+            }
+        }
+    }
+
     std::size_t ControllerManager::GetConnectedControllerCount() const
     {
         return m_controllers.size();
@@ -252,6 +343,20 @@ namespace CrashoutEngine
         state.instanceId = instanceId;
         state.previousButtons.resize(static_cast<std::size_t>(SDL_CONTROLLER_BUTTON_MAX), 0U);
         state.previousAxes.resize(static_cast<std::size_t>(SDL_CONTROLLER_AXIS_MAX), 0.0f);
+
+        if (SDL_JoystickIsHaptic(joystick) == SDL_TRUE)
+        {
+            state.haptic = SDL_HapticOpenFromJoystick(joystick);
+            if (state.haptic != nullptr && SDL_HapticRumbleSupported(state.haptic) == SDL_TRUE)
+            {
+                if (SDL_HapticRumbleInit(state.haptic) != 0)
+                {
+                    SDL_HapticClose(state.haptic);
+                    state.haptic = nullptr;
+                }
+            }
+        }
+
         SnapshotControllerState(state);
 
         m_controllers.emplace(instanceId, std::move(state));
@@ -268,6 +373,11 @@ namespace CrashoutEngine
         if (controllerIt->second.handle != nullptr)
         {
             SDL_GameControllerClose(controllerIt->second.handle);
+        }
+
+        if (controllerIt->second.haptic != nullptr)
+        {
+            SDL_HapticClose(controllerIt->second.haptic);
         }
 
         m_controllers.erase(controllerIt);
@@ -297,10 +407,12 @@ namespace CrashoutEngine
     {
         if (rawValue >= 0)
         {
-            return std::min(static_cast<float>(rawValue) / 32767.0f, 1.0f);
+            const float normalized = static_cast<float>(rawValue) / 32767.0f;
+            return normalized < 1.0f ? normalized : 1.0f;
         }
 
-        return std::max(static_cast<float>(rawValue) / 32768.0f, -1.0f);
+        const float normalized = static_cast<float>(rawValue) / 32768.0f;
+        return normalized > -1.0f ? normalized : -1.0f;
     }
 
     float ControllerManager::ApplyDeadzone(float value, float deadzone)

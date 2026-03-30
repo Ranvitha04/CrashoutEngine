@@ -106,6 +106,11 @@ static bool InternalGetActionReleased(MonoString* actionName)
     return InputManager::GetActionReleased(action);
 }
 
+static void InternalSetControllerVibration(float lowFrequency, float highFrequency, float durationSeconds)
+{
+    InputManager::SetControllerVibration(lowFrequency, highFrequency, durationSeconds);
+}
+
 static void InternalGetMousePosition(CEVec2* outPos)
 {
     *outPos = InputManager::GetMousePosition();
@@ -149,6 +154,7 @@ void CrashoutsEngine::Bindings::RegisterInputBindings()
     mono_add_internal_call("CrashoutsEngine.Input::InternalGetAction", reinterpret_cast<const void*>(InternalGetAction));
     mono_add_internal_call("CrashoutsEngine.Input::InternalGetActionTriggered", reinterpret_cast<const void*>(InternalGetActionTriggered));
     mono_add_internal_call("CrashoutsEngine.Input::InternalGetActionReleased", reinterpret_cast<const void*>(InternalGetActionReleased));
+    mono_add_internal_call("CrashoutsEngine.Input::InternalSetControllerVibration", reinterpret_cast<const void*>(InternalSetControllerVibration));
     mono_add_internal_call("CrashoutsEngine.Input::InternalGetMousePosition", reinterpret_cast<const void*>(InternalGetMousePosition));
     mono_add_internal_call("CrashoutsEngine.Input::InternalGetMouseWorldPosition", reinterpret_cast<const void*>(InternalGetMouseWorldPosition));
     mono_add_internal_call("CrashoutsEngine.Input::InternalIsMouseButtonDown", reinterpret_cast<const void*>(InternalIsMouseButtonDown));

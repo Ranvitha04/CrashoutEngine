@@ -46,6 +46,10 @@ namespace CrashoutsEngine
         // --- STATE ---
         private bool isRestartCheckOpen = false;
         private float inputCooldown = 0.0f;
+        private int selectedButtonIndex = 0;
+        private float menuNavigationCooldown = 0.0f;
+        private bool controllerNavigationActive = false;
+        private CEVec2 lastMousePos;
 
         public override void Start()
         {
@@ -75,6 +79,10 @@ namespace CrashoutsEngine
 
             // 4. INIT SUB-MENUS
             SetEntityActive(restartCheckScreen, false);
+            SetEntityActive(winrestartCheckScreen, false);
+            lastMousePos = Input.GetMousePosition();
+            ResetControllerSelection();
+            InternalCalls.UI_ClearForcedHoveredButton();
         }
 
         public override void Update()
@@ -84,6 +92,11 @@ namespace CrashoutsEngine
             {
                 inputCooldown -= (float)Time.DT;
                 return;
+            }
+
+            if (menuNavigationCooldown > 0.0f)
+            {
+                menuNavigationCooldown -= (float)Time.DT;
             }
 
             // --- 1. HANDLE GAME OVER SCREEN ---
@@ -120,12 +133,15 @@ namespace CrashoutsEngine
 
         private void HandleGameOverMain()
         {
-            if (CheckButtonClick(btnGORestart))
+            Entity[] buttons = { btnGORestart, btnGOQuit };
+            UpdateControllerSelection(buttons);
+
+            if (CheckButtonClick(btnGORestart) || IsControllerSubmit(buttons, btnGORestart))
             {
                 Debug.Log("press");
                 OpenRestartCheck();
             }
-            else if (CheckButtonClick(btnGOQuit))
+            else if (CheckButtonClick(btnGOQuit) || IsControllerSubmit(buttons, btnGOQuit))
             {
                 // Quit to Menu (Matches PauseButtons logic)
                 SceneManager.LoadScene(mainMenuScene, 1.0f);
@@ -134,22 +150,34 @@ namespace CrashoutsEngine
 
         private void HandleRestartConfirmation()
         {
-            if (CheckButtonClick(btnYes2))
+            Entity yesButton = btnYes2;
+            Entity noButton = btnNo2;
+
+            if (winrestartCheckScreen != null && winrestartCheckScreen.IsActive())
+            {
+                yesButton = winbtnYes;
+                noButton = winbtnNo;
+            }
+
+            Entity[] buttons = { yesButton, noButton };
+            UpdateControllerSelection(buttons);
+
+            if (CheckButtonClick(btnYes2) || IsControllerSubmit(buttons, btnYes2))
             {
                 // RELOAD LEVEL
                 Debug.Log("[GameOverUI] Restarting...");
                 if (string.IsNullOrEmpty(currentSceneName)) currentSceneName = "tutorial";
                 SceneManager.LoadScene(currentSceneName, 1.0f);
             }
-            else if (CheckButtonClick(btnNo2))
+            else if (CheckButtonClick(btnNo2) || IsControllerSubmit(buttons, btnNo2))
             {
                 CloseRestartCheck();
             }
-            else if (CheckButtonClick(winbtnNo))
+            else if (CheckButtonClick(winbtnNo) || IsControllerSubmit(buttons, winbtnNo))
             {
                 WinCloseRestartCheck();
             }
-            else if (CheckButtonClick(winbtnYes))
+            else if (CheckButtonClick(winbtnYes) || IsControllerSubmit(buttons, winbtnYes))
             {
                 // RELOAD LEVEL
                 Debug.Log("[GameOverUI] Restarting...");
@@ -163,6 +191,8 @@ namespace CrashoutsEngine
             isRestartCheckOpen = true;
             SetEntityActive(restartCheckScreen, true);
             inputCooldown = 0.2f; // Safety delay
+            selectedButtonIndex = 0;
+            controllerNavigationActive = false;
         }
 
         private void CloseRestartCheck()
@@ -170,6 +200,7 @@ namespace CrashoutsEngine
             isRestartCheckOpen = false;
             SetEntityActive(restartCheckScreen, false);
             inputCooldown = 0.2f;
+            ResetControllerSelection();
         }
 
         private void WinOpenRestartCheck()
@@ -177,6 +208,8 @@ namespace CrashoutsEngine
             isRestartCheckOpen = true;
             SetEntityActive(winrestartCheckScreen, true);
             inputCooldown = 0.2f; // Safety delay
+            selectedButtonIndex = 0;
+            controllerNavigationActive = false;
         }
 
         private void WinCloseRestartCheck()
@@ -184,6 +217,7 @@ namespace CrashoutsEngine
             isRestartCheckOpen = false;
             SetEntityActive(winrestartCheckScreen, false);
             inputCooldown = 0.2f;
+            ResetControllerSelection();
         }
 
         // =================================================================================
@@ -192,12 +226,15 @@ namespace CrashoutsEngine
 
         private void HandleWinMain()
         {
-            if (CheckButtonClick(winbtnGORestart))
+            Entity[] buttons = { winbtnGORestart, winbtnGOQuit };
+            UpdateControllerSelection(buttons);
+
+            if (CheckButtonClick(winbtnGORestart) || IsControllerSubmit(buttons, winbtnGORestart))
             {
                 Debug.Log("press");
                 WinOpenRestartCheck();
             }
-            else if (CheckButtonClick(winbtnGOQuit))
+            else if (CheckButtonClick(winbtnGOQuit) || IsControllerSubmit(buttons, winbtnGOQuit))
             {
                 // Quit to Menu (Matches PauseButtons logic)
                 SceneManager.LoadScene(mainMenuScene, 1.0f);
@@ -226,12 +263,110 @@ namespace CrashoutsEngine
         {
             if (btnEntity == null) return false;
             var btn = btnEntity.GetComponent<ButtonComponent>();
-            return (btn != null && btn.IsClicked());
+            if (btn != null && btn.IsClicked())
+            {
+                controllerNavigationActive = false;
+                InternalCalls.UI_ClearForcedHoveredButton();
+                return true;
+            }
+
+            return false;
+        }
+
+        private void ResetControllerSelection()
+        {
+            selectedButtonIndex = 0;
+            menuNavigationCooldown = 0.0f;
+            controllerNavigationActive = false;
+            InternalCalls.UI_ClearForcedHoveredButton();
+        }
+
+        private void UpdateControllerSelection(Entity[] buttons)
+        {
+            if (buttons == null || buttons.Length == 0)
+            {
+                controllerNavigationActive = false;
+                InternalCalls.UI_ClearForcedHoveredButton();
+                return;
+            }
+
+            CEVec2 currentMousePos = Input.GetMousePosition();
+            if (Math.Abs(currentMousePos.x - lastMousePos.x) > 0.1f || Math.Abs(currentMousePos.y - lastMousePos.y) > 0.1f)
+            {
+                controllerNavigationActive = false;
+            }
+            lastMousePos = currentMousePos;
+
+            bool movedDown = false;
+            bool movedUp = false;
+
+            if (menuNavigationCooldown <= 0.0f)
+            {
+                float menuY = Input.GetAxis("MenuY");
+                if (Input.GetActionTriggered("UIDown") || menuY <= -0.5f)
+                {
+                    selectedButtonIndex = (selectedButtonIndex + 1) % buttons.Length;
+                    menuNavigationCooldown = 0.2f;
+                    movedDown = true;
+                }
+                else if (Input.GetActionTriggered("UIUp") || menuY >= 0.5f)
+                {
+                    selectedButtonIndex = (selectedButtonIndex - 1 + buttons.Length) % buttons.Length;
+                    menuNavigationCooldown = 0.2f;
+                    movedUp = true;
+                }
+            }
+
+            if (selectedButtonIndex < 0 || selectedButtonIndex >= buttons.Length)
+            {
+                selectedButtonIndex = 0;
+            }
+
+            if (movedDown || movedUp || Input.GetActionTriggered("UISubmit"))
+            {
+                controllerNavigationActive = true;
+            }
+
+            if (!controllerNavigationActive)
+            {
+                InternalCalls.UI_ClearForcedHoveredButton();
+                return;
+            }
+
+            Entity selected = buttons[selectedButtonIndex];
+            if (selected != null && selected.ID != 0 && selected.IsActive())
+            {
+                InternalCalls.UI_SetForcedHoveredButton(selected.ID);
+            }
+            else
+            {
+                InternalCalls.UI_ClearForcedHoveredButton();
+            }
+        }
+
+        private bool IsControllerSubmit(Entity[] buttons, Entity target)
+        {
+            if (target == null || target.ID == 0 || buttons == null)
+            {
+                return false;
+            }
+
+            if (selectedButtonIndex < 0 || selectedButtonIndex >= buttons.Length)
+            {
+                return false;
+            }
+
+            return buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit");
         }
 
         private void SetEntityActive(Entity e, bool active)
         {
             if (e != null) InternalCalls.SetActive(e.ID, active);
+        }
+
+        public override void OnDestroy()
+        {
+            InternalCalls.UI_ClearForcedHoveredButton();
         }
     }
 }

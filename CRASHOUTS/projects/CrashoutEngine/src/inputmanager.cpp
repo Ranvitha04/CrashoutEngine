@@ -473,6 +473,18 @@ bool InputManager::GetActionReleased(const std::string& actionName)
     return false;
 }
 
+void InputManager::SetControllerVibration(float lowFrequency, float highFrequency, float durationSeconds)
+{
+    if (!s_controllerManager)
+    {
+        return;
+    }
+
+    const float clampedDuration = std::max(durationSeconds, 0.0f);
+    const std::uint32_t durationMs = static_cast<std::uint32_t>(clampedDuration * 1000.0f);
+    s_controllerManager->SetVibration(lowFrequency, highFrequency, durationMs);
+}
+
 void InputManager::ClearInputs()
 {
     Keys.clear();

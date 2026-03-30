@@ -123,6 +123,7 @@ public:
     static bool GetActionTriggered(const std::string& actionName);
     static bool GetActionReleased(const std::string& actionName);
     static float GetAxis(const std::string& axisName);
+    static void SetControllerVibration(float lowFrequency, float highFrequency, float durationSeconds);
 
     static void ClearInputs();
 
