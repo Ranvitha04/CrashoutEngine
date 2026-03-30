@@ -317,6 +317,10 @@
             "path": "backgrounds/bg 1 base.png"
         },
         {
+            "name": "throw 1-Sheet-sheet_00",
+            "path": "spritesheet/throw 1-Sheet-sheet/throw 1-Sheet-sheet_00.png"
+        },
+        {
             "name": "bg2 base",
             "path": "backgrounds/bg2 base.png"
         },
@@ -561,6 +565,10 @@
             "path": "Cutscenes/EndCutscene_3.png"
         },
         {
+            "name": "restart yellow",
+            "path": "UI/settings/restart yellow.png"
+        },
+        {
             "name": "spikes_23",
             "path": "spritesheet/spikes/spikes_23.png"
         },
@@ -657,6 +665,10 @@
             "path": "Cutscenes/Cutscene_2.png"
         },
         {
+            "name": "key_A",
+            "path": "UI/settings/key_A.png"
+        },
+        {
             "name": "spikes updated_20",
             "path": "spritesheet/spikes updated/spikes updated_20.png"
         },
@@ -673,12 +685,24 @@
             "path": "Character/Run.gif"
         },
         {
+            "name": "spikes_17",
+            "path": "spritesheet/spikes/spikes_17.png"
+        },
+        {
+            "name": "Checkpoint Marker",
+            "path": "Checkpoint Marker.png"
+        },
+        {
             "name": "Cutscene_1",
             "path": "Cutscenes/Cutscene_1.png"
         },
         {
             "name": "Cutscene_3",
             "path": "Cutscenes/Cutscene_3.png"
+        },
+        {
+            "name": "throw 1 (1)",
+            "path": "UI/throw 1 (1).png"
         },
         {
             "name": "EndCutscene_1",
@@ -743,6 +767,10 @@
         {
             "name": "Monsters(6)",
             "path": "Monsters/Monsters(6).png"
+        },
+        {
+            "name": "throw 3",
+            "path": "UI/throw 3.png"
         },
         {
             "name": "Emp 1",
@@ -1253,6 +1281,10 @@
             "path": "spritesheet/lava platform/lava platform_10.png"
         },
         {
+            "name": "slime-sheet",
+            "path": "UI/settings/slime-sheet.png"
+        },
+        {
             "name": "Platform_20",
             "path": "spritesheet/Platform/Platform_20.png"
         },
@@ -1267,6 +1299,10 @@
         {
             "name": "lava platform_12",
             "path": "spritesheet/lava platform/lava platform_12.png"
+        },
+        {
+            "name": "throw 2 (1)",
+            "path": "UI/throw 2 (1).png"
         },
         {
             "name": "Platform_22",
@@ -1561,6 +1597,10 @@
             "path": "spritesheet/Rock/Rock_00.png"
         },
         {
+            "name": "resume yellow",
+            "path": "UI/settings/resume yellow.png"
+        },
+        {
             "name": "Rock_01",
             "path": "spritesheet/Rock/Rock_01.png"
         },
@@ -1653,6 +1693,10 @@
             "path": "spritesheet/Slime spritesheet/Slime spritesheet_01.png"
         },
         {
+            "name": "quit yellow",
+            "path": "UI/settings/quit yellow.png"
+        },
+        {
             "name": "spikes_29",
             "path": "spritesheet/spikes/spikes_29.png"
         },
@@ -1737,10 +1781,6 @@
             "path": "spritesheet/spikes/spikes_16.png"
         },
         {
-            "name": "spikes_17",
-            "path": "spritesheet/spikes/spikes_17.png"
-        },
-        {
             "name": "spikes_18",
             "path": "spritesheet/spikes/spikes_18.png"
         },
@@ -1817,6 +1857,10 @@
             "path": "spritesheet/spikes updated/spikes updated_09.png"
         },
         {
+            "name": "platform_tut1",
+            "path": "UI/settings/platform_tut1.png"
+        },
+        {
             "name": "spikes updated_10",
             "path": "spritesheet/spikes updated/spikes updated_10.png"
         },
@@ -1873,6 +1917,10 @@
             "path": "spritesheet/spikes updated/spikes updated_24.png"
         },
         {
+            "name": "key_D",
+            "path": "UI/settings/key_D.png"
+        },
+        {
             "name": "spikes updated_25",
             "path": "spritesheet/spikes updated/spikes updated_25.png"
         },
@@ -1883,6 +1931,10 @@
         {
             "name": "spikes updated_27",
             "path": "spritesheet/spikes updated/spikes updated_27.png"
+        },
+        {
+            "name": "new open book",
+            "path": "UI/new open book.png"
         },
         {
             "name": "spikes updated_28",
@@ -1985,6 +2037,22 @@
             "path": "spritesheet/Switch-State-SpriteSheet/Switch-State-SpriteSheet_08.png"
         },
         {
+            "name": "throw 1-Sheet-sheet_01",
+            "path": "spritesheet/throw 1-Sheet-sheet/throw 1-Sheet-sheet_01.png"
+        },
+        {
+            "name": "throw 1-Sheet-sheet_02",
+            "path": "spritesheet/throw 1-Sheet-sheet/throw 1-Sheet-sheet_02.png"
+        },
+        {
+            "name": "updated resume large",
+            "path": "UI/settings/updated resume large.png"
+        },
+        {
+            "name": "throw 1-Sheet-sheet_03",
+            "path": "spritesheet/throw 1-Sheet-sheet/throw 1-Sheet-sheet_03.png"
+        },
+        {
             "name": "Left",
             "path": "Test/Left.png"
         },
@@ -2021,12 +2089,24 @@
             "path": "UI/Handle.png"
         },
         {
+            "name": "settings yellow",
+            "path": "UI/settings/settings yellow.png"
+        },
+        {
             "name": "Icon",
             "path": "UI/Icon.png"
         },
         {
             "name": "mana UI single",
             "path": "UI/mana UI single.png"
+        },
+        {
+            "name": "mouse click 2 (1)",
+            "path": "UI/mouse click 2 (1).png"
+        },
+        {
+            "name": "mouse click",
+            "path": "UI/mouse click.png"
         },
         {
             "name": "pause settings text",
@@ -2037,6 +2117,42 @@
             "path": "UI/Resume game hover.png"
         },
         {
+            "name": "back",
+            "path": "UI/settings/back.png"
+        },
+        {
+            "name": "key_S",
+            "path": "UI/Tutorial/key_S.png"
+        },
+        {
+            "name": "key_W",
+            "path": "UI/settings/key_W.png"
+        },
+        {
+            "name": "mana drain 1-Sheet-sheet",
+            "path": "UI/settings/mana drain 1-Sheet-sheet.png"
+        },
+        {
+            "name": "tut_text_9",
+            "path": "UI/Tutorial/tut_text_9.png"
+        },
+        {
+            "name": "mouse click-Sheet-sheet",
+            "path": "UI/settings/mouse click-Sheet-sheet.png"
+        },
+        {
+            "name": "next",
+            "path": "UI/settings/next.png"
+        },
+        {
+            "name": "platform_tut",
+            "path": "UI/settings/platform_tut.png"
+        },
+        {
+            "name": "throw 1-Sheet-sheet",
+            "path": "UI/settings/throw 1-Sheet-sheet.png"
+        },
+        {
             "name": "tut_text_10",
             "path": "UI/Tutorial/tut_text_10.png"
         },
@@ -2045,16 +2161,16 @@
             "path": "UI/settings/updated quit large.png"
         },
         {
-            "name": "updated resume large",
-            "path": "UI/settings/updated resume large.png"
-        },
-        {
             "name": "updated resume",
             "path": "UI/settings/updated resume.png"
         },
         {
             "name": "updated settings large",
             "path": "UI/settings/updated settings large.png"
+        },
+        {
+            "name": "throw 4 (1)",
+            "path": "UI/throw 4 (1).png"
         },
         {
             "name": "Title",
@@ -2067,10 +2183,6 @@
         {
             "name": "first",
             "path": "UI/Tutorial/first.png"
-        },
-        {
-            "name": "key_S",
-            "path": "UI/Tutorial/key_S.png"
         },
         {
             "name": "ninth",
@@ -2119,13 +2231,17 @@
         {
             "name": "tut_text_8",
             "path": "UI/Tutorial/tut_text_8.png"
-        },
-        {
-            "name": "tut_text_9",
-            "path": "UI/Tutorial/tut_text_9.png"
         }
     ],
     "prefabs": [
+        {
+            "name": "MyBox",
+            "path": "MyBox.json"
+        },
+        {
+            "name": "Animation_HowTo1_1",
+            "path": "Animation_HowTo1_1.json"
+        },
         {
             "name": "Moving_Platform",
             "path": "Moving_Platform.json"
@@ -2147,16 +2263,8 @@
             "path": "Door_Prefab.json"
         },
         {
-            "name": "RestartBtn_Template",
-            "path": "RestartBtn_Template.json"
-        },
-        {
-            "name": "Moving_Gate",
-            "path": "Moving_Gate.json"
-        },
-        {
-            "name": "InstructionPanel",
-            "path": "InstructionPanel.json"
+            "name": "Empty_HowTo",
+            "path": "Empty_HowTo.json"
         },
         {
             "name": "FilledAudioManager_Prefab",
@@ -2167,12 +2275,44 @@
             "path": "EnergyBall_Prefab.json"
         },
         {
+            "name": "HowTo1_no_anim",
+            "path": "HowTo1_no_anim.json"
+        },
+        {
+            "name": "HowTo2_no_anim",
+            "path": "HowTo2_no_anim.json"
+        },
+        {
+            "name": "InstructionPanel",
+            "path": "InstructionPanel.json"
+        },
+        {
+            "name": "RestartBtn_Template",
+            "path": "RestartBtn_Template.json"
+        },
+        {
+            "name": "Moving_Gate",
+            "path": "Moving_Gate.json"
+        },
+        {
             "name": "Moving_Platform(Sinking)",
             "path": "Moving_Platform(Sinking).json"
         },
         {
+            "name": "MusicUI_Prefab",
+            "path": "MusicUI_Prefab.json"
+        },
+        {
+            "name": "NextPageBtn",
+            "path": "NextPageBtn.json"
+        },
+        {
             "name": "NextLevelDoor_Prefab",
             "path": "NextLevelDoor_Prefab.json"
+        },
+        {
+            "name": "OpenBookPause_Prefab",
+            "path": "OpenBookPause_Prefab.json"
         },
         {
             "name": "PlayerBarrier",
@@ -2197,6 +2337,10 @@
         {
             "name": "Scuff_WinDoor_Prefab",
             "path": "Scuff_WinDoor_Prefab.json"
+        },
+        {
+            "name": "SFXUI_Prefab",
+            "path": "SFXUI_Prefab.json"
         },
         {
             "name": "Slime V4",

@@ -9,9 +9,6 @@
 All content © 2025 DigiPen Institute of Technology Singapore. All rights reserved.
 */
 using System;
-using System.Net;
-using System.Numerics;
-using System.Threading;
 using System.Collections.Generic;
 
 namespace CrashoutsEngine
@@ -47,7 +44,6 @@ namespace CrashoutsEngine
         [SerializeField] private float patrolTurnInterval = 3.0f;
         [SerializeField] private bool resizePlayerColliderWhileHolding = true;
         [SerializeField] private float carryBoundsPadding = 10.0f;
-
         private RigidBodyComponent rb;
         private TransformComponent tf;
         private Animator anim;
@@ -764,12 +760,9 @@ namespace CrashoutsEngine
             }
 
             CEVec3 playerPos = playerTf.Position;
-
-            // Player AABB in world space from cached local min/max
             CEVec3 playerWorldMin = playerAabbLocalMin + playerPos;
             CEVec3 playerWorldMax = playerAabbLocalMax + playerPos;
 
-            // Slime AABB in world space from collider (more accurate than size)
             if (col == null) col = Entity.GetComponent<ColliderComponent>();
             CEVec3 slimeWorldMin = tf.Position;
             CEVec3 slimeWorldMax = tf.Position;
@@ -782,7 +775,7 @@ namespace CrashoutsEngine
 
             float minX = Math.Min(playerWorldMin.x, slimeWorldMin.x) - carryBoundsPadding;
             float maxX = Math.Max(playerWorldMax.x, slimeWorldMax.x) + carryBoundsPadding;
-            float minY = playerWorldMin.y; // Keep bottom aligned to player collider to avoid hop
+            float minY = playerWorldMin.y;
             float maxY = Math.Max(playerWorldMax.y, slimeWorldMax.y) + carryBoundsPadding;
 
             CEVec3 localMin = new CEVec3(minX - playerPos.x, minY - playerPos.y, 0.0f);
@@ -825,6 +818,21 @@ namespace CrashoutsEngine
                 simVel.y += (-simVel.y * airDrag * 0.2f) * dt;
                 CEVec3 nextPos = currentPos + (simVel * dt);
 
+                uint hitID;
+                if (InternalCalls.Raycast(ref currentPos, ref nextPos, out hitID, Entity.ID))
+                {
+                    Entity hitEnt = new Entity(hitID);
+                    var hitTag = hitEnt.GetComponent<TagComponent>();
+
+                    // Ignore the player so the preview does not terminate immediately while the
+                    // slime is being held inside the player's merged carry collider.
+                    if (hitTag == null || !hitTag.HasTag("Player"))
+                    {
+                        activePath.Add(currentPos);
+                        break;
+                    }
+                }
+
                 if (playerScript != null && nextPos.y < playerScript.Entity.GetComponent<TransformComponent>().Position.y - 200.0f)
                     break;
 
@@ -843,7 +851,6 @@ namespace CrashoutsEngine
 
         public bool OnPreSolve(uint otherEntity)
         {
-            // When grabbed, ignore all collisions to prevent pushing the player.
             if (isGrabbed) return false;
 
             // When thrown, ignore collisions ONLY with the player so it can pass through.
@@ -875,7 +882,7 @@ namespace CrashoutsEngine
                 }
             }
 
-            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Wall") || Tag.HasTag("Platform")))
+            if (Tag != null && (Tag.HasTag("Ground") || Tag.HasTag("Wall") || Tag.HasTag("Platform") || Tag.HasTag("Tilemap")))
             {
                 if (isFollowingPath)
                 {

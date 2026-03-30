@@ -29,8 +29,8 @@ namespace CrashoutsEngine
         public float swapPause = 1.0f;
         public float energyConsumption = 12.5f;
         
-        [SerializeField] private float coyoteTime = 0.15f; 
-
+        [SerializeField] private float coyoteTime = 0.15f;
+        //[SerializeField] private string tutorialDoorName = "tutorial1door"; 
         public int goalNoOfPlates = 1;
         public int currentGoalPlates = 0;
 
@@ -80,7 +80,8 @@ namespace CrashoutsEngine
         private float deathTimer = 0.0f;
         [SerializeField] private string normalDeathAnimName = "playerDeathNoBook";
         [SerializeField] private string changedMassDeathAnimName = "playerDeath";
-
+        [SerializeField] private bool unlimitedEnergy = false;
+        [SerializeField] private bool godMode = false;
         [SerializeField] private float normalDeathDelay = 2.0f;
         [SerializeField] private float changedMassDeathDelay = 2.0f;
         public bool isPaused = false; 
@@ -165,7 +166,8 @@ namespace CrashoutsEngine
         public override void Start()
         {
             string currentLevel = SceneManager.GetActiveSceneName();
-
+            unlimitedEnergy = false;
+            godMode = false;
             currentGoalPlates = 0;
             Instance = this;
             rb = Entity.GetComponent<RigidBodyComponent>();
@@ -227,9 +229,36 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-
+            
             if (tf == null || rb == null) return;
+            if (unlimitedEnergy)
+                CurrentEnergy = MaxEnergy;
+            if (Input.IsKeyTriggered(Key.Num1))
+            {
+                unlimitedEnergy = !unlimitedEnergy;
+                Debug.Log("Unlimited Energy: " + (unlimitedEnergy ? "ON" : "OFF"));
+            }
 
+            if (unlimitedEnergy)
+                CurrentEnergy = MaxEnergy;
+
+            if (Input.IsKeyTriggered(Key.Num2))
+            {
+                godMode = !godMode;
+                Debug.Log("God Mode: " + (godMode ? "ON" : "OFF"));
+                
+            }
+            
+
+            if (godMode)
+            {
+                IsGrounded = true;
+                coyoteTimeTimer = coyoteTime;
+            }
+            if (Input.IsKeyTriggered(Key.Num3))
+            {
+                TeleportToTutorialDoor();
+            }
             AudioManager.SetListenerPosition(tf.Position);
             if (isDying)
             {
@@ -486,7 +515,30 @@ namespace CrashoutsEngine
         }
 
         // --- COLLISION HANDLERS ---
+        public bool OnPreSolve(uint otherID)
+        {
+            var tag = new Entity(otherID).GetComponent<TagComponent>();
 
+            if (godMode && tag != null && tag.HasTag("Lava"))
+                return false;
+
+            if (tag != null && tag.HasTag("Passthrough"))
+            {
+                passthroughOverlapTimer = 0.1f;
+
+                if (rb.LinearVelocity.y > 0.1f)
+                {
+                    isPhasing = true;
+                }
+
+                if (isPhasing) return false;
+
+                return true;
+            }
+
+            return true;
+        }
+        /*
         public bool OnPreSolve(uint otherID)
         {
             var tag = new Entity(otherID).GetComponent<TagComponent>();
@@ -509,7 +561,7 @@ namespace CrashoutsEngine
             }
             return true;
         }
-
+        */
         public void OnCollideEnter(uint otherID)
         {
             var tag = new Entity(otherID).GetComponent<TagComponent>();
@@ -565,9 +617,26 @@ namespace CrashoutsEngine
             InternalCalls.Particle_SetEmitting(landingDustID, true); 
             landingDustTimer = dustBurstDuration; 
         }
+        public void VS_RemoveEnergy25()
+        {
+            RemoveEnergy(25.0f);
+            Debug.Log("Removed 25 energy. CurrentEnergy = " + CurrentEnergy);
+        }
+
+        public void VS_AddEnergy25()
+        {
+            AddEnergy(25.0f);
+            Debug.Log("Added 25 energy. CurrentEnergy = " + CurrentEnergy);
+        }
+
+        public void VS_PrintEnergy()
+        {
+            Debug.Log("CurrentEnergy = " + CurrentEnergy);
+        }
         //Death Anim
         private void HandleDeath()
         {
+            if (godMode) return;
             if (isDying) return;
 
             alive = false;
@@ -583,6 +652,25 @@ namespace CrashoutsEngine
                 currentAnimState = deathClip;
             }
         }
+
+        private void TeleportToTutorialDoor()
+        {
+            Entity door = Entity.Find("nextleveldoor");
+            if (door == null) return;
+
+            var doorTf = door.GetComponent<TransformComponent>();
+            if (doorTf == null) return;
+
+            tf.Position = new CEVec3(
+                doorTf.Position.x,
+                doorTf.Position.y + 60.0f,
+                doorTf.Position.z
+            );
+
+            if (rb != null)
+                rb.LinearVelocity = new CEVec3(0, 0, 0);
+        }
+
         //Testing VSnode
         public void VS_Grounded()
         {
@@ -625,8 +713,24 @@ namespace CrashoutsEngine
                 currentAnimState = "playerIdle";
             }
         }
+        private void TeleportToCheckpoint()
+        {
+            tf.Position = respawnPos;
+            rb.LinearVelocity = new CEVec3(0, 0, 0);
+            isPhasing = false;
+            passthroughOverlapTimer = 0.0f;
+        }
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
-        public void RemoveEnergy(float amount) { CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f); }
+        public void RemoveEnergy(float amount)
+        {
+            if (unlimitedEnergy)
+            {
+                CurrentEnergy = MaxEnergy;
+                return;
+            }
+
+            CurrentEnergy = Math.Max(CurrentEnergy - amount, 0.0f);
+        }
         public void UpdateCheckpoint(CEVec3 newPos) 
         { 
             respawnPos = newPos; 

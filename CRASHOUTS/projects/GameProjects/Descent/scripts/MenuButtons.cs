@@ -18,6 +18,7 @@ namespace CrashoutsEngine
     public class MenuButtons : ScriptBase
     {
         private const string MenuControllerName = "MenuScript";
+        private const string SettingsControllerName = "SettingsScript";
 
         public Entity StartBtn;
         public Entity SettingsBtn;
@@ -35,6 +36,7 @@ namespace CrashoutsEngine
         private bool isMouseReleased = true;
         private int selectedButtonIndex = 0;
         private float menuNavigationCooldown = 0.0f;
+        private bool controllerNavigationActive = false;
 
         /*!
         @brief Initialize internal click state.
@@ -151,6 +153,8 @@ namespace CrashoutsEngine
             {
                 _clickCooldown = 15; // Lock UI for 15 frames to stop rapid Quit/No swapping
                 isMouseReleased = false;
+                controllerNavigationActive = false;
+                InternalCalls.UI_ClearForcedHoveredButton();
                 
                 return true;
             }
@@ -228,9 +232,10 @@ namespace CrashoutsEngine
 
         private bool IsMenuController()
         {
+            string controllerName = InternalCalls.GetName(Entity.ID);
             return Entity != null &&
                    Entity.ID != 0 &&
-                   InternalCalls.GetName(Entity.ID) == MenuControllerName &&
+                   (controllerName == MenuControllerName || controllerName == SettingsControllerName) &&
                    HasConfiguredButtons();
         }
 
@@ -264,16 +269,21 @@ namespace CrashoutsEngine
         {
             selectedButtonIndex = 0;
             menuNavigationCooldown = 0.0f;
+            controllerNavigationActive = false;
+            InternalCalls.UI_ClearForcedHoveredButton();
         }
 
         private void UpdateControllerSelection(Entity[] buttons)
         {
             if (buttons == null || buttons.Length == 0)
             {
+                controllerNavigationActive = false;
                 InternalCalls.UI_ClearForcedHoveredButton();
                 return;
             }
 
+            bool movedDown = false;
+            bool movedUp = false;
             if (menuNavigationCooldown <= 0.0f)
             {
                 float menuY = Input.GetAxis("MenuY");
@@ -281,17 +291,30 @@ namespace CrashoutsEngine
                 {
                     selectedButtonIndex = (selectedButtonIndex + 1) % buttons.Length;
                     menuNavigationCooldown = 0.2f;
+                    movedDown = true;
                 }
                 else if (Input.GetActionTriggered("UIUp") || menuY >= 0.5f)
                 {
                     selectedButtonIndex = (selectedButtonIndex - 1 + buttons.Length) % buttons.Length;
                     menuNavigationCooldown = 0.2f;
+                    movedUp = true;
                 }
             }
 
             if (selectedButtonIndex < 0 || selectedButtonIndex >= buttons.Length)
             {
                 selectedButtonIndex = 0;
+            }
+
+            if (movedDown || movedUp || Input.GetActionTriggered("UISubmit"))
+            {
+                controllerNavigationActive = true;
+            }
+
+            if (!controllerNavigationActive)
+            {
+                InternalCalls.UI_ClearForcedHoveredButton();
+                return;
             }
 
             Entity selected = buttons[selectedButtonIndex];

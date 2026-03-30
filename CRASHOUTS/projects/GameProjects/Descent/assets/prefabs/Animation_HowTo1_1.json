@@ -1,0 +1,446 @@
+{
+    "prefabs": [
+        {
+            "name": "Animation_HowTo1_1",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "Animation_Set",
+                    "uuid": 5142213736357511322,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Click_Slime_Anim",
+                    "uuid": 17511406750144920256,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -2.9639389514923097,
+                            "y": 16.26120376586914,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 24.0,
+                            "y": 12.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/settings/mouse click-Sheet-sheet.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "LoopingAnimation",
+                                "fields": {
+                                    "animationName": "slime_throwing"
+                                }
+                            }
+                        ]
+                    },
+                    "parent": {
+                        "parentUUID": 5142213736357511322,
+                        "localPos": {
+                            "x": -2.9639389514923097,
+                            "y": 16.26120376586914,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 24.0,
+                            "y": 12.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "",
+                        "z": 0
+                    },
+                    "keyframe_animator": {
+                        "current": "slime_throwing",
+                        "t": 0.0,
+                        "playing": true,
+                        "clips": [
+                            {
+                                "name": "slime_throwing",
+                                "wrap": 0,
+                                "textureAsset": "images/UI\\settings\\slime-sheet.png",
+                                "spriteCols": 2,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 24.0,
+                                "targetHeight": 12.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 2.0,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Throw_Anim",
+                    "uuid": 3575278834141080084,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 37.58816909790039,
+                            "y": 17.925739288330079,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 24.0,
+                            "y": 24.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/settings/throw 1-Sheet-sheet.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "LoopingAnimation",
+                                "fields": {
+                                    "animationName": "throwing_1"
+                                }
+                            }
+                        ]
+                    },
+                    "parent": {
+                        "parentUUID": 5142213736357511322,
+                        "localPos": {
+                            "x": 37.58816909790039,
+                            "y": 17.925739288330079,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 24.0,
+                            "y": 24.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "",
+                        "z": 0
+                    },
+                    "keyframe_animator": {
+                        "current": "throwing_1",
+                        "t": 0.0,
+                        "playing": true,
+                        "clips": [
+                            {
+                                "name": "throwing_1",
+                                "wrap": 0,
+                                "textureAsset": "images/UI\\settings\\throw 1-Sheet-sheet.png",
+                                "spriteCols": 4,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 24.0,
+                                "targetHeight": 24.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 2.0,
+                                                "v": 2.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 3.0,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 4.0,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Click_Anim",
+                    "uuid": 9788856052442105821,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 12.0,
+                            "y": 12.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/settings/mouse click-Sheet-sheet.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "LoopingAnimation",
+                                "fields": {
+                                    "animationName": "slime_throw"
+                                }
+                            }
+                        ]
+                    },
+                    "parent": {
+                        "parentUUID": 5142213736357511322,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 12.0,
+                            "y": 12.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "",
+                        "z": 0
+                    },
+                    "keyframe_animator": {
+                        "current": "clicky",
+                        "t": 0.0,
+                        "playing": true,
+                        "clips": [
+                            {
+                                "name": "clicky",
+                                "wrap": 0,
+                                "textureAsset": "images/UI\\settings\\mouse click-Sheet-sheet.png",
+                                "spriteCols": 2,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 12.0,
+                                "targetHeight": 12.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 2.0,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

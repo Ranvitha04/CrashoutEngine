@@ -20,18 +20,26 @@ namespace CrashoutsEngine
     */
     public class PauseButtons : ScriptBase
     {
+        private const string PauseControllerName = "PauseScript";
+
         [SerializeField] private string currentScene;
 
         private Entity pauseScreen, restartCheckScreen, openedBookScreen, closedBookScreen;
-        private Entity btnResume, btnRestart, btnSettings, btnQuit, btnYes, btnNo, btnCloseBook;
+        private Entity howTo1Screen, howTo2Screen;
+        private Entity btnResume, btnRestart, btnSettings, btnQuit, btnYes, btnNo, btnCloseBook, btnNext, btnBack;
 
         private PlayerMovement playerScript;
         private bool isPaused = false;
         private bool isRestartMenuOpen = false;
         private bool isSettingsMenuOpen = false;
+        private bool isHowTo1Open = false;
+        private bool isHowTo2Open = false;
         private float inputCooldown = 0.0f;
+        private float pauseToggleCooldown = 0.0f;
         private int selectedButtonIndex = 0;
         private float menuNavigationCooldown = 0.0f;
+        private bool useForcedSelection = false;
+        private CEVec2 lastMousePos;
 
         // NEW: The Trigger Gate
         private bool isMouseReleased = true; 
@@ -41,12 +49,17 @@ namespace CrashoutsEngine
         */
         public override void Start()
         {
+            if (!IsPauseController()) return;
+
             playerScript = PlayerMovement.Instance;
+            lastMousePos = Input.GetMousePosition();
 
             pauseScreen = Entity.Find("Pause");
             restartCheckScreen = Entity.Find("RestartCheck");
             openedBookScreen = Entity.Find("OpenedBook");
             closedBookScreen = Entity.Find("ClosedBook");
+            howTo1Screen = Entity.Find("HowTo1");
+            howTo2Screen = Entity.Find("HowTo2");
 
             btnResume = Entity.Find("ResumeButton");
             btnRestart = Entity.Find("RestartLevelButton");
@@ -55,11 +68,15 @@ namespace CrashoutsEngine
             btnYes = Entity.Find("Yes");
             btnNo = Entity.Find("No");
             btnCloseBook = Entity.Find("CloseBookBtn");
+            btnNext = Entity.Find("NextPageBtn");
+            btnBack = Entity.Find("BackBtn");
 
             SetEntityActive(pauseScreen, false);
             SetEntityActive(restartCheckScreen, false);
             SetEntityActive(openedBookScreen, false);
             SetEntityActive(closedBookScreen, false);
+            SetEntityActive(howTo1Screen, false);
+            SetEntityActive(howTo2Screen, false);
             InternalCalls.UI_ClearForcedHoveredButton();
         }
 
@@ -68,13 +85,17 @@ namespace CrashoutsEngine
         */
         public override void Update()
         {
+            if (!IsPauseController()) return;
+
             if (playerScript == null) playerScript = PlayerMovement.Instance;
+            if (pauseToggleCooldown > 0.0f) pauseToggleCooldown -= (float)Time.DT;
 
             // 1. Pause Input
-            if (Input.GetActionTriggered("Pause"))
+            if (pauseToggleCooldown <= 0.0f && Input.GetActionTriggered("Pause"))
             {
                 if (playerScript != null && playerScript.isDialogueActive) return;
                 TogglePause();
+                pauseToggleCooldown = 0.2f;
                 return;
             }
 
@@ -84,14 +105,42 @@ namespace CrashoutsEngine
                 isMouseReleased = true;
             }
 
-            // 3. Logic: Only process if mouse was released first
-            if (isPaused && isMouseReleased)
+            // 3. Logic: Only process if mouse was released first and cooldown has passed
+            if (isPaused && isMouseReleased && inputCooldown <= 0.0f)
             {
                 if (isRestartMenuOpen) HandleRestartConfirmButtons();
                 else if (isSettingsMenuOpen)
                 {
-                    UpdateControllerSelection(new Entity[] { btnCloseBook });
-                    if (CheckButtonClick(btnCloseBook) || IsControllerSubmit(new Entity[] { btnCloseBook }, btnCloseBook)) CloseSettings();
+                    if (isHowTo2Open)
+                    {
+                        Entity backBtn = Entity.Find("HowTo2_BackBtn");
+                        if (backBtn == null) backBtn = Entity.Find("BackBtn"); // Fallback
+                        Entity[] buttons = { backBtn };
+                        UpdateControllerSelection(buttons);
+                        if (CheckButtonClick(backBtn) || IsControllerSubmit(buttons, backBtn)) OpenHowTo1();
+                    }
+                    else if (isHowTo1Open)
+                    {
+                        Entity nextBtn = Entity.Find("HowTo1_NextBtn");
+                        if (nextBtn == null) nextBtn = Entity.Find("NextPageBtn"); // Fallback
+                        Entity backBtn = Entity.Find("HowTo1_BackBtn");
+                        if (backBtn == null) backBtn = Entity.Find("BackBtn"); // Fallback
+                        Entity[] buttons = { nextBtn, backBtn };
+                        UpdateControllerSelection(buttons);
+
+                        if (CheckButtonClick(nextBtn) || IsControllerSubmit(buttons, nextBtn)) OpenHowTo2();
+                        else if (CheckButtonClick(backBtn) || IsControllerSubmit(buttons, backBtn)) OpenSettings();
+                    }
+                    else
+                    {
+                        Entity nextBtn = Entity.Find("SettingsNextBtn");
+                        if (nextBtn == null) nextBtn = Entity.Find("NextPageBtn"); // Fallback
+                        Entity[] buttons = { btnCloseBook, nextBtn };
+                        UpdateControllerSelection(buttons);
+
+                        if (CheckButtonClick(btnCloseBook) || IsControllerSubmit(buttons, btnCloseBook)) CloseSettings();
+                        else if (CheckButtonClick(nextBtn) || IsControllerSubmit(buttons, nextBtn)) OpenHowTo1();
+                    }
                 }
                 else HandleMainPauseButtons();
             }
@@ -174,8 +223,12 @@ namespace CrashoutsEngine
             
             isRestartMenuOpen = false;
             isSettingsMenuOpen = false;
+            isHowTo1Open = false;
+            isHowTo2Open = false;
             SetEntityActive(restartCheckScreen, false);
             SetEntityActive(openedBookScreen, false);
+            SetEntityActive(howTo1Screen, false);
+            SetEntityActive(howTo2Screen, false);
 
             if (isPaused) ResetControllerSelection();
             else InternalCalls.UI_ClearForcedHoveredButton();
@@ -187,7 +240,11 @@ namespace CrashoutsEngine
         private void OpenSettings()
         {
             isSettingsMenuOpen = true;
+            isHowTo1Open = false;
+            isHowTo2Open = false;
             SetEntityActive(openedBookScreen, true);
+            SetEntityActive(howTo1Screen, false);
+            SetEntityActive(howTo2Screen, false);
             SetEntityActive(closedBookScreen, false);
             inputCooldown = 0.2f;
             selectedButtonIndex = 0;
@@ -199,10 +256,43 @@ namespace CrashoutsEngine
         private void CloseSettings()
         {
             isSettingsMenuOpen = false;
+            isHowTo1Open = false;
+            isHowTo2Open = false;
             SetEntityActive(openedBookScreen, false);
+            SetEntityActive(howTo1Screen, false);
+            SetEntityActive(howTo2Screen, false);
             SetEntityActive(closedBookScreen, true);
             inputCooldown = 0.2f;
             ResetControllerSelection();
+        }
+
+        private void OpenHowTo1()
+        {
+            if (howTo1Screen == null) howTo1Screen = Entity.Find("HowTo1");
+            if (howTo1Screen == null) return;
+
+            isHowTo1Open = true;
+            isHowTo2Open = false;
+            isMouseReleased = false; // Lock gate to prevent carryover
+            SetEntityActive(openedBookScreen, false);
+            SetEntityActive(howTo1Screen, true);
+            SetEntityActive(howTo2Screen, false);
+            inputCooldown = 0.3f;
+            selectedButtonIndex = 0;
+        }
+
+        private void OpenHowTo2()
+        {
+            if (howTo2Screen == null) howTo2Screen = Entity.Find("HowTo2");
+            if (howTo2Screen == null) return;
+
+            isHowTo1Open = false;
+            isHowTo2Open = true;
+            isMouseReleased = false; // Lock gate to prevent carryover
+            SetEntityActive(howTo1Screen, false);
+            SetEntityActive(howTo2Screen, true);
+            inputCooldown = 0.3f;
+            selectedButtonIndex = 0;
         }
 
         /*!
@@ -243,6 +333,8 @@ namespace CrashoutsEngine
         {
             selectedButtonIndex = 0;
             menuNavigationCooldown = 0.0f;
+            useForcedSelection = false;
+            InternalCalls.UI_ClearForcedHoveredButton();
         }
 
         private void UpdateControllerSelection(Entity[] buttons)
@@ -253,7 +345,30 @@ namespace CrashoutsEngine
                 return;
             }
 
+            // 1. Detect Mouse Movement to Disable Forced Selection
+            CEVec2 currentMousePos = Input.GetMousePosition();
+            if (Math.Abs(currentMousePos.x - lastMousePos.x) > 0.1f || Math.Abs(currentMousePos.y - lastMousePos.y) > 0.1f)
+            {
+                useForcedSelection = false;
+            }
+            lastMousePos = currentMousePos;
+
+            // 2. Detect Controller/Keyboard Input to Enable Forced Selection
             float menuY = Input.GetAxis("MenuY");
+            bool navInput = Input.GetActionTriggered("UIDown") || Input.GetActionTriggered("UIUp") || Math.Abs(menuY) > 0.5f;
+
+            if (navInput)
+            {
+                useForcedSelection = true;
+            }
+
+            if (!useForcedSelection)
+            {
+                InternalCalls.UI_ClearForcedHoveredButton();
+                return;
+            }
+
+            // 3. Navigation Logic
             if (menuNavigationCooldown <= 0.0f)
             {
                 if (Input.GetActionTriggered("UIDown") || menuY <= -0.5f)
@@ -294,6 +409,13 @@ namespace CrashoutsEngine
             return buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit");
         }
 
+        private bool IsPauseController()
+        {
+            return Entity != null &&
+                   Entity.ID != 0 &&
+                   InternalCalls.GetName(Entity.ID) == PauseControllerName;
+        }
+
         /*!
         @brief Set an entity active/inactive via internal calls.
         @param e Entity reference.
@@ -306,7 +428,7 @@ namespace CrashoutsEngine
 
         public override void OnDestroy()
         {
-            InternalCalls.UI_ClearForcedHoveredButton();
+            if (IsPauseController()) InternalCalls.UI_ClearForcedHoveredButton();
         }
     }
 }
