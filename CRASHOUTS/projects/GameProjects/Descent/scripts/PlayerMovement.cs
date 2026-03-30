@@ -30,7 +30,7 @@ namespace CrashoutsEngine
         public float energyConsumption = 12.5f;
         
         [SerializeField] private float coyoteTime = 0.15f;
-        [SerializeField] private string tutorialDoorName = "tutorial1door"; 
+        //[SerializeField] private string tutorialDoorName = "tutorial1door"; 
         public int goalNoOfPlates = 1;
         public int currentGoalPlates = 0;
 
