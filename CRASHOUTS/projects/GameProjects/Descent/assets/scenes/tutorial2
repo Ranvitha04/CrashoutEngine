@@ -5986,6 +5986,10 @@
                             "patrolTurnInterval": 20.399999618530275,
                             "resizePlayerColliderWhileHolding": true,
                             "carryBoundsPadding": 0.0,
+                            "heldRumbleLow": 0.07999999821186066,
+                            "heldRumbleHigh": 0.14000000059604646,
+                            "heldRumbleDuration": 0.11999999731779099,
+                            "heldRumbleRefreshInterval": 0.07999999821186066,
                             "ignorePlayerStopDuration": 0.20000000298023225,
                             "maxLeashDistance": 470.3999938964844
                         }
@@ -9315,11 +9319,15 @@
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "coyoteTime": 0.15000000596046449,
-                            "tutorialDoorName": "tutorial1door",
                             "goalNoOfPlates": 2,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
                             "dustBurstDuration": 0.15000000596046449,
+                            "landingRumbleMinFallSpeed": 60.0,
+                            "landingRumbleMaxFallSpeed": 260.0,
+                            "landingRumbleMinStrength": 0.15000000596046449,
+                            "landingRumbleMaxStrength": 0.6499999761581421,
+                            "landingRumbleDuration": 0.11999999731779099,
                             "normalMass": 2.9000000953674318,
                             "lightMass": 2.0,
                             "groundCheckDistance": 5.0,
@@ -13583,7 +13591,10 @@
                             "QuitBtn": 0,
                             "QuitCheckPanel": 0,
                             "YesBtn": 0,
-                            "NoBtn": 0
+                            "NoBtn": 0,
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
                         }
                     }
                 ]
@@ -13802,7 +13813,11 @@
                             "isMusicVolume": false,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0
+                            "clickHeight": 3.0,
+                            "totalBalls": 10,
+                            "ballBaseName": "VolumeBall_",
+                            "activeAlpha": 1.0,
+                            "inactiveAlpha": 0.20000000298023225
                         }
                     }
                 ]
@@ -13971,7 +13986,11 @@
                             "isMusicVolume": true,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0
+                            "clickHeight": 3.0,
+                            "totalBalls": 10,
+                            "ballBaseName": "VolumeBall_",
+                            "activeAlpha": 1.0,
+                            "inactiveAlpha": 0.20000000298023225
                         }
                     }
                 ]
@@ -14333,7 +14352,10 @@
                     {
                         "className": "PauseButtons",
                         "fields": {
-                            "currentScene": "tutorial2"
+                            "currentScene": "tutorial2",
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
                         }
                     }
                 ]
@@ -17248,6 +17270,10 @@
                             "patrolTurnInterval": 3.0,
                             "resizePlayerColliderWhileHolding": true,
                             "carryBoundsPadding": 10.0,
+                            "heldRumbleLow": 0.07999999821186066,
+                            "heldRumbleHigh": 0.14000000059604646,
+                            "heldRumbleDuration": 0.11999999731779099,
+                            "heldRumbleRefreshInterval": 0.07999999821186066,
                             "ignorePlayerStopDuration": 0.20000000298023225,
                             "maxLeashDistance": 389.79998779296877
                         }
