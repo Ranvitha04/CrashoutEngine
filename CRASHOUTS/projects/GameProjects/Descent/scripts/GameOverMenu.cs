@@ -12,6 +12,9 @@ namespace CrashoutsEngine
         [SerializeField] public Entity QuitBtn;
         [SerializeField] private string quitScene = "descentmenu";
         [SerializeField] private float quitTransition = 0.5f;
+        [SerializeField] private float navigationRumbleLow = 0.15f;
+        [SerializeField] private float navigationRumbleHigh = 0.25f;
+        [SerializeField] private float navigationRumbleDuration = 0.05f;
 
         private int selectedButtonIndex = 0;
         private float navigationCooldown = 0.0f;
@@ -128,6 +131,11 @@ namespace CrashoutsEngine
             if (movedDown || movedUp || Input.GetActionTriggered("UISubmit"))
             {
                 controllerNavigationActive = true;
+            }
+
+            if (movedDown || movedUp)
+            {
+                Input.SetControllerVibration(navigationRumbleLow, navigationRumbleHigh, navigationRumbleDuration);
             }
 
             if (!controllerNavigationActive)

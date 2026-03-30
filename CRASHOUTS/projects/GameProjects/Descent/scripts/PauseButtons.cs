@@ -46,6 +46,9 @@ namespace CrashoutsEngine
         private int selectedButtonIndex = 0;
         private float menuNavigationCooldown = 0.0f;
         private bool useForcedSelection = false;
+        [SerializeField] private float navigationRumbleLow = 0.15f;
+        [SerializeField] private float navigationRumbleHigh = 0.25f;
+        [SerializeField] private float navigationRumbleDuration = 0.05f;
         private CEVec2 lastMousePos;
 
         // NEW: The Trigger Gate
@@ -390,11 +393,13 @@ namespace CrashoutsEngine
                 {
                     selectedButtonIndex = (selectedButtonIndex + 1) % buttons.Length;
                     menuNavigationCooldown = 0.2f;
+                    Input.SetControllerVibration(navigationRumbleLow, navigationRumbleHigh, navigationRumbleDuration);
                 }
                 else if (Input.GetActionTriggered("UIUp") || menuY >= 0.5f)
                 {
                     selectedButtonIndex = (selectedButtonIndex - 1 + buttons.Length) % buttons.Length;
                     menuNavigationCooldown = 0.2f;
+                    Input.SetControllerVibration(navigationRumbleLow, navigationRumbleHigh, navigationRumbleDuration);
                 }
             }
 

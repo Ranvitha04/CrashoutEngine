@@ -37,6 +37,9 @@ namespace CrashoutsEngine
         private int selectedButtonIndex = 0;
         private float menuNavigationCooldown = 0.0f;
         private bool controllerNavigationActive = false;
+        [SerializeField] private float navigationRumbleLow = 0.15f;
+        [SerializeField] private float navigationRumbleHigh = 0.25f;
+        [SerializeField] private float navigationRumbleDuration = 0.05f;
 
         /*!
         @brief Initialize internal click state.
@@ -309,6 +312,11 @@ namespace CrashoutsEngine
             if (movedDown || movedUp || Input.GetActionTriggered("UISubmit"))
             {
                 controllerNavigationActive = true;
+            }
+
+            if (movedDown || movedUp)
+            {
+                Input.SetControllerVibration(navigationRumbleLow, navigationRumbleHigh, navigationRumbleDuration);
             }
 
             if (!controllerNavigationActive)

@@ -394,7 +394,10 @@
                             "RestartBtn": 2,
                             "QuitBtn": 3,
                             "quitScene": "descentmenu",
-                            "quitTransition": 0.5
+                            "quitTransition": 0.5,
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
                         }
                     }
                 ]
