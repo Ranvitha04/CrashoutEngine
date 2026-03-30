@@ -77,6 +77,17 @@ namespace Component {
         CEVec2 distortionShockPos{ 0.5f, 0.0f };
         float distortionShockTime{ 999.0f };
         float distortionShockStrength{ 0.02f };
+
+        bool vignetteEnabled{ false };
+        float vignetteIntensity{ 0.6f };
+        float vignetteRadius{ 0.75f };
+        float vignetteSoftness{ 0.35f };
+        CEVec3 vignetteColor{ 0.0f, 0.0f, 0.0f };
+        float vignetteLag{ 0.0f };
+        float vignettePulseIntensity{ 0.0f };
+        float vignettePulseRadius{ 0.0f };
+        float vignettePulseSpeed{ 2.0f };
+        bool vignetteFollowPlayer{ false };
     };
 
     /*!

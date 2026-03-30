@@ -90,6 +90,19 @@ namespace CrashoutsEngine {
         CEVec2 g_distortionShockPos{ 0.5f, 0.0f };
         float g_distortionShockTime = 999.0f;
         float g_distortionShockStrength = 0.02f;
+        bool g_vignetteEnabled = false;
+        float g_vignetteIntensity = 0.6f;
+        float g_vignetteRadius = 0.75f;
+        float g_vignetteSoftness = 0.35f;
+        CEVec3 g_vignetteColor{ 0.0f, 0.0f, 0.0f };
+        float g_vignetteLag = 0.0f;
+        float g_vignettePulseIntensity = 0.0f;
+        float g_vignettePulseRadius = 0.0f;
+        float g_vignettePulseSpeed = 2.0f;
+        float g_vignetteIntensityApplied = 0.0f;
+        float g_vignetteRadiusApplied = 0.0f;
+        bool g_vignetteFollowPlayer = false;
+        CEVec2 g_vignetteCenterApplied{ 0.5f, 0.5f };
         bool active = false;
 
         GLuint quadvao = 0;
@@ -366,23 +379,37 @@ namespace CrashoutsEngine {
                 Entity fallbackEnt = ppArray.indexToEntity.back();
                 PPComponent* fallback = ppArray.dense.back();
 
+                if (g_ppOverrideEntity != 0 && !gECS.HasComponent<PPComponent>(g_ppOverrideEntity)) {
+                    g_ppOverrideEntity = 0;
+                }
+
                 if (g_ppOverrideEntity != 0 && gECS.HasComponent<PPComponent>(g_ppOverrideEntity)) {
                     chosen = gECS.GetComponent<PPComponent>(g_ppOverrideEntity);
                     chosenEnt = g_ppOverrideEntity;
                 }
 
+                PPComponent* postProcessingCandidate = nullptr;
+                Entity postProcessingEnt = 0;
                 for (size_t i = 0; !chosen && i < ppArray.indexToEntity.size(); ++i) {
                     Entity e = ppArray.indexToEntity[i];
                     PPComponent* c = ppArray.dense[i];
                     if (!c) continue;
                     if (gECS.HasComponent<NameComponent>(e)) {
                         const std::string& n = gECS.GetComponent<NameComponent>(e)->name;
-                        if (n == "Post-Processing") {
+                        if (n == "PPManager") {
                             chosen = c;
                             chosenEnt = e;
                             break;
                         }
+                        if (n == "Post-Processing" && !postProcessingCandidate) {
+                            postProcessingCandidate = c;
+                            postProcessingEnt = e;
+                        }
                     }
+                }
+                if (!chosen && postProcessingCandidate) {
+                    chosen = postProcessingCandidate;
+                    chosenEnt = postProcessingEnt;
                 }
 
                 if (!chosen) {
@@ -417,6 +444,10 @@ namespace CrashoutsEngine {
                 if (!chosen) {
                     chosen = fallback;
                     chosenEnt = fallbackEnt;
+                }
+
+                if (g_ppOverrideEntity == 0) {
+                    g_ppOverrideEntity = chosenEnt;
                 }
 
                 PPComponent& p = *chosen;
@@ -462,6 +493,16 @@ namespace CrashoutsEngine {
                 g_distortionShockPos = p.distortionShockPos;
                 g_distortionShockTime = p.distortionShockTime;
                 g_distortionShockStrength = p.distortionShockStrength;
+                g_vignetteEnabled = p.vignetteEnabled;
+                g_vignetteIntensity = p.vignetteIntensity;
+                g_vignetteRadius = p.vignetteRadius;
+                g_vignetteSoftness = p.vignetteSoftness;
+                g_vignetteColor = p.vignetteColor;
+                g_vignetteLag = p.vignetteLag;
+                g_vignettePulseIntensity = p.vignettePulseIntensity;
+                g_vignettePulseRadius = p.vignettePulseRadius;
+                g_vignettePulseSpeed = p.vignettePulseSpeed;
+                g_vignetteFollowPlayer = p.vignetteFollowPlayer;
                 active = p.active;
             }
         }
@@ -1489,6 +1530,100 @@ namespace CrashoutsEngine {
                             RenderFullscreenCached(copyShader, combineTexture, loc_cScene2);
                         }
                     }
+                }
+
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            }
+
+            if (g_vignetteEnabled) {
+                auto* ppAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("PPShader");
+                if (ppAsset) {
+                    GLSLShader& ppShader = ppAsset->shaderObject;
+                    ppShader.Use();
+
+                    static GLint loc_pActive = -1, loc_pBright = -1, loc_pContrast = -1, loc_pSaturation = -1, loc_pScene = -1;
+                    static GLint loc_vEnabled = -1, loc_vIntensity = -1, loc_vRadius = -1, loc_vSoftness = -1, loc_vColor = -1, loc_vAspect = -1, loc_vCenter = -1;
+                    if (loc_pScene == -1) {
+                        loc_pActive = glGetUniformLocation(ppShader.GetHandle(), "u_active");
+                        loc_pBright = glGetUniformLocation(ppShader.GetHandle(), "u_brightness");
+                        loc_pContrast = glGetUniformLocation(ppShader.GetHandle(), "u_contrast");
+                        loc_pSaturation = glGetUniformLocation(ppShader.GetHandle(), "u_saturation");
+                        loc_pScene = glGetUniformLocation(ppShader.GetHandle(), "u_sceneTexture");
+                        loc_vEnabled = glGetUniformLocation(ppShader.GetHandle(), "u_vignetteEnabled");
+                        loc_vIntensity = glGetUniformLocation(ppShader.GetHandle(), "u_vignetteIntensity");
+                        loc_vRadius = glGetUniformLocation(ppShader.GetHandle(), "u_vignetteRadius");
+                        loc_vSoftness = glGetUniformLocation(ppShader.GetHandle(), "u_vignetteSoftness");
+                        loc_vColor = glGetUniformLocation(ppShader.GetHandle(), "u_vignetteColor");
+                        loc_vAspect = glGetUniformLocation(ppShader.GetHandle(), "u_aspect");
+                        loc_vCenter = glGetUniformLocation(ppShader.GetHandle(), "u_vignetteCenter");
+                    }
+
+                    glBindFramebuffer(GL_FRAMEBUFFER, combineFbo);
+                    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                    glClear(GL_COLOR_BUFFER_BIT);
+                    glDisable(GL_BLEND);
+
+                    if (loc_pActive != -1) glUniform1i(loc_pActive, 0);
+                    if (loc_pBright != -1) glUniform1f(loc_pBright, 0.0f);
+                    if (loc_pContrast != -1) glUniform1f(loc_pContrast, 0.0f);
+                    if (loc_pSaturation != -1) glUniform1f(loc_pSaturation, 0.0f);
+
+                    CEVec2 centerTarget{ 0.5f, 0.5f };
+                    if (g_vignetteFollowPlayer) {
+                        Entity playerEnt = 0;
+                        auto& nameArr = ecs.GetComponentArray<NameComponent>();
+                        for (size_t i = 0; i < nameArr.indexToEntity.size(); ++i) {
+                            Entity e = nameArr.indexToEntity[i];
+                            NameComponent* nc = nameArr.dense[i];
+                            if (!nc) continue;
+                            if (nc->name == "Player") {
+                                playerEnt = e;
+                                break;
+                            }
+                        }
+
+                        if (playerEnt != 0 && ecs.HasComponent<TransformComponent>(playerEnt)) {
+                            const CEVec3 worldPos = ecs.GetComponent<TransformComponent>(playerEnt)->position;
+                            glm::vec4 clip = proj * view * glm::vec4(worldPos.x, worldPos.y, worldPos.z, 1.0f);
+                            if (clip.w != 0.0f) {
+                                glm::vec3 ndc = glm::vec3(clip) / clip.w;
+                                glm::vec2 uv = glm::vec2(ndc.x, ndc.y) * 0.5f + 0.5f;
+                                centerTarget = { (float)uv.x, (float)uv.y };
+                            }
+                        }
+                    }
+                    float pulse = std::sin(g_timeSeconds * g_vignettePulseSpeed);
+                    float intensityTarget = g_vignetteIntensity + g_vignettePulseIntensity * pulse;
+                    float radiusTarget = g_vignetteRadius + g_vignettePulseRadius * pulse;
+                    intensityTarget = std::max(0.0f, intensityTarget);
+                    radiusTarget = std::max(0.0f, radiusTarget);
+
+                    float dt = static_cast<float>(GLApp::delta_time);
+                    float alpha = 1.0f;
+                    if (g_vignetteLag > 0.0001f) alpha = 1.0f - std::exp(-dt / g_vignetteLag);
+
+                    g_vignetteIntensityApplied = g_vignetteIntensityApplied + (intensityTarget - g_vignetteIntensityApplied) * alpha;
+                    g_vignetteRadiusApplied = g_vignetteRadiusApplied + (radiusTarget - g_vignetteRadiusApplied) * alpha;
+                    g_vignetteCenterApplied = g_vignetteCenterApplied + (centerTarget - g_vignetteCenterApplied) * alpha;
+
+                    if (loc_vEnabled != -1) glUniform1i(loc_vEnabled, 1);
+                    if (loc_vIntensity != -1) glUniform1f(loc_vIntensity, g_vignetteIntensityApplied);
+                    if (loc_vRadius != -1) glUniform1f(loc_vRadius, g_vignetteRadiusApplied);
+                    if (loc_vSoftness != -1) glUniform1f(loc_vSoftness, g_vignetteSoftness);
+                    if (loc_vColor != -1) glUniform3f(loc_vColor, g_vignetteColor.x, g_vignetteColor.y, g_vignetteColor.z);
+                    if (loc_vAspect != -1) glUniform1f(loc_vAspect, (float)gameTextureWidth / (float)std::max(1, gameTextureHeight));
+                    if (loc_vCenter != -1) glUniform2f(loc_vCenter, g_vignetteCenterApplied.x, g_vignetteCenterApplied.y);
+
+                    RenderFullscreenCached(ppShader, ppTextureID, loc_pScene);
+
+                    glBindFramebuffer(GL_FRAMEBUFFER, ppFboID);
+                    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+                    glClear(GL_COLOR_BUFFER_BIT);
+
+                    if (loc_vEnabled != -1) glUniform1i(loc_vEnabled, 0);
+                    if (loc_vAspect != -1) glUniform1f(loc_vAspect, (float)gameTextureWidth / (float)std::max(1, gameTextureHeight));
+                    if (loc_vCenter != -1) glUniform2f(loc_vCenter, 0.5f, 0.5f);
+                    RenderFullscreenCached(ppShader, combineTexture, loc_pScene);
                 }
 
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);

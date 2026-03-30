@@ -2748,6 +2748,19 @@ namespace CrashoutsEngine
 			ImGui::DragFloat2("Distortion Shock Pos", &ppc->distortionShockPos.x, 0.001f, 0.0f, 1.0f);
 			UIHelpers::DrawUndoableFloat("Distortion Shock Time", ppc->distortionShockTime, 0.01f, 0.0f, 5.0f);
 			UIHelpers::DrawUndoableFloat("Distortion Shock Strength", ppc->distortionShockStrength, 0.0001f, 0.0f, 0.1f);
+			UIHelpers::DrawUndoableBool("Vignette Enabled", ppc->vignetteEnabled);
+			UIHelpers::DrawUndoableFloat("Vignette Intensity", ppc->vignetteIntensity, 0.01f, 0.0f, 2.0f);
+			UIHelpers::DrawUndoableFloat("Vignette Radius", ppc->vignetteRadius, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Vignette Softness", ppc->vignetteSoftness, 0.01f, 0.0f, 1.0f);
+			float vCol[3] = { ppc->vignetteColor.x, ppc->vignetteColor.y, ppc->vignetteColor.z };
+			if (ImGui::ColorEdit3("Vignette Color", vCol)) {
+				ppc->vignetteColor = { vCol[0], vCol[1], vCol[2] };
+			}
+			UIHelpers::DrawUndoableFloat("Vignette Lag", ppc->vignetteLag, 0.01f, 0.0f, 5.0f);
+			UIHelpers::DrawUndoableFloat("Vignette Pulse Intensity", ppc->vignettePulseIntensity, 0.01f, 0.0f, 2.0f);
+			UIHelpers::DrawUndoableFloat("Vignette Pulse Radius", ppc->vignettePulseRadius, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Vignette Pulse Speed", ppc->vignettePulseSpeed, 0.01f, 0.0f, 20.0f);
+			UIHelpers::DrawUndoableBool("Vignette Follow Player", ppc->vignetteFollowPlayer);
 			UIHelpers::DrawUndoableBool("Bloom Enabled", ppc->bloomEnabled);
 			UIHelpers::DrawUndoableFloat("Bloom Threshold", ppc->bloomThreshold, 0.01f, 0.0f, 5.0f);
 			UIHelpers::DrawUndoableFloat("Bloom Intensity", ppc->bloomIntensity, 0.01f, 0.0f, 5.0f);
@@ -2788,6 +2801,16 @@ namespace CrashoutsEngine
 				ppc->distortionShockPos = { 0.5f, 0.0f };
 				ppc->distortionShockTime = 999.0f;
 				ppc->distortionShockStrength = 0.02f;
+				ppc->vignetteEnabled = false;
+				ppc->vignetteIntensity = 0.6f;
+				ppc->vignetteRadius = 0.75f;
+				ppc->vignetteSoftness = 0.35f;
+				ppc->vignetteColor = { 0.0f, 0.0f, 0.0f };
+				ppc->vignetteLag = 0.0f;
+				ppc->vignettePulseIntensity = 0.0f;
+				ppc->vignettePulseRadius = 0.0f;
+				ppc->vignettePulseSpeed = 2.0f;
+				ppc->vignetteFollowPlayer = false;
 				ppc->bloomEnabled = true;
 				ppc->bloomThreshold = 1.0f;
 				ppc->bloomIntensity = 0.8f;

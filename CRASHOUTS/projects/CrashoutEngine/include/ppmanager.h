@@ -29,7 +29,7 @@ namespace CrashoutsEngine {
 		extern float g_bloomThreshold;
 		extern float g_bloomIntensity;
 		extern int g_bloomIterations;		
-		extern bool active;
+		//extern bool active;
 		extern Entity g_ppSourceEntity;
 		extern Entity g_ppOverrideEntity;
 		extern bool g_heatEnabled;

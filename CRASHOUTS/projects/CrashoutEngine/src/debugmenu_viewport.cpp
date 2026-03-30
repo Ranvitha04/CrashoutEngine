@@ -211,9 +211,6 @@ namespace UI {
                 if (selected != 0 && ecs.HasComponent<Component::PPComponent>(selected)) {
                     CrashoutsEngine::PostProcessing::g_ppOverrideEntity = selected;
                 }
-                else {
-                    CrashoutsEngine::PostProcessing::g_ppOverrideEntity = 0;
-                }
 
                 bool heatLoaded = (Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("HeatDistortion") != nullptr);
                 bool distortionLoaded = (Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("DistortionShader") != nullptr);
@@ -224,7 +221,9 @@ namespace UI {
                 dl->AddRectFilled(p0, p1, IM_COL32(0, 0, 0, 160), 4.0f);
 
                 char line1[256];
-                std::snprintf(line1, sizeof(line1), "PP src entity: %u", (unsigned)CrashoutsEngine::PostProcessing::g_ppSourceEntity);
+                std::snprintf(line1, sizeof(line1), "PP src: %u  override: %u",
+                    (unsigned)CrashoutsEngine::PostProcessing::g_ppSourceEntity,
+                    (unsigned)CrashoutsEngine::PostProcessing::g_ppOverrideEntity);
                 dl->AddText(ImVec2(p0.x + 8.0f, p0.y + 6.0f), IM_COL32(255, 255, 255, 220), line1);
 
                 char line2[256];
