@@ -2307,6 +2307,10 @@
             "path": "OpenBookPause_Prefab.json"
         },
         {
+            "name": "PauseMenu_Prefab",
+            "path": "PauseMenu_Prefab.json"
+        },
+        {
             "name": "PlayerBarrier",
             "path": "PlayerBarrier.json"
         },

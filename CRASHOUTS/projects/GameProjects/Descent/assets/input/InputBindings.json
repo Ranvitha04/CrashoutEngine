@@ -32,6 +32,12 @@
     ],
     "UIDown": [
       { "type": "controller_button", "button": "Dpad_Down" }
+    ],
+    "UILeft": [
+      { "type": "controller_button", "button": "Dpad_Left" }
+    ],
+    "UIRight": [
+      { "type": "controller_button", "button": "Dpad_Right" }
     ]
   },
   "axes": {
@@ -53,6 +59,9 @@
     ],
     "MenuY": [
       { "type": "controller_axis", "axis": "Left_Y", "deadzone": 0.2, "invert": true }
+    ],
+    "MenuX": [
+      { "type": "controller_axis", "axis": "Left_X", "deadzone": 0.2 }
     ]
   }
 }

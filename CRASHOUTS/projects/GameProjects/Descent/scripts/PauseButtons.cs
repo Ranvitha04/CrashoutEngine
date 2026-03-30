@@ -27,6 +27,13 @@ namespace CrashoutsEngine
         private Entity pauseScreen, restartCheckScreen, openedBookScreen, closedBookScreen;
         private Entity howTo1Screen, howTo2Screen;
         private Entity btnResume, btnRestart, btnSettings, btnQuit, btnYes, btnNo, btnCloseBook, btnNext, btnBack;
+        private Entity musicSliderEntity, sfxSliderEntity;
+        private Entity musicLabelEntity, sfxLabelEntity;
+
+        private const string MusicLabelText = "Music";
+        private const string MusicLabelSelectedText = "> Music <";
+        private const string SfxLabelText = "SFX";
+        private const string SfxLabelSelectedText = "> SFX <";
 
         private PlayerMovement playerScript;
         private bool isPaused = false;
@@ -70,6 +77,10 @@ namespace CrashoutsEngine
             btnCloseBook = Entity.Find("CloseBookBtn");
             btnNext = Entity.Find("NextPageBtn");
             btnBack = Entity.Find("BackBtn");
+            musicSliderEntity = Entity.Find("MusicSlider");
+            sfxSliderEntity = Entity.Find("SFXSlider");
+            musicLabelEntity = Entity.Find("Music");
+            sfxLabelEntity = Entity.Find("SFX");
 
             SetEntityActive(pauseScreen, false);
             SetEntityActive(restartCheckScreen, false);
@@ -135,8 +146,10 @@ namespace CrashoutsEngine
                     {
                         Entity nextBtn = Entity.Find("SettingsNextBtn");
                         if (nextBtn == null) nextBtn = Entity.Find("NextPageBtn"); // Fallback
-                        Entity[] buttons = { btnCloseBook, nextBtn };
+                        Entity[] buttons = { btnCloseBook, musicSliderEntity, sfxSliderEntity, nextBtn };
                         UpdateControllerSelection(buttons);
+                        HandleSelectedSliderAdjustment(buttons);
+                        UpdateSettingsLabelHighlight(buttons);
 
                         if (CheckButtonClick(btnCloseBook) || IsControllerSubmit(buttons, btnCloseBook)) CloseSettings();
                         else if (CheckButtonClick(nextBtn) || IsControllerSubmit(buttons, nextBtn)) OpenHowTo1();
@@ -248,6 +261,7 @@ namespace CrashoutsEngine
             SetEntityActive(closedBookScreen, false);
             inputCooldown = 0.2f;
             selectedButtonIndex = 0;
+            ResetSettingsLabelHighlight();
         }
 
         /*!
@@ -263,6 +277,7 @@ namespace CrashoutsEngine
             SetEntityActive(howTo2Screen, false);
             SetEntityActive(closedBookScreen, true);
             inputCooldown = 0.2f;
+            ResetSettingsLabelHighlight();
             ResetControllerSelection();
         }
 
@@ -399,6 +414,88 @@ namespace CrashoutsEngine
             }
         }
 
+        private void HandleSelectedSliderAdjustment(Entity[] buttons)
+        {
+            if (buttons == null || selectedButtonIndex < 0 || selectedButtonIndex >= buttons.Length)
+            {
+                return;
+            }
+
+            Entity selected = buttons[selectedButtonIndex];
+            if (selected == null || selected.ID == 0)
+            {
+                return;
+            }
+
+            if (selected != musicSliderEntity && selected != sfxSliderEntity)
+            {
+                return;
+            }
+
+            float menuX = Input.GetAxis("MenuX");
+            int direction = 0;
+
+            if (Input.GetActionTriggered("UILeft") || menuX <= -0.5f)
+            {
+                direction = -1;
+            }
+            else if (Input.GetActionTriggered("UIRight") || menuX >= 0.5f)
+            {
+                direction = 1;
+            }
+
+            if (direction == 0 || inputCooldown > 0.0f)
+            {
+                return;
+            }
+
+            VolumeSlider slider = selected.GetScript<VolumeSlider>();
+            if (slider == null)
+            {
+                return;
+            }
+
+            slider.AdjustByStep(direction);
+            inputCooldown = 0.15f;
+            useForcedSelection = true;
+        }
+
+        private void UpdateSettingsLabelHighlight(Entity[] buttons)
+        {
+            bool highlightMusic = false;
+            bool highlightSfx = false;
+
+            if (useForcedSelection && buttons != null && selectedButtonIndex >= 0 && selectedButtonIndex < buttons.Length)
+            {
+                Entity selected = buttons[selectedButtonIndex];
+                highlightMusic = selected == musicSliderEntity;
+                highlightSfx = selected == sfxSliderEntity;
+            }
+
+            if (musicLabelEntity != null && musicLabelEntity.ID != 0)
+            {
+                InternalCalls.SetText(musicLabelEntity.ID, highlightMusic ? MusicLabelSelectedText : MusicLabelText);
+            }
+
+            if (sfxLabelEntity != null && sfxLabelEntity.ID != 0)
+            {
+                InternalCalls.SetText(sfxLabelEntity.ID, highlightSfx ? SfxLabelSelectedText : SfxLabelText);
+            }
+        }
+
+        private void ResetSettingsLabelHighlight()
+        {
+            if (musicLabelEntity != null && musicLabelEntity.ID != 0)
+            {
+                InternalCalls.SetText(musicLabelEntity.ID, MusicLabelText);
+            }
+
+            if (sfxLabelEntity != null && sfxLabelEntity.ID != 0)
+            {
+                InternalCalls.SetText(sfxLabelEntity.ID, SfxLabelText);
+            }
+        }
+
         private bool IsControllerSubmit(Entity[] buttons, Entity target)
         {
             if (target == null || buttons == null || selectedButtonIndex < 0 || selectedButtonIndex >= buttons.Length)
@@ -428,6 +525,7 @@ namespace CrashoutsEngine
 
         public override void OnDestroy()
         {
+            ResetSettingsLabelHighlight();
             if (IsPauseController()) InternalCalls.UI_ClearForcedHoveredButton();
         }
     }
