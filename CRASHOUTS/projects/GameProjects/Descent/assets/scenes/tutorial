@@ -16523,7 +16523,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "Pause",
             "uuid": 3899499466856881947,
             "tag": {
@@ -16601,7 +16601,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "ClosedBook",
             "uuid": 8605457662790260227,
             "tag": {
@@ -17793,7 +17793,7 @@
                 ]
             },
             "button": {
-                "buttonState": 2,
+                "buttonState": 0,
                 "shapeNormalColor": {
                     "x": 0.6795580387115479,
                     "y": 0.6795580387115479,
@@ -20113,12 +20113,12 @@
                 },
                 "min": {
                     "x": -187.00357055664063,
-                    "y": -64.0793685913086,
+                    "y": -64.02381134033203,
                     "z": 0.0
                 },
                 "max": {
                     "x": -170.00357055664063,
-                    "y": -5.8794097900390629,
+                    "y": -5.8238525390625,
                     "z": 0.0
                 }
             },
@@ -20288,7 +20288,7 @@
                             "groundCheckWidth": 10.0,
                             "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
-                            "isDialogueActive": false,
+                            "isDialogueActive": true,
                             "facingRight": true,
                             "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 100.0,
@@ -20300,7 +20300,7 @@
                             "godMode": false,
                             "normalDeathDelay": 2.0,
                             "changedMassDeathDelay": 2.0,
-                            "isPaused": true,
+                            "isPaused": false,
                             "reloadOnDeath": false,
                             "reloadSceneName": "",
                             "gameOverSceneName": "Defeat"
@@ -20470,7 +20470,7 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 17.833232879638673,
+                "t": 34.78297424316406,
                 "playing": true,
                 "clips": [
                     {
@@ -23161,7 +23161,7 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 386.8002624511719,
+                    "x": 386.80029296875,
                     "y": -334.3426513671875,
                     "z": 0.0
                 },
@@ -25242,7 +25242,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -108.50373077392578,
-                    "y": -23.861879348754884,
+                    "y": -12.723837852478028,
                     "z": 0.0
                 },
                 "size": {
@@ -26514,7 +26514,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1445.7991943359376,
-                    "y": -411.67010498046877,
+                    "y": -398.02862548828127,
                     "z": 0.0
                 },
                 "size": {
@@ -26542,7 +26542,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1445.7991943359376,
-                    "y": -411.8536376953125,
+                    "y": -397.62872314453127,
                     "z": 0.0
                 },
                 "offset": {
@@ -26553,7 +26553,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 1445.7991943359376,
-                    "y": -411.8536376953125,
+                    "y": -397.62872314453127,
                     "z": 0.0
                 }
             },
@@ -26571,7 +26571,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.0,
+                    "x": 0.125,
                     "y": 0.0
                 },
                 "color": {
@@ -26645,7 +26645,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 20.28319549560547,
+                "t": 16.933246612548829,
                 "playing": true,
                 "clips": [
                     {
@@ -26766,7 +26766,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 96.24138641357422,
-                    "y": -700.3616943359375,
+                    "y": -686.7206420898438,
                     "z": 0.0
                 },
                 "size": {
@@ -26794,7 +26794,7 @@
                 "enabled": true,
                 "position": {
                     "x": 96.24138641357422,
-                    "y": -700.5452270507813,
+                    "y": -686.3207397460938,
                     "z": 0.0
                 },
                 "offset": {
@@ -26805,7 +26805,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 96.24138641357422,
-                    "y": -700.5452270507813,
+                    "y": -686.3207397460938,
                     "z": 0.0
                 }
             },
@@ -26823,7 +26823,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.0,
+                    "x": 0.125,
                     "y": 0.0
                 },
                 "color": {
@@ -26897,7 +26897,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 20.28319549560547,
+                "t": 16.933246612548829,
                 "playing": true,
                 "clips": [
                     {
@@ -31890,7 +31890,7 @@
                 }
             },
             "button": {
-                "buttonState": 2,
+                "buttonState": 0,
                 "shapeNormalColor": {
                     "x": 1.0,
                     "y": 1.0,
@@ -32086,7 +32086,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -13.472479820251465,
+                    "x": -10.50853157043457,
                     "y": 12.163886070251465,
                     "z": 0.0
                 },
@@ -32162,7 +32162,7 @@
             "parent": {
                 "parentUUID": 18384382288511812235,
                 "localPos": {
-                    "x": -0.07016916573047638,
+                    "x": -0.054731935262680057,
                     "y": 0.11262856423854828,
                     "z": 0.0
                 },
@@ -32194,7 +32194,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -13.472484588623047,
+                    "x": -10.508540153503418,
                     "y": 4.225339412689209,
                     "z": 0.0
                 },
@@ -32270,7 +32270,7 @@
             "parent": {
                 "parentUUID": 18384382288511812235,
                 "localPos": {
-                    "x": -0.07016918808221817,
+                    "x": -0.054731979966163638,
                     "y": 0.03912350907921791,
                     "z": 0.0
                 },
@@ -32302,7 +32302,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -10.91271686553955,
+                    "x": -10.373821258544922,
                     "y": -3.4571096897125246,
                     "z": 0.0
                 },
@@ -32378,7 +32378,7 @@
             "parent": {
                 "parentUUID": 18384382288511812235,
                 "localPos": {
-                    "x": -0.056837067008018497,
+                    "x": -0.054030317813158038,
                     "y": -0.0320102721452713,
                     "z": 0.0
                 },
@@ -32410,7 +32410,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -12.79885482788086,
+                    "x": -10.508533477783204,
                     "y": -10.499361991882325,
                     "z": 0.0
                 },
@@ -32486,7 +32486,7 @@
             "parent": {
                 "parentUUID": 18384382288511812235,
                 "localPos": {
-                    "x": -0.06666070222854614,
+                    "x": -0.05473194643855095,
                     "y": -0.09721630811691284,
                     "z": 0.0
                 },
@@ -33678,7 +33678,7 @@
                 }
             },
             "button": {
-                "buttonState": 2,
+                "buttonState": 0,
                 "shapeNormalColor": {
                     "x": 1.0,
                     "y": 1.0,
@@ -35740,6 +35740,463 @@
             "layer": {
                 "layerName": "UIButtons",
                 "z": 59
+            }
+        },
+        {
+            "active": true,
+            "name": "Animation_Set",
+            "uuid": 9891689183776677639,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "parent": {
+                "parentUUID": 18384382288511812235,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 0.0052083334885537628,
+                    "y": 0.009259258396923542
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Click_Slime_Anim",
+            "uuid": 5496433517221847829,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 16.8405818939209,
+                    "y": 15.621002197265625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 12.0,
+                    "y": 6.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/UI\\settings\\slime-sheet.png",
+                "uvSize": {
+                    "x": 0.5,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "LoopingAnimation",
+                        "fields": {
+                            "animationName": "pickup_update"
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 9891689183776677639,
+                "localPos": {
+                    "x": 16.8405818939209,
+                    "y": 15.621002197265625,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 12.0,
+                    "y": 6.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            },
+            "keyframe_animator": {
+                "current": "pickup_update",
+                "t": 16.949913024902345,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "pickup_update",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\settings\\slime-sheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 12.0,
+                        "targetHeight": 6.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 2.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "active": true,
+            "name": "Throw_Anim",
+            "uuid": 14510981253903747555,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 17.918365478515626,
+                    "y": -3.072978973388672,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 12.0,
+                    "y": 12.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/UI\\settings\\throw 1-Sheet-sheet.png",
+                "uvSize": {
+                    "x": 0.25,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "LoopingAnimation",
+                        "fields": {
+                            "animationName": "throwing_update"
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 9891689183776677639,
+                "localPos": {
+                    "x": 17.918365478515626,
+                    "y": -3.072978973388672,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 12.0,
+                    "y": 12.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            },
+            "keyframe_animator": {
+                "current": "throwing_update",
+                "t": 16.949913024902345,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "throwing_update",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\settings\\throw 1-Sheet-sheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 12.0,
+                        "targetHeight": 12.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 2.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 3.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 4.0,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "active": true,
+            "name": "Click_Anim",
+            "uuid": 4460829450699692785,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 23.711538314819337,
+                    "y": 18.693984985351564,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 6.0,
+                    "y": 6.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/UI\\settings\\mouse click-Sheet-sheet.png",
+                "uvSize": {
+                    "x": 0.5,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "LoopingAnimation",
+                        "fields": {
+                            "animationName": "click_update"
+                        }
+                    }
+                ]
+            },
+            "parent": {
+                "parentUUID": 9891689183776677639,
+                "localPos": {
+                    "x": 23.711538314819337,
+                    "y": 18.693984985351564,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 6.0,
+                    "y": 6.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UIButtons",
+                "z": 0
+            },
+            "keyframe_animator": {
+                "current": "click_update",
+                "t": 16.949913024902345,
+                "playing": true,
+                "clips": [
+                    {
+                        "name": "click_update",
+                        "wrap": 0,
+                        "textureAsset": "images/UI\\settings\\mouse click-Sheet-sheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 12.0,
+                        "targetHeight": 6.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 2.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         }
     ],

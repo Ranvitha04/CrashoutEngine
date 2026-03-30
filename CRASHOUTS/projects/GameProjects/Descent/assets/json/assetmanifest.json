@@ -309,6 +309,10 @@
             "path": "backgrounds/bg 1 base.png"
         },
         {
+            "name": "throw 1-Sheet-sheet_00",
+            "path": "spritesheet/throw 1-Sheet-sheet/throw 1-Sheet-sheet_00.png"
+        },
+        {
             "name": "bg2 base",
             "path": "backgrounds/bg2 base.png"
         },
@@ -1269,6 +1273,10 @@
             "path": "spritesheet/lava platform/lava platform_10.png"
         },
         {
+            "name": "slime-sheet",
+            "path": "UI/settings/slime-sheet.png"
+        },
+        {
             "name": "Platform_20",
             "path": "spritesheet/Platform/Platform_20.png"
         },
@@ -2021,6 +2029,22 @@
             "path": "spritesheet/Switch-State-SpriteSheet/Switch-State-SpriteSheet_08.png"
         },
         {
+            "name": "throw 1-Sheet-sheet_01",
+            "path": "spritesheet/throw 1-Sheet-sheet/throw 1-Sheet-sheet_01.png"
+        },
+        {
+            "name": "throw 1-Sheet-sheet_02",
+            "path": "spritesheet/throw 1-Sheet-sheet/throw 1-Sheet-sheet_02.png"
+        },
+        {
+            "name": "updated resume large",
+            "path": "UI/settings/updated resume large.png"
+        },
+        {
+            "name": "throw 1-Sheet-sheet_03",
+            "path": "spritesheet/throw 1-Sheet-sheet/throw 1-Sheet-sheet_03.png"
+        },
+        {
             "name": "Left",
             "path": "Test/Left.png"
         },
@@ -2129,10 +2153,6 @@
             "path": "UI/settings/updated quit large.png"
         },
         {
-            "name": "updated resume large",
-            "path": "UI/settings/updated resume large.png"
-        },
-        {
             "name": "updated resume",
             "path": "UI/settings/updated resume.png"
         },
@@ -2207,16 +2227,20 @@
     ],
     "prefabs": [
         {
+            "name": "MyBox",
+            "path": "MyBox.json"
+        },
+        {
+            "name": "Animation_HowTo1_1",
+            "path": "Animation_HowTo1_1.json"
+        },
+        {
             "name": "Moving_Platform",
             "path": "Moving_Platform.json"
         },
         {
             "name": "AudioManager_Prefab",
             "path": "AudioManager_Prefab.json"
-        },
-        {
-            "name": "HowTo1_no_anim",
-            "path": "HowTo1_no_anim.json"
         },
         {
             "name": "Camera_Prefab",
@@ -2241,6 +2265,10 @@
         {
             "name": "EnergyBall_Prefab",
             "path": "EnergyBall_Prefab.json"
+        },
+        {
+            "name": "HowTo1_no_anim",
+            "path": "HowTo1_no_anim.json"
         },
         {
             "name": "HowTo2_no_anim",

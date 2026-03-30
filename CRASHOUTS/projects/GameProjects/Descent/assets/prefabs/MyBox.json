@@ -1,0 +1,160 @@
+{
+    "prefabs": [
+        {
+            "name": "MyBox",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "Click_Slime_Anim",
+                    "uuid": 17511406750144920256,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -2.9639389514923097,
+                            "y": 16.26120376586914,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 12.0,
+                            "y": 12.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/settings/mouse click-Sheet-sheet.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "LoopingAnimation",
+                                "fields": {
+                                    "animationName": "slime_throw"
+                                }
+                            }
+                        ]
+                    },
+                    "layer": {
+                        "layerName": "",
+                        "z": 0
+                    },
+                    "keyframe_animator": {
+                        "current": "slime_throw",
+                        "t": 0.0,
+                        "playing": true,
+                        "clips": [
+                            {
+                                "name": "clicky",
+                                "wrap": 0,
+                                "textureAsset": "images/UI\\settings\\mouse click-Sheet-sheet.png",
+                                "spriteCols": 2,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 12.0,
+                                "targetHeight": 12.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 2.0,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "slime_throw",
+                                "wrap": 0,
+                                "textureAsset": "images/UI\\settings\\slime-sheet.png",
+                                "spriteCols": 2,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 12.0,
+                                "targetHeight": 12.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.125,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
