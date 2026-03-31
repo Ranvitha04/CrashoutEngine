@@ -2315,6 +2315,14 @@
             "path": "PauseMenu_Prefab.json"
         },
         {
+            "name": "Slime V4",
+            "path": "Slime V4.json"
+        },
+        {
+            "name": "PauseMenu_Prefab_With_Animation",
+            "path": "PauseMenu_Prefab_With_Animation.json"
+        },
+        {
             "name": "PlayerBarrier",
             "path": "PlayerBarrier.json"
         },
@@ -2341,10 +2349,6 @@
         {
             "name": "SFXUI_Prefab",
             "path": "SFXUI_Prefab.json"
-        },
-        {
-            "name": "Slime V4",
-            "path": "Slime V4.json"
         },
         {
             "name": "Slime_Prefab",
