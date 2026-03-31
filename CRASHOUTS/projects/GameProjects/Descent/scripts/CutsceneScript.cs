@@ -17,9 +17,9 @@ namespace CrashoutsEngine
     {
         // Entities
         Entity image_1, image_2, image_3, image_4;
-        Entity dialogue_1_1, dialogue_1_2, dialogue_1_3, dialogue_1_4, dialogue_1_5;
-        Entity dialogue_2_1, dialogue_2_2, dialogue_2_3, dialogue_2_4, dialogue_2_5;
-        Entity dialogue_3_1, dialogue_3_2, dialogue_3_3, dialogue_3_4, dialogue_4_1;
+        Entity dialogue_1_1, dialogue_1_2;
+        Entity dialogue_2_1, dialogue_2_2;
+        Entity dialogue_3_1, dialogue_3_2, dialogue_4_1;
 
         // State
         int currentDialogue = 1;
@@ -52,20 +52,12 @@ namespace CrashoutsEngine
 
             dialogue_1_1 = Entity.Find("Dialogue_1_1");
             dialogue_1_2 = Entity.Find("Dialogue_1_2");
-            dialogue_1_3 = Entity.Find("Dialogue_1_3");
-            dialogue_1_4 = Entity.Find("Dialogue_1_4");
-            dialogue_1_5 = Entity.Find("Dialogue_1_5");
 
             dialogue_2_1 = Entity.Find("Dialogue_2_1");
             dialogue_2_2 = Entity.Find("Dialogue_2_2");
-            dialogue_2_3 = Entity.Find("Dialogue_2_3");
-            dialogue_2_4 = Entity.Find("Dialogue_2_4");
-            dialogue_2_5 = Entity.Find("Dialogue_2_5");
 
             dialogue_3_1 = Entity.Find("Dialogue_3_1");
             dialogue_3_2 = Entity.Find("Dialogue_3_2");
-            dialogue_3_3 = Entity.Find("Dialogue_3_3");
-            dialogue_3_4 = Entity.Find("Dialogue_3_4");
 
             dialogue_4_1 = Entity.Find("Dialogue_4_1");
 
@@ -289,24 +281,16 @@ namespace CrashoutsEngine
             {
                 if (dia == 1) return dialogue_1_1;
                 if (dia == 2) return dialogue_1_2;
-                if (dia == 3) return dialogue_1_3;
-                if (dia == 4) return dialogue_1_4;
-                if (dia == 5) return dialogue_1_5;
             }
             else if (img == 2)
             {
                 if (dia == 1) return dialogue_2_1;
                 if (dia == 2) return dialogue_2_2;
-                if (dia == 3) return dialogue_2_3;
-                if (dia == 4) return dialogue_2_4;
-                if (dia == 5) return dialogue_2_5;
             }
             else if (img == 3)
             {
                 if (dia == 1) return dialogue_3_1;
                 if (dia == 2) return dialogue_3_2;
-                if (dia == 3) return dialogue_3_3;
-                if (dia == 4) return dialogue_3_4;
             }
             else if (img == 4)
             {
@@ -328,20 +312,12 @@ namespace CrashoutsEngine
         {
             InternalCalls.SetActive(dialogue_1_1.ID, false);
             InternalCalls.SetActive(dialogue_1_2.ID, false);
-            InternalCalls.SetActive(dialogue_1_3.ID, false);
-            InternalCalls.SetActive(dialogue_1_4.ID, false);
-            InternalCalls.SetActive(dialogue_1_5.ID, false);
 
             InternalCalls.SetActive(dialogue_2_1.ID, false);
             InternalCalls.SetActive(dialogue_2_2.ID, false);
-            InternalCalls.SetActive(dialogue_2_3.ID, false);
-            InternalCalls.SetActive(dialogue_2_4.ID, false);
-            InternalCalls.SetActive(dialogue_2_5.ID, false);
 
             InternalCalls.SetActive(dialogue_3_1.ID, false);
             InternalCalls.SetActive(dialogue_3_2.ID, false);
-            InternalCalls.SetActive(dialogue_3_3.ID, false);
-            InternalCalls.SetActive(dialogue_3_4.ID, false);
 
             InternalCalls.SetActive(dialogue_4_1.ID, false);
         }

@@ -223,7 +223,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Medium",
-                "text": "K: Ready to go?",
+                "text": "K: Dante. Ready to go?",
                 "scale": 2.0,
                 "offset": {
                     "x": 0.0,
@@ -355,7 +355,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Medium",
-                "text": "D: You can’t come back with me?",
+                "text": "D: What? You can’t come back with me?",
                 "scale": 2.0,
                 "offset": {
                     "x": 0.0,
