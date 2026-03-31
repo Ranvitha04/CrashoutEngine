@@ -16523,7 +16523,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "Pause",
             "uuid": 3899499466856881947,
             "tag": {
@@ -16601,7 +16601,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "ClosedBook",
             "uuid": 8605457662790260227,
             "tag": {
@@ -20484,6 +20484,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -20536,7 +20567,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -20550,14 +20581,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20610,37 +20641,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -26552,7 +26552,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1445.7991943359376,
-                    "y": -397.62872314453127,
+                    "y": -398.02862548828127,
                     "z": 0.0
                 },
                 "offset": {
@@ -26563,7 +26563,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 1445.7991943359376,
-                    "y": -397.62872314453127,
+                    "y": -398.02862548828127,
                     "z": 0.0
                 }
             },
@@ -28449,64 +28449,6 @@
             },
             "layer": {
                 "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "UiAnimation",
-            "uuid": 14088516435667827158,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "",
                 "z": 0
             }
         },
@@ -31637,7 +31579,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "HowTo1",
             "uuid": 18384382288511812235,
             "tag": {
@@ -32140,7 +32082,7 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "TO RUN",
                 "scale": 12.5,
                 "offset": {
@@ -32248,7 +32190,7 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "TO FALL",
                 "scale": 12.5,
                 "offset": {
@@ -32317,7 +32259,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.15999984741211,
+                    "x": 19.200000762939454,
                     "y": 1.0
                 }
             },
@@ -32356,7 +32298,7 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "TO CHANGE WEIGHTS",
                 "scale": 12.5,
                 "offset": {
@@ -32378,8 +32320,8 @@
                     "x": -0.5,
                     "y": 3.4000000953674318
                 },
-                "letterSpacing": 0.550000011920929,
-                "lineSpacing": 0.10000000149011612,
+                "letterSpacing": 1.0,
+                "lineSpacing": 3.0,
                 "isRevealing": false,
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
@@ -32394,7 +32336,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.10499999672174454,
+                    "x": 0.10000000149011612,
                     "y": 0.009259258396923542
                 },
                 "inheritColor": false,
@@ -32464,7 +32406,7 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "TO JUMP",
                 "scale": 12.5,
                 "offset": {
@@ -32528,12 +32470,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 17.648902893066408,
-                    "y": 8.706789016723633,
+                    "x": 17.138622283935548,
+                    "y": 6.482211112976074,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 1.0,
+                    "x": 20.15999984741211,
                     "y": 1.0
                 }
             },
@@ -32572,8 +32514,8 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "When in range,",
+                "font": "Bellefair-Regular",
+                "text": "When in range, click to drag slime to pick it up",
                 "scale": 12.0,
                 "offset": {
                     "x": 0.0,
@@ -32589,13 +32531,13 @@
                 "isworldspace": false,
                 "alignment": 1,
                 "verticalAlignment": 1,
-                "wrapText": false,
+                "wrapText": true,
                 "padding": {
                     "x": 4.400000095367432,
                     "y": 7.900000095367432
                 },
                 "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
+                "lineSpacing": 3.0,
                 "isRevealing": false,
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
@@ -32604,229 +32546,13 @@
             "parent": {
                 "parentUUID": 18384382288511812235,
                 "localPos": {
-                    "x": 0.091921366751194,
-                    "y": 0.08061841130256653,
+                    "x": 0.08926365524530411,
+                    "y": 0.06002046912908554,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Click_Text_1",
-            "uuid": 1992914092959477635,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 17.648902893066408,
-                    "y": 6.658117771148682,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "click to drag slime",
-                "scale": 12.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 4.400000095367432,
-                    "y": 7.900000095367432
-                },
-                "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 18384382288511812235,
-                "localPos": {
-                    "x": 0.091921366751194,
-                    "y": 0.06164923310279846,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Click_Text_2",
-            "uuid": 9730472195909122602,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 17.648902893066408,
-                    "y": 4.481415748596191,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to pick it up",
-                "scale": 12.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 4.400000095367432,
-                    "y": 7.900000095367432
-                },
-                "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 18384382288511812235,
-                "localPos": {
-                    "x": 0.091921366751194,
-                    "y": 0.04149458557367325,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
+                    "x": 0.10499999672174454,
                     "y": 0.009259258396923542
                 },
                 "inheritColor": false,
@@ -32852,12 +32578,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 17.648902893066408,
-                    "y": -8.450712203979493,
+                    "x": 16.62835121154785,
+                    "y": -11.310882568359375,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 1.0,
+                    "x": 19.200000762939454,
                     "y": 1.0
                 }
             },
@@ -32896,8 +32622,8 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "Control throwing arc",
+                "font": "Bellefair-Regular",
+                "text": "Control throwing arc with mouse, release to throw",
                 "scale": 12.0,
                 "offset": {
                     "x": 0.0,
@@ -32913,13 +32639,13 @@
                 "isworldspace": false,
                 "alignment": 1,
                 "verticalAlignment": 1,
-                "wrapText": false,
+                "wrapText": true,
                 "padding": {
                     "x": 4.400000095367432,
                     "y": 7.900000095367432
                 },
                 "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
+                "lineSpacing": 3.0,
                 "isRevealing": false,
                 "revealSpeed": 10.0,
                 "dialogueFilePath": "",
@@ -32928,229 +32654,13 @@
             "parent": {
                 "parentUUID": 18384382288511812235,
                 "localPos": {
-                    "x": 0.091921366751194,
-                    "y": -0.07824733108282089,
+                    "x": 0.0866059958934784,
+                    "y": -0.10473039001226425,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Throw_Text_1",
-            "uuid": 7760596536388141448,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 17.648902893066408,
-                    "y": -10.75544548034668,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "with mouse, release",
-                "scale": 12.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 4.400000095367432,
-                    "y": 7.900000095367432
-                },
-                "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 18384382288511812235,
-                "localPos": {
-                    "x": 0.091921366751194,
-                    "y": -0.09958744794130326,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
-                    "y": 0.009259258396923542
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "UIButtons",
-                "z": 26
-            }
-        },
-        {
-            "active": true,
-            "name": "Throw_Text_2",
-            "uuid": 11014030351795355521,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 17.648902893066408,
-                    "y": -12.804099082946778,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": false,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to throw",
-                "scale": 12.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.1767956018447876,
-                    "y": 0.103510782122612,
-                    "z": 0.040047623217105868,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": false,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": false,
-                "padding": {
-                    "x": 4.400000095367432,
-                    "y": 7.900000095367432
-                },
-                "letterSpacing": 0.44999998807907107,
-                "lineSpacing": -4.0,
-                "isRevealing": false,
-                "revealSpeed": 10.0,
-                "dialogueFilePath": "",
-                "dialogueID": ""
-            },
-            "parent": {
-                "parentUUID": 18384382288511812235,
-                "localPos": {
-                    "x": 0.091921366751194,
-                    "y": -0.11855646222829819,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.0052083334885537628,
+                    "x": 0.10000000149011612,
                     "y": 0.009259258396923542
                 },
                 "inheritColor": false,
@@ -34045,7 +33555,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.15999984741211,
+                    "x": 19.200000762939454,
                     "y": -9.82800006866455
                 }
             },
@@ -34084,9 +33594,9 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "Grey pressure plates opens door at the end of level",
-                "scale": 8.0,
+                "scale": 9.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -34132,7 +33642,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.10499999672174454,
+                    "x": 0.10000000149011612,
                     "y": -0.09099999070167542
                 },
                 "inheritColor": false,
@@ -34163,7 +33673,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 20.15999984741211,
+                    "x": 19.200000762939454,
                     "y": -9.82800006866455
                 }
             },
@@ -34202,9 +33712,9 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "Blue pressure plates opens door immediately",
-                "scale": 8.0,
+                "scale": 9.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -34250,7 +33760,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.10499999672174454,
+                    "x": 0.10000000149011612,
                     "y": -0.09099999070167542
                 },
                 "inheritColor": false,
@@ -34277,7 +33787,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -13.203023910522461,
-                    "y": -2.17669415473938,
+                    "y": -2.9182240962982179,
                     "z": 0.0
                 },
                 "size": {
@@ -34320,9 +33830,9 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "Watch the counter to see how many grey plates you still need to activate",
-                "scale": 8.0,
+                "scale": 9.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -34363,7 +33873,7 @@
                 "parentUUID": 78539781619779025,
                 "localPos": {
                     "x": -0.06876575201749802,
-                    "y": -0.020154574885964395,
+                    "y": -0.027020592242479326,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -34438,9 +33948,9 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "*Slimes can be used to activate plates Dante can't reach",
-                "scale": 8.0,
+                "scale": 9.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -34938,9 +34448,9 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "These platforms only move left & right",
-                "scale": 8.0,
+                "scale": 9.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -35056,9 +34566,9 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "These platforms can sink according to dante's weight",
-                "scale": 8.0,
+                "scale": 9.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -35131,7 +34641,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 16.97528839111328,
-                    "y": -0.12803411483764649,
+                    "y": -0.5517582893371582,
                     "z": 0.0
                 },
                 "size": {
@@ -35207,7 +34717,7 @@
                 "parentUUID": 78539781619779025,
                 "localPos": {
                     "x": 0.08841296285390854,
-                    "y": -0.0011855009943246842,
+                    "y": -0.005108872894197702,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -35282,9 +34792,9 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "Energy Balls restore mana and refill itself overtime",
-                "scale": 8.0,
+                "scale": 9.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
@@ -35400,9 +34910,9 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Medium",
+                "font": "Bellefair-Regular",
                 "text": "Dante can respawn at checkpoints scattered throughout the levels if he dies",
-                "scale": 8.0,
+                "scale": 9.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0
