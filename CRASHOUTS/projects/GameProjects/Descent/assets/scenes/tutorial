@@ -16523,7 +16523,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "Pause",
             "uuid": 3899499466856881947,
             "tag": {
@@ -17650,7 +17650,10 @@
                     {
                         "className": "PauseButtons",
                         "fields": {
-                            "currentScene": "tutorial"
+                            "currentScene": "tutorial",
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
                         }
                     }
                 ]
@@ -17787,7 +17790,10 @@
                             "QuitBtn": 2241071384,
                             "QuitCheckPanel": 2241071384,
                             "YesBtn": 2241071384,
-                            "NoBtn": 2241071384
+                            "NoBtn": 2241071384,
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
                         }
                     }
                 ]
@@ -20478,37 +20484,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -20561,7 +20536,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -20575,14 +20550,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20635,6 +20610,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -31631,7 +31637,7 @@
             }
         },
         {
-            "active": false,
+            "active": true,
             "name": "HowTo1",
             "uuid": 18384382288511812235,
             "tag": {
@@ -32134,8 +32140,8 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to run",
+                "font": "AlegreyaSC-Medium",
+                "text": "TO RUN",
                 "scale": 12.5,
                 "offset": {
                     "x": 0.0,
@@ -32242,8 +32248,8 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to fall",
+                "font": "AlegreyaSC-Medium",
+                "text": "TO FALL",
                 "scale": 12.5,
                 "offset": {
                     "x": 0.0,
@@ -32350,8 +32356,8 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to change weights",
+                "font": "AlegreyaSC-Medium",
+                "text": "TO CHANGE WEIGHTS",
                 "scale": 12.5,
                 "offset": {
                     "x": 0.0,
@@ -32458,8 +32464,8 @@
                 }
             },
             "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "to jump",
+                "font": "AlegreyaSC-Medium",
+                "text": "TO JUMP",
                 "scale": 12.5,
                 "offset": {
                     "x": 0.0,
