@@ -445,6 +445,10 @@
             "path": "backgrounds/crashouts.png"
         },
         {
+            "name": "Idle spritesheet",
+            "path": "Character/New Artstyle/Idle spritesheet.png"
+        },
+        {
             "name": "lava platform_39",
             "path": "spritesheet/lava platform/lava platform_39.png"
         },
@@ -551,10 +555,6 @@
         {
             "name": "Run 1",
             "path": "Character/Light Mode/Left/Run 1.png"
-        },
-        {
-            "name": "EndCutscene_3",
-            "path": "Cutscenes/EndCutscene_3.png"
         },
         {
             "name": "restart yellow",
@@ -699,6 +699,10 @@
         {
             "name": "EndCutscene_1",
             "path": "Cutscenes/EndCutscene_1.png"
+        },
+        {
+            "name": "EndCutscene_3",
+            "path": "Cutscenes/EndCutscene_3.png"
         },
         {
             "name": "fourth",
