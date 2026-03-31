@@ -237,6 +237,10 @@
             "path": "AlegreyaSC-Regular.ttf"
         },
         {
+            "name": "Bellefair-Regular",
+            "path": "Bellefair-Regular.ttf"
+        },
+        {
             "name": "Silver",
             "path": "Silver.ttf"
         },
@@ -725,6 +729,10 @@
             "path": "UI/Pause Menu Closed.png"
         },
         {
+            "name": "New mana single",
+            "path": "UI/New mana single.png"
+        },
+        {
             "name": "Rock_21",
             "path": "spritesheet/Rock/Rock_21.png"
         },
@@ -809,12 +817,20 @@
             "path": "Monsters/Monsters_1.png"
         },
         {
+            "name": "New Mana single empty ",
+            "path": "UI/New Mana single empty .png"
+        },
+        {
             "name": "Monsters_2",
             "path": "Monsters/Monsters_2.png"
         },
         {
             "name": "tenth",
             "path": "UI/Tutorial/tenth.png"
+        },
+        {
+            "name": "new page",
+            "path": "UI/new page.png"
         },
         {
             "name": "Monsters_3",
@@ -1199,6 +1215,10 @@
         {
             "name": "lava platform_01",
             "path": "spritesheet/lava platform/lava platform_01.png"
+        },
+        {
+            "name": "New mana bar",
+            "path": "UI/New mana bar.png"
         },
         {
             "name": "Platform_11",
@@ -2201,6 +2221,10 @@
             "path": "UI/Tutorial/tut_text_12.png"
         },
         {
+            "name": "tut_text_13",
+            "path": "UI/Tutorial/tut_text_13.png"
+        },
+        {
             "name": "tut_text_2",
             "path": "UI/Tutorial/tut_text_2.png"
         },
@@ -2311,8 +2335,24 @@
             "path": "PauseMenu_Prefab.json"
         },
         {
+            "name": "Slime V4",
+            "path": "Slime V4.json"
+        },
+        {
+            "name": "PauseMenu_Prefab_With_Animation",
+            "path": "PauseMenu_Prefab_With_Animation.json"
+        },
+        {
             "name": "PlayerBarrier",
             "path": "PlayerBarrier.json"
+        },
+        {
+            "name": "Test_Prefab",
+            "path": "Test_Prefab.json"
+        },
+        {
+            "name": "PlayerEnergy_Updated",
+            "path": "PlayerEnergy_Updated.json"
         },
         {
             "name": "PlayerUI_Prefab",
@@ -2339,16 +2379,8 @@
             "path": "SFXUI_Prefab.json"
         },
         {
-            "name": "Slime V4",
-            "path": "Slime V4.json"
-        },
-        {
             "name": "Slime_Prefab",
             "path": "Slime_Prefab.json"
-        },
-        {
-            "name": "Test_Prefab",
-            "path": "Test_Prefab.json"
         }
     ],
     "scenes": [
