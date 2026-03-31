@@ -82,7 +82,7 @@
                     }
                 },
                 {
-                    "active": true,
+                    "active": false,
                     "name": "ClosedBook",
                     "uuid": 8605457662790260227,
                     "tag": {
@@ -1056,7 +1056,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/Pause Menu Open.png",
+                        "textureName": "UI/new page.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -1311,7 +1311,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 10.377264976501465,
+                            "x": 8.041863441467286,
                             "y": 4.787303924560547,
                             "z": 0.0
                         },
@@ -1353,7 +1353,7 @@
                     "parent": {
                         "parentUUID": 4082988418873241213,
                         "localPos": {
-                            "x": 0.05404825508594513,
+                            "x": 0.04188470542430878,
                             "y": 0.04432688653469086,
                             "z": 0.0
                         },
@@ -1385,7 +1385,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 5.760000228881836,
+                            "x": 8.821685791015625,
                             "y": 0.0,
                             "z": 0.0
                         },
@@ -1448,7 +1448,7 @@
                     "parent": {
                         "parentUUID": 4082988418873241213,
                         "localPos": {
-                            "x": 0.030000001192092897,
+                            "x": 0.045946281403303149,
                             "y": 0.0,
                             "z": 0.0
                         },
@@ -1480,13 +1480,13 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 17.46126937866211,
+                            "x": 17.053050994873048,
                             "y": 0.0,
                             "z": 0.0
                         },
                         "size": {
-                            "x": 23.978010177612306,
-                            "y": 2.2680001258850099
+                            "x": 36.44657516479492,
+                            "y": 10.80000114440918
                         }
                     },
                     "shape": {
@@ -1497,7 +1497,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI\\Bar_Area.png",
+                        "textureName": "UI/New mana bar.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -1526,14 +1526,14 @@
                     "parent": {
                         "parentUUID": 9367769150656733250,
                         "localPos": {
-                            "x": 0.061000000685453418,
+                            "x": 0.04291101172566414,
                             "y": 0.0,
                             "z": 0.0
                         },
                         "localRot": 0.0,
                         "localScale": {
-                            "x": 0.125,
-                            "y": 0.020999999716877939
+                            "x": 0.1899999976158142,
+                            "y": 0.10000000149011612
                         },
                         "inheritColor": false,
                         "colorMul": {
@@ -1544,7 +1544,7 @@
                         }
                     },
                     "layer": {
-                        "layerName": "UIButtons",
+                        "layerName": "UI",
                         "z": 61
                     }
                 },
@@ -1558,7 +1558,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 46.558135986328128,
+                            "x": 44.76971435546875,
                             "y": -18.900001525878908,
                             "z": 0.0
                         },
@@ -1607,7 +1607,7 @@
                     "parent": {
                         "parentUUID": 9367769150656733250,
                         "localPos": {
-                            "x": 0.21268515288829804,
+                            "x": 0.18740102648735047,
                             "y": -0.17499999701976777,
                             "z": 0.0
                         },
@@ -1639,7 +1639,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 16.345844268798829,
+                            "x": 14.557422637939454,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -1656,7 +1656,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -1717,7 +1717,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 16.345844268798829,
+                            "x": 14.557422637939454,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -1734,7 +1734,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -1795,7 +1795,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 11.550243377685547,
+                            "x": 9.761821746826172,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -1812,7 +1812,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -1873,7 +1873,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 11.550243377685547,
+                            "x": 9.761821746826172,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -1890,7 +1890,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -1951,7 +1951,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 13.948043823242188,
+                            "x": 12.159622192382813,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -1968,7 +1968,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2029,7 +2029,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 13.948043823242188,
+                            "x": 12.159622192382813,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2046,7 +2046,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2107,7 +2107,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 9.15243911743164,
+                            "x": 7.364017486572266,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2124,7 +2124,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2185,7 +2185,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 9.15243911743164,
+                            "x": 7.364017486572266,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2202,7 +2202,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2263,7 +2263,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 6.754638671875,
+                            "x": 4.966217041015625,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2280,7 +2280,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2341,7 +2341,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 6.754638671875,
+                            "x": 4.966217041015625,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2358,7 +2358,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2419,7 +2419,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 28.334848403930665,
+                            "x": 26.54642677307129,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2436,7 +2436,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2497,7 +2497,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 28.334848403930665,
+                            "x": 26.54642677307129,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2514,7 +2514,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2527,7 +2527,7 @@
                             "x": 1.0,
                             "y": 1.0,
                             "z": 1.0,
-                            "w": 0.9922019839286804
+                            "w": 0.9929820895195007
                         },
                         "p1": {
                             "x": 0.0,
@@ -2575,7 +2575,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 25.937047958374025,
+                            "x": 24.14862632751465,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2592,7 +2592,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2653,7 +2653,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 25.937047958374025,
+                            "x": 24.14862632751465,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2670,7 +2670,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2731,7 +2731,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 23.53924560546875,
+                            "x": 21.750823974609376,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2748,7 +2748,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2809,7 +2809,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 23.53924560546875,
+                            "x": 21.750823974609376,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2826,7 +2826,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2887,7 +2887,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 21.14144515991211,
+                            "x": 19.353023529052736,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2904,7 +2904,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -2965,7 +2965,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 21.14144515991211,
+                            "x": 19.353023529052736,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -2982,7 +2982,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3043,7 +3043,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 18.74364471435547,
+                            "x": 16.955223083496095,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -3060,7 +3060,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3121,7 +3121,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 18.74364471435547,
+                            "x": 16.955223083496095,
                             "y": -1.0799999237060547,
                             "z": 0.0
                         },
@@ -3138,7 +3138,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3199,7 +3199,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -28.994773864746095,
+                            "x": -27.361873626708986,
                             "y": 0.10120868682861328,
                             "z": 0.0
                         },
@@ -3262,7 +3262,7 @@
                     "parent": {
                         "parentUUID": 4082988418873241213,
                         "localPos": {
-                            "x": -0.15101444721221925,
+                            "x": -0.14250975847244264,
                             "y": 0.0009371173800900579,
                             "z": 0.0
                         },
@@ -3294,13 +3294,13 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -17.291217803955079,
+                            "x": -16.780935287475587,
                             "y": 0.0,
                             "z": 0.0
                         },
                         "size": {
-                            "x": 23.977018356323243,
-                            "y": 2.2680001258850099
+                            "x": 36.445068359375,
+                            "y": 10.80000114440918
                         }
                     },
                     "shape": {
@@ -3311,7 +3311,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/Bar_Area.png",
+                        "textureName": "UI/New mana bar.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3340,14 +3340,14 @@
                     "parent": {
                         "parentUUID": 3577795423813420893,
                         "localPos": {
-                            "x": 0.06101444363594055,
+                            "x": 0.05516187474131584,
                             "y": -0.0009371173800900579,
                             "z": 0.0
                         },
                         "localRot": 0.0,
                         "localScale": {
-                            "x": 0.125,
-                            "y": 0.020999999716877939
+                            "x": 0.1899999976158142,
+                            "y": 0.10000000149011612
                         },
                         "inheritColor": false,
                         "colorMul": {
@@ -3358,7 +3358,7 @@
                         }
                     },
                     "layer": {
-                        "layerName": "UIButtons",
+                        "layerName": "UI",
                         "z": 150
                     }
                 },
@@ -3372,7 +3372,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 12.69915771484375,
+                            "x": 10.60458755493164,
                             "y": -18.78089141845703,
                             "z": 0.0
                         },
@@ -3421,7 +3421,7 @@
                     "parent": {
                         "parentUUID": 3577795423813420893,
                         "localPos": {
-                            "x": 0.21736404299736024,
+                            "x": 0.19793151319026948,
                             "y": -0.1748342365026474,
                             "z": 0.0
                         },
@@ -3453,7 +3453,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -27.102691650390626,
+                            "x": -29.197261810302736,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -3470,7 +3470,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3531,7 +3531,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -27.102691650390626,
+                            "x": -29.197261810302736,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -3548,7 +3548,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3609,7 +3609,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -5.52337646484375,
+                            "x": -7.617946624755859,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -3626,7 +3626,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3687,7 +3687,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -5.52337646484375,
+                            "x": -7.617946624755859,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -3704,7 +3704,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3717,7 +3717,7 @@
                             "x": 1.0,
                             "y": 1.0,
                             "z": 1.0,
-                            "w": 0.9923393130302429
+                            "w": 0.9922263026237488
                         },
                         "p1": {
                             "x": 0.0,
@@ -3765,7 +3765,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -7.921077728271484,
+                            "x": -10.015647888183594,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -3782,7 +3782,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3843,7 +3843,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -7.921077728271484,
+                            "x": -10.015647888183594,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -3860,7 +3860,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3921,7 +3921,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -10.318778991699219,
+                            "x": -12.413349151611329,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -3938,7 +3938,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -3999,7 +3999,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -10.318778991699219,
+                            "x": -12.413349151611329,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4016,7 +4016,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4077,7 +4077,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -12.716480255126954,
+                            "x": -14.811050415039063,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4094,7 +4094,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4155,7 +4155,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -12.716480255126954,
+                            "x": -14.811050415039063,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4172,7 +4172,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4233,7 +4233,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -15.114181518554688,
+                            "x": -17.208751678466798,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4250,7 +4250,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4311,7 +4311,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -15.114181518554688,
+                            "x": -17.208751678466798,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4328,7 +4328,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4389,7 +4389,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -17.511884689331056,
+                            "x": -19.606454849243165,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4406,7 +4406,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4467,7 +4467,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -17.511884689331056,
+                            "x": -19.606454849243165,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4484,7 +4484,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4545,7 +4545,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -19.909584045410158,
+                            "x": -22.004154205322267,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4562,7 +4562,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4623,7 +4623,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -19.909584045410158,
+                            "x": -22.004154205322267,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4640,7 +4640,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4701,7 +4701,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -22.307289123535158,
+                            "x": -24.401859283447267,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4718,7 +4718,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4779,7 +4779,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -22.307289123535158,
+                            "x": -24.401859283447267,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4796,7 +4796,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4857,7 +4857,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -24.70499038696289,
+                            "x": -26.799560546875,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4874,7 +4874,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single empty.png",
+                        "textureName": "UI/New Mana single empty .png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -4935,7 +4935,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -24.70499038696289,
+                            "x": -26.799560546875,
                             "y": -0.9608898162841797,
                             "z": 0.0
                         },
@@ -4952,7 +4952,7 @@
                         "thickness": 1.0,
                         "preview": false,
                         "type": 0,
-                        "textureName": "UI/mana UI single.png",
+                        "textureName": "UI/New mana single.png",
                         "uvSize": {
                             "x": 1.0,
                             "y": 1.0
@@ -5013,7 +5013,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -22.038684844970704,
+                            "x": -23.692371368408204,
                             "y": 4.787303924560547,
                             "z": 0.0
                         },
@@ -5055,7 +5055,7 @@
                     "parent": {
                         "parentUUID": 4082988418873241213,
                         "localPos": {
-                            "x": -0.11478481441736222,
+                            "x": -0.12339776754379273,
                             "y": 0.04432688653469086,
                             "z": 0.0
                         },
@@ -5456,10 +5456,10 @@
                             "y": 0.0
                         },
                         "color": {
-                            "x": 0.699999988079071,
-                            "y": 0.699999988079071,
-                            "z": 0.699999988079071,
-                            "w": 0.699999988079071
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
                         },
                         "p1": {
                             "x": 0.0,
@@ -5607,7 +5607,7 @@
                     "text": {
                         "font": "AlegreyaSC-Bold",
                         "text": "CONTROLS",
-                        "scale": 18.600000381469728,
+                        "scale": 15.0,
                         "offset": {
                             "x": 0.30000001192092898,
                             "y": 0.0
@@ -5714,8 +5714,8 @@
                     },
                     "text": {
                         "font": "Bellefair-Regular",
-                        "text": "TO RUN",
-                        "scale": 12.5,
+                        "text": "To move",
+                        "scale": 12.0,
                         "offset": {
                             "x": 0.0,
                             "y": 0.0
@@ -5782,7 +5782,7 @@
                             "z": 0.0
                         },
                         "size": {
-                            "x": 1.0,
+                            "x": 19.200000762939454,
                             "y": 1.0
                         }
                     },
@@ -5822,8 +5822,8 @@
                     },
                     "text": {
                         "font": "Bellefair-Regular",
-                        "text": "TO FALL",
-                        "scale": 12.5,
+                        "text": "To drop through platform",
+                        "scale": 12.0,
                         "offset": {
                             "x": 0.0,
                             "y": 0.0
@@ -5838,13 +5838,13 @@
                         "isworldspace": false,
                         "alignment": 1,
                         "verticalAlignment": 1,
-                        "wrapText": false,
+                        "wrapText": true,
                         "padding": {
-                            "x": -0.5,
+                            "x": 4.300000190734863,
                             "y": 3.4000000953674318
                         },
-                        "letterSpacing": 0.550000011920929,
-                        "lineSpacing": 0.10000000149011612,
+                        "letterSpacing": 1.399999976158142,
+                        "lineSpacing": 5.0,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
                         "dialogueFilePath": "",
@@ -5859,7 +5859,7 @@
                         },
                         "localRot": 0.0,
                         "localScale": {
-                            "x": 0.0052083334885537628,
+                            "x": 0.10000000149011612,
                             "y": 0.009259258396923542
                         },
                         "inheritColor": false,
@@ -5930,8 +5930,8 @@
                     },
                     "text": {
                         "font": "Bellefair-Regular",
-                        "text": "TO CHANGE WEIGHTS",
-                        "scale": 12.5,
+                        "text": "To change weights",
+                        "scale": 12.0,
                         "offset": {
                             "x": 0.0,
                             "y": 0.0
@@ -5948,11 +5948,11 @@
                         "verticalAlignment": 1,
                         "wrapText": true,
                         "padding": {
-                            "x": -0.5,
+                            "x": 1.100000023841858,
                             "y": 3.4000000953674318
                         },
-                        "letterSpacing": 1.0,
-                        "lineSpacing": 3.0,
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 11.800000190734864,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
                         "dialogueFilePath": "",
@@ -6038,8 +6038,8 @@
                     },
                     "text": {
                         "font": "Bellefair-Regular",
-                        "text": "TO JUMP",
-                        "scale": 12.5,
+                        "text": "To jump",
+                        "scale": 12.0,
                         "offset": {
                             "x": 0.0,
                             "y": 0.0
@@ -6101,13 +6101,13 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 17.138622283935548,
+                            "x": 16.93450927734375,
                             "y": 6.482211112976074,
                             "z": 0.0
                         },
                         "size": {
-                            "x": 20.15999984741211,
-                            "y": 1.0
+                            "x": 38.400001525878909,
+                            "y": 54.97200393676758
                         }
                     },
                     "shape": {
@@ -6164,10 +6164,10 @@
                         "verticalAlignment": 1,
                         "wrapText": true,
                         "padding": {
-                            "x": 4.400000095367432,
-                            "y": 7.900000095367432
+                            "x": 4.800000190734863,
+                            "y": 9.0
                         },
-                        "letterSpacing": 0.44999998807907107,
+                        "letterSpacing": 2.549999952316284,
                         "lineSpacing": 3.0,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
@@ -6177,14 +6177,14 @@
                     "parent": {
                         "parentUUID": 18384382288511812235,
                         "localPos": {
-                            "x": 0.08926365524530411,
+                            "x": 0.08820056915283203,
                             "y": 0.06002046912908554,
                             "z": 0.0
                         },
                         "localRot": 0.0,
                         "localScale": {
-                            "x": 0.10499999672174454,
-                            "y": 0.009259258396923542
+                            "x": 0.20000000298023225,
+                            "y": 0.5090000033378601
                         },
                         "inheritColor": false,
                         "colorMul": {
@@ -6214,7 +6214,7 @@
                             "z": 0.0
                         },
                         "size": {
-                            "x": 19.200000762939454,
+                            "x": 38.400001525878909,
                             "y": 1.0
                         }
                     },
@@ -6275,7 +6275,7 @@
                             "x": 4.400000095367432,
                             "y": 7.900000095367432
                         },
-                        "letterSpacing": 0.44999998807907107,
+                        "letterSpacing": 3.25,
                         "lineSpacing": 3.0,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
@@ -6291,7 +6291,7 @@
                         },
                         "localRot": 0.0,
                         "localScale": {
-                            "x": 0.10000000149011612,
+                            "x": 0.20000000298023225,
                             "y": 0.009259258396923542
                         },
                         "inheritColor": false,
@@ -6830,7 +6830,7 @@
                     },
                     "keyframe_animator": {
                         "current": "pickup_update",
-                        "t": 16.949913024902345,
+                        "t": 37.23293685913086,
                         "playing": true,
                         "clips": [
                             {
@@ -6854,14 +6854,14 @@
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 1.0,
+                                                "t": 0.5,
                                                 "v": 1.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 2.0,
+                                                "t": 1.0,
                                                 "v": 1.0,
                                                 "i": 0,
                                                 "in": 0.0,
@@ -6907,7 +6907,7 @@
                             "y": 1.0
                         },
                         "uvOffset": {
-                            "x": 0.0,
+                            "x": 0.5,
                             "y": 0.0
                         },
                         "color": {
@@ -6963,7 +6963,7 @@
                     },
                     "keyframe_animator": {
                         "current": "throwing_update",
-                        "t": 16.949913024902345,
+                        "t": 37.23293685913086,
                         "playing": true,
                         "clips": [
                             {
@@ -6987,28 +6987,28 @@
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 1.0,
+                                                "t": 0.5,
                                                 "v": 1.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 2.0,
+                                                "t": 1.0,
                                                 "v": 2.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 3.0,
+                                                "t": 1.5,
                                                 "v": 3.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 4.0,
+                                                "t": 2.0,
                                                 "v": 3.0,
                                                 "i": 0,
                                                 "in": 0.0,
@@ -7110,7 +7110,7 @@
                     },
                     "keyframe_animator": {
                         "current": "click_update",
-                        "t": 16.949913024902345,
+                        "t": 37.23293685913086,
                         "playing": true,
                         "clips": [
                             {
@@ -7134,14 +7134,14 @@
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 1.0,
+                                                "t": 0.5,
                                                 "v": 1.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 2.0,
+                                                "t": 1.0,
                                                 "v": 1.0,
                                                 "i": 0,
                                                 "in": 0.0,
@@ -7269,10 +7269,10 @@
                             "y": 0.0
                         },
                         "color": {
-                            "x": 0.699999988079071,
-                            "y": 0.699999988079071,
-                            "z": 0.699999988079071,
-                            "w": 0.699999988079071
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
                         },
                         "p1": {
                             "x": 0.0,
@@ -7576,7 +7576,7 @@
                     "text": {
                         "font": "AlegreyaSC-Bold",
                         "text": "PRESSURE  PLATES",
-                        "scale": 16.0,
+                        "scale": 14.0,
                         "offset": {
                             "x": 0.30000001192092898,
                             "y": 0.0
@@ -7638,8 +7638,8 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -13.203023910522461,
-                            "y": 5.889883995056152,
+                            "x": -13.407133102416993,
+                            "y": 8.326326370239258,
                             "z": 0.0
                         },
                         "size": {
@@ -7683,7 +7683,7 @@
                     },
                     "text": {
                         "font": "Bellefair-Regular",
-                        "text": "Grey pressure plates opens door at the end of level",
+                        "text": "Grey pressure plates open",
                         "scale": 9.0,
                         "offset": {
                             "x": 0.0,
@@ -7704,7 +7704,7 @@
                             "x": 1.7000000476837159,
                             "y": 3.299999952316284
                         },
-                        "letterSpacing": 1.850000023841858,
+                        "letterSpacing": 2.6500000953674318,
                         "lineSpacing": 0.0,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
@@ -7724,8 +7724,8 @@
                     "parent": {
                         "parentUUID": 78539781619779025,
                         "localPos": {
-                            "x": -0.06876575201749802,
-                            "y": 0.05453595891594887,
+                            "x": -0.0698288157582283,
+                            "y": 0.07709560543298722,
                             "z": 0.0
                         },
                         "localRot": 0.0,
@@ -7757,11 +7757,11 @@
                         "rotation": 0.0,
                         "position": {
                             "x": -13.203023910522461,
-                            "y": 12.804093360900879,
+                            "y": 14.28714656829834,
                             "z": 0.0
                         },
                         "size": {
-                            "x": 19.200000762939454,
+                            "x": 38.400001525878909,
                             "y": -9.82800006866455
                         }
                     },
@@ -7801,7 +7801,7 @@
                     },
                     "text": {
                         "font": "Bellefair-Regular",
-                        "text": "Blue pressure plates opens door immediately",
+                        "text": "Blue pressure plates open",
                         "scale": 9.0,
                         "offset": {
                             "x": 0.0,
@@ -7819,11 +7819,11 @@
                         "verticalAlignment": 1,
                         "wrapText": true,
                         "padding": {
-                            "x": 1.7000000476837159,
+                            "x": 25.600000381469728,
                             "y": 3.299999952316284
                         },
-                        "letterSpacing": 1.850000023841858,
-                        "lineSpacing": 0.0,
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 1.0,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
                         "dialogueFilePath": "",
@@ -7843,12 +7843,12 @@
                         "parentUUID": 78539781619779025,
                         "localPos": {
                             "x": -0.06876575201749802,
-                            "y": 0.11855641007423401,
+                            "y": 0.1322883814573288,
                             "z": 0.0
                         },
                         "localRot": 0.0,
                         "localScale": {
-                            "x": 0.10000000149011612,
+                            "x": 0.20000000298023225,
                             "y": -0.09099999070167542
                         },
                         "inheritColor": false,
@@ -7875,11 +7875,11 @@
                         "rotation": 0.0,
                         "position": {
                             "x": -13.203023910522461,
-                            "y": -2.9182240962982179,
+                            "y": -0.05805397406220436,
                             "z": 0.0
                         },
                         "size": {
-                            "x": 20.15999984741211,
+                            "x": 38.400001525878909,
                             "y": -9.82800006866455
                         }
                     },
@@ -7919,7 +7919,7 @@
                     },
                     "text": {
                         "font": "Bellefair-Regular",
-                        "text": "Watch the counter to see how many grey plates you still need to activate",
+                        "text": "Watch the pressure plate",
                         "scale": 9.0,
                         "offset": {
                             "x": 0.0,
@@ -7940,7 +7940,7 @@
                             "x": 1.7000000476837159,
                             "y": 3.299999952316284
                         },
-                        "letterSpacing": 1.850000023841858,
+                        "letterSpacing": 3.0,
                         "lineSpacing": 0.0,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
@@ -7961,12 +7961,12 @@
                         "parentUUID": 78539781619779025,
                         "localPos": {
                             "x": -0.06876575201749802,
-                            "y": -0.027020592242479326,
+                            "y": -0.0005375367472879589,
                             "z": 0.0
                         },
                         "localRot": 0.0,
                         "localScale": {
-                            "x": 0.10499999672174454,
+                            "x": 0.20000000298023225,
                             "y": -0.09099999070167542
                         },
                         "inheritColor": false,
@@ -8037,7 +8037,7 @@
                     },
                     "text": {
                         "font": "Bellefair-Regular",
-                        "text": "*Slimes can be used to activate plates Dante can't reach",
+                        "text": "*Slines can be thrown to activated pressure plates Dante can't reach!",
                         "scale": 9.0,
                         "offset": {
                             "x": 0.0,
@@ -8058,8 +8058,8 @@
                             "x": 1.2000000476837159,
                             "y": 3.299999952316284
                         },
-                        "letterSpacing": 1.850000023841858,
-                        "lineSpacing": 0.0,
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 11.0,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
                         "dialogueFilePath": "",
@@ -8274,7 +8274,7 @@
                     "text": {
                         "font": "AlegreyaSC-Bold",
                         "text": "PLATFORM",
-                        "scale": 16.0,
+                        "scale": 14.0,
                         "offset": {
                             "x": 0.30000001192092898,
                             "y": 0.0
@@ -8558,8 +8558,8 @@
                             "x": 1.7000000476837159,
                             "y": 3.299999952316284
                         },
-                        "letterSpacing": 1.850000023841858,
-                        "lineSpacing": 0.0,
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 11.050000190734864,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
                         "dialogueFilePath": "",
@@ -8655,7 +8655,7 @@
                     },
                     "text": {
                         "font": "Bellefair-Regular",
-                        "text": "These platforms can sink according to dante's weight",
+                        "text": "These sink and rise with Dante's weight",
                         "scale": 9.0,
                         "offset": {
                             "x": 0.0,
@@ -8676,8 +8676,8 @@
                             "x": 1.7000000476837159,
                             "y": 3.299999952316284
                         },
-                        "letterSpacing": 1.850000023841858,
-                        "lineSpacing": 0.0,
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 4.599999904632568,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
                         "dialogueFilePath": "",
@@ -8774,7 +8774,7 @@
                     "text": {
                         "font": "AlegreyaSC-Bold",
                         "text": "GENERAL",
-                        "scale": 16.0,
+                        "scale": 14.0,
                         "offset": {
                             "x": 0.30000001192092898,
                             "y": 0.0
@@ -8836,7 +8836,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 21.421201705932618,
+                            "x": 20.604766845703126,
                             "y": -6.274013519287109,
                             "z": 0.0
                         },
@@ -8902,8 +8902,8 @@
                             "x": 0.800000011920929,
                             "y": 3.299999952316284
                         },
-                        "letterSpacing": 1.850000023841858,
-                        "lineSpacing": 0.0,
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 13.149999618530274,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
                         "dialogueFilePath": "",
@@ -8922,7 +8922,7 @@
                     "parent": {
                         "parentUUID": 78539781619779025,
                         "localPos": {
-                            "x": 0.11156875640153885,
+                            "x": 0.10731649398803711,
                             "y": -0.058092713356018069,
                             "z": 0.0
                         },
@@ -8954,7 +8954,7 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": 21.421201705932618,
+                            "x": 21.012989044189454,
                             "y": -13.700384140014649,
                             "z": 0.0
                         },
@@ -8999,7 +8999,7 @@
                     },
                     "text": {
                         "font": "Bellefair-Regular",
-                        "text": "Dante can respawn at checkpoints scattered throughout the levels if he dies",
+                        "text": "Dante respawns at checkpoint throughout the level if he dies",
                         "scale": 9.0,
                         "offset": {
                             "x": 0.0,
@@ -9020,8 +9020,8 @@
                             "x": 0.800000011920929,
                             "y": 3.299999952316284
                         },
-                        "letterSpacing": 1.850000023841858,
-                        "lineSpacing": 0.0,
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 6.0,
                         "isRevealing": false,
                         "revealSpeed": 10.0,
                         "dialogueFilePath": "",
@@ -9040,7 +9040,7 @@
                     "parent": {
                         "parentUUID": 78539781619779025,
                         "localPos": {
-                            "x": 0.11156875640153885,
+                            "x": 0.10944265127182007,
                             "y": -0.12685540318489076,
                             "z": 0.0
                         },
@@ -9216,6 +9216,596 @@
                     "layer": {
                         "layerName": "UIButtons",
                         "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Blue_PP_Text_1",
+                    "uuid": 9102692155336242524,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -13.203023910522461,
+                            "y": 12.16850471496582,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 38.400001525878909,
+                            "y": -9.82800006866455
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "missing.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "Bellefair-Regular",
+                        "text": "doors immediately",
+                        "scale": 9.0,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.16022098064422608,
+                            "y": 0.12357570230960846,
+                            "z": 0.10799425840377808,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": true,
+                        "padding": {
+                            "x": 25.600000381469728,
+                            "y": 3.299999952316284
+                        },
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "gui": {
+                        "uiType": 3
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 78539781619779025,
+                        "localPos": {
+                            "x": -0.06876575201749802,
+                            "y": 0.11267133057117462,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": -0.09099999070167542
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UIButtons",
+                        "z": 26
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Grey_PP_Text_1",
+                    "uuid": 17610876320942572128,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -13.203023910522461,
+                            "y": 5.3602190017700199,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 19.200000762939454,
+                            "y": -9.82800006866455
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "missing.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "Bellefair-Regular",
+                        "text": "the door at the end",
+                        "scale": 9.0,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.16022098064422608,
+                            "y": 0.12357570230960846,
+                            "z": 0.10799425840377808,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": true,
+                        "padding": {
+                            "x": 1.7000000476837159,
+                            "y": 3.299999952316284
+                        },
+                        "letterSpacing": 2.6500000953674318,
+                        "lineSpacing": 6.800000190734863,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "gui": {
+                        "uiType": 3
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 78539781619779025,
+                        "localPos": {
+                            "x": -0.06876575201749802,
+                            "y": 0.04963165521621704,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.10000000149011612,
+                            "y": -0.09099999070167542
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UIButtons",
+                        "z": 26
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Counter_PP_Text_1",
+                    "uuid": 13884059935477034358,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -13.203023910522461,
+                            "y": -2.1767070293426515,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 38.400001525878909,
+                            "y": -9.82800006866455
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "missing.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "Bellefair-Regular",
+                        "text": "counter to see how many",
+                        "scale": 9.0,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.16022098064422608,
+                            "y": 0.12357570230960846,
+                            "z": 0.10799425840377808,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": true,
+                        "padding": {
+                            "x": 1.7000000476837159,
+                            "y": 3.299999952316284
+                        },
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "gui": {
+                        "uiType": 3
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 78539781619779025,
+                        "localPos": {
+                            "x": -0.06876575201749802,
+                            "y": -0.020154694095253946,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": -0.09099999070167542
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UIButtons",
+                        "z": 26
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Counter_PP_Text_2",
+                    "uuid": 7936423106855526181,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -13.203023910522461,
+                            "y": -4.295354843139648,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 38.400001525878909,
+                            "y": -9.82800006866455
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "missing.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "Bellefair-Regular",
+                        "text": "grey plates must be",
+                        "scale": 9.0,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.16022098064422608,
+                            "y": 0.12357570230960846,
+                            "z": 0.10799425840377808,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": true,
+                        "padding": {
+                            "x": 1.7000000476837159,
+                            "y": 3.299999952316284
+                        },
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "gui": {
+                        "uiType": 3
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 78539781619779025,
+                        "localPos": {
+                            "x": -0.06876575201749802,
+                            "y": -0.039771802723407748,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": -0.09099999070167542
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UIButtons",
+                        "z": 26
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "Counter_PP_Text_3",
+                    "uuid": 11284546113379402730,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -13.203023910522461,
+                            "y": -6.472044944763184,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 38.400001525878909,
+                            "y": -9.82800006866455
+                        }
+                    },
+                    "shape": {
+                        "useTexture": false,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "missing.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "text": {
+                        "font": "Bellefair-Regular",
+                        "text": "activated!",
+                        "scale": 9.0,
+                        "offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.16022098064422608,
+                            "y": 0.12357570230960846,
+                            "z": 0.10799425840377808,
+                            "w": 1.0
+                        },
+                        "centered": true,
+                        "isworldspace": false,
+                        "alignment": 1,
+                        "verticalAlignment": 1,
+                        "wrapText": true,
+                        "padding": {
+                            "x": 1.7000000476837159,
+                            "y": 3.299999952316284
+                        },
+                        "letterSpacing": 3.0,
+                        "lineSpacing": 0.0,
+                        "isRevealing": false,
+                        "revealSpeed": 10.0,
+                        "dialogueFilePath": "",
+                        "dialogueID": ""
+                    },
+                    "gui": {
+                        "uiType": 3
+                    },
+                    "uilayout": {
+                        "paddingXY": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "uiLayout": 4
+                    },
+                    "parent": {
+                        "parentUUID": 78539781619779025,
+                        "localPos": {
+                            "x": -0.06876575201749802,
+                            "y": -0.059926338493824008,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.20000000298023225,
+                            "y": -0.09099999070167542
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UIButtons",
+                        "z": 26
                     }
                 }
             ]
