@@ -473,6 +473,12 @@ bool InputManager::GetActionReleased(const std::string& actionName)
     return false;
 }
 
+/*!
+@brief Forward a managed controller rumble request to the native controller manager.
+@param lowFrequency Low-frequency motor strength in the range [0, 1].
+@param highFrequency High-frequency motor strength in the range [0, 1].
+@param durationSeconds Duration of the vibration pulse in seconds.
+*/
 void InputManager::SetControllerVibration(float lowFrequency, float highFrequency, float durationSeconds)
 {
     if (!s_controllerManager)

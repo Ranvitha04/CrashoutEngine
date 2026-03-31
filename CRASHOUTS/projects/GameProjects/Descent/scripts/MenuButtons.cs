@@ -276,6 +276,14 @@ namespace CrashoutsEngine
             InternalCalls.UI_ClearForcedHoveredButton();
         }
 
+        /*!
+        @brief Update vertical controller selection for menu scenes.
+        @param buttons Active buttons in the current scene/state.
+
+        The selected button is pushed into the engine's forced-hover system so
+        the UI stays visually aligned with controller navigation. A short rumble
+        pulse is emitted whenever the selection moves.
+        */
         private void UpdateControllerSelection(Entity[] buttons)
         {
             if (buttons == null || buttons.Length == 0)

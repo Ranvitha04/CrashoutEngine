@@ -21,6 +21,13 @@ namespace CrashoutEngine
         Shutdown();
     }
 
+    /*!
+    @brief Initialize SDL controller support and enable HIDAPI rumble hints.
+
+    The PS4/PS5 HIDAPI rumble hints are enabled here before SDL controller
+    initialization so DualSense rumble can be exposed through SDL on supported
+    setups.
+    */
     bool ControllerManager::Initialize()
     {
         SDL_SetHint(SDL_HINT_JOYSTICK_HIDAPI, "1");
@@ -240,6 +247,15 @@ namespace CrashoutEngine
         return value;
     }
 
+    /*!
+    @brief Attempt to send a vibration pulse through SDL rumble or SDL haptics.
+    @param lowFrequency Low-frequency motor strength in the range [0, 1].
+    @param highFrequency High-frequency motor strength in the range [0, 1].
+    @param durationMs Duration of the vibration pulse in milliseconds.
+
+    The implementation tries SDL's direct controller rumble first, then joystick
+    rumble, then haptic left/right effects, and finally generic haptic rumble.
+    */
     void ControllerManager::SetVibration(float lowFrequency, float highFrequency, std::uint32_t durationMs) const
     {
         const float clampedLow = std::clamp(lowFrequency, 0.0f, 1.0f);
@@ -311,6 +327,10 @@ namespace CrashoutEngine
         return m_controllers.size();
     }
 
+    /*!
+    @brief Open an SDL controller and optional SDL haptic handle for a device index.
+    @param deviceIndex SDL joystick/controller device index.
+    */
     void ControllerManager::OpenController(int deviceIndex)
     {
         if (!m_initialized || SDL_IsGameController(deviceIndex) != SDL_TRUE)

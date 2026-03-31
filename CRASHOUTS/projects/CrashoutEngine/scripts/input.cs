@@ -73,6 +73,12 @@ namespace CrashoutsEngine
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool InternalGetActionReleased(string actionName);
 
+        /*!
+        @brief Trigger controller vibration through the native engine input layer.
+        @param lowFrequency Low-frequency motor strength in the range [0, 1].
+        @param highFrequency High-frequency motor strength in the range [0, 1].
+        @param durationSeconds Duration of the vibration pulse in seconds.
+        */
         public static void SetControllerVibration(float lowFrequency, float highFrequency, float durationSeconds)
         {
             InternalSetControllerVibration(lowFrequency, highFrequency, durationSeconds);

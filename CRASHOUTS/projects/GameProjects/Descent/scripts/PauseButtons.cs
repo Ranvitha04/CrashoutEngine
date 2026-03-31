@@ -355,6 +355,13 @@ namespace CrashoutsEngine
             InternalCalls.UI_ClearForcedHoveredButton();
         }
 
+        /*!
+        @brief Update vertical controller selection for pause, restart, and book menus.
+        @param buttons Active buttons for the current pause sub-menu.
+
+        This method coordinates controller-driven forced hover and emits a short
+        rumble pulse whenever the highlighted button changes.
+        */
         private void UpdateControllerSelection(Entity[] buttons)
         {
             if (buttons == null || buttons.Length == 0)
