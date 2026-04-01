@@ -1,0 +1,1627 @@
+{
+    "prefabs": [
+        {
+            "name": "PlayerEnergy_Updated",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "PlayerEnergy",
+                    "uuid": 372797382382276125,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 0.000030517578125,
+                            "y": 6.499998092651367,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "script": {
+                        "scripts": [
+                            {
+                                "className": "EnergyUI",
+                                "fields": {
+                                    "totalBalls": 10,
+                                    "maxPlayerEnergy": 100.0,
+                                    "ballBaseName": "EnergyBall_",
+                                    "activeAlpha": 1.0,
+                                    "inactiveAlpha": 0.20000000298023225
+                                }
+                            }
+                        ]
+                    },
+                    "parent": {
+                        "parentUUID": 4757459031272024451,
+                        "localPos": {
+                            "x": 0.000030517578125,
+                            "y": 6.499998092651367,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_0",
+                    "uuid": 3452433487814910759,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -82.99996948242188,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New Mana single empty .png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 372797382382276125,
+                        "localPos": {
+                            "x": -83.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "EnergyBall_0",
+                    "uuid": 9642810103611213800,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -82.99996948242188,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New mana single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 3452433487814910759,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_1",
+                    "uuid": 3404160962589938536,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -77.99996948242188,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New Mana single empty .png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 372797382382276125,
+                        "localPos": {
+                            "x": -78.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "EnergyBall_1",
+                    "uuid": 6117529603016805649,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -77.99996948242188,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New mana single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 3404160962589938536,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_2",
+                    "uuid": 11395422963691994363,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -72.99996948242188,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New Mana single empty .png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 372797382382276125,
+                        "localPos": {
+                            "x": -73.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "EnergyBall_2",
+                    "uuid": 4525079497797641504,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -72.99996948242188,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New mana single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 11395422963691994363,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_3",
+                    "uuid": 11243931223372640734,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -67.99996948242188,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New Mana single empty .png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 372797382382276125,
+                        "localPos": {
+                            "x": -68.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "EnergyBall_3",
+                    "uuid": 2736492431399556046,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -67.99996948242188,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New mana single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 11243931223372640734,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_4",
+                    "uuid": 18383286529035885019,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -62.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New Mana single empty .png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 372797382382276125,
+                        "localPos": {
+                            "x": -63.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "EnergyBall_4",
+                    "uuid": 7691444177543386415,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -62.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New mana single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 18383286529035885019,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_5",
+                    "uuid": 4114463641246402934,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -57.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New Mana single empty .png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 372797382382276125,
+                        "localPos": {
+                            "x": -58.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "EnergyBall_5",
+                    "uuid": 8887267701600420697,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -57.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New mana single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 4114463641246402934,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_6",
+                    "uuid": 15146782450718660094,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -52.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New Mana single empty .png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 372797382382276125,
+                        "localPos": {
+                            "x": -53.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "EnergyBall_6",
+                    "uuid": 3814807124081617074,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -52.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New mana single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 15146782450718660094,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_7",
+                    "uuid": 10986770823011974503,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -47.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New Mana single empty .png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 372797382382276125,
+                        "localPos": {
+                            "x": -48.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "EnergyBall_7",
+                    "uuid": 5661204697102627443,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -47.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New mana single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 10986770823011974503,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_8",
+                    "uuid": 4620593264482202262,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -42.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New Mana single empty .png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 372797382382276125,
+                        "localPos": {
+                            "x": -43.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "EnergyBall_8",
+                    "uuid": 5689680997252162596,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -42.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New mana single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 4620593264482202262,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "BallBG_9",
+                    "uuid": 12369226611591080718,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -37.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New Mana single empty .png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 372797382382276125,
+                        "localPos": {
+                            "x": -38.0,
+                            "y": 33.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 30.0,
+                            "y": 15.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "EnergyBall_9",
+                    "uuid": 5539968442518781765,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -37.999969482421878,
+                            "y": 39.5,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 30.0,
+                            "y": 15.0
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": false,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/New mana single.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 12369226611591080718,
+                        "localPos": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Enemy",
+                        "z": 1
+                    }
+                }
+            ]
+        }
+    ]
+}
