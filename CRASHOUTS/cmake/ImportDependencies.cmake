@@ -126,7 +126,7 @@ macro(import_sdl2)
         FetchContent_Declare(
             sdl2_src
             GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-            GIT_TAG release-2.30.11
+            GIT_TAG release-2.32.0
         )
         FetchContent_MakeAvailable(sdl2_src)
 

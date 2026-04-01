@@ -44,6 +44,10 @@ namespace CrashoutsEngine
         [SerializeField] private float patrolTurnInterval = 3.0f;
         [SerializeField] private bool resizePlayerColliderWhileHolding = true;
         [SerializeField] private float carryBoundsPadding = 10.0f;
+        [SerializeField] private float heldRumbleLow = 0.08f;
+        [SerializeField] private float heldRumbleHigh = 0.14f;
+        [SerializeField] private float heldRumbleDuration = 0.12f;
+        [SerializeField] private float heldRumbleRefreshInterval = 0.08f;
         private RigidBodyComponent rb;
         private TransformComponent tf;
         private Animator anim;
@@ -75,6 +79,7 @@ namespace CrashoutsEngine
         private float patrolTurnTimer = 0.0f;
         [SerializeField] private float ignorePlayerStopDuration = 0.2f;
         private float ignorePlayerStopTimer = 0.0f;
+        private float heldRumbleTimer = 0.0f;
 
         private CEVec3 startPos;
         private bool returningHome = false;
@@ -243,6 +248,7 @@ namespace CrashoutsEngine
 
                 if (!isGrabbed)
                 {
+                    heldRumbleTimer = 0.0f;
                     UpdatePlayerAabb(false, playerScript != null ? playerScript.Entity.GetComponent<TransformComponent>() : null);
                     UpdateHoldColliders(false);
                 }
@@ -273,6 +279,7 @@ namespace CrashoutsEngine
 
             if (isGrabbed)
             {
+                UpdateHeldRumble(dt);
                 ClearStopState();
                 UpdateAnimationState();
                 return;
@@ -601,7 +608,9 @@ namespace CrashoutsEngine
 
         private void HandleGrabInput()
         {
-            bool isDown = Input.IsMouseButtonDown(0) || Input.GetAction("GrabSlime");
+            bool mouseGrabHeld = Input.IsMouseButtonDown(0);
+            bool controllerGrabHeld = Input.GetAction("GrabSlime");
+            bool isDown = mouseGrabHeld || controllerGrabHeld;
             CEVec3 worldPos = tf.WorldPosition;
             CEVec2 aimPos = isGrabbed ? GetThrowAimPosition(worldPos) : GetGrabAimPosition(worldPos);
 
@@ -618,8 +627,9 @@ namespace CrashoutsEngine
                     float halfW = Math.Abs(tf.Size.x) * 0.5f + 100.0f;
                     float halfH = Math.Abs(tf.Size.y) * 0.5f + 100.0f;
 
-                    bool aimOverSlime = aimPos.x >= worldPos.x - halfW && aimPos.x <= worldPos.x + halfW &&
-                                        aimPos.y >= worldPos.y - halfH && aimPos.y <= worldPos.y + halfH;
+                    bool aimOverSlime = controllerGrabHeld ||
+                                        (aimPos.x >= worldPos.x - halfW && aimPos.x <= worldPos.x + halfW &&
+                                         aimPos.y >= worldPos.y - halfH && aimPos.y <= worldPos.y + halfH);
 
                     if (aimOverSlime)
                     {
@@ -672,6 +682,7 @@ namespace CrashoutsEngine
         private void ReleaseSlime(bool applyThrow, CEVec2 mousePos)
         {
             isGrabbed = false;
+            heldRumbleTimer = 0.0f;
             wasThrown = applyThrow;
             isPicking = false;
             pickAnimTimer = 0.0f;
@@ -847,6 +858,24 @@ namespace CrashoutsEngine
             STOP = false;
             stopApplied = false;
             if (rb != null) rb.SetDynamic(true);
+        }
+
+        private void UpdateHeldRumble(float dt)
+        {
+            if (heldRumbleRefreshInterval <= 0.0f)
+            {
+                Input.SetControllerVibration(heldRumbleLow, heldRumbleHigh, heldRumbleDuration);
+                return;
+            }
+
+            heldRumbleTimer -= dt;
+            if (heldRumbleTimer > 0.0f)
+            {
+                return;
+            }
+
+            Input.SetControllerVibration(heldRumbleLow, heldRumbleHigh, heldRumbleDuration);
+            heldRumbleTimer = heldRumbleRefreshInterval;
         }
 
         public bool OnPreSolve(uint otherEntity)

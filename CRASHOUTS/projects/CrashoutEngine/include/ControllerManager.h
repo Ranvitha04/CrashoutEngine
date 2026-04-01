@@ -29,6 +29,7 @@ namespace CrashoutEngine
 
         float GetAxis(SDL_GameControllerAxis axis, float deadzone) const;
         float GetPreviousAxis(SDL_GameControllerAxis axis, float deadzone) const;
+        void SetVibration(float lowFrequency, float highFrequency, std::uint32_t durationMs) const;
 
         std::size_t GetConnectedControllerCount() const;
 
@@ -36,6 +37,7 @@ namespace CrashoutEngine
         struct ControllerState
         {
             SDL_GameController* handle = nullptr;
+            SDL_Haptic* haptic = nullptr;
             SDL_JoystickID instanceId = -1;
             std::vector<std::uint8_t> previousButtons;
             std::vector<float> previousAxes;

@@ -380,6 +380,46 @@
                 "layerName": "Default",
                 "z": 0
             }
+        },
+        {
+            "active": true,
+            "name": "MenuScript",
+            "uuid": 16488244733195012001,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "MenuButtons",
+                        "fields": {
+                            "StartBtn": 3,
+                            "SettingsBtn": 0,
+                            "CloseBtn": 0,
+                            "QuitBtn": 2,
+                            "QuitCheckPanel": 0,
+                            "YesBtn": 0,
+                            "NoBtn": 0
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
         }
     ],
     "layers": {

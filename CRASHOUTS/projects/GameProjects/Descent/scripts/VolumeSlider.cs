@@ -53,6 +53,20 @@ namespace CrashoutsEngine
             }
         }
 
+        public void AdjustByStep(int direction)
+        {
+            if (direction == 0 || totalBalls <= 0) return;
+
+            float step = 1.0f / totalBalls;
+            _targetT = Math.Max(0.0f, Math.Min(_targetT + (step * direction), 1.0f));
+            _currentT = _targetT;
+
+            if (isMusicVolume) AudioManager.Instance.MusicVolume(_currentT);
+            else AudioManager.Instance.SFXVolume(_currentT);
+
+            InternalCalls.Settings_Save();
+        }
+
         public override void Update()
         {
             if (_tf == null) return;

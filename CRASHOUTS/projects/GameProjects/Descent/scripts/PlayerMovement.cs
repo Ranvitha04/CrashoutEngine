@@ -36,6 +36,11 @@ namespace CrashoutsEngine
 
         [SerializeField] private string landingDustName = "LandingDust";
         [SerializeField] private float dustBurstDuration = 0.15f;
+        [SerializeField] private float landingRumbleMinFallSpeed = 60.0f;
+        [SerializeField] private float landingRumbleMaxFallSpeed = 260.0f;
+        [SerializeField] private float landingRumbleMinStrength = 0.15f;
+        [SerializeField] private float landingRumbleMaxStrength = 0.65f;
+        [SerializeField] private float landingRumbleDuration = 0.12f;
 
         public float normalMass = 7.0f;
         public float lightMass = 4.5f;
@@ -115,6 +120,7 @@ namespace CrashoutsEngine
         private uint landingDustID = 0;
         private float landingDustTimer = 0.0f;
         private bool landingDustArmed = false;
+        private float strongestAirborneFallSpeed = 0.0f;
 
         private float jumpCooldown = 0.0f;
         private float coyoteTimeTimer = 0.0f;
@@ -311,6 +317,10 @@ namespace CrashoutsEngine
             horizontalInput = moveInputX;
 
             bool wasGroundedThisFrame = IsGrounded;
+            if (!IsGrounded && rb.LinearVelocity.y < 0.0f)
+            {
+                strongestAirborneFallSpeed = Math.Max(strongestAirborneFallSpeed, -rb.LinearVelocity.y);
+            }
             CheckGround();
 
             if (IsGrounded) coyoteTimeTimer = coyoteTime;
@@ -354,6 +364,11 @@ namespace CrashoutsEngine
                 TriggerLandingDust();
                 HandleLanding();
                 landingDustArmed = false;
+                strongestAirborneFallSpeed = 0.0f;
+            }
+            else if (IsGrounded)
+            {
+                strongestAirborneFallSpeed = 0.0f;
             }
 
             if (landingDustTimer > 0.0f)
@@ -607,7 +622,22 @@ namespace CrashoutsEngine
             } else footstepTimer = 0.0f;
         }
 
-        private void HandleLanding() { AudioManager.GetInstance().PlayAttached("jumpLand", Entity.ID); }
+        private void HandleLanding()
+        {
+            AudioManager.GetInstance().PlayAttached("jumpLand", Entity.ID);
+
+            if (strongestAirborneFallSpeed < landingRumbleMinFallSpeed || landingRumbleMaxFallSpeed <= landingRumbleMinFallSpeed)
+            {
+                return;
+            }
+
+            float t = (strongestAirborneFallSpeed - landingRumbleMinFallSpeed) / (landingRumbleMaxFallSpeed - landingRumbleMinFallSpeed);
+            if (t < 0.0f) t = 0.0f;
+            if (t > 1.0f) t = 1.0f;
+
+            float strength = landingRumbleMinStrength + ((landingRumbleMaxStrength - landingRumbleMinStrength) * t);
+            Input.SetControllerVibration(strength * 0.7f, strength, landingRumbleDuration);
+        }
         
         private void TriggerLandingDust() 
         { 
