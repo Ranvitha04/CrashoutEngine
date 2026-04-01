@@ -23464,8 +23464,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1449.0609130859376,
-                    "y": -649.896484375,
+                    "x": 1018.2216796875,
+                    "y": -581.7017211914063,
                     "z": -1.0
                 },
                 "size": {
@@ -23502,13 +23502,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1433.0609130859376,
-                    "y": -677.896484375,
+                    "x": 1002.2216796875,
+                    "y": -609.7017211914063,
                     "z": -1.0
                 },
                 "max": {
-                    "x": 1465.0609130859376,
-                    "y": -664.896484375,
+                    "x": 1034.2216796875,
+                    "y": -596.7017211914063,
                     "z": -1.0
                 }
             },
@@ -25464,7 +25464,7 @@
                         "className": "MovingWall",
                         "fields": {
                             "PlatesActive": 0,
-                            "PlatesRequired": 1,
+                            "PlatesRequired": 2,
                             "MoveRight": true,
                             "MoveDist": 300.0,
                             "MoveSpeed": 40.0,
@@ -40694,6 +40694,186 @@
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "CheckPoint",
+            "uuid": 5581301650854167833,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1059.2822265625,
+                    "y": -566.54443359375,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Checkpoint Marker.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.649402379989624
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "PressurePlate6",
+            "uuid": 18374919917699288722,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1526.165771484375,
+                    "y": -486.3209228515625,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isContinuous": false,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 1841.13330078125,
+                    "y": -486.068603515625,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -21.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1510.165771484375,
+                    "y": -514.3209228515625,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 1542.165771484375,
+                    "y": -501.3209228515625,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pressure Plate.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.4274509847164154,
+                    "y": 0.7450980544090271,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Switch",
+                        "path": "switch_stepon.wav",
+                        "volume": 0.4000000059604645,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "goalTextName": "",
+                            "wallName": "wall5"
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": -10
             }
         }
     ],

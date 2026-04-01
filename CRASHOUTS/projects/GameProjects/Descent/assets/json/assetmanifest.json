@@ -757,14 +757,6 @@
             "path": "Character/Run.gif"
         },
         {
-            "name": "spikes_17",
-            "path": "spritesheet/spikes/spikes_17.png"
-        },
-        {
-            "name": "Checkpoint Marker",
-            "path": "Checkpoint Marker.png"
-        },
-        {
             "name": "Cutscene_1",
             "path": "Cutscenes/Cutscene_1.png"
         },
@@ -1873,6 +1865,14 @@
             "path": "spritesheet/spikes/spikes_16.png"
         },
         {
+            "name": "Checkpoint Marker",
+            "path": "UI/Checkpoint Marker.png"
+        },
+        {
+            "name": "spikes_17",
+            "path": "spritesheet/spikes/spikes_17.png"
+        },
+        {
             "name": "spikes_18",
             "path": "spritesheet/spikes/spikes_18.png"
         },
@@ -2355,6 +2355,14 @@
             "path": "Cam_Zone_Prefab.json"
         },
         {
+            "name": "EnergyBall_Prefab",
+            "path": "EnergyBall_Prefab.json"
+        },
+        {
+            "name": "CheckPoint",
+            "path": "CheckPoint.json"
+        },
+        {
             "name": "Door_Prefab",
             "path": "Door_Prefab.json"
         },
@@ -2365,10 +2373,6 @@
         {
             "name": "FilledAudioManager_Prefab",
             "path": "FilledAudioManager_Prefab.json"
-        },
-        {
-            "name": "EnergyBall_Prefab",
-            "path": "EnergyBall_Prefab.json"
         },
         {
             "name": "HowTo1_no_anim",
