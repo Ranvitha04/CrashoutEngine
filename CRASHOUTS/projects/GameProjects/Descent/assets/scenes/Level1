@@ -16038,2009 +16038,6 @@
         },
         {
             "active": true,
-            "name": "Background",
-            "uuid": 442153553620421166,
-            "tag": {
-                "tagMask": 16
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -280.07952880859377,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "ParallaxLayer",
-                        "fields": {
-                            "bgFactor": 0.8999999761581421,
-                            "midFactor": 0.6000000238418579,
-                            "fgFactor": 0.30000001192092898,
-                            "lockY": true,
-                            "targetName": "Camera"
-                        }
-                    }
-                ]
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg colour",
-            "uuid": 17460587672987129057,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 803.2108154296875,
-                    "y": -350.06951904296877,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 3000.0,
-                    "y": 1500.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg colour",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.34117648005485537,
-                    "y": 0.24313725531101228,
-                    "z": 0.21960784494876862,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "ParallaxLayer",
-                        "fields": {
-                            "bgFactor": -0.10000000149011612,
-                            "midFactor": -0.20000000298023225,
-                            "fgFactor": -0.30000001192092898,
-                            "lockY": true,
-                            "targetName": "Player"
-                        }
-                    }
-                ]
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": -1000
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg 1 base",
-            "uuid": 2214613141720856560,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1766.248779296875,
-                    "y": -567.8425903320313,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1613.1954345703126,
-                    "y": 746.9531860351563
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg 1 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 442153553620421166,
-                "localPos": {
-                    "x": 2046.3282470703126,
-                    "y": -567.8425903320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1613.1954345703126,
-                    "y": 746.9531860351563
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": -100
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg 1 pillar 2",
-            "uuid": 14746580523661634565,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1390.90869140625,
-                    "y": -361.7455749511719,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 858.08154296875,
-                    "y": 1309.2261962890626
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg 1 pillar 2",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 442153553620421166,
-                "localPos": {
-                    "x": 1670.98828125,
-                    "y": -361.7455749511719,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 858.08154296875,
-                    "y": 1309.2261962890626
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": -100
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg 1 pillar",
-            "uuid": 696943103718857005,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 169.31466674804688,
-                    "y": -337.42987060546877,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 950.2628173828125,
-                    "y": 1288.4683837890626
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg 1 pillar",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 442153553620421166,
-                "localPos": {
-                    "x": 449.3941955566406,
-                    "y": -337.42987060546877,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 950.2628173828125,
-                    "y": 1288.4683837890626
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": -100
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg 1 top",
-            "uuid": 1139656299869027006,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -843.0652465820313,
-                    "y": -108.80595397949219,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1059.8824462890626,
-                    "y": 667.4451293945313
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg 1 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 442153553620421166,
-                "localPos": {
-                    "x": -562.9857177734375,
-                    "y": -108.80595397949219,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1059.8824462890626,
-                    "y": 667.4451293945313
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": -100
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg 1 top",
-            "uuid": 7513656644303025486,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 321.77899169921877,
-                    "y": -91.34979248046875,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1305.8382568359376,
-                    "y": 635.3853149414063
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg 1 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 442153553620421166,
-                "localPos": {
-                    "x": 601.8585205078125,
-                    "y": -91.34979248046875,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1305.8382568359376,
-                    "y": 635.3853149414063
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": -100
-            }
-        },
-        {
-            "active": true,
-            "name": "Middleground",
-            "uuid": 11508001198511904872,
-            "tag": {
-                "tagMask": 32
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -363.34649658203127,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "ParallaxLayer",
-                        "fields": {
-                            "bgFactor": 0.8999999761581421,
-                            "midFactor": 0.6000000238418579,
-                            "fgFactor": 0.30000001192092898,
-                            "lockY": true,
-                            "targetName": "Camera"
-                        }
-                    }
-                ]
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg2 base",
-            "uuid": 17626240957055217942,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -522.3460693359375,
-                    "y": -726.8931274414063,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 899.2402954101563,
-                    "y": 408.6402587890625
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg2 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11508001198511904872,
-                "localPos": {
-                    "x": -158.9995574951172,
-                    "y": -726.8931274414063,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 899.2402954101563,
-                    "y": 408.6402587890625
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg2 base",
-            "uuid": 17907723394573762790,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 192.45635986328126,
-                    "y": -704.6620483398438,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 882.5747680664063,
-                    "y": 394.365478515625
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg2 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11508001198511904872,
-                "localPos": {
-                    "x": 555.8028564453125,
-                    "y": -704.6620483398438,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 882.5747680664063,
-                    "y": 394.365478515625
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg2 base",
-            "uuid": 16546128457875055402,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1095.351806640625,
-                    "y": -689.61376953125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1053.9906005859376,
-                    "y": 394.30517578125
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg2 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11508001198511904872,
-                "localPos": {
-                    "x": 1458.6983642578126,
-                    "y": -689.61376953125,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1053.9906005859376,
-                    "y": 394.30517578125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg2 p2",
-            "uuid": 15857131999503223551,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -22.562347412109376,
-                    "y": -272.486572265625,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 465.0,
-                    "y": 1195.7991943359376
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg2 p2",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11508001198511904872,
-                "localPos": {
-                    "x": 340.7841491699219,
-                    "y": -272.486572265625,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 465.0,
-                    "y": 1195.7991943359376
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg 2 p1",
-            "uuid": 7701904886545484614,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -184.06478881835938,
-                    "y": -310.01092529296877,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 381.43994140625,
-                    "y": 1292.1982421875
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg 2 p1",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11508001198511904872,
-                "localPos": {
-                    "x": 179.28170776367188,
-                    "y": -310.01092529296877,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 381.43994140625,
-                    "y": 1292.1982421875
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg2 top",
-            "uuid": 9550146826302914560,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -638.6656494140625,
-                    "y": 50.673248291015628,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 802.6097412109375,
-                    "y": 494.47113037109377
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg2 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11508001198511904872,
-                "localPos": {
-                    "x": -275.31915283203127,
-                    "y": 50.673248291015628,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 802.6097412109375,
-                    "y": 494.47113037109377
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg2 top",
-            "uuid": 6589539640631828991,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 87.9698486328125,
-                    "y": 24.51214599609375,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 811.2728271484375,
-                    "y": 554.7788696289063
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg2 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11508001198511904872,
-                "localPos": {
-                    "x": 451.31634521484377,
-                    "y": 24.51214599609375,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 811.2728271484375,
-                    "y": 554.7788696289063
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg2 top",
-            "uuid": 6927731343338737197,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 942.9905395507813,
-                    "y": 33.03370666503906,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 965.4572143554688,
-                    "y": 531.1934814453125
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg2 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11508001198511904872,
-                "localPos": {
-                    "x": 1306.3370361328126,
-                    "y": 33.03370666503906,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 965.4572143554688,
-                    "y": 531.1934814453125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Foreground",
-            "uuid": 5729045573354065727,
-            "tag": {
-                "tagMask": 64
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -245.57461547851563,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "ParallaxLayer",
-                        "fields": {
-                            "bgFactor": 0.8999999761581421,
-                            "midFactor": 0.6000000238418579,
-                            "fgFactor": 0.30000001192092898,
-                            "lockY": true,
-                            "targetName": "Camera"
-                        }
-                    }
-                ]
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 base",
-            "uuid": 6995303760974786709,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -738.962646484375,
-                    "y": -768.4155883789063,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 488.4152526855469,
-                    "y": 329.4999694824219
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": -493.38800048828127,
-                    "y": -768.4155883789063,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 488.4152526855469,
-                    "y": 329.4999694824219
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 base",
-            "uuid": 371480625145715917,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -285.1200256347656,
-                    "y": -746.8555908203125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 422.59716796875,
-                    "y": 381.333251953125
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": -39.54541015625,
-                    "y": -746.8555908203125,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 422.59716796875,
-                    "y": 381.333251953125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 base",
-            "uuid": 3256846380971010098,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 166.15859985351563,
-                    "y": -746.3095703125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 490.1760559082031,
-                    "y": 421.6575012207031
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": 411.73321533203127,
-                    "y": -746.3095703125,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 490.1760559082031,
-                    "y": 421.6575012207031
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 base",
-            "uuid": 14442171503411367011,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 735.9779052734375,
-                    "y": -733.845703125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 653.0842895507813,
-                    "y": 348.306396484375
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": 981.552490234375,
-                    "y": -733.845703125,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 653.0842895507813,
-                    "y": 348.306396484375
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 p1",
-            "uuid": 14356367897058814606,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -276.413330078125,
-                    "y": -239.60116577148438,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 304.0,
-                    "y": 1336.6590576171876
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 p1",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": -30.838714599609376,
-                    "y": -239.60116577148438,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 304.0,
-                    "y": 1336.6590576171876
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 p1",
-            "uuid": 3722217467450040885,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 983.328369140625,
-                    "y": -262.73773193359377,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 417.55999755859377,
-                    "y": 1202.0400390625
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 p1",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": 1228.9029541015626,
-                    "y": -262.73773193359377,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 417.55999755859377,
-                    "y": 1202.0400390625
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 p2",
-            "uuid": 10070782606488264856,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 793.187744140625,
-                    "y": -352.1566467285156,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 357.1152038574219,
-                    "y": 1320.8106689453126
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 p2",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": 1038.7623291015626,
-                    "y": -352.1566467285156,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 357.1152038574219,
-                    "y": 1320.8106689453126
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 top",
-            "uuid": 10679714803785744789,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 110.68826293945313,
-                    "y": 159.19122314453126,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 685.0269775390625,
-                    "y": 340.42999267578127
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": 356.26287841796877,
-                    "y": 159.19122314453126,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 685.0269775390625,
-                    "y": 340.42999267578127
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 top",
-            "uuid": 5919096749463524589,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 777.91796875,
-                    "y": 160.47113037109376,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 678.0238647460938,
-                    "y": 326.0249938964844
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": 1023.4926147460938,
-                    "y": 160.47113037109376,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 678.0238647460938,
-                    "y": 326.0249938964844
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 top",
-            "uuid": 9636798659599771602,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -684.7742919921875,
-                    "y": 137.82464599609376,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 941.5947265625,
-                    "y": 415.3025817871094
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "script": {
-                "scripts": [
-                    {
-                        "className": "Checkpoint",
-                        "fields": {}
-                    }
-                ]
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": -439.1996765136719,
-                    "y": 137.82464599609376,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 941.5947265625,
-                    "y": 415.3025817871094
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            },
-            "checkpoint": {
-                "respawnPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "targetRespawnEntity": 0,
-                "targetEntityName": "respawn1",
-                "activated": false
-            },
-            "trigger_metadata": {
-                "triggerID": "",
-                "oneTimeUse": true,
-                "triggered": false
-            }
-        },
-        {
-            "active": true,
             "name": "Post-Process Volume",
             "uuid": 2176618565825410799,
             "tag": {
@@ -19781,7 +17778,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Medium",
-                "text": "Music",
+                "text": "No better time than the present, I suppose.",
                 "scale": 25.0,
                 "offset": {
                     "x": 0.0,
@@ -21818,9 +19815,40 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 7.466709613800049,
+                "t": 33.98298645019531,
                 "playing": true,
                 "clips": [
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "name": "playerWalk",
                         "wrap": 0,
@@ -21874,7 +19902,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21888,14 +19916,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21957,41 +19985,10 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerIdle",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
-                        "spriteCols": 3,
+                        "textureAsset": "images/Character/New Artstyle/Idle spritesheet.png",
+                        "spriteCols": 6,
                         "spriteRows": 3,
                         "useCustomSize": true,
                         "targetWidth": 140.0,
@@ -22008,8 +20005,57 @@
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.125,
-                                        "v": 0.0,
+                                        "t": 0.5263158082962036,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0526316165924073,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.5789474248886109,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 2.1052632331848146,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 2.6315789222717287,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 3.1578948497772219,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 3.684210777282715,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 4.210526466369629,
+                                        "v": 7.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22112,49 +20158,49 @@
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.0625,
+                                        "t": 0.25,
                                         "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.125,
+                                        "t": 0.5,
                                         "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.1875,
+                                        "t": 0.75,
                                         "v": 3.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.25,
+                                        "t": 1.0,
                                         "v": 4.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.3125,
+                                        "t": 1.25,
                                         "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.375,
+                                        "t": 1.5,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.4375,
+                                        "t": 1.75,
                                         "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
@@ -22167,8 +20213,8 @@
                     {
                         "name": "playerIdleLight",
                         "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
-                        "spriteCols": 3,
+                        "textureAsset": "images/Character/New Artstyle/Idle spritesheet.png",
+                        "spriteCols": 6,
                         "spriteRows": 3,
                         "useCustomSize": true,
                         "targetWidth": 140.0,
@@ -22179,14 +20225,63 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 6.0,
+                                        "v": 8.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
-                                        "t": 0.25,
-                                        "v": 6.0,
+                                        "t": 0.5263158082962036,
+                                        "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.0526316165924073,
+                                        "v": 10.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 1.5789474248886109,
+                                        "v": 11.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 2.1052632331848146,
+                                        "v": 12.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 2.6315789222717287,
+                                        "v": 13.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 3.1578948497772219,
+                                        "v": 14.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 3.684210777282715,
+                                        "v": 15.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 4.210526466369629,
+                                        "v": 15.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22249,6 +20344,86 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerDeath",
+                        "wrap": 1,
+                        "textureAsset": "images/Character\\DeathAnimBook\\Light Death spritesheet.png",
+                        "spriteCols": 3,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.0625,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.125,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.1875,
+                                        "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 4.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.3125,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.375,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.4375,
+                                        "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 7.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22338,9 +20513,9 @@
                         ]
                     },
                     {
-                        "name": "playerDeath",
+                        "name": "playerSwitchL",
                         "wrap": 1,
-                        "textureAsset": "images/Character\\DeathAnimBook\\Light Death spritesheet.png",
+                        "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
                         "spriteCols": 3,
                         "spriteRows": 3,
                         "useCustomSize": true,
@@ -22401,14 +20576,7 @@
                                     },
                                     {
                                         "t": 0.4375,
-                                        "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 7.0,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23210,786 +21378,6 @@
                 "flowStrength": 0.0,
                 "flowSpeed": 0.0,
                 "flowFrequency": 0.0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg 1 base",
-            "uuid": 3234605903954168352,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -514.66748046875,
-                    "y": -567.8425903320313,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1613.1954345703126,
-                    "y": 746.9531860351563
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg 1 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 442153553620421166,
-                "localPos": {
-                    "x": -234.58795166015626,
-                    "y": -567.8425903320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1613.1954345703126,
-                    "y": 746.9531860351563
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": -100
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg 1 base",
-            "uuid": 641726299422776152,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 690.1190795898438,
-                    "y": -567.8425903320313,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1613.1954345703126,
-                    "y": 746.9531860351563
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg 1 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 442153553620421166,
-                "localPos": {
-                    "x": 970.1986083984375,
-                    "y": -567.8425903320313,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1613.1954345703126,
-                    "y": 746.9531860351563
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": -100
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg 1 top",
-            "uuid": 12062519992587418400,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 2192.264892578125,
-                    "y": -108.80595397949219,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1059.8824462890626,
-                    "y": 667.4451293945313
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg 1 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 442153553620421166,
-                "localPos": {
-                    "x": 2472.344482421875,
-                    "y": -108.80595397949219,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1059.8824462890626,
-                    "y": 667.4451293945313
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": -100
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg 1 top",
-            "uuid": 8739604041049347226,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1475.52783203125,
-                    "y": -108.80595397949219,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1059.8824462890626,
-                    "y": 667.4451293945313
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg 1 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 442153553620421166,
-                "localPos": {
-                    "x": 1755.6072998046876,
-                    "y": -108.80595397949219,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1059.8824462890626,
-                    "y": 667.4451293945313
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Background",
-                "z": -100
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg2 base",
-            "uuid": 7172268741101079408,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 2000.488525390625,
-                    "y": -689.61376953125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1053.9906005859376,
-                    "y": 394.30517578125
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg2 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11508001198511904872,
-                "localPos": {
-                    "x": 2363.8349609375,
-                    "y": -689.61376953125,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 1053.9906005859376,
-                    "y": 394.30517578125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg2 top",
-            "uuid": 2684224361634202543,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1843.391845703125,
-                    "y": 33.03370666503906,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 965.4572143554688,
-                    "y": 531.1934814453125
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg2 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 11508001198511904872,
-                "localPos": {
-                    "x": 2206.73828125,
-                    "y": 33.03370666503906,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 965.4572143554688,
-                    "y": 531.1934814453125
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Middleground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 base",
-            "uuid": 5452497795479304205,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1413.6678466796876,
-                    "y": -733.845703125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 653.0842895507813,
-                    "y": 348.306396484375
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": 1659.242431640625,
-                    "y": -733.845703125,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 653.0842895507813,
-                    "y": 348.306396484375
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 base",
-            "uuid": 8435027944252521432,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 2048.6806640625,
-                    "y": -733.845703125,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 653.0842895507813,
-                    "y": 348.306396484375
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 base",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": 2294.25537109375,
-                    "y": -733.845703125,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 653.0842895507813,
-                    "y": 348.306396484375
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 top",
-            "uuid": 3193946871339772290,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1427.1717529296876,
-                    "y": 160.47113037109376,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 678.0238647460938,
-                    "y": 326.0249938964844
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": 1672.746337890625,
-                    "y": 160.47113037109376,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 678.0238647460938,
-                    "y": 326.0249938964844
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Tex_bg3 top",
-            "uuid": 16371096200479508119,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 2057.44873046875,
-                    "y": 160.47113037109376,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 678.0238647460938,
-                    "y": 326.0249938964844
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "bg3 top",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "parent": {
-                "parentUUID": 5729045573354065727,
-                "localPos": {
-                    "x": 2303.0234375,
-                    "y": 160.47113037109376,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 678.0238647460938,
-                    "y": 326.0249938964844
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Foreground",
-                "z": 0
             }
         },
         {
@@ -26133,7 +23521,7 @@
                 "brightness": 0.0,
                 "contrast": 0.0,
                 "saturation": 0.0,
-                "ambient": 0.6000000238418579,
+                "ambient": 0.4399999976158142,
                 "shadowsEnabled": true,
                 "shadowRays": 512,
                 "shadowDarkness": 1.0,
@@ -27053,7 +24441,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 179.50291442871095,
-                    "y": -38.772491455078128,
+                    "y": -41.097259521484378,
                     "z": -1.0
                 },
                 "size": {
@@ -27091,12 +24479,12 @@
                 },
                 "min": {
                     "x": 163.50291442871095,
-                    "y": -66.77249145507813,
+                    "y": -69.09725952148438,
                     "z": -1.0
                 },
                 "max": {
                     "x": 195.50291442871095,
-                    "y": -53.772491455078128,
+                    "y": -56.097259521484378,
                     "z": -1.0
                 }
             },
@@ -28334,7 +25722,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 152,
+                            "lookAtEntity": 115,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -31463,7 +28851,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 187,
+                            "lookAtEntity": 148,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -31923,6 +29311,44 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -31975,7 +29401,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -31989,21 +29415,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32035,37 +29454,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -41835,6 +39223,1284 @@
             "layer": {
                 "layerName": "Default",
                 "z": -10
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bottom_2",
+            "uuid": 9574959041038994226,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1574.337646484375,
+                    "y": -384.05230712890627,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/foreground bottom.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14455143898244578573,
+                "localPos": {
+                    "x": 1640.0,
+                    "y": -300.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "Background",
+            "uuid": 13620219025830195034,
+            "tag": {
+                "tagMask": 16
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -92.90521240234375,
+                    "y": -84.05230712890625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "ParallaxLayer",
+                        "fields": {
+                            "bgFactor": 0.8999999761581421,
+                            "midFactor": 0.6000000238418579,
+                            "fgFactor": 0.30000001192092898,
+                            "lockY": false,
+                            "targetName": "Camera"
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Background",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg",
+            "uuid": 7420056994308110378,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 107.09478759765625,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/background.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13620219025830195034,
+                "localPos": {
+                    "x": 200.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Background",
+                "z": -100
+            }
+        },
+        {
+            "active": true,
+            "name": "lava2",
+            "uuid": 17715344123655636029,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 107.09478759765625,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/lava back.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13620219025830195034,
+                "localPos": {
+                    "x": 200.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Background",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg",
+            "uuid": 5668465709415092220,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1547.0947265625,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/background.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13620219025830195034,
+                "localPos": {
+                    "x": 1640.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Background",
+                "z": -100
+            }
+        },
+        {
+            "active": true,
+            "name": "lava2",
+            "uuid": 1970588114295425108,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1547.0947265625,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/lava back.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 13620219025830195034,
+                "localPos": {
+                    "x": 1640.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Background",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg colour",
+            "uuid": 5450311801470903576,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 800.0567016601563,
+                    "y": -434.121826171875,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 3000.0,
+                    "y": 1500.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "bg colour",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.34117648005485537,
+                    "y": 0.24313725531101228,
+                    "z": 0.21960784494876862,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "ParallaxLayer",
+                        "fields": {
+                            "bgFactor": -0.10000000149011612,
+                            "midFactor": -0.20000000298023225,
+                            "fgFactor": -0.30000001192092898,
+                            "lockY": true,
+                            "targetName": "Player"
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Background",
+                "z": -1000
+            }
+        },
+        {
+            "active": true,
+            "name": "Middleground",
+            "uuid": 8369212475507747721,
+            "tag": {
+                "tagMask": 32
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -103.51080322265625,
+                    "y": -84.05230712890625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "ParallaxLayer",
+                        "fields": {
+                            "bgFactor": 0.8999999761581421,
+                            "midFactor": 0.6000000238418579,
+                            "fgFactor": 0.30000001192092898,
+                            "lockY": false,
+                            "targetName": "Camera"
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Middleground",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg2",
+            "uuid": 12784368510811472767,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 96.48919677734375,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/middleground front.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 8369212475507747721,
+                "localPos": {
+                    "x": 200.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Middleground",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg",
+            "uuid": 18048655920132985030,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 96.48919677734375,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/middleground back.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 8369212475507747721,
+                "localPos": {
+                    "x": 200.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Middleground",
+                "z": -1
+            }
+        },
+        {
+            "active": true,
+            "name": "lava",
+            "uuid": 14577131523006244837,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 96.48919677734375,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/lava front.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 8369212475507747721,
+                "localPos": {
+                    "x": 200.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Middleground",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg2",
+            "uuid": 16196619692601274468,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1536.4892578125,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/middleground front.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 8369212475507747721,
+                "localPos": {
+                    "x": 1640.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Middleground",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bg",
+            "uuid": 15744582137564083470,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1536.4892578125,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/middleground back.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 8369212475507747721,
+                "localPos": {
+                    "x": 1640.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Middleground",
+                "z": -1
+            }
+        },
+        {
+            "active": true,
+            "name": "lava",
+            "uuid": 2224102829839408961,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1536.4892578125,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/lava front.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 8369212475507747721,
+                "localPos": {
+                    "x": 1640.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Middleground",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Foreground",
+            "uuid": 14455143898244578573,
+            "tag": {
+                "tagMask": 64
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -65.66241455078125,
+                    "y": -84.05230712890625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "ParallaxLayer",
+                        "fields": {
+                            "bgFactor": 0.8999999761581421,
+                            "midFactor": 0.6000000238418579,
+                            "fgFactor": 0.30000001192092898,
+                            "lockY": false,
+                            "targetName": "Camera"
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_top_1",
+            "uuid": 8429717393150226554,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 134.33758544921876,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/foreground top.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14455143898244578573,
+                "localPos": {
+                    "x": 200.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_top_2",
+            "uuid": 11295342754124362713,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1574.337646484375,
+                    "y": -234.05230712890626,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/foreground top.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14455143898244578573,
+                "localPos": {
+                    "x": 1640.0,
+                    "y": -150.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "Tex_bottom_1",
+            "uuid": 5888090093885200941,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 134.33758544921876,
+                    "y": -384.05230712890627,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1440.0,
+                    "y": 810.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "backgrounds/foreground bottom.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 14455143898244578573,
+                "localPos": {
+                    "x": 200.0,
+                    "y": -300.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1440.0,
+                    "y": 810.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 1
             }
         }
     ],

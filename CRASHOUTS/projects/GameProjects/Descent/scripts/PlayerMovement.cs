@@ -26,7 +26,7 @@ namespace CrashoutsEngine
         public float fallGravityMultiplier = 1.5f;
 
         public float footstepInterval = 0.3f;
-        public float swapPause = 1.0f;
+        public float swapPause = 0.45f;
         public float energyConsumption = 12.5f;
         
         [SerializeField] private float coyoteTime = 0.15f;
