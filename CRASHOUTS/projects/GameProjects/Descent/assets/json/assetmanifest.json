@@ -645,6 +645,10 @@
             "path": "Character/Light Mode/Left/Run 1.png"
         },
         {
+            "name": "EndCutscene_3",
+            "path": "Cutscenes/EndCutscene_3.png"
+        },
+        {
             "name": "restart yellow",
             "path": "UI/settings/restart yellow.png"
         },
@@ -779,10 +783,6 @@
         {
             "name": "EndCutscene_1",
             "path": "Cutscenes/EndCutscene_1.png"
-        },
-        {
-            "name": "EndCutscene_3",
-            "path": "Cutscenes/EndCutscene_3.png"
         },
         {
             "name": "fourth",

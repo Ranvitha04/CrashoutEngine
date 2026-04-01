@@ -42434,6 +42434,33 @@
                     "z": 0.0
                 }
             },
+            "light": {
+                "active": true,
+                "intensity": 0.4000000059604645,
+                "radius": 57.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
+                "color": {
+                    "x": 0.9764705896377564,
+                    "y": 0.2862745225429535,
+                    "z": 0.2862745225429535
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "parent": {
                 "parentUUID": 1895781001044336769,
                 "localPos": {
@@ -42458,7 +42485,7 @@
                 "layerName": "Default",
                 "z": 0
             }
-        }
+        },
         {
             "active": true,
             "name": "Embers_1",
