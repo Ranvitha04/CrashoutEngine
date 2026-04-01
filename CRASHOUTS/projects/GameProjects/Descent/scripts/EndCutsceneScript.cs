@@ -17,6 +17,8 @@ namespace CrashoutsEngine
     {
         // Entities
         Entity image_1, image_2, image_3, image_4, image_5, image_6;
+        Entity black;
+        Entity creditsContainer; // NEW: Parent object holding text and splash images
         
         // Dialogues mapped to the JSON
         Entity dialogue_2_1;
@@ -31,17 +33,20 @@ namespace CrashoutsEngine
         // Transitions
         bool waitingForFadeToSwap = false;
         bool waitingForFadeIn = false;
+        bool waitingForCredits = false; 
+
+        // Timing & Settings
+        float timer = 0.0f;
+        float delay = 2.5f;
+        float fadeDuration = 1.0f;
+        float fadeWaitTimer = 0.0f;
+
+        // Credits Settings
+        public float creditsDuration = 5.0f; 
+        public float creditsScrollSpeed = 100.0f; // NEW: How fast the container moves UP (units per second)
 
         // Gatekeeper
         bool hasCutsceneStarted = false;
-
-        // Timing
-        float timer = 0.0f;
-        float delay = 2.5f;
-
-        // Settings
-        float fadeDuration = 1.0f;
-        float fadeWaitTimer = 0.0f;
 
         public override void Start()
         {
@@ -52,6 +57,9 @@ namespace CrashoutsEngine
             image_4 = Entity.Find("Cutscene_4");
             image_5 = Entity.Find("Cutscene_5");
             image_6 = Entity.Find("Cutscene_6");
+            
+            black = Entity.Find("BLACK");
+            creditsContainer = Entity.Find("CreditsContainer"); // Parent object for text and splash images
 
             dialogue_2_1 = Entity.Find("Dialogue_2_1");
 
@@ -67,6 +75,7 @@ namespace CrashoutsEngine
             dialoguePlaying = false;
             waitingForFadeToSwap = false;
             waitingForFadeIn = false;
+            waitingForCredits = false;
             hasCutsceneStarted = false;
 
             currentDialogue = 1;
@@ -74,6 +83,10 @@ namespace CrashoutsEngine
 
             DeactivateAllImages();
             DeactivateAllDialogues();
+            
+            if (black != null) InternalCalls.SetActive(black.ID, false);
+            if (creditsContainer != null) InternalCalls.SetActive(creditsContainer.ID, false);
+            
             if (image_1 != null) InternalCalls.SetActive(image_1.ID, true);
         }
 
@@ -87,8 +100,6 @@ namespace CrashoutsEngine
                 if (SceneManager.IsTransitioning()) return;
 
                 hasCutsceneStarted = true;
-                
-                // Image 1 has no dialogue, so we just set the timer and wait
                 timer = delay;
                 dialoguePlaying = true;
                 return;
@@ -108,19 +119,30 @@ namespace CrashoutsEngine
 
                     DeactivateAllImages();
                     
-                    // Skip deactivating dialogues if moving to Image 3 or 4 
-                    // so that Dialogue_2_1 stays on screen.
                     if (currentImage != 3 && currentImage != 4)
                     {
                         DeactivateAllDialogues();
                     }
 
-                    Entity nextImg = GetImageEntity(currentImage);
-                    if (nextImg != null) InternalCalls.SetActive(nextImg.ID, true);
+                    if (currentImage <= 6)
+                    {
+                        // Normal sequence transition
+                        Entity nextImg = GetImageEntity(currentImage);
+                        if (nextImg != null) InternalCalls.SetActive(nextImg.ID, true);
 
-                    // Move to Phase B (Fade In)
-                    waitingForFadeToSwap = false;
-                    waitingForFadeIn = true;
+                        waitingForFadeToSwap = false;
+                        waitingForFadeIn = true;
+                    }
+                    else 
+                    {
+                        // Enter Credits Sequence
+                        if (black != null) InternalCalls.SetActive(black.ID, true);
+                        if (creditsContainer != null) InternalCalls.SetActive(creditsContainer.ID, true);
+
+                        timer = creditsDuration; 
+                        waitingForFadeToSwap = false;
+                        waitingForCredits = true;
+                    }
                 }
                 return;
             }
@@ -130,9 +152,8 @@ namespace CrashoutsEngine
             // =========================================================
             if (waitingForFadeIn)
             {
-                if (SceneManager.IsTransitioning()) return; // Wait...
+                if (SceneManager.IsTransitioning()) return;
 
-                // -- FADE IN COMPLETE --
                 Entity nextDia = GetDialogueEntity(currentImage, 1);
                 if (nextDia != null) InternalCalls.SetActive(nextDia.ID, true);
 
@@ -143,13 +164,52 @@ namespace CrashoutsEngine
             }
 
             // =========================================================
-            // 3. NORMAL TIMER LOGIC (Typewriter & Reading)
+            // 3. PHASE C: CREDITS SCROLLING & WAIT 
+            // =========================================================
+            if (waitingForCredits)
+            {
+                if (SceneManager.IsTransitioning()) return; 
+
+                float dt = (float)InternalCalls.TimeGetDT();
+
+                // --- SCROLL THE CREDITS UPWARDS ---
+                if (creditsContainer != null)
+                {
+                    var containerTransform = creditsContainer.GetComponent<TransformComponent>();
+                    if (containerTransform != null)
+                    {
+                        // Add to the Y position based on speed and delta time
+                        containerTransform.Position = new CEVec3(
+                            containerTransform.Position.x, 
+                            containerTransform.Position.y + (creditsScrollSpeed * dt), 
+                            containerTransform.Position.z
+                        );
+                    }
+                }
+
+                // --- TIMER LOGIC ---
+                timer -= dt;
+                if (timer <= 0.0f)
+                {
+                    SceneManager.LoadScene("descentmenu", 2.0f);
+                    waitingForCredits = false; 
+                }
+                
+                // Allow skipping
+                if (Input.IsKeyTriggered(Key.Space) || Input.IsKeyTriggered(Key.Escape))
+                {
+                    SceneManager.LoadScene("descentmenu", 2.0f);
+                    waitingForCredits = false;
+                }
+                return;
+            }
+
+            // =========================================================
+            // 4. NORMAL TIMER LOGIC (Typewriter & Reading)
             // =========================================================
             if (timer > 0.0f)
             {
                 Entity activeDia = GetDialogueEntity(currentImage, currentDialogue);
-                
-                // If activeDia is null (like images 1, 3, 4), typing is instantly "done"
                 bool isTypingDone = (activeDia == null) ? true : InternalCalls.IsTextFinished(activeDia.ID);
 
                 if (isTypingDone)
@@ -164,29 +224,27 @@ namespace CrashoutsEngine
             }
 
             // =========================================================
-            // 4. INPUT LOGIC
+            // 5. INPUT LOGIC
             // =========================================================
             if (Input.IsKeyTriggered(Key.Space))
             {
                 Entity activeDia = GetDialogueEntity(currentImage, currentDialogue);
                 bool isTypingDone = (activeDia == null) ? true : InternalCalls.IsTextFinished(activeDia.ID);
 
-                if (!isTypingDone) AdvanceDialogue(); // You might have logic inside engine to force-complete text on double tap
+                if (!isTypingDone) AdvanceDialogue(); 
                 else AdvanceDialogue();
             }
             
-            // Skip whole cutscene
             if (Input.IsKeyTriggered(Key.Escape))
             {
-                // TODO: Update to whatever your post-game scene is (Credits/MainMenu)
                 SceneManager.LoadScene("descentmenu", 2.0f); 
             }
 
             // =========================================================
-            // 5. SAFETY UPDATE LOOP
+            // 6. SAFETY UPDATE LOOP
             // =========================================================
             if (!SceneManager.IsTransitioning() && !dialoguePlaying &&
-                !waitingForFadeToSwap && !waitingForFadeIn)
+                !waitingForFadeToSwap && !waitingForFadeIn && !waitingForCredits)
             {
                 dialoguePlaying = true;
 
@@ -206,7 +264,7 @@ namespace CrashoutsEngine
                 }
                 else
                 {
-                    timer = delay; // Wait the full delay for images without new text
+                    timer = delay;
                 }
             }
         }
@@ -223,8 +281,8 @@ namespace CrashoutsEngine
             {
                 case 1: maxDialogue = 0; break;
                 case 2: maxDialogue = 1; break;
-                case 3: maxDialogue = 0; break; // Text 2.1 remains, no new dialogue
-                case 4: maxDialogue = 0; break; // Text 2.1 remains, no new dialogue
+                case 3: maxDialogue = 0; break; 
+                case 4: maxDialogue = 0; break; 
                 case 5: maxDialogue = 4; break;
                 case 6: maxDialogue = 2; break;
             }
@@ -235,26 +293,18 @@ namespace CrashoutsEngine
             }
             else
             {
-                if (currentImage < 6)
+                if (currentImage <= 6)
                 {
                     SceneManager.Fade(fadeDuration, 1.0f);
                     fadeWaitTimer = fadeDuration;
                     waitingForFadeToSwap = true;
-                }
-                else
-                {
-                    // TODO: Update to your Credits or Main Menu scene
-                    SceneManager.LoadScene("descentmenu", 2.0f);
                 }
             }
         }
 
         private Entity GetDialogueEntity(int img, int dia)
         {
-            if (img == 2)
-            {
-                if (dia == 1) return dialogue_2_1;
-            }
+            if (img == 2) { if (dia == 1) return dialogue_2_1; }
             else if (img == 5)
             {
                 if (dia == 1) return dialogue_5_1;
@@ -267,7 +317,6 @@ namespace CrashoutsEngine
                 if (dia == 1) return dialogue_6_1;
                 if (dia == 2) return dialogue_6_2;
             }
-            // Images 1, 3, and 4 return null 
             return null;
         }
 
@@ -285,12 +334,10 @@ namespace CrashoutsEngine
         private void DeactivateAllDialogues()
         {
             if (dialogue_2_1 != null) InternalCalls.SetActive(dialogue_2_1.ID, false);
-
             if (dialogue_5_1 != null) InternalCalls.SetActive(dialogue_5_1.ID, false);
             if (dialogue_5_2 != null) InternalCalls.SetActive(dialogue_5_2.ID, false);
             if (dialogue_5_3 != null) InternalCalls.SetActive(dialogue_5_3.ID, false);
             if (dialogue_5_4 != null) InternalCalls.SetActive(dialogue_5_4.ID, false);
-
             if (dialogue_6_1 != null) InternalCalls.SetActive(dialogue_6_1.ID, false);
             if (dialogue_6_2 != null) InternalCalls.SetActive(dialogue_6_2.ID, false);
         }

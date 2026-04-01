@@ -36,7 +36,10 @@
                 "scripts": [
                     {
                         "className": "EndCutsceneScript",
-                        "fields": {}
+                        "fields": {
+                            "creditsDuration": 17.25,
+                            "creditsScrollSpeed": 20.0
+                        }
                     }
                 ]
             },
@@ -1179,6 +1182,363 @@
             },
             "layer": {
                 "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": false,
+            "name": "BLACK",
+            "uuid": 13969272174991258548,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 200.0,
+                    "y": 110.0
+                }
+            },
+            "shape": {
+                "useTexture": false,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "Cutscenes/EndCutscene_3.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Cutscene",
+                "z": 3
+            }
+        },
+        {
+            "active": true,
+            "name": "CreditsText",
+            "uuid": 14288201931924696471,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -129.2136688232422,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 180.9047393798828,
+                    "y": 23.640331268310548
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 0,
+                "isContinuous": false,
+                "isTrigger": false,
+                "enabled": false,
+                "position": {
+                    "x": 0.0,
+                    "y": -129.2136688232422,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 1.0,
+                "center": {
+                    "x": 0.0,
+                    "y": -129.2136688232422,
+                    "z": 0.0
+                }
+            },
+            "text": {
+                "font": "Bellefair-Regular",
+                "text": "Credits\n\nProject Manager\nMohammad Shahrin Idzuan Bin Iswandi\n\nTechnical Lead\nRenfred Lee Zi An\n\nAudio Lead\nMohamad Amir Akmal Bin Nasrudin\n\nArt Lead\nLim Kee Ern Daphne\n\nDesign Lead\nThadea Ellen Goh Yinn Hwee\n\nProgrammers\nMohammad Shahrin Idzuan Bin Iswandi\nMohamad Amir Akmal Bin Nasrudin\nMohamad Afiq Bin Abdul Rahim\nRanvitha Shyamala Devi\nRenfred Lee Zi An\n\nDesigners\nLim Kee Ern Daphne\nThadea Ellen Goh Yinn Hwee\n\n\nThank you for Playing!",
+                "scale": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "centered": true,
+                "isworldspace": true,
+                "alignment": 1,
+                "verticalAlignment": 1,
+                "wrapText": true,
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "letterSpacing": 0.0,
+                "lineSpacing": 5.0,
+                "isRevealing": false,
+                "revealSpeed": 35.0,
+                "dialogueFilePath": "dialogue/credits.json",
+                "dialogueID": "credits"
+            },
+            "gui": {
+                "uiType": 2
+            },
+            "uilayout": {
+                "paddingXY": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "uiLayout": 4
+            },
+            "parent": {
+                "parentUUID": 3021354652906881437,
+                "localPos": {
+                    "x": 0.0,
+                    "y": -129.2136688232422,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 180.9047393798828,
+                    "y": 23.640331268310548
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "DigipenLogo",
+            "uuid": 4672850472791921169,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -223.29734802246095,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 89.60000610351563,
+                    "y": 26.180002212524415
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/DigipenLogo.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 3021354652906881437,
+                "localPos": {
+                    "x": 0.0,
+                    "y": -223.29734802246095,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 89.60000610351563,
+                    "y": 26.180002212524415
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 100
+            }
+        },
+        {
+            "active": true,
+            "name": "CrashoutsLogo",
+            "uuid": 11271568484211944902,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": -266.93707275390627,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 68.44000244140625,
+                    "y": 47.56000518798828
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/team logo.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 3021354652906881437,
+                "localPos": {
+                    "x": 0.0,
+                    "y": -266.93707275390627,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 68.44000244140625,
+                    "y": 47.56000518798828
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Dialogue",
+                "z": 100
+            }
+        },
+        {
+            "active": false,
+            "name": "CreditsContainer",
+            "uuid": 3021354652906881437,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
                 "z": 0
             }
         }

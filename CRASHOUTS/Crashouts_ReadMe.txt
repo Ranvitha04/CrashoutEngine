@@ -11,8 +11,8 @@ Team: Crashouts
 [RTIS] Renfred  - Technical Lead  - Engine Champion
 [RTIS] Ranvitha - Programmer      - Graphics Champion
 [IMGD] Shahrin  - Project Manager - Level Editor Champion
-[IMGD] Amir     - Programmer      - Debugging Tools Champion
-[IMGD] Afiq     - Audio Lead      - Gameplay Champion
+[IMGD] Amir     - Audio Lead      - Debugging Tools Champion
+[IMGD] Afiq     - Programmer      - Gameplay Champion
 [UXGD] Daphne   - Art Lead        - Story Champion, Secondary Designer
 [UXGD] Thadea   - Design Lead     - SFX Champion, Primary Designer
 ============================================================
