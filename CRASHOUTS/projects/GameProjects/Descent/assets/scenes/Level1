@@ -19249,7 +19249,10 @@
                     {
                         "className": "PauseButtons",
                         "fields": {
-                            "currentScene": "Level1"
+                            "currentScene": "Level1",
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
                         }
                     }
                 ]
@@ -19386,7 +19389,10 @@
                             "QuitBtn": 0,
                             "QuitCheckPanel": 0,
                             "YesBtn": 0,
-                            "NoBtn": 0
+                            "NoBtn": 0,
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
                         }
                     }
                 ]
@@ -19605,7 +19611,11 @@
                             "isMusicVolume": false,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0
+                            "clickHeight": 3.0,
+                            "totalBalls": 10,
+                            "ballBaseName": "VolumeBall_",
+                            "activeAlpha": 1.0,
+                            "inactiveAlpha": 0.20000000298023225
                         }
                     }
                 ]
@@ -19696,7 +19706,11 @@
                             "isMusicVolume": true,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0
+                            "clickHeight": 3.0,
+                            "totalBalls": 10,
+                            "ballBaseName": "VolumeBall_",
+                            "activeAlpha": 1.0,
+                            "inactiveAlpha": 0.20000000298023225
                         }
                     }
                 ]
@@ -21275,8 +21289,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -228.79779052734376,
-                    "y": -16.72381591796875,
+                    "x": 1309.91552734375,
+                    "y": -439.53485107421877,
                     "z": 0.0
                 },
                 "size": {
@@ -21313,13 +21327,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -237.29779052734376,
-                    "y": -48.0237922668457,
+                    "x": 1301.41552734375,
+                    "y": -470.8348388671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -220.29779052734376,
-                    "y": 10.176158905029297,
+                    "x": 1318.41552734375,
+                    "y": -412.6348876953125,
                     "z": 0.0
                 }
             },
@@ -21482,6 +21496,11 @@
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
                             "dustBurstDuration": 0.15000000596046449,
+                            "landingRumbleMinFallSpeed": 60.0,
+                            "landingRumbleMaxFallSpeed": 260.0,
+                            "landingRumbleMinStrength": 0.15000000596046449,
+                            "landingRumbleMaxStrength": 0.6499999761581421,
+                            "landingRumbleDuration": 0.11999999731779099,
                             "normalMass": 2.9000000953674318,
                             "lightMass": 2.0,
                             "groundCheckDistance": 5.0,
@@ -21496,6 +21515,8 @@
                             "alive": true,
                             "normalDeathAnimName": "playerDeathNoBook",
                             "changedMassDeathAnimName": "playerDeath",
+                            "unlimitedEnergy": false,
+                            "godMode": false,
                             "normalDeathDelay": 2.0,
                             "changedMassDeathDelay": 2.0,
                             "isPaused": false,
@@ -21672,6 +21693,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -21724,7 +21776,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -21738,14 +21790,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21798,37 +21850,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22280,8 +22301,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -228.79779052734376,
-                    "y": 41.646095275878909,
+                    "x": 1309.91552734375,
+                    "y": -381.1649475097656,
                     "z": 0.0
                 },
                 "size": {
@@ -22398,8 +22419,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -228.79779052734376,
-                    "y": 41.646095275878909,
+                    "x": 1309.91552734375,
+                    "y": -381.1649475097656,
                     "z": 0.0
                 },
                 "size": {
@@ -22516,8 +22537,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -228.79779052734376,
-                    "y": 41.646095275878909,
+                    "x": 1309.91552734375,
+                    "y": -381.1649475097656,
                     "z": 0.0
                 },
                 "size": {
@@ -22634,8 +22655,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -228.79779052734376,
-                    "y": 41.646095275878909,
+                    "x": 1309.91552734375,
+                    "y": -381.1649475097656,
                     "z": 0.0
                 },
                 "size": {
@@ -22752,8 +22773,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 56.9964599609375,
-                    "y": -216.08135986328126,
+                    "x": 1595.709716796875,
+                    "y": -638.8923950195313,
                     "z": 0.0
                 },
                 "size": {
@@ -25900,8 +25921,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -262.42608642578127,
-                    "y": -24.771623611450197,
+                    "x": 1276.2872314453126,
+                    "y": -447.5826721191406,
                     "z": 0.0
                 },
                 "size": {
@@ -26875,8 +26896,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1449.0609130859376,
-                    "y": -649.896484375,
+                    "x": 1016.1549072265625,
+                    "y": -582.99609375,
                     "z": -1.0
                 },
                 "size": {
@@ -26913,13 +26934,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1433.0609130859376,
-                    "y": -677.896484375,
+                    "x": 1000.1549072265625,
+                    "y": -610.99609375,
                     "z": -1.0
                 },
                 "max": {
-                    "x": 1465.0609130859376,
-                    "y": -664.896484375,
+                    "x": 1032.1549072265626,
+                    "y": -597.99609375,
                     "z": -1.0
                 }
             },
@@ -28840,7 +28861,7 @@
                         "className": "MovingWall",
                         "fields": {
                             "PlatesActive": 0,
-                            "PlatesRequired": 1,
+                            "PlatesRequired": 2,
                             "MoveRight": true,
                             "MoveDist": 300.0,
                             "MoveSpeed": 40.0,
@@ -31555,7 +31576,7 @@
                         "fields": {
                             "decrease": 5.0,
                             "goalTextName": "",
-                            "wallName": "wall4"
+                            "wallName": "wall5"
                         }
                     }
                 ]
@@ -31732,6 +31753,7 @@
                             "minThrowSpeed": 300.0,
                             "maxThrowSpeed": 1000.0,
                             "maxMouseDragDist": 400.0,
+                            "controllerAimDeadzone": 0.20000000298023225,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
                             "pickAnimDuration": 0.5,
@@ -31741,6 +31763,10 @@
                             "patrolTurnInterval": 20.399999618530275,
                             "resizePlayerColliderWhileHolding": true,
                             "carryBoundsPadding": 0.0,
+                            "heldRumbleLow": 0.07999999821186066,
+                            "heldRumbleHigh": 0.14000000059604646,
+                            "heldRumbleDuration": 0.11999999731779099,
+                            "heldRumbleRefreshInterval": 0.07999999821186066,
                             "ignorePlayerStopDuration": 0.20000000298023225,
                             "maxLeashDistance": 470.3999938964844
                         }
@@ -31801,6 +31827,44 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -31853,7 +31917,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -31867,21 +31931,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -31913,37 +31970,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32417,6 +32443,186 @@
             "layer": {
                 "layerName": "Default",
                 "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "CheckPoint",
+            "uuid": 13426963362548882697,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1053.39501953125,
+                    "y": -564.62255859375,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Checkpoint Marker.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.649402379989624
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "PressurePlate5",
+            "uuid": 3114861405620487342,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1538.5662841796876,
+                    "y": -486.80828857421877,
+                    "z": -1.0
+                },
+                "size": {
+                    "x": 32.0,
+                    "y": 50.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 1,
+                "isContinuous": false,
+                "isTrigger": true,
+                "enabled": true,
+                "position": {
+                    "x": 510.9747314453125,
+                    "y": -543.0966186523438,
+                    "z": -1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": -21.5,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 1522.5662841796876,
+                    "y": -514.8082885742188,
+                    "z": -1.0
+                },
+                "max": {
+                    "x": 1554.5662841796876,
+                    "y": -501.80828857421877,
+                    "z": -1.0
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Pressure Plate.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 0.4274509847164154,
+                    "y": 0.7450980544090271,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Switch",
+                        "path": "switch_stepon.wav",
+                        "volume": 0.4000000059604645,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false
+                    }
+                ]
+            },
+            "script": {
+                "scripts": [
+                    {
+                        "className": "PressurePlate",
+                        "fields": {
+                            "decrease": 5.0,
+                            "goalTextName": "",
+                            "wallName": "wall5"
+                        }
+                    }
+                ]
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": -10
             }
         }
     ],
