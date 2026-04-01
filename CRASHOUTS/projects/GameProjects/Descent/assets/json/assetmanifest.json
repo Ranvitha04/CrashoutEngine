@@ -263,6 +263,14 @@
     ],
     "dialogue": [
         {
+            "name": "tutorialdialogue",
+            "path": "tutorialdialogue.json"
+        },
+        {
+            "name": "credits",
+            "path": "credits.json"
+        },
+        {
             "name": "cutscenedialogue",
             "path": "cutscenedialogue.json"
         },
@@ -273,10 +281,6 @@
         {
             "name": "endcutscenedialogue",
             "path": "endcutscenedialogue.json"
-        },
-        {
-            "name": "tutorialdialogue",
-            "path": "tutorialdialogue.json"
         }
     ],
     "images": [
@@ -963,6 +967,10 @@
         {
             "name": "Darker Platform_02",
             "path": "spritesheet/Darker Platform/Darker Platform_02.png"
+        },
+        {
+            "name": "TeamLogoScreen",
+            "path": "UI/TeamLogoScreen.png"
         },
         {
             "name": "Rock_15",
@@ -2089,6 +2097,14 @@
             "path": "Tileset/spikes.png"
         },
         {
+            "name": "DigipenLogo",
+            "path": "UI/DigipenLogo.png"
+        },
+        {
+            "name": "DigipenLogoScreen",
+            "path": "UI/DigipenLogoScreen.png"
+        },
+        {
             "name": "Emp 4",
             "path": "UI/Energy Ball/Emp 4.png"
         },
@@ -2461,6 +2477,10 @@
             "path": "renfred"
         },
         {
+            "name": "splashscene",
+            "path": "splashscene"
+        },
+        {
             "name": "StartScene",
             "path": "StartScene"
         },
@@ -2547,5 +2567,5 @@
             "path": "graph_14.vsgraph"
         }
     ],
-    "start_scene": "descentmenu"
+    "start_scene": "splashscene"
 }
