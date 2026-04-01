@@ -16825,6 +16825,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -16956,6 +16972,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -17089,6 +17121,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -17220,6 +17268,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -17431,6 +17495,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -17562,6 +17642,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -20204,7 +20300,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -190.9333038330078,
-                    "y": 3.646925926208496,
+                    "y": -24.999223709106447,
                     "z": 0.0
                 },
                 "size": {
@@ -20242,12 +20338,12 @@
                 },
                 "min": {
                     "x": -199.4333038330078,
-                    "y": -27.653034210205079,
+                    "y": -56.29918670654297,
                     "z": 0.0
                 },
                 "max": {
                     "x": -182.4333038330078,
-                    "y": 30.546886444091798,
+                    "y": 1.900735855102539,
                     "z": 0.0
                 }
             },
@@ -21373,7 +21469,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -190.9333038330078,
-                    "y": 62.01683807373047,
+                    "y": 33.370689392089847,
                     "z": 0.0
                 },
                 "size": {
@@ -21491,7 +21587,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -190.9333038330078,
-                    "y": 62.01683807373047,
+                    "y": 33.370689392089847,
                     "z": 0.0
                 },
                 "size": {
@@ -21609,7 +21705,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -190.9333038330078,
-                    "y": 62.01683807373047,
+                    "y": 33.370689392089847,
                     "z": 0.0
                 },
                 "size": {
@@ -21727,7 +21823,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -190.9333038330078,
-                    "y": 62.01683807373047,
+                    "y": 33.370689392089847,
                     "z": 0.0
                 },
                 "size": {
@@ -21845,7 +21941,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -476.7275390625,
-                    "y": -195.7106170654297,
+                    "y": -224.3567657470703,
                     "z": 0.0
                 },
                 "size": {
@@ -25950,7 +26046,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -192.7332763671875,
-                    "y": -12.053234100341797,
+                    "y": -40.69938278198242,
                     "z": 0.0
                 },
                 "size": {
@@ -26089,7 +26185,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -157.30502319335938,
-                    "y": -4.400881767272949,
+                    "y": -33.04703140258789,
                     "z": 0.0
                 },
                 "size": {
@@ -31967,6 +32063,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -32098,6 +32210,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -33454,6 +33582,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -35440,6 +35584,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,

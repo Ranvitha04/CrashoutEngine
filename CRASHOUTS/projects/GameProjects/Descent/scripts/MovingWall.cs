@@ -87,12 +87,12 @@ namespace CrashoutsEngine
             // Logic: If enough plates are pressed, Open.
             if (PlatesActive >= PlatesRequired && !_isOpen)
             {
-                AudioManager.GetInstance().PlayAttached("RockSFX", Entity.ID);
+                AudioManager.GetInstance().PlayAttached("rockSFX", Entity.ID);
                 OpenWall();
             }
             else if (PlatesActive < PlatesRequired && _isOpen)
             {
-                AudioManager.GetInstance().PlayAttached("RockSFX", Entity.ID);
+                AudioManager.GetInstance().PlayAttached("rockSFX", Entity.ID);
                 CloseWall();
             }
             

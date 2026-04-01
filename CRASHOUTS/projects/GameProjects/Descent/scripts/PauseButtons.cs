@@ -342,6 +342,7 @@ namespace CrashoutsEngine
             if (btn != null && btn.IsClicked() && isMouseReleased)
             {
                 isMouseReleased = false; // Lock the gate until mouse is lifted
+                AudioManager.GetInstance().PlayAttached("Click", btnEntity.ID);
                 return true;
             }
             return false;
@@ -508,7 +509,12 @@ namespace CrashoutsEngine
                 return false;
             }
 
-            return buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit");
+            if (buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit"))
+            {
+                AudioManager.GetInstance().PlayAttached("Click", target.ID);
+                return true;
+            }
+            return false;
         }
 
         private bool IsPauseController()
