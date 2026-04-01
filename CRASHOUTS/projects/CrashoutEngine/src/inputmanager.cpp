@@ -917,7 +917,10 @@ int InputManager::ParseControllerButtonName(const std::string& buttonName)
         { "CROSS", SDL_CONTROLLER_BUTTON_A }, { "CIRCLE", SDL_CONTROLLER_BUTTON_B },
         { "SQUARE", SDL_CONTROLLER_BUTTON_X }, { "TRIANGLE", SDL_CONTROLLER_BUTTON_Y },
         { "BACK", SDL_CONTROLLER_BUTTON_BACK }, { "SELECT", SDL_CONTROLLER_BUTTON_BACK },
-        { "START", SDL_CONTROLLER_BUTTON_START }, { "GUIDE", SDL_CONTROLLER_BUTTON_GUIDE },
+        { "SHARE", SDL_CONTROLLER_BUTTON_BACK }, { "CREATE", SDL_CONTROLLER_BUTTON_BACK },
+        { "START", SDL_CONTROLLER_BUTTON_START }, { "OPTIONS", SDL_CONTROLLER_BUTTON_START },
+        { "MENU", SDL_CONTROLLER_BUTTON_START }, { "GUIDE", SDL_CONTROLLER_BUTTON_GUIDE },
+        { "PS", SDL_CONTROLLER_BUTTON_GUIDE }, { "HOME", SDL_CONTROLLER_BUTTON_GUIDE },
         { "LEFT_STICK", SDL_CONTROLLER_BUTTON_LEFTSTICK }, { "RIGHT_STICK", SDL_CONTROLLER_BUTTON_RIGHTSTICK },
         { "LEFT_SHOULDER", SDL_CONTROLLER_BUTTON_LEFTSHOULDER }, { "L1", SDL_CONTROLLER_BUTTON_LEFTSHOULDER },
         { "RIGHT_SHOULDER", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER }, { "R1", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER },
@@ -925,8 +928,29 @@ int InputManager::ParseControllerButtonName(const std::string& buttonName)
         { "DPAD_LEFT", SDL_CONTROLLER_BUTTON_DPAD_LEFT }, { "DPAD_RIGHT", SDL_CONTROLLER_BUTTON_DPAD_RIGHT }
     };
 
+#ifdef SDL_CONTROLLER_BUTTON_MISC1
+    static const int misc1Button = SDL_CONTROLLER_BUTTON_MISC1;
+#else
+    static const int misc1Button = -1;
+#endif
+
+#ifdef SDL_CONTROLLER_BUTTON_TOUCHPAD
+    static const int touchpadButton = SDL_CONTROLLER_BUTTON_TOUCHPAD;
+#else
+    static const int touchpadButton = -1;
+#endif
+
     const auto buttonIt = buttonMap.find(ToUpper(buttonName));
-    return buttonIt != buttonMap.end() ? buttonIt->second : -1;
+    if (buttonIt != buttonMap.end())
+    {
+        return buttonIt->second;
+    }
+
+    const std::string upperName = ToUpper(buttonName);
+    if (upperName == "MISC1" && misc1Button != -1) return misc1Button;
+    if (upperName == "TOUCHPAD" && touchpadButton != -1) return touchpadButton;
+
+    return -1;
 }
 
 int InputManager::ParseControllerAxisName(const std::string& axisName)
