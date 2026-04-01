@@ -1481,6 +1481,38 @@ namespace Scene {
 			// RESTORE VIEWPORT
 			glViewport(0, 0, gameTextureWidth, gameTextureHeight);
 		}
+
+		if (InputManager::HasGlobalNotification()) {
+			batcher.Flush();
+
+			int overlayWindowW = gameTextureWidth;
+			int overlayWindowH = gameTextureHeight;
+
+			glViewport(0, 0, overlayWindowW, overlayWindowH);
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_CULL_FACE);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glClear(GL_DEPTH_BUFFER_BIT);
+
+			if (!gTextRenderer) gTextRenderer = std::make_unique<TextRenderer>();
+
+			renderer.shdr_pgm->Use();
+			glm::mat4 overlayProj = glm::ortho(0.0f, (float)overlayWindowW, 0.0f, (float)overlayWindowH);
+
+			renderer.shdr_pgm->SetUniform("uView", glm::mat4(1.0f));
+			renderer.shdr_pgm->SetUniform("uProjection", overlayProj);
+
+			float zFront = 0.0f;
+			float xPos = 40.0f;
+			float yPos = (float)overlayWindowH * 0.5f;
+
+			gTextRenderer->RenderText(InputManager::GetGlobalNotificationText(), xPos, yPos, zFront, 12.0f,
+				CEColor(1.0f, 0.95f, 0.65f, 1.0f),
+				"Bellefair-Regular", false, 0.0f);
+
+			glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+		}
 	}
 
 	void UpdateScene(CrashoutsEngine::ECS& globalECS) {

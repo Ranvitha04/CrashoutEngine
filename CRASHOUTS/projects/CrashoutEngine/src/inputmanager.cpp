@@ -68,6 +68,8 @@ std::unique_ptr<CrashoutEngine::ControllerManager> InputManager::s_controllerMan
 std::unordered_map<std::string, std::vector<InputManager::DigitalBinding>> InputManager::s_actionBindings;
 std::unordered_map<std::string, std::vector<InputManager::AxisBinding>> InputManager::s_axisBindings;
 float InputManager::s_defaultDeadzone = 0.2f;
+std::string InputManager::s_globalNotificationText;
+float InputManager::s_globalNotificationTimer = 0.0f;
 
 // Game View State
 bool InputManager::s_usingGameView = false;
@@ -161,6 +163,16 @@ Snapshots scroll delta resets accumulator and refreshes key and mouse button sta
 */
 void InputManager::Update() {
     s_usingGameView = false;
+
+    if (s_globalNotificationTimer > 0.0f)
+    {
+        s_globalNotificationTimer -= static_cast<float>(FrameRateController::GetInstance().DT());
+        if (s_globalNotificationTimer <= 0.0f)
+        {
+            s_globalNotificationTimer = 0.0f;
+            s_globalNotificationText.clear();
+        }
+    }
 
     if (s_controllerManager)
     {
@@ -473,6 +485,12 @@ bool InputManager::GetActionReleased(const std::string& actionName)
     return false;
 }
 
+/*!
+@brief Forward a managed controller rumble request to the native controller manager.
+@param lowFrequency Low-frequency motor strength in the range [0, 1].
+@param highFrequency High-frequency motor strength in the range [0, 1].
+@param durationSeconds Duration of the vibration pulse in seconds.
+*/
 void InputManager::SetControllerVibration(float lowFrequency, float highFrequency, float durationSeconds)
 {
     if (!s_controllerManager)
@@ -483,6 +501,22 @@ void InputManager::SetControllerVibration(float lowFrequency, float highFrequenc
     const float clampedDuration = std::max(durationSeconds, 0.0f);
     const std::uint32_t durationMs = static_cast<std::uint32_t>(clampedDuration * 1000.0f);
     s_controllerManager->SetVibration(lowFrequency, highFrequency, durationMs);
+}
+
+void InputManager::ShowGlobalNotification(const std::string& text, float durationSeconds)
+{
+    s_globalNotificationText = text;
+    s_globalNotificationTimer = std::max(durationSeconds, 0.0f);
+}
+
+bool InputManager::HasGlobalNotification()
+{
+    return s_globalNotificationTimer > 0.0f && !s_globalNotificationText.empty();
+}
+
+const std::string& InputManager::GetGlobalNotificationText()
+{
+    return s_globalNotificationText;
 }
 
 void InputManager::ClearInputs()
@@ -883,7 +917,10 @@ int InputManager::ParseControllerButtonName(const std::string& buttonName)
         { "CROSS", SDL_CONTROLLER_BUTTON_A }, { "CIRCLE", SDL_CONTROLLER_BUTTON_B },
         { "SQUARE", SDL_CONTROLLER_BUTTON_X }, { "TRIANGLE", SDL_CONTROLLER_BUTTON_Y },
         { "BACK", SDL_CONTROLLER_BUTTON_BACK }, { "SELECT", SDL_CONTROLLER_BUTTON_BACK },
-        { "START", SDL_CONTROLLER_BUTTON_START }, { "GUIDE", SDL_CONTROLLER_BUTTON_GUIDE },
+        { "SHARE", SDL_CONTROLLER_BUTTON_BACK }, { "CREATE", SDL_CONTROLLER_BUTTON_BACK },
+        { "START", SDL_CONTROLLER_BUTTON_START }, { "OPTIONS", SDL_CONTROLLER_BUTTON_START },
+        { "MENU", SDL_CONTROLLER_BUTTON_START }, { "GUIDE", SDL_CONTROLLER_BUTTON_GUIDE },
+        { "PS", SDL_CONTROLLER_BUTTON_GUIDE }, { "HOME", SDL_CONTROLLER_BUTTON_GUIDE },
         { "LEFT_STICK", SDL_CONTROLLER_BUTTON_LEFTSTICK }, { "RIGHT_STICK", SDL_CONTROLLER_BUTTON_RIGHTSTICK },
         { "LEFT_SHOULDER", SDL_CONTROLLER_BUTTON_LEFTSHOULDER }, { "L1", SDL_CONTROLLER_BUTTON_LEFTSHOULDER },
         { "RIGHT_SHOULDER", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER }, { "R1", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER },
@@ -891,8 +928,29 @@ int InputManager::ParseControllerButtonName(const std::string& buttonName)
         { "DPAD_LEFT", SDL_CONTROLLER_BUTTON_DPAD_LEFT }, { "DPAD_RIGHT", SDL_CONTROLLER_BUTTON_DPAD_RIGHT }
     };
 
+#ifdef SDL_CONTROLLER_BUTTON_MISC1
+    static const int misc1Button = SDL_CONTROLLER_BUTTON_MISC1;
+#else
+    static const int misc1Button = -1;
+#endif
+
+#ifdef SDL_CONTROLLER_BUTTON_TOUCHPAD
+    static const int touchpadButton = SDL_CONTROLLER_BUTTON_TOUCHPAD;
+#else
+    static const int touchpadButton = -1;
+#endif
+
     const auto buttonIt = buttonMap.find(ToUpper(buttonName));
-    return buttonIt != buttonMap.end() ? buttonIt->second : -1;
+    if (buttonIt != buttonMap.end())
+    {
+        return buttonIt->second;
+    }
+
+    const std::string upperName = ToUpper(buttonName);
+    if (upperName == "MISC1" && misc1Button != -1) return misc1Button;
+    if (upperName == "TOUCHPAD" && touchpadButton != -1) return touchpadButton;
+
+    return -1;
 }
 
 int InputManager::ParseControllerAxisName(const std::string& axisName)

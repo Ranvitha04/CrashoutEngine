@@ -124,6 +124,9 @@ public:
     static bool GetActionReleased(const std::string& actionName);
     static float GetAxis(const std::string& axisName);
     static void SetControllerVibration(float lowFrequency, float highFrequency, float durationSeconds);
+    static void ShowGlobalNotification(const std::string& text, float durationSeconds);
+    static bool HasGlobalNotification();
+    static const std::string& GetGlobalNotificationText();
 
     static void ClearInputs();
 
@@ -242,4 +245,6 @@ private:
     static std::unordered_map<std::string, std::vector<DigitalBinding>> s_actionBindings;
     static std::unordered_map<std::string, std::vector<AxisBinding>> s_axisBindings;
     static float s_defaultDeadzone;
+    static std::string s_globalNotificationText;
+    static float s_globalNotificationTimer;
 };

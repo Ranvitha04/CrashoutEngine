@@ -606,6 +606,12 @@ namespace CrashoutsEngine
             return Input.GetMouseWorldPosition();
         }
 
+        /*!
+        @brief Handle mouse/controller slime grab and release input.
+
+        Mouse grab still requires aiming over the slime, but controller grab can
+        acquire any slime already inside grab range without right-stick aiming.
+        */
         private void HandleGrabInput()
         {
             bool mouseGrabHeld = Input.IsMouseButtonDown(0);
@@ -860,6 +866,13 @@ namespace CrashoutsEngine
             if (rb != null) rb.SetDynamic(true);
         }
 
+        /*!
+        @brief Refresh a low continuous controller rumble while the slime is held.
+        @param dt Delta time for the current frame.
+
+        The engine rumble call is duration-based, so this method periodically
+        reapplies a short pulse while `isGrabbed` remains true.
+        */
         private void UpdateHeldRumble(float dt)
         {
             if (heldRumbleRefreshInterval <= 0.0f)
