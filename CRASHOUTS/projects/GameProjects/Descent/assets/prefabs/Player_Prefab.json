@@ -6,15 +6,15 @@
                 {
                     "active": true,
                     "name": "Player",
-                    "uuid": 17142618762681968282,
+                    "uuid": 12866001393014812088,
                     "tag": {
                         "tagMask": 1
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": -20.576072692871095,
+                            "x": 32.57562255859375,
+                            "y": 37.847076416015628,
                             "z": 50.0
                         },
                         "size": {
@@ -37,6 +37,7 @@
                     },
                     "collider": {
                         "ColliderType": 1,
+                        "isContinuous": false,
                         "isTrigger": false,
                         "enabled": true,
                         "position": {
@@ -50,13 +51,13 @@
                             "z": 0.0
                         },
                         "min": {
-                            "x": -227.82041931152345,
-                            "y": -56.076072692871097,
+                            "x": 23.57562255859375,
+                            "y": 2.347076416015625,
                             "z": 50.0
                         },
                         "max": {
-                            "x": -209.82041931152345,
-                            "y": 4.923927307128906,
+                            "x": 41.57562255859375,
+                            "y": 63.347076416015628,
                             "z": 50.0
                         }
                     },
@@ -214,11 +215,16 @@
                                     "footstepInterval": 0.30000001192092898,
                                     "swapPause": 1.0,
                                     "energyConsumption": 12.5,
-                                    "coyoteFrames": 6,
+                                    "coyoteTime": 0.15000000596046449,
                                     "goalNoOfPlates": 2,
                                     "currentGoalPlates": 0,
                                     "landingDustName": "LandingDust",
                                     "dustBurstDuration": 0.15000000596046449,
+                                    "landingRumbleMinFallSpeed": 60.0,
+                                    "landingRumbleMaxFallSpeed": 260.0,
+                                    "landingRumbleMinStrength": 0.15000000596046449,
+                                    "landingRumbleMaxStrength": 0.6499999761581421,
+                                    "landingRumbleDuration": 0.11999999731779099,
                                     "normalMass": 2.9000000953674318,
                                     "lightMass": 2.0,
                                     "groundCheckDistance": 5.0,
@@ -227,12 +233,20 @@
                                     "dialogueCooldown": 1.0,
                                     "isDialogueActive": true,
                                     "facingRight": true,
+                                    "lockBookGlowToPlayer": false,
                                     "CurrentEnergy": 75.0,
                                     "MaxEnergy": 100.0,
                                     "alive": true,
+                                    "normalDeathAnimName": "playerDeathNoBook",
+                                    "changedMassDeathAnimName": "playerDeath",
+                                    "unlimitedEnergy": false,
+                                    "godMode": false,
+                                    "normalDeathDelay": 2.0,
+                                    "changedMassDeathDelay": 2.0,
                                     "isPaused": false,
                                     "reloadOnDeath": false,
-                                    "reloadSceneName": ""
+                                    "reloadSceneName": "",
+                                    "gameOverSceneName": "Defeat"
                                 }
                             }
                         ]
@@ -246,6 +260,37 @@
                         "t": 5.60001802444458,
                         "playing": true,
                         "clips": [
+                            {
+                                "name": "playerFall",
+                                "wrap": 0,
+                                "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                                "spriteCols": 2,
+                                "spriteRows": 1,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
                             {
                                 "name": "playerWalk",
                                 "wrap": 0,
@@ -299,7 +344,7 @@
                                 ]
                             },
                             {
-                                "name": "playerFall",
+                                "name": "playerFallLight",
                                 "wrap": 0,
                                 "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                                 "spriteCols": 2,
@@ -313,14 +358,14 @@
                                         "keys": [
                                             {
                                                 "t": 0.0,
-                                                "v": 0.0,
+                                                "v": 1.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
                                                 "t": 0.25,
-                                                "v": 0.0,
+                                                "v": 1.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
@@ -382,41 +427,10 @@
                                 ]
                             },
                             {
-                                "name": "playerFallLight",
-                                "wrap": 0,
-                                "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                                "spriteCols": 2,
-                                "spriteRows": 1,
-                                "useCustomSize": true,
-                                "targetWidth": 140.0,
-                                "targetHeight": 100.0,
-                                "bindings": [
-                                    {
-                                        "property": 6,
-                                        "keys": [
-                                            {
-                                                "t": 0.0,
-                                                "v": 1.0,
-                                                "i": 0,
-                                                "in": 0.0,
-                                                "out": 0.0
-                                            },
-                                            {
-                                                "t": 0.25,
-                                                "v": 1.0,
-                                                "i": 0,
-                                                "in": 0.0,
-                                                "out": 0.0
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
                                 "name": "playerIdle",
                                 "wrap": 0,
-                                "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
-                                "spriteCols": 3,
+                                "textureAsset": "images/Character/New Artstyle/Idle spritesheet.png",
+                                "spriteCols": 6,
                                 "spriteRows": 3,
                                 "useCustomSize": true,
                                 "targetWidth": 140.0,
@@ -433,8 +447,57 @@
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 0.125,
-                                                "v": 0.0,
+                                                "t": 0.5263158082962036,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0526316165924073,
+                                                "v": 2.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.5789474248886109,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 2.1052632331848146,
+                                                "v": 4.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 2.6315789222717287,
+                                                "v": 5.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 3.1578948497772219,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 3.684210777282715,
+                                                "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 4.210526466369629,
+                                                "v": 7.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
@@ -592,8 +655,8 @@
                             {
                                 "name": "playerIdleLight",
                                 "wrap": 0,
-                                "textureAsset": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
-                                "spriteCols": 3,
+                                "textureAsset": "images/Character/New Artstyle/Idle spritesheet.png",
+                                "spriteCols": 6,
                                 "spriteRows": 3,
                                 "useCustomSize": true,
                                 "targetWidth": 140.0,
@@ -604,14 +667,63 @@
                                         "keys": [
                                             {
                                                 "t": 0.0,
-                                                "v": 6.0,
+                                                "v": 8.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 0.25,
-                                                "v": 6.0,
+                                                "t": 0.5263158082962036,
+                                                "v": 9.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.0526316165924073,
+                                                "v": 10.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.5789474248886109,
+                                                "v": 11.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 2.1052632331848146,
+                                                "v": 12.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 2.6315789222717287,
+                                                "v": 13.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 3.1578948497772219,
+                                                "v": 14.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 3.684210777282715,
+                                                "v": 15.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 4.210526466369629,
+                                                "v": 15.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
@@ -688,15 +800,15 @@
                 {
                     "active": false,
                     "name": "PlayerDialogue_1",
-                    "uuid": 4672454392646077867,
+                    "uuid": 6463453140431113139,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": 37.79383850097656,
+                            "x": 32.57562255859375,
+                            "y": 96.21698760986328,
                             "z": 50.0
                         },
                         "size": {
@@ -779,7 +891,7 @@
                         "uiLayout": 4
                     },
                     "parent": {
-                        "parentUUID": 17142618762681968282,
+                        "parentUUID": 12866001393014812088,
                         "localPos": {
                             "x": 0.0,
                             "y": 0.583699107170105,
@@ -806,15 +918,15 @@
                 {
                     "active": false,
                     "name": "PlayerDialogue_2",
-                    "uuid": 7400278973642246601,
+                    "uuid": 18437973931304805259,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": 37.79383850097656,
+                            "x": 32.57562255859375,
+                            "y": 96.21698760986328,
                             "z": 50.0
                         },
                         "size": {
@@ -897,7 +1009,7 @@
                         "uiLayout": 4
                     },
                     "parent": {
-                        "parentUUID": 17142618762681968282,
+                        "parentUUID": 12866001393014812088,
                         "localPos": {
                             "x": 0.0,
                             "y": 0.583699107170105,
@@ -924,15 +1036,15 @@
                 {
                     "active": false,
                     "name": "PlayerDialogue_3",
-                    "uuid": 2995568646537024137,
+                    "uuid": 13299108227315867305,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": 37.79383850097656,
+                            "x": 32.57562255859375,
+                            "y": 96.21698760986328,
                             "z": 50.0
                         },
                         "size": {
@@ -1015,7 +1127,7 @@
                         "uiLayout": 4
                     },
                     "parent": {
-                        "parentUUID": 17142618762681968282,
+                        "parentUUID": 12866001393014812088,
                         "localPos": {
                             "x": 0.0,
                             "y": 0.583699107170105,
@@ -1042,15 +1154,15 @@
                 {
                     "active": false,
                     "name": "PlayerDialogue_4",
-                    "uuid": 6601111284823726429,
+                    "uuid": 5050949368540860559,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": 37.79383850097656,
+                            "x": 32.57562255859375,
+                            "y": 96.21698760986328,
                             "z": 50.0
                         },
                         "size": {
@@ -1133,7 +1245,7 @@
                         "uiLayout": 4
                     },
                     "parent": {
-                        "parentUUID": 17142618762681968282,
+                        "parentUUID": 12866001393014812088,
                         "localPos": {
                             "x": 0.0,
                             "y": 0.583699107170105,
@@ -1155,20 +1267,173 @@
                     "layer": {
                         "layerName": "Default",
                         "z": 0
+                    },
+                    "keyframe_animator": {
+                        "current": "playerIdle",
+                        "t": 0.0,
+                        "playing": true,
+                        "clips": [
+                            {
+                                "name": "playerIdle",
+                                "wrap": 0,
+                                "textureAsset": "images/Character/New Artstyle/Idle spritesheet.png",
+                                "spriteCols": 4,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 98.0,
+                                "targetHeight": 50.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 9.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.7518796920776367,
+                                                "v": 10.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.5037593841552735,
+                                                "v": 11.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 2.25563907623291,
+                                                "v": 12.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 3.007518768310547,
+                                                "v": 13.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 3.7593984603881838,
+                                                "v": 13.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerIdleLight",
+                                "wrap": 0,
+                                "textureAsset": "images/Character/New Artstyle/Idle spritesheet.png",
+                                "spriteCols": 4,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 98.0,
+                                "targetHeight": 50.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 5.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.7518796920776367,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 1.5037593841552735,
+                                                "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 2.25563907623291,
+                                                "v": 8.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 3.007518768310547,
+                                                "v": 9.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 3.7593984603881838,
+                                                "v": 10.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 4.51127815246582,
+                                                "v": 11.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 5.263157844543457,
+                                                "v": 12.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 6.015037536621094,
+                                                "v": 13.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 6.7669172286987309,
+                                                "v": 13.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 },
                 {
                     "active": false,
                     "name": "PlayerDialogue_5",
-                    "uuid": 8879151482939062898,
+                    "uuid": 14870502012241608987,
                     "tag": {
                         "tagMask": 0
                     },
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -504.61468505859377,
-                            "y": -219.93362426757813,
+                            "x": -253.2186279296875,
+                            "y": -161.51046752929688,
                             "z": 50.0
                         },
                         "size": {
@@ -1251,7 +1516,7 @@
                         "uiLayout": 4
                     },
                     "parent": {
-                        "parentUUID": 17142618762681968282,
+                        "parentUUID": 12866001393014812088,
                         "localPos": {
                             "x": -2.0413875579833986,
                             "y": -1.9935754537582398,
