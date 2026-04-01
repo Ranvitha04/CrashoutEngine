@@ -1600,7 +1600,10 @@
                             "QuitBtn": 0,
                             "QuitCheckPanel": 0,
                             "YesBtn": 0,
-                            "NoBtn": 0
+                            "NoBtn": 0,
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
                         }
                     }
                 ]

@@ -1,4 +1,5 @@
 #include "ControllerManager.h"
+#include "inputmanager.h"
 
 #include <algorithm>
 #include <cmath>
@@ -130,10 +131,21 @@ namespace CrashoutEngine
         switch (event.type)
         {
         case SDL_CONTROLLERDEVICEADDED:
+        {
+            const char* controllerName = SDL_GameControllerNameForIndex(event.cdevice.which);
+            std::string message = "Controller connected";
+            if (controllerName != nullptr && controllerName[0] != '\0')
+            {
+                message += ": ";
+                message += controllerName;
+            }
+            InputManager::ShowGlobalNotification(message, 5.0f);
             OpenController(event.cdevice.which);
             break;
+        }
 
         case SDL_CONTROLLERDEVICEREMOVED:
+            InputManager::ShowGlobalNotification("Controller disconnected", 5.0f);
             CloseController(event.cdevice.which);
             break;
 

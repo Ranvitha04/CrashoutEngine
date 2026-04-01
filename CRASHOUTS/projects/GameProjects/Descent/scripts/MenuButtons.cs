@@ -19,6 +19,14 @@ namespace CrashoutsEngine
     {
         private const string MenuControllerName = "MenuScript";
         private const string SettingsControllerName = "SettingsScript";
+        private const string MusicLabelName = "Music";
+        private const string SfxLabelName = "SFX";
+        private const string MusicSliderName = "MusicBar";
+        private const string SfxSliderName = "SFXBar";
+        private const string MusicLabelText = "Music";
+        private const string SfxLabelText = "SFX";
+        private const string MusicLabelSelectedText = "> Music <";
+        private const string SfxLabelSelectedText = "> SFX <";
 
         public Entity StartBtn;
         public Entity SettingsBtn;
@@ -37,6 +45,10 @@ namespace CrashoutsEngine
         private int selectedButtonIndex = 0;
         private float menuNavigationCooldown = 0.0f;
         private bool controllerNavigationActive = false;
+        private Entity musicLabelEntity;
+        private Entity sfxLabelEntity;
+        private Entity musicSliderEntity;
+        private Entity sfxSliderEntity;
         [SerializeField] private float navigationRumbleLow = 0.15f;
         [SerializeField] private float navigationRumbleHigh = 0.25f;
         [SerializeField] private float navigationRumbleDuration = 0.05f;
@@ -48,6 +60,7 @@ namespace CrashoutsEngine
         {
             isClicking = false;
             isMouseReleased = true;
+            CacheSettingsEntities();
             ResetControllerSelection();
             if (IsMenuController()) InternalCalls.UI_ClearForcedHoveredButton();
         }
@@ -61,6 +74,12 @@ namespace CrashoutsEngine
 
             if(!Input.IsMouseButtonDown(0)) isClicking = false;
             if (!Input.IsMouseButtonDown(0)) isMouseReleased = true;
+            if (Input.IsMouseButtonTriggered(0))
+            {
+                controllerNavigationActive = false;
+                InternalCalls.UI_ClearForcedHoveredButton();
+                UpdateSettingsLabelState();
+            }
 
             // Tick down the cooldown every frame
             if (_clickCooldown > 0)
@@ -70,6 +89,18 @@ namespace CrashoutsEngine
             if (menuNavigationCooldown > 0.0f)
             {
                 menuNavigationCooldown -= (float)Time.DT;
+            }
+
+            if (IsSettingsController())
+            {
+                if (CheckButtonClick(CloseBtn))
+                {
+                    HandleButtonActivated(CloseBtn);
+                    return;
+                }
+
+                UpdateSettingsController();
+                return;
             }
 
             Entity[] activeButtons = GetActiveButtons();
@@ -233,6 +264,16 @@ namespace CrashoutsEngine
             return buttons.ToArray();
         }
 
+        private void CacheSettingsEntities()
+        {
+            if (!IsSettingsController()) return;
+
+            musicLabelEntity = Entity.Find(MusicLabelName);
+            sfxLabelEntity = Entity.Find(SfxLabelName);
+            musicSliderEntity = Entity.Find(MusicSliderName);
+            sfxSliderEntity = Entity.Find(SfxSliderName);
+        }
+
         private bool IsMenuController()
         {
             string controllerName = InternalCalls.GetName(Entity.ID);
@@ -240,6 +281,13 @@ namespace CrashoutsEngine
                    Entity.ID != 0 &&
                    (controllerName == MenuControllerName || controllerName == SettingsControllerName) &&
                    HasConfiguredButtons();
+        }
+
+        private bool IsSettingsController()
+        {
+            return Entity != null &&
+                   Entity.ID != 0 &&
+                   InternalCalls.GetName(Entity.ID) == SettingsControllerName;
         }
 
         private bool HasConfiguredButtons()
@@ -274,6 +322,7 @@ namespace CrashoutsEngine
             menuNavigationCooldown = 0.0f;
             controllerNavigationActive = false;
             InternalCalls.UI_ClearForcedHoveredButton();
+            UpdateSettingsLabelState();
         }
 
         /*!
@@ -359,9 +408,142 @@ namespace CrashoutsEngine
             return buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit");
         }
 
+        private void UpdateSettingsController()
+        {
+            const int settingsItemCount = 3;
+            bool movedDown = false;
+            bool movedUp = false;
+            if (menuNavigationCooldown <= 0.0f)
+            {
+                float menuY = Input.GetAxis("MenuY");
+                if (Input.GetActionTriggered("UIDown") || menuY <= -0.5f)
+                {
+                    selectedButtonIndex = (selectedButtonIndex + 1) % settingsItemCount;
+                    menuNavigationCooldown = 0.2f;
+                    movedDown = true;
+                }
+                else if (Input.GetActionTriggered("UIUp") || menuY >= 0.5f)
+                {
+                    selectedButtonIndex = (selectedButtonIndex - 1 + settingsItemCount) % settingsItemCount;
+                    menuNavigationCooldown = 0.2f;
+                    movedUp = true;
+                }
+            }
+
+            if (movedDown || movedUp || Input.GetActionTriggered("UISubmit") ||
+                Input.GetActionTriggered("UILeft") || Input.GetActionTriggered("UIRight") ||
+                System.Math.Abs(Input.GetAxis("MenuX")) >= 0.5f)
+            {
+                controllerNavigationActive = true;
+            }
+
+            if (movedDown || movedUp)
+            {
+                Input.SetControllerVibration(navigationRumbleLow, navigationRumbleHigh, navigationRumbleDuration);
+            }
+
+            UpdateSettingsLabelState();
+
+            if (!controllerNavigationActive)
+            {
+                InternalCalls.UI_ClearForcedHoveredButton();
+                return;
+            }
+
+            if (selectedButtonIndex == 2)
+            {
+                Entity validatedCloseButton = GetValidatedButton(CloseBtn, "CloseBtn");
+                if (validatedCloseButton != null && validatedCloseButton.IsActive())
+                {
+                    InternalCalls.UI_SetForcedHoveredButton(validatedCloseButton.ID);
+                }
+                else
+                {
+                    InternalCalls.UI_ClearForcedHoveredButton();
+                }
+
+                if (Input.GetActionTriggered("UISubmit"))
+                {
+                    HandleButtonActivated(CloseBtn);
+                }
+
+                return;
+            }
+
+            InternalCalls.UI_ClearForcedHoveredButton();
+
+            int sliderDirection = GetSettingsSliderDirection();
+            if (sliderDirection == 0) return;
+
+            Entity selectedSlider = selectedButtonIndex == 0 ? musicSliderEntity : sfxSliderEntity;
+            if (selectedSlider == null || selectedSlider.ID == 0) return;
+
+            VolumeSlider slider = selectedSlider.GetScript<VolumeSlider>();
+            if (slider != null)
+            {
+                slider.AdjustByStep(sliderDirection);
+            }
+        }
+
+        private int GetSettingsSliderDirection()
+        {
+            if (Input.GetActionTriggered("UIRight"))
+            {
+                menuNavigationCooldown = 0.12f;
+                return 1;
+            }
+
+            if (Input.GetActionTriggered("UILeft"))
+            {
+                menuNavigationCooldown = 0.12f;
+                return -1;
+            }
+
+            float menuX = Input.GetAxis("MenuX");
+            if (menuNavigationCooldown <= 0.0f)
+            {
+                if (menuX >= 0.5f)
+                {
+                    menuNavigationCooldown = 0.12f;
+                    return 1;
+                }
+
+                if (menuX <= -0.5f)
+                {
+                    menuNavigationCooldown = 0.12f;
+                    return -1;
+                }
+            }
+
+            return 0;
+        }
+
+        private void UpdateSettingsLabelState()
+        {
+            if (!IsSettingsController())
+            {
+                return;
+            }
+
+            bool highlightMusic = controllerNavigationActive && selectedButtonIndex == 0;
+            bool highlightSfx = controllerNavigationActive && selectedButtonIndex == 1;
+
+            if (musicLabelEntity != null && musicLabelEntity.ID != 0)
+            {
+                InternalCalls.SetText(musicLabelEntity.ID, highlightMusic ? MusicLabelSelectedText : MusicLabelText);
+            }
+
+            if (sfxLabelEntity != null && sfxLabelEntity.ID != 0)
+            {
+                InternalCalls.SetText(sfxLabelEntity.ID, highlightSfx ? SfxLabelSelectedText : SfxLabelText);
+            }
+        }
+
         public override void OnDestroy()
         {
             if (IsMenuController()) InternalCalls.UI_ClearForcedHoveredButton();
+            if (musicLabelEntity != null && musicLabelEntity.ID != 0) InternalCalls.SetText(musicLabelEntity.ID, MusicLabelText);
+            if (sfxLabelEntity != null && sfxLabelEntity.ID != 0) InternalCalls.SetText(sfxLabelEntity.ID, SfxLabelText);
         }
     }
 }

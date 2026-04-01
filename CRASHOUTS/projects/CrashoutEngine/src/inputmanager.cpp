@@ -68,6 +68,8 @@ std::unique_ptr<CrashoutEngine::ControllerManager> InputManager::s_controllerMan
 std::unordered_map<std::string, std::vector<InputManager::DigitalBinding>> InputManager::s_actionBindings;
 std::unordered_map<std::string, std::vector<InputManager::AxisBinding>> InputManager::s_axisBindings;
 float InputManager::s_defaultDeadzone = 0.2f;
+std::string InputManager::s_globalNotificationText;
+float InputManager::s_globalNotificationTimer = 0.0f;
 
 // Game View State
 bool InputManager::s_usingGameView = false;
@@ -161,6 +163,16 @@ Snapshots scroll delta resets accumulator and refreshes key and mouse button sta
 */
 void InputManager::Update() {
     s_usingGameView = false;
+
+    if (s_globalNotificationTimer > 0.0f)
+    {
+        s_globalNotificationTimer -= static_cast<float>(FrameRateController::GetInstance().DT());
+        if (s_globalNotificationTimer <= 0.0f)
+        {
+            s_globalNotificationTimer = 0.0f;
+            s_globalNotificationText.clear();
+        }
+    }
 
     if (s_controllerManager)
     {
@@ -489,6 +501,22 @@ void InputManager::SetControllerVibration(float lowFrequency, float highFrequenc
     const float clampedDuration = std::max(durationSeconds, 0.0f);
     const std::uint32_t durationMs = static_cast<std::uint32_t>(clampedDuration * 1000.0f);
     s_controllerManager->SetVibration(lowFrequency, highFrequency, durationMs);
+}
+
+void InputManager::ShowGlobalNotification(const std::string& text, float durationSeconds)
+{
+    s_globalNotificationText = text;
+    s_globalNotificationTimer = std::max(durationSeconds, 0.0f);
+}
+
+bool InputManager::HasGlobalNotification()
+{
+    return s_globalNotificationTimer > 0.0f && !s_globalNotificationText.empty();
+}
+
+const std::string& InputManager::GetGlobalNotificationText()
+{
+    return s_globalNotificationText;
 }
 
 void InputManager::ClearInputs()
