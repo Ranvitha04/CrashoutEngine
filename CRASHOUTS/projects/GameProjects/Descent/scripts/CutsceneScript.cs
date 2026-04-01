@@ -214,8 +214,8 @@ namespace CrashoutsEngine
                 if (!isTypingDone) AdvanceDialogue();
                 else AdvanceDialogue();
             }
-            // Skip whole cutscene
-            if (Input.IsKeyTriggered(Key.Escape))
+            // Skip whole cutscene with the dedicated cutscene skip action only.
+            if (Input.GetActionTriggered("CutsceneSkip"))
             {
                 SceneManager.LoadScene("tutorial", 2.0f);
             }
