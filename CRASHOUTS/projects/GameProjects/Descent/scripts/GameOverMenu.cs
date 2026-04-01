@@ -3,6 +3,15 @@ using System;
 namespace CrashoutsEngine
 {
     [ScriptBehaviour]
+    /*!
+    @brief Handles controller navigation for the standalone defeat/game over menu controller entity.
+
+    This script is intended to live on a scene controller entity such as
+    `DefeatScript` or `MenuScript`, not on the buttons themselves. Mouse click
+    behaviour remains on the individual button scripts, while this class
+    provides forced-hover controller selection, controller submit handling, and
+    light navigation rumble.
+    */
     public class GameOverMenu : ScriptBase
     {
         private const string MenuControllerName = "MenuScript";
@@ -20,6 +29,9 @@ namespace CrashoutsEngine
         private float navigationCooldown = 0.0f;
         private bool controllerNavigationActive = false;
 
+        /*!
+        @brief Cache scene button references used by controller navigation.
+        */
         public override void Start()
         {
             if (RestartBtn == null || RestartBtn.ID == 0)
@@ -39,6 +51,9 @@ namespace CrashoutsEngine
             InternalCalls.UI_ClearForcedHoveredButton();
         }
 
+        /*!
+        @brief Poll controller navigation and trigger the currently selected button.
+        */
         public override void Update()
         {
             if (!IsControllerEntity())
@@ -64,6 +79,10 @@ namespace CrashoutsEngine
             }
         }
 
+        /*!
+        @brief Build the current selectable button list for this scene.
+        @return Active restart/quit buttons in navigation order.
+        */
         private Entity[] GetButtons()
         {
             System.Collections.Generic.List<Entity> buttons = new System.Collections.Generic.List<Entity>();
@@ -81,6 +100,9 @@ namespace CrashoutsEngine
             return buttons.ToArray();
         }
 
+        /*!
+        @brief Restart the last gameplay level from checkpoint for controller submit.
+        */
         private void RestartFromCheckpoint()
         {
             PlayerMovement.RespawnNextLoad = true;
@@ -95,6 +117,10 @@ namespace CrashoutsEngine
             SceneManager.LoadScene(targetScene, fadeDuration);
         }
 
+        /*!
+        @brief Update left/right controller selection and forced button hover.
+        @param buttons Active buttons in navigation order.
+        */
         private void UpdateControllerSelection(Entity[] buttons)
         {
             if (buttons == null || buttons.Length == 0)
@@ -156,6 +182,12 @@ namespace CrashoutsEngine
             }
         }
 
+        /*!
+        @brief Check whether the currently selected button received controller submit.
+        @param buttons Active buttons in navigation order.
+        @param target Button to compare against the selected index.
+        @return True when the target button is selected and submit was pressed.
+        */
         private bool IsControllerSubmit(Entity[] buttons, Entity target)
         {
             if (target == null || target.ID == 0 || buttons == null)
@@ -171,6 +203,10 @@ namespace CrashoutsEngine
             return buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit");
         }
 
+        /*!
+        @brief Validate that this script is running on the intended controller entity.
+        @return True if the owner entity is a supported menu controller.
+        */
         private bool IsControllerEntity()
         {
             return Entity != null &&
@@ -179,6 +215,9 @@ namespace CrashoutsEngine
                     InternalCalls.GetName(Entity.ID) == DefeatControllerName);
         }
 
+        /*!
+        @brief Clear forced hover state when the controller entity is destroyed.
+        */
         public override void OnDestroy()
         {
             if (IsControllerEntity())

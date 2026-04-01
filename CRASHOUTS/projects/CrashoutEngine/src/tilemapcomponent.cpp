@@ -418,6 +418,9 @@ namespace CrashoutsEngine::TileMapUtils {
 				lc.affectBloom = parentLight->affectBloom;
 				lc.renderBehind = parentLight->renderBehind;
 				lc.active = parentLight->active;
+				lc.flickerEnabled = parentLight->flickerEnabled;
+				lc.flickerStrength = parentLight->flickerStrength;
+				lc.flickerSpeed = parentLight->flickerSpeed;
 				lc.useTransform = true;
 			}
 

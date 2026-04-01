@@ -2185,6 +2185,107 @@
         },
         {
             "active": true,
+            "name": "PlatformLandingDust",
+            "uuid": 14835231273323388140,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -96.69576263427735,
+                    "y": -44.642704010009769,
+                    "z": -50.0
+                },
+                "size": {
+                    "x": 140.97999572753907,
+                    "y": 101.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            },
+            "particle": {
+                "preset": 4,
+                "burstCount": 650,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 76.0999984741211,
+                "superheroLandingAngleSpreadDeg": 5.599999904632568,
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 900,
+                "emitRate": 1200.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 0.15000000596046449,
+                "lengthMin": -0.4000000059604645,
+                "lengthMax": -0.10000000149011612,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.3499999940395355,
+                "startLifeMax": 0.8999999761581421,
+                "startSpeedMin": 10.0,
+                "startSpeedMax": 26.0,
+                "uniformSize": true,
+                "startSizeXMin": 3.200000047683716,
+                "startSizeXMax": 4.5,
+                "startSizeYMin": 0.20000000298023225,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.6000000238418579,
+                "rotationOverTime": 220.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.9134199023246765,
+                    "y": 0.7730458378791809,
+                    "z": 0.6326717734336853,
+                    "w": 0.8999999761581421
+                },
+                "endColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.2800000011920929,
+                    "z": 0.25,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -25.0,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 2.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
             "name": "Slime",
             "uuid": 4103616845376355176,
             "tag": {

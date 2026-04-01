@@ -76,6 +76,8 @@ namespace CrashoutsEngine
                 {
                     InternalCalls.Particle_TriggerBurst(doorParticleID);
                 }
+
+                //AudioManager.GetInstance().PlayAttached("rockSFX", Entity.ID);
                 
                 Debug.Log($"[DoorScript] Player detected! Loading scene: {nextSceneName}");
                 

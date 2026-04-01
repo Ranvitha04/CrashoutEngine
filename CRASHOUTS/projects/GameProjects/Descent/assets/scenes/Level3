@@ -32,6 +32,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 1.0,
                     "y": 1.0,
@@ -16523,6 +16526,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.5607843399047852,
                     "y": 0.19607843458652497,
@@ -17463,6 +17469,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "rockSFX",
+                        "path": "in game/rocks.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 1600.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -17473,7 +17495,8 @@
                             "MoveRight": true,
                             "MoveDist": -160.0,
                             "MoveSpeed": 40.0,
-                            "dustBurstDuration": 1.0
+                            "emitMoveDust": true,
+                            "landingDustEntityName": "PlatformLandingDust"
                         }
                     }
                 ]
@@ -17525,77 +17548,6 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": false,
-                "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 100.0,
-                "playOnStop": true,
-                "emissionShape": 2,
-                "radiusMin": -0.10000000149011612,
-                "radiusMax": 1.0,
-                "lengthMin": 0.0,
-                "lengthMax": 1.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "startLifeMin": 0.5,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 1.25,
-                "startSizeXMax": 3.25,
-                "startSizeYMin": 1.25,
-                "startSizeYMax": 3.25,
-                "sizeOverTime": 0.0,
-                "rotationOverTime": 0.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 360.0,
-                "startColor": {
-                    "x": 0.7900552749633789,
-                    "y": 0.4297234117984772,
-                    "z": 0.19205762445926667,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 0.14364641904830934,
-                    "y": 0.11262043565511704,
-                    "z": 0.05158573016524315,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": -20.0,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
             }
         },
         {
@@ -17710,7 +17662,13 @@
                 "textureUV": {
                     "x": 1.0,
                     "y": 1.0
-                }
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
             }
         },
         {
@@ -20606,6 +20564,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -20861,7 +20835,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep2",
@@ -20870,7 +20847,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep3",
@@ -20879,7 +20859,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep4",
@@ -20888,7 +20871,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep5",
@@ -20897,7 +20883,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep6",
@@ -20906,7 +20895,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep7",
@@ -20915,7 +20907,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep8",
@@ -20924,7 +20919,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "jumpLand",
@@ -20933,7 +20931,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "jumpUp",
@@ -20942,7 +20943,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "switchMassSound",
@@ -20951,7 +20955,58 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "speak",
+                        "path": "in game/speak.wav",
+                        "volume": 0.5,
+                        "pitch": 0.699999988079071,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "jumpVoice",
+                        "path": "player/jump.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "landVoice",
+                        "path": "player/land.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "deathSound",
+                        "path": "player/death.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -20988,6 +21043,9 @@
                             "groundCheckWidth": 10.0,
                             "playDialogueOnStart": false,
                             "dialogueCooldown": 1.0,
+                            "dialogueParentName": "DialogueContainer",
+                            "dialoguePrefix": "PlayerDialogue_",
+                            "numberOfDialogues": 5,
                             "isDialogueActive": false,
                             "facingRight": true,
                             "lockBookGlowToPlayer": false,
@@ -21153,6 +21211,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.9058823585510254,
                     "y": 0.7921568751335144,
@@ -22032,7 +22093,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "Heh. It’s less fire and brimstone than I thought.",
+                "text": "Heh. It's less fire and brimstone than I thought.",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -22386,7 +22447,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "I wonder, if at the end of this journey, I’ll find you, Keiran?",
+                "text": "I wonder, if at the end of this journey, I'll find you, Keiran?",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -22541,7 +22602,114 @@
                 "textureUV": {
                     "x": 1.0,
                     "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "PlatformLandingDust",
+            "uuid": 5978115013613082299,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1061.227294921875,
+                    "y": -791.65576171875,
+                    "z": -50.0
+                },
+                "size": {
+                    "x": 140.97999572753907,
+                    "y": 101.0
                 }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            },
+            "particle": {
+                "preset": 4,
+                "burstCount": 650,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 76.0999984741211,
+                "superheroLandingAngleSpreadDeg": 5.599999904632568,
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 900,
+                "emitRate": 1200.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 0.15000000596046449,
+                "lengthMin": -0.4000000059604645,
+                "lengthMax": -0.10000000149011612,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.3499999940395355,
+                "startLifeMax": 0.8999999761581421,
+                "startSpeedMin": 10.0,
+                "startSpeedMax": 26.0,
+                "uniformSize": true,
+                "startSizeXMin": 3.200000047683716,
+                "startSizeXMax": 4.5,
+                "startSizeYMin": 0.20000000298023225,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.6000000238418579,
+                "rotationOverTime": 220.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.9134199023246765,
+                    "y": 0.7730458378791809,
+                    "z": 0.6326717734336853,
+                    "w": 0.8999999761581421
+                },
+                "endColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.2800000011920929,
+                    "z": 0.25,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -25.0,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 2.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
             }
         },
         {
@@ -23612,7 +23780,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -23640,6 +23811,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.1427335888147354,
                     "y": 0.22974756360054017,
@@ -24020,7 +24194,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -24048,6 +24225,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.1427335888147354,
                     "y": 0.22974756360054017,
@@ -25001,6 +25181,68 @@
                 "ambient": 0.6000000238418579,
                 "shadowsEnabled": true,
                 "shadowRays": 255,
+                "shadowDarkness": 1.0,
+                "shadowColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "shadowColorStrength": 1.0,
+                "shadowMapStrength": 1.0,
+                "raymarchShadowStrength": 1.0,
+                "heatDistortionEnabled": false,
+                "heatDebugMarker": false,
+                "heatStrength": 0.003000000026077032,
+                "heatSpeed": 2.0,
+                "heatScale": 20.0,
+                "heatTintColor": {
+                    "x": 1.0,
+                    "y": 0.5,
+                    "z": 0.10000000149011612
+                },
+                "heatTintStrength": 0.0,
+                "distortionEnabled": false,
+                "distortionDebugMarker": false,
+                "distortionStrength": 0.003000000026077032,
+                "distortionSpeed": 2.0,
+                "distortionWaveScale1": 20.0,
+                "distortionWaveScale2": 10.0,
+                "distortionNoiseStrength": 0.800000011920929,
+                "distortionLavaHeight": 0.30000001192092898,
+                "distortionLavaBoost": 2.5,
+                "distortionPlayerPos": {
+                    "x": 0.5,
+                    "y": 0.5
+                },
+                "distortionPlayerRadius": 0.10000000149011612,
+                "distortionPlayerStrength": 0.009999999776482582,
+                "distortionGlowColor": {
+                    "x": 1.0,
+                    "y": 0.4000000059604645,
+                    "z": 0.10000000149011612
+                },
+                "distortionGlowStrength": 1.0,
+                "distortionShockEnabled": false,
+                "distortionShockPos": {
+                    "x": 0.5,
+                    "y": 0.0
+                },
+                "distortionShockTime": 999.0,
+                "distortionShockStrength": 0.019999999552965165,
+                "vignetteEnabled": true,
+                "vignetteIntensity": 0.6700000166893005,
+                "vignetteRadius": 0.44999998807907107,
+                "vignetteSoftness": 0.41999998688697817,
+                "vignetteColor": {
+                    "x": 0.15294118225574494,
+                    "y": 0.09803921729326248,
+                    "z": 0.09803921729326248
+                },
+                "vignetteLag": 0.0,
+                "vignettePulseIntensity": 0.0,
+                "vignettePulseRadius": 0.0,
+                "vignettePulseSpeed": 2.0,
+                "vignetteFollowPlayer": false,
                 "bloomEnabled": false,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,
@@ -25044,6 +25286,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.7941176891326904,
                     "y": 1.0,
@@ -25148,7 +25393,13 @@
                 "textureUV": {
                     "x": 1.0,
                     "y": 1.0
-                }
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
             }
         },
         {
@@ -25190,7 +25441,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1456.19921875,
-                    "y": -21.881301879882814,
+                    "y": -22.65753746032715,
                     "z": 0.0
                 },
                 "offset": {
@@ -25201,7 +25452,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 1456.19921875,
-                    "y": -21.881301879882814,
+                    "y": -22.65753746032715,
                     "z": 0.0
                 }
             },
@@ -25248,7 +25499,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -25276,6 +25530,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.1427335888147354,
                     "y": 0.22974756360054017,
@@ -25442,7 +25699,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1411.4249267578126,
-                    "y": -615.045166015625,
+                    "y": -615.8214111328125,
                     "z": 0.0
                 },
                 "offset": {
@@ -25453,7 +25710,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 1411.4249267578126,
-                    "y": -615.045166015625,
+                    "y": -615.8214111328125,
                     "z": 0.0
                 }
             },
@@ -25500,7 +25757,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -25528,6 +25788,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.1427335888147354,
                     "y": 0.22974756360054017,
@@ -25756,7 +26019,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -25922,7 +26188,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -26089,7 +26358,8 @@
                             "MoveRight": false,
                             "MoveDist": 200.0,
                             "MoveSpeed": 40.0,
-                            "dustBurstDuration": 1.0
+                            "emitMoveDust": true,
+                            "landingDustEntityName": "PlatformLandingDust"
                         }
                     }
                 ]
@@ -26141,77 +26411,6 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": false,
-                "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 100.0,
-                "playOnStop": true,
-                "emissionShape": 2,
-                "radiusMin": -0.10000000149011612,
-                "radiusMax": 1.0,
-                "lengthMin": 0.0,
-                "lengthMax": 1.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "startLifeMin": 0.5,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 1.25,
-                "startSizeXMax": 3.25,
-                "startSizeYMin": 1.25,
-                "startSizeYMax": 3.25,
-                "sizeOverTime": 0.0,
-                "rotationOverTime": 0.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 360.0,
-                "startColor": {
-                    "x": 0.7900552749633789,
-                    "y": 0.4297234117984772,
-                    "z": 0.19205762445926667,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 0.14364641904830934,
-                    "y": 0.11262043565511704,
-                    "z": 0.05158573016524315,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": -20.0,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
             }
         },
         {
@@ -26865,7 +27064,13 @@
                 "textureUV": {
                     "x": 1.0,
                     "y": 1.0
-                }
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
             }
         },
         {
@@ -27173,6 +27378,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "rockSFX",
+                        "path": "in game/rocks.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 1600.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -27183,7 +27404,8 @@
                             "MoveRight": false,
                             "MoveDist": -200.0,
                             "MoveSpeed": 40.0,
-                            "dustBurstDuration": 1.0
+                            "emitMoveDust": true,
+                            "landingDustEntityName": "PlatformLandingDust"
                         }
                     }
                 ]
@@ -27235,77 +27457,6 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": false,
-                "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 100.0,
-                "playOnStop": true,
-                "emissionShape": 2,
-                "radiusMin": -0.10000000149011612,
-                "radiusMax": 1.0,
-                "lengthMin": 0.0,
-                "lengthMax": 1.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "startLifeMin": 0.5,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 1.25,
-                "startSizeXMax": 3.25,
-                "startSizeYMin": 1.25,
-                "startSizeYMax": 3.25,
-                "sizeOverTime": 0.0,
-                "rotationOverTime": 0.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 360.0,
-                "startColor": {
-                    "x": 0.7900552749633789,
-                    "y": 0.4297234117984772,
-                    "z": 0.19205762445926667,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 0.14364641904830934,
-                    "y": 0.11262043565511704,
-                    "z": 0.05158573016524315,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": -20.0,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
             }
         },
         {
@@ -27726,7 +27877,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
-                        "isMusic": true
+                        "isMusic": true,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27795,7 +27949,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27972,7 +28129,13 @@
                 "textureUV": {
                     "x": 1.0,
                     "y": 1.0
-                }
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
             }
         },
         {
@@ -28087,7 +28250,13 @@
                 "textureUV": {
                     "x": 1.0,
                     "y": 1.0
-                }
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
             }
         },
         {
@@ -28330,7 +28499,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -28452,7 +28624,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove2",
@@ -28461,7 +28636,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove3",
@@ -28470,7 +28648,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove4",
@@ -28479,7 +28660,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove5",
@@ -28488,7 +28672,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeImpact",
@@ -28497,7 +28684,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -28595,6 +28785,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.9843137264251709,
                     "y": 0.5176470875740051,
@@ -29082,7 +29275,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove2",
@@ -29091,7 +29287,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove3",
@@ -29100,7 +29299,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove4",
@@ -29109,7 +29311,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove5",
@@ -29118,7 +29323,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeImpact",
@@ -29127,7 +29335,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -29225,6 +29436,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.9843137264251709,
                     "y": 0.5176470875740051,
@@ -29644,7 +29858,13 @@
                 "textureUV": {
                     "x": 1.0,
                     "y": 1.0
-                }
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
             }
         },
         {
@@ -29961,7 +30181,13 @@
                 "textureUV": {
                     "x": 1.0,
                     "y": 1.0
-                }
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
             }
         },
         {
@@ -30076,7 +30302,13 @@
                 "textureUV": {
                     "x": 1.0,
                     "y": 1.0
-                }
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
             }
         },
         {
@@ -30136,6 +30368,22 @@
                     "y": -217.77957153320313,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -30266,6 +30514,22 @@
                     "y": -601.2950439453125,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -31134,7 +31398,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -31918,6 +32185,9 @@
                 "shadowTechnique": 0,
                 "raymarchSteps": 24,
                 "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
                 "color": {
                     "x": 0.8823529481887817,
                     "y": 0.08650518953800202,
@@ -32163,6 +32433,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -32294,6 +32580,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -32427,6 +32729,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -32558,6 +32876,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -32769,6 +33103,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -32900,6 +33250,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -33150,7 +33516,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -37081,6 +37450,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -37291,6 +37676,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -37422,6 +37823,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -39235,6 +39652,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -43375,6 +43808,705 @@
             "layer": {
                 "layerName": "Enemy",
                 "z": 1
+            }
+        },
+        {
+            "active": true,
+            "name": "CheckPoint",
+            "uuid": 6682268703936602812,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1300.6593017578126,
+                    "y": -311.4711608886719,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Checkpoint Marker.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.649402379989624
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.4000000059604645,
+                "radius": 57.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
+                "color": {
+                    "x": 0.9764705896377564,
+                    "y": 0.2862745225429535,
+                    "z": 0.2862745225429535
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 1895781001044336769,
+                "localPos": {
+                    "x": 119.573486328125,
+                    "y": -39.982666015625,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Embers_1",
+            "uuid": 10602054026571657970,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 325.6026916503906,
+                    "y": -118.40093994140625,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 94.0,
+                    "y": 71.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 122
+            },
+            "particle": {
+                "preset": 6,
+                "burstCount": 0,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 24,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 400,
+                "emitRate": 240.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": 0.0,
+                "radiusMax": 0.5,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.599999904632568,
+                    "y": 3.299999952316284
+                },
+                "startLifeMin": 0.6000000238418579,
+                "startLifeMax": 1.7999999523162842,
+                "startSpeedMin": 0.20000000298023225,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.05000000074505806,
+                "startSizeXMax": 0.14000000059604646,
+                "startSizeYMin": 0.05000000074505806,
+                "startSizeYMax": 0.14000000059604646,
+                "sizeOverTime": -0.019999999552965165,
+                "rotationOverTime": 120.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 0.75,
+                    "z": 0.20000000298023225,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.2199999988079071,
+                    "y": 0.029999999329447748,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.25,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.550000011920929,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": true,
+                "emberRandomDirections": false,
+                "flowStrength": 0.18000000715255738,
+                "flowSpeed": 3.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "CheckPoint",
+            "uuid": 4159262338176604996,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -129.94046020507813,
+                    "y": -343.85101318359377,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Checkpoint Marker.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.649402379989624
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.4000000059604645,
+                "radius": 57.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
+                "color": {
+                    "x": 0.9764705896377564,
+                    "y": 0.2862745225429535,
+                    "z": 0.2862745225429535
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 3706243881979642575,
+                "localPos": {
+                    "x": 4.6175689697265629,
+                    "y": -39.471435546875,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Embers_2",
+            "uuid": 9063582447968169200,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 218.30152893066407,
+                    "y": -799.2064819335938,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 94.0,
+                    "y": 71.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 115
+            },
+            "particle": {
+                "preset": 6,
+                "burstCount": 0,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 24,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 279,
+                "emitRate": 240.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": 0.0,
+                "radiusMax": 0.5,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 2.799999952316284
+                },
+                "startLifeMin": 0.6000000238418579,
+                "startLifeMax": 1.7999999523162842,
+                "startSpeedMin": 0.20000000298023225,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.05000000074505806,
+                "startSizeXMax": 0.14000000059604646,
+                "startSizeYMin": 0.05000000074505806,
+                "startSizeYMax": 0.14000000059604646,
+                "sizeOverTime": -0.019999999552965165,
+                "rotationOverTime": 120.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 0.75,
+                    "z": 0.20000000298023225,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.2199999988079071,
+                    "y": 0.029999999329447748,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.25,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.550000011920929,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": true,
+                "emberRandomDirections": false,
+                "flowStrength": 0.18000000715255738,
+                "flowSpeed": 3.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "CheckPoint",
+            "uuid": 17419245132444256473,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1344.8133544921876,
+                    "y": -723.578125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Checkpoint Marker.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.649402379989624
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "light": {
+                "active": true,
+                "intensity": 0.4000000059604645,
+                "radius": 57.0,
+                "affectBloom": true,
+                "useTransform": true,
+                "renderSelf": true,
+                "renderBehind": true,
+                "ignoreParentOccluders": true,
+                "ignoreOccluders": true,
+                "shadowTechnique": 0,
+                "raymarchSteps": 24,
+                "raymarchThreshold": 0.5,
+                "flickerEnabled": false,
+                "flickerStrength": 0.5,
+                "flickerSpeed": 6.0,
+                "color": {
+                    "x": 0.9764705896377564,
+                    "y": 0.2862745225429535,
+                    "z": 0.2862745225429535
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Embers_3",
+            "uuid": 12108080436827648733,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 777.0064697265625,
+                    "y": -791.8064575195313,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 94.0,
+                    "y": 71.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 54
+            },
+            "particle": {
+                "preset": 6,
+                "burstCount": 0,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 24,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 128,
+                "emitRate": 128.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": 0.0,
+                "radiusMax": 0.5,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.6000000238418579,
+                "startLifeMax": 1.7999999523162842,
+                "startSpeedMin": 0.20000000298023225,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.05000000074505806,
+                "startSizeXMax": 0.14000000059604646,
+                "startSizeYMin": 0.05000000074505806,
+                "startSizeYMax": 0.14000000059604646,
+                "sizeOverTime": -0.019999999552965165,
+                "rotationOverTime": 120.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 0.75,
+                    "z": 0.20000000298023225,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.2199999988079071,
+                    "y": 0.029999999329447748,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.25,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.550000011920929,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": true,
+                "emberRandomDirections": false,
+                "flowStrength": 0.18000000715255738,
+                "flowSpeed": 3.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "Embers_4",
+            "uuid": 12500801300798688201,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1206.209716796875,
+                    "y": -788.1065063476563,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 94.0,
+                    "y": 71.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 35
+            },
+            "particle": {
+                "preset": 6,
+                "burstCount": 0,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 24,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 194,
+                "emitRate": 30.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": 0.0,
+                "radiusMax": 0.5,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.6000000238418579,
+                "startLifeMax": 1.7999999523162842,
+                "startSpeedMin": 0.20000000298023225,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.05000000074505806,
+                "startSizeXMax": 0.14000000059604646,
+                "startSizeYMin": 0.05000000074505806,
+                "startSizeYMax": 0.14000000059604646,
+                "sizeOverTime": -0.019999999552965165,
+                "rotationOverTime": 120.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 0.75,
+                    "z": 0.20000000298023225,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.2199999988079071,
+                    "y": 0.029999999329447748,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.25,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.550000011920929,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": true,
+                "emberRandomDirections": false,
+                "flowStrength": 0.18000000715255738,
+                "flowSpeed": 3.0,
+                "flowFrequency": 0.0
             }
         }
     ],

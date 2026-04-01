@@ -28,6 +28,9 @@ uniform int uActive;          // enable post-processing
 uniform float uBrightness;
 uniform float uContrast;
 uniform float uSaturation;
+uniform float uShadowDarkness;
+uniform vec3 uShadowColor;
+uniform float uShadowColorStrength;
 
 /*!
 @brief Fragment shader entry point.
@@ -45,19 +48,27 @@ void main()
         bloomColor = texture(uBloom, texCoord).rgb * uBloomIntensity;
     }
 
-    // --- Add front lights ---
-    vec3 lightColor = texture(uNoBloomLight, texCoord).rgb;
+    vec4 lightFront = texture(uNoBloomLight, texCoord);
+    vec4 lightBehind = texture(uNoBloomBehind, texCoord);
+    vec3 lightColor = lightFront.rgb;
 
     // --- Add behind lights with mask ---
     float mask = texture(uOccluderMask, texCoord).r;
     if (mask < 0.999)
     {
-        vec3 behind = texture(uNoBloomBehind, texCoord).rgb;
-        lightColor += behind * (1.0 - mask);
+        lightColor += lightBehind.rgb * (1.0 - mask);
     }
 
     // --- Combine all ---
     vec3 color = sceneColor + bloomColor + lightColor;
+
+    float shadowMask = lightFront.a;
+    if (mask < 0.999) shadowMask = max(shadowMask, lightBehind.a * (1.0 - mask));
+    shadowMask = clamp(shadowMask, 0.0, 1.0);
+
+    float shadowAmount = clamp(shadowMask * max(uShadowDarkness, 0.0), 0.0, 1.0);
+    vec3 shadowMul = mix(vec3(1.0), clamp(uShadowColor, 0.0, 1.0), clamp(uShadowColorStrength, 0.0, 1.0));
+    color *= mix(vec3(1.0), shadowMul, shadowAmount);
 
     // --- Post-processing ---
     if (uActive == 1)

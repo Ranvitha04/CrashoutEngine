@@ -9,6 +9,14 @@
             "path": "banks/Squishy-Movement_1 (1).wav"
         },
         {
+            "name": "death",
+            "path": "Player/death.wav"
+        },
+        {
+            "name": "grass 8",
+            "path": "Cutscenes/ending/grass 8.wav"
+        },
+        {
             "name": "Ambience",
             "path": "banks/Ambience.bank"
         },
@@ -25,6 +33,10 @@
             "path": "banks/Master.bank"
         },
         {
+            "name": "land",
+            "path": "Player/land.wav"
+        },
+        {
             "name": "sfx",
             "path": "banks/sfx.bank"
         },
@@ -35,6 +47,90 @@
         {
             "name": "book interaction",
             "path": "book interaction.wav"
+        },
+        {
+            "name": "grass 1",
+            "path": "Cutscenes/ending/grass 1.wav"
+        },
+        {
+            "name": "slime 4",
+            "path": "slime 4.wav"
+        },
+        {
+            "name": "grass 2",
+            "path": "Cutscenes/ending/grass 2.wav"
+        },
+        {
+            "name": "slime 5",
+            "path": "slime 5.wav"
+        },
+        {
+            "name": "grass 3",
+            "path": "Cutscenes/ending/grass 3.wav"
+        },
+        {
+            "name": "slime 2",
+            "path": "slime 2.wav"
+        },
+        {
+            "name": "grass 4",
+            "path": "Cutscenes/ending/grass 4.wav"
+        },
+        {
+            "name": "slime 3",
+            "path": "slime 3.wav"
+        },
+        {
+            "name": "grass 5",
+            "path": "Cutscenes/ending/grass 5.wav"
+        },
+        {
+            "name": "grass 6",
+            "path": "Cutscenes/ending/grass 6.wav"
+        },
+        {
+            "name": "slime 1",
+            "path": "slime 1.wav"
+        },
+        {
+            "name": "water",
+            "path": "Cutscenes/ending/water.wav"
+        },
+        {
+            "name": "grass 7",
+            "path": "Cutscenes/ending/grass 7.wav"
+        },
+        {
+            "name": "speak",
+            "path": "In Game/speak.wav"
+        },
+        {
+            "name": "leaves",
+            "path": "Cutscenes/opening/leaves.wav"
+        },
+        {
+            "name": "main menu",
+            "path": "main menu.wav"
+        },
+        {
+            "name": "wind blowing",
+            "path": "Cutscenes/opening/wind blowing.wav"
+        },
+        {
+            "name": "wind",
+            "path": "Cutscenes/opening/wind.wav"
+        },
+        {
+            "name": "tile step 1",
+            "path": "Cutscenes/opening/tile step 1.wav"
+        },
+        {
+            "name": "Squishy-Movement_1",
+            "path": "Squishy-Movement_1.wav"
+        },
+        {
+            "name": "tile step 2",
+            "path": "Cutscenes/opening/tile step 2.wav"
         },
         {
             "name": "Nightshift_BGM_Loop_70bpm",
@@ -53,6 +149,10 @@
             "path": "footsteps 4.wav"
         },
         {
+            "name": "checkpoint",
+            "path": "In Game/checkpoint.wav"
+        },
+        {
             "name": "footsteps 5",
             "path": "footsteps 5.wav"
         },
@@ -67,6 +167,10 @@
         {
             "name": "footsteps 6",
             "path": "footsteps 6.wav"
+        },
+        {
+            "name": "rocks",
+            "path": "In Game/rocks.wav"
         },
         {
             "name": "footsteps 7",
@@ -86,7 +190,7 @@
         },
         {
             "name": "jump",
-            "path": "jump.wav"
+            "path": "Player/jump.wav"
         },
         {
             "name": "level bgm 1 re-mixed",
@@ -101,10 +205,6 @@
             "path": "level bgm 1.wav"
         },
         {
-            "name": "main menu",
-            "path": "main menu.wav"
-        },
-        {
             "name": "Nightshift_Menu_Loop_70bpm",
             "path": "Nightshift_Menu_Loop_70bpm.wav"
         },
@@ -117,32 +217,8 @@
             "path": "portal SFX.wav"
         },
         {
-            "name": "slime 1",
-            "path": "slime 1.wav"
-        },
-        {
-            "name": "slime 2",
-            "path": "slime 2.wav"
-        },
-        {
-            "name": "slime 3",
-            "path": "slime 3.wav"
-        },
-        {
-            "name": "slime 4",
-            "path": "slime 4.wav"
-        },
-        {
-            "name": "slime 5",
-            "path": "slime 5.wav"
-        },
-        {
             "name": "slime impact",
             "path": "slime impact.wav"
-        },
-        {
-            "name": "Squishy-Movement_1",
-            "path": "Squishy-Movement_1.wav"
         },
         {
             "name": "temp opening cutscene",
@@ -167,10 +243,6 @@
             "path": "BlurShader"
         },
         {
-            "name": "PPShader",
-            "path": "PPShader"
-        },
-        {
             "name": "BrightShader",
             "path": "BrightShader"
         },
@@ -185,6 +257,18 @@
         {
             "name": "CrashoutShader",
             "path": "CrashoutShader"
+        },
+        {
+            "name": "HeatDistortion",
+            "path": "HeatDistortion"
+        },
+        {
+            "name": "ParticleShader",
+            "path": "ParticleShader"
+        },
+        {
+            "name": "PPShader",
+            "path": "PPShader"
         },
         {
             "name": "TextShader",
@@ -565,6 +649,10 @@
             "path": "Character/Light Mode/Left/Run 1.png"
         },
         {
+            "name": "EndCutscene_3",
+            "path": "Cutscenes/EndCutscene_3.png"
+        },
+        {
             "name": "restart yellow",
             "path": "UI/settings/restart yellow.png"
         },
@@ -685,14 +773,6 @@
             "path": "Character/Run.gif"
         },
         {
-            "name": "spikes_17",
-            "path": "spritesheet/spikes/spikes_17.png"
-        },
-        {
-            "name": "Checkpoint Marker",
-            "path": "Checkpoint Marker.png"
-        },
-        {
             "name": "Cutscene_1",
             "path": "Cutscenes/Cutscene_1.png"
         },
@@ -707,10 +787,6 @@
         {
             "name": "EndCutscene_1",
             "path": "Cutscenes/EndCutscene_1.png"
-        },
-        {
-            "name": "EndCutscene_3",
-            "path": "Cutscenes/EndCutscene_3.png"
         },
         {
             "name": "fourth",
@@ -1805,6 +1881,14 @@
             "path": "spritesheet/spikes/spikes_16.png"
         },
         {
+            "name": "Checkpoint Marker",
+            "path": "UI/Checkpoint Marker.png"
+        },
+        {
+            "name": "spikes_17",
+            "path": "spritesheet/spikes/spikes_17.png"
+        },
+        {
             "name": "spikes_18",
             "path": "spritesheet/spikes/spikes_18.png"
         },
@@ -2295,6 +2379,14 @@
             "path": "Cam_Zone_Prefab.json"
         },
         {
+            "name": "EnergyBall_Prefab",
+            "path": "EnergyBall_Prefab.json"
+        },
+        {
+            "name": "CheckPoint",
+            "path": "CheckPoint.json"
+        },
+        {
             "name": "Door_Prefab",
             "path": "Door_Prefab.json"
         },
@@ -2305,10 +2397,6 @@
         {
             "name": "FilledAudioManager_Prefab",
             "path": "FilledAudioManager_Prefab.json"
-        },
-        {
-            "name": "EnergyBall_Prefab",
-            "path": "EnergyBall_Prefab.json"
         },
         {
             "name": "HowTo1_no_anim",

@@ -14,6 +14,8 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "createprefabcommand.h"
 #include "particlecomponent.h"
 #include "textcomponent.h"
+#include "shaderasset.h"
+#include "ppcomponent.h"
 
 using namespace CrashoutsEngine;
 
@@ -204,6 +206,46 @@ namespace UI {
             ImVec2 imgMin = ImGui::GetItemRectMin();
             ImVec2 imgMax = ImGui::GetItemRectMax();
             ImVec2 imgSize = ImGui::GetItemRectSize();
+
+            {
+                if (selected != 0 && ecs.HasComponent<Component::PPComponent>(selected)) {
+                    CrashoutsEngine::PostProcessing::g_ppOverrideEntity = selected;
+                }
+
+                bool heatLoaded = (Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("HeatDistortion") != nullptr);
+                bool distortionLoaded = (Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("DistortionShader") != nullptr);
+
+                ImDrawList* dl = ImGui::GetWindowDrawList();
+                ImVec2 p0(imgMin.x + 8.0f, imgMin.y + 8.0f);
+                ImVec2 p1(p0.x + 320.0f, p0.y + 64.0f);
+                dl->AddRectFilled(p0, p1, IM_COL32(0, 0, 0, 160), 4.0f);
+
+                char line1[256];
+                std::snprintf(line1, sizeof(line1), "PP src: %u  override: %u",
+                    (unsigned)CrashoutsEngine::PostProcessing::g_ppSourceEntity,
+                    (unsigned)CrashoutsEngine::PostProcessing::g_ppOverrideEntity);
+                dl->AddText(ImVec2(p0.x + 8.0f, p0.y + 6.0f), IM_COL32(255, 255, 255, 220), line1);
+
+                char line2[256];
+                std::snprintf(line2, sizeof(line2), "Heat: %s (shader %s) debug:%s  str:%.4f spd:%.2f scl:%.1f",
+                    CrashoutsEngine::PostProcessing::g_heatEnabled ? "ON" : "OFF",
+                    heatLoaded ? "OK" : "MISSING",
+                    CrashoutsEngine::PostProcessing::g_heatDebugMarker ? "ON" : "OFF",
+                    CrashoutsEngine::PostProcessing::g_heatStrength,
+                    CrashoutsEngine::PostProcessing::g_heatSpeed,
+                    CrashoutsEngine::PostProcessing::g_heatScale);
+                dl->AddText(ImVec2(p0.x + 8.0f, p0.y + 24.0f), IM_COL32(255, 255, 255, 220), line2);
+
+                char line3[256];
+                std::snprintf(line3, sizeof(line3), "Dist: %s (shader %s) debug:%s str:%.4f spd:%.2f n:%.2f",
+                    CrashoutsEngine::PostProcessing::g_distortionEnabled ? "ON" : "OFF",
+                    distortionLoaded ? "OK" : "MISSING",
+                    CrashoutsEngine::PostProcessing::g_distortionDebugMarker ? "ON" : "OFF",
+                    CrashoutsEngine::PostProcessing::g_distortionStrength,
+                    CrashoutsEngine::PostProcessing::g_distortionSpeed,
+                    CrashoutsEngine::PostProcessing::g_distortionNoiseStrength);
+                dl->AddText(ImVec2(p0.x + 8.0f, p0.y + 42.0f), IM_COL32(255, 255, 255, 220), line3);
+            }
 
             // 4) ImGuizmo overlay
             ImGuizmo::BeginFrame();

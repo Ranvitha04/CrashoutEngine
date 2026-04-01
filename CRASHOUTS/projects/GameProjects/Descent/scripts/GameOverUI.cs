@@ -265,6 +265,7 @@ namespace CrashoutsEngine
             var btn = btnEntity.GetComponent<ButtonComponent>();
             if (btn != null && btn.IsClicked())
             {
+                AudioManager.GetInstance().PlayAttached("Click", btnEntity.ID);
                 controllerNavigationActive = false;
                 InternalCalls.UI_ClearForcedHoveredButton();
                 return true;
@@ -356,7 +357,12 @@ namespace CrashoutsEngine
                 return false;
             }
 
-            return buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit");
+            if (buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit"))
+            {
+                AudioManager.GetInstance().PlayAttached("Click", target.ID);
+                return true;
+            }
+            return false;
         }
 
         private void SetEntityActive(Entity e, bool active)

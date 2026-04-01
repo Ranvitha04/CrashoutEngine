@@ -2707,6 +2707,60 @@ namespace CrashoutsEngine
 			UIHelpers::DrawUndoableFloat("Ambient", ppc->ambient, 0.01f, 0.0f, 1.0f);
 			UIHelpers::DrawUndoableBool("Shadows Enabled", ppc->shadowsEnabled);
 			ImGui::SliderInt("Shadow Rays", &ppc->shadowRays, 8, 512);
+			UIHelpers::DrawUndoableFloat("Shadow Darkness (Global)", ppc->shadowDarkness, 0.05f, 0.0f, 5.0f);
+			float shadowCol[3] = { ppc->shadowColor.x, ppc->shadowColor.y, ppc->shadowColor.z };
+			if (ImGui::ColorEdit3("Shadow Color", shadowCol)) {
+				ppc->shadowColor = { shadowCol[0], shadowCol[1], shadowCol[2] };
+			}
+			UIHelpers::DrawUndoableFloat("Shadow Color Strength", ppc->shadowColorStrength, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Shadow Map Occlusion", ppc->shadowMapStrength, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Raymarch Occlusion", ppc->raymarchShadowStrength, 0.01f, 0.0f, 1.0f);
+
+			UIHelpers::DrawUndoableBool("Heat Distortion Enabled", ppc->heatDistortionEnabled);
+			UIHelpers::DrawUndoableBool("Heat Debug Marker", ppc->heatDebugMarker);
+			UIHelpers::DrawUndoableFloat("Heat Strength", ppc->heatStrength, 0.0001f, 0.0f, 0.05f);
+			UIHelpers::DrawUndoableFloat("Heat Speed", ppc->heatSpeed, 0.01f, 0.0f, 20.0f);
+			UIHelpers::DrawUndoableFloat("Heat Scale", ppc->heatScale, 0.1f, 0.0f, 200.0f);
+			float heatCol[3] = { ppc->heatTintColor.x, ppc->heatTintColor.y, ppc->heatTintColor.z };
+			if (ImGui::ColorEdit3("Heat Tint", heatCol)) {
+				ppc->heatTintColor = { heatCol[0], heatCol[1], heatCol[2] };
+			}
+			UIHelpers::DrawUndoableFloat("Heat Tint Strength", ppc->heatTintStrength, 0.01f, 0.0f, 1.0f);
+
+			UIHelpers::DrawUndoableBool("Distortion Enabled", ppc->distortionEnabled);
+			UIHelpers::DrawUndoableBool("Distortion Debug Marker", ppc->distortionDebugMarker);
+			UIHelpers::DrawUndoableFloat("Distortion Strength", ppc->distortionStrength, 0.0001f, 0.0f, 0.05f);
+			UIHelpers::DrawUndoableFloat("Distortion Speed", ppc->distortionSpeed, 0.01f, 0.0f, 20.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Wave Scale 1", ppc->distortionWaveScale1, 0.1f, 0.0f, 200.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Wave Scale 2", ppc->distortionWaveScale2, 0.1f, 0.0f, 200.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Noise Strength", ppc->distortionNoiseStrength, 0.01f, 0.0f, 5.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Lava Height", ppc->distortionLavaHeight, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Lava Boost", ppc->distortionLavaBoost, 0.05f, 0.0f, 10.0f);
+			ImGui::DragFloat2("Distortion Player Pos", &ppc->distortionPlayerPos.x, 0.001f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Player Radius", ppc->distortionPlayerRadius, 0.001f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Player Strength", ppc->distortionPlayerStrength, 0.0001f, 0.0f, 0.1f);
+			float dGlow[3] = { ppc->distortionGlowColor.x, ppc->distortionGlowColor.y, ppc->distortionGlowColor.z };
+			if (ImGui::ColorEdit3("Distortion Glow Color", dGlow)) {
+				ppc->distortionGlowColor = { dGlow[0], dGlow[1], dGlow[2] };
+			}
+			UIHelpers::DrawUndoableFloat("Distortion Glow Strength", ppc->distortionGlowStrength, 0.01f, 0.0f, 5.0f);
+			UIHelpers::DrawUndoableBool("Distortion Shock Enabled", ppc->distortionShockEnabled);
+			ImGui::DragFloat2("Distortion Shock Pos", &ppc->distortionShockPos.x, 0.001f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Shock Time", ppc->distortionShockTime, 0.01f, 0.0f, 5.0f);
+			UIHelpers::DrawUndoableFloat("Distortion Shock Strength", ppc->distortionShockStrength, 0.0001f, 0.0f, 0.1f);
+			UIHelpers::DrawUndoableBool("Vignette Enabled", ppc->vignetteEnabled);
+			UIHelpers::DrawUndoableFloat("Vignette Intensity", ppc->vignetteIntensity, 0.01f, 0.0f, 2.0f);
+			UIHelpers::DrawUndoableFloat("Vignette Radius", ppc->vignetteRadius, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Vignette Softness", ppc->vignetteSoftness, 0.01f, 0.0f, 1.0f);
+			float vCol[3] = { ppc->vignetteColor.x, ppc->vignetteColor.y, ppc->vignetteColor.z };
+			if (ImGui::ColorEdit3("Vignette Color", vCol)) {
+				ppc->vignetteColor = { vCol[0], vCol[1], vCol[2] };
+			}
+			UIHelpers::DrawUndoableFloat("Vignette Lag", ppc->vignetteLag, 0.01f, 0.0f, 5.0f);
+			UIHelpers::DrawUndoableFloat("Vignette Pulse Intensity", ppc->vignettePulseIntensity, 0.01f, 0.0f, 2.0f);
+			UIHelpers::DrawUndoableFloat("Vignette Pulse Radius", ppc->vignettePulseRadius, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Vignette Pulse Speed", ppc->vignettePulseSpeed, 0.01f, 0.0f, 20.0f);
+			UIHelpers::DrawUndoableBool("Vignette Follow Player", ppc->vignetteFollowPlayer);
 			UIHelpers::DrawUndoableBool("Bloom Enabled", ppc->bloomEnabled);
 			UIHelpers::DrawUndoableFloat("Bloom Threshold", ppc->bloomThreshold, 0.01f, 0.0f, 5.0f);
 			UIHelpers::DrawUndoableFloat("Bloom Intensity", ppc->bloomIntensity, 0.01f, 0.0f, 5.0f);
@@ -2717,6 +2771,46 @@ namespace CrashoutsEngine
 				ppc->ambient = 0.15f;
 				ppc->shadowsEnabled = true;
 				ppc->shadowRays = 128;
+				ppc->shadowDarkness = 1.0f;
+				ppc->shadowColor = { 0.0f, 0.0f, 0.0f };
+				ppc->shadowColorStrength = 1.0f;
+				ppc->shadowMapStrength = 1.0f;
+				ppc->raymarchShadowStrength = 1.0f;
+				ppc->heatDistortionEnabled = false;
+				ppc->heatDebugMarker = false;
+				ppc->heatStrength = 0.003f;
+				ppc->heatSpeed = 2.0f;
+				ppc->heatScale = 20.0f;
+				ppc->heatTintColor = { 1.0f, 0.5f, 0.1f };
+				ppc->heatTintStrength = 0.0f;
+				ppc->distortionEnabled = false;
+				ppc->distortionDebugMarker = false;
+				ppc->distortionStrength = 0.003f;
+				ppc->distortionSpeed = 2.0f;
+				ppc->distortionWaveScale1 = 20.0f;
+				ppc->distortionWaveScale2 = 10.0f;
+				ppc->distortionNoiseStrength = 0.8f;
+				ppc->distortionLavaHeight = 0.3f;
+				ppc->distortionLavaBoost = 2.5f;
+				ppc->distortionPlayerPos = { 0.5f, 0.5f };
+				ppc->distortionPlayerRadius = 0.1f;
+				ppc->distortionPlayerStrength = 0.01f;
+				ppc->distortionGlowColor = { 1.0f, 0.4f, 0.1f };
+				ppc->distortionGlowStrength = 1.0f;
+				ppc->distortionShockEnabled = false;
+				ppc->distortionShockPos = { 0.5f, 0.0f };
+				ppc->distortionShockTime = 999.0f;
+				ppc->distortionShockStrength = 0.02f;
+				ppc->vignetteEnabled = false;
+				ppc->vignetteIntensity = 0.6f;
+				ppc->vignetteRadius = 0.75f;
+				ppc->vignetteSoftness = 0.35f;
+				ppc->vignetteColor = { 0.0f, 0.0f, 0.0f };
+				ppc->vignetteLag = 0.0f;
+				ppc->vignettePulseIntensity = 0.0f;
+				ppc->vignettePulseRadius = 0.0f;
+				ppc->vignettePulseSpeed = 2.0f;
+				ppc->vignetteFollowPlayer = false;
 				ppc->bloomEnabled = true;
 				ppc->bloomThreshold = 1.0f;
 				ppc->bloomIntensity = 0.8f;
@@ -2773,6 +2867,10 @@ namespace CrashoutsEngine
 				UIHelpers::DrawUndoableInt("Raymarch Steps", lc->raymarchSteps, 1.0f, 4, 128);
 				UIHelpers::DrawUndoableFloat("Raymarch Threshold", lc->raymarchThreshold, 0.01f, 0.01f, 1.0f);
 			}
+
+			UIHelpers::DrawUndoableBool("Flicker Enabled", lc->flickerEnabled);
+			UIHelpers::DrawUndoableFloat("Flicker Strength", lc->flickerStrength, 0.01f, 0.0f, 1.0f);
+			UIHelpers::DrawUndoableFloat("Flicker Speed", lc->flickerSpeed, 0.05f, 0.0f, 50.0f);
 		}
 	};
 
@@ -2938,6 +3036,9 @@ namespace CrashoutsEngine
 									childLight->radius = lc->radius;
 									childLight->affectBloom = lc->affectBloom;
 									childLight->active = lc->active;
+									childLight->flickerEnabled = lc->flickerEnabled;
+									childLight->flickerStrength = lc->flickerStrength;
+									childLight->flickerSpeed = lc->flickerSpeed;
 									childLight->useTransform = true;
 									childLight->renderSelf = true;
 									childLight->renderBehind = lc->renderBehind;
@@ -3460,7 +3561,9 @@ namespace CrashoutsEngine
 
 		// Remove component
 		void remove(ECS& ecs, Entity e) override {
-			if (has(ecs, e)) ecs.RemoveComponent<Component::ParticleComponent>(e);
+			if (has(ecs, e)) {
+				ecs.RemoveComponent<Component::ParticleComponent>(e);
+			}
 		}
 
 		// Draw Inspector UI
@@ -3469,7 +3572,7 @@ namespace CrashoutsEngine
 			if (!pc) return;
 
 			ImGui::SeparatorText("Preset");
-			const char* presetNames[] = { "Custom", "Smoke", "Fire", "Explosion", "Superhero Landing" };
+			const char* presetNames[] = { "Custom", "Smoke", "Fire", "Explosion", "Superhero Landing", "Lava", "Ember" };
 			int preset = static_cast<int>(pc->preset);
 			if (ImGui::Combo("##ParticlePreset", &preset, presetNames, IM_ARRAYSIZE(presetNames))) {
 				ParticleSystem::ApplyPreset(*pc, static_cast<ParticleSystem::ParticlePreset>(preset));
@@ -3503,6 +3606,8 @@ namespace CrashoutsEngine
 				UIHelpers::DrawUndoableBool("Emitting", pc->isEmitting);
 				ImGui::SameLine();
 				UIHelpers::DrawUndoableBool("World Space", pc->useWorldSpace);
+				ImGui::SameLine();
+				UIHelpers::DrawUndoableBool("GPU Sim", pc->gpuSimulation);
 				ImGui::PopItemWidth();
 
 				int prevMax = pc->maxParticles;
@@ -3656,9 +3761,26 @@ namespace CrashoutsEngine
 				UIHelpers::DrawUndoableColor("End", pc->endColor);
 			}
 
+			if (pc->preset == ParticleSystem::ParticlePreset::Lava) {
+				if (ImGui::CollapsingHeader("Lava")) {
+					UIHelpers::DrawUndoableFloat("Flow Strength", pc->flowStrength, 0.01f, 0.0f, 10.0f);
+					UIHelpers::DrawUndoableFloat("Flow Speed", pc->flowSpeed, 0.01f, 0.0f, 20.0f);
+					UIHelpers::DrawUndoableFloat("Flow Frequency", pc->flowFrequency, 0.01f, 0.0f, 20.0f);
+				}
+			}
+			else if (pc->preset == ParticleSystem::ParticlePreset::Ember) {
+				if (ImGui::CollapsingHeader("Ember")) {
+					UIHelpers::DrawUndoableBool("Random Directions", pc->emberRandomDirections);
+					UIHelpers::DrawUndoableFloat("Drift Strength", pc->flowStrength, 0.01f, 0.0f, 10.0f);
+					UIHelpers::DrawUndoableFloat("Flicker Speed", pc->flowSpeed, 0.01f, 0.0f, 20.0f);
+					UIHelpers::DrawUndoableFloat("Drift Frequency", pc->flowFrequency, 0.01f, 0.0f, 20.0f);
+				}
+			}
+
 			// --- 5. Rendering (Collapsing) ---
 			if (ImGui::CollapsingHeader("Texture & UVs")) {
 				UIHelpers::DrawUndoableBool("Use Texture", pc->useTexture);
+				UIHelpers::DrawUndoableBool("Additive Blend", pc->additiveBlend);
 
 				if (pc->useTexture) {
 					// Texture Selection Row

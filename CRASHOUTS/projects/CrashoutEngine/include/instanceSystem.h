@@ -128,6 +128,28 @@ namespace InstancingSystem {
         GLuint textureHandle{ 0 }; // Raw handle override
         CEColor tint{ 1.0f, 1.0f, 1.0f };
         CEVec2 uvSize{ 1.0f, 1.0f };
+        bool additiveBlend{ false };
+    };
+
+    struct ParticleShaderParams {
+        float time{ 0.0f };
+        CEVec3 gravity{ 0.0f, -9.8f, 0.0f };
+        CEColor startColor{ 1.0f, 1.0f, 1.0f, 1.0f };
+        CEColor endColor{ 1.0f, 1.0f, 1.0f, 0.0f };
+        float sizeOverTime{ 0.0f };
+        float rotationOverTime{ 0.0f };
+        float flowStrength{ 0.0f };
+        float flowSpeed{ 0.0f };
+        float flowFrequency{ 0.0f };
+        int renderShape{ 0 };
+        float squareSizeMultiplier{ 1.0f };
+        float circleRadiusMultiplier{ 1.0f };
+        float triangleWidthMultiplier{ 1.0f };
+        float triangleHeightMultiplier{ 1.0f };
+        int useLocalSpace{ 0 };
+        CEVec3 parentPos{ 0.0f, 0.0f, 0.0f };
+        float parentRotDeg{ 0.0f };
+        CEVec2 parentScale{ 1.0f, 1.0f };
     };
 
     //....................Circle................//
@@ -158,6 +180,20 @@ namespace InstancingSystem {
         int segments,
         const InstancedParams& params
     );        
+
+    void RenderParticleCirclesBatch(
+        const CEVec3* positions,
+        const float* spawnTimes,
+        const float* maxLives,
+        const float* rotations,
+        const float* widths,
+        const float* heights,
+        const CEVec2* velocities,
+        int count,
+        int segments,
+        const InstancedParams& params,
+        const ParticleShaderParams& particleParams
+    );
 
     void RenderInstancedCirclesFromECS(bool previewOnly, int segments, const InstancedParams& params);
 
@@ -190,6 +226,19 @@ namespace InstancingSystem {
         const CEVec2* uvOffsets,
         int count,
         const InstancedParams& params
+    );
+
+    void RenderParticleRectanglesBatch(
+        const CEVec3* positions,
+        const float* spawnTimes,
+        const float* maxLives,
+        const float* rotations,
+        const float* widths,
+        const float* heights,
+        const CEVec2* velocities,
+        int count,
+        const InstancedParams& params,
+        const ParticleShaderParams& particleParams
     );
 
     void InitializeInstancedRectanglesData(int count);
@@ -233,6 +282,19 @@ namespace InstancingSystem {
         const CEVec2* uvOffsets,
         int count,
         const InstancingSystem::InstancedParams& params
+    );
+
+    void RenderParticleTrianglesBatch(
+        const CEVec3* positions,
+        const float* spawnTimes,
+        const float* maxLives,
+        const float* rotations,
+        const float* widths,
+        const float* heights,
+        const CEVec2* velocities,
+        int count,
+        const InstancedParams& params,
+        const ParticleShaderParams& particleParams
     );
 
     void InitializeInstancedRectanglesData(int count);

@@ -10,7 +10,7 @@ All content © 2025 Digipen Institute of Technology Singapore.All rights reserve
 
 #version 460 core
 
-layout (location = 0) in vec2 aPos;
+layout (location = 0) in vec2 aPos; 
 layout (location = 1) in vec2 aTexCoord;
 layout (location = 2) in vec2 iLightPos;
 layout (location = 3) in float iLightRadius;
@@ -21,6 +21,10 @@ layout (location = 7) in float iAffectBloom;
 layout (location = 8) in float iShadowTechnique;
 layout (location = 9) in float iRaymarchSteps;
 layout (location = 10) in float iRaymarchThreshold;
+
+// 🔥 NEW
+layout (location = 11) in float iFlickerStrength;
+layout (location = 12) in float iFlickerSpeed;
 
 out vec2 texCoord;
 out vec2 vLightPos;
@@ -33,9 +37,9 @@ out float vShadowTechnique;
 out float vRaymarchSteps;
 out float vRaymarchThreshold;
 
-/*!
-@brief Vertex shader entry point.
-*/
+
+out float vFlickerStrength;
+out float vFlickerSpeed;
 
 void main()
 {
@@ -50,5 +54,10 @@ void main()
     vShadowTechnique = iShadowTechnique;
     vRaymarchSteps = iRaymarchSteps;
     vRaymarchThreshold = iRaymarchThreshold;
+
+    
+    vFlickerStrength = iFlickerStrength;
+    vFlickerSpeed = iFlickerSpeed;
+
     gl_Position = vec4(aPos, 0.0, 1.0);
 }

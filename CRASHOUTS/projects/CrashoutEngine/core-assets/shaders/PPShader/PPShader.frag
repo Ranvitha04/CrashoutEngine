@@ -21,6 +21,14 @@ uniform float u_contrast = 0.0;     // 0.0 = no change
 uniform float u_saturation = 0.0;   // 0.0 = no change
 uniform bool  u_active = false;   
 
+uniform bool u_vignetteEnabled = false;
+uniform float u_vignetteIntensity = 0.6;
+uniform float u_vignetteRadius = 0.75;
+uniform float u_vignetteSoftness = 0.35;
+uniform vec3 u_vignetteColor = vec3(0.0);
+uniform float u_aspect = 1.7777778;
+uniform vec2 u_vignetteCenter = vec2(0.5, 0.5);
+
 /*!
 @brief Fragment shader entry point.
 */
@@ -44,6 +52,18 @@ void main() {
 
         // Final output, Clamp to make sure colors are valid 0.0 - 1.0
         color = clamp(color, 0.0, 1.0);
+    }
+
+    if (u_vignetteEnabled) {
+        vec2 centered = texCoord - u_vignetteCenter;
+        centered.x *= max(u_aspect, 0.0001);
+        float maxDist = 0.5 * sqrt(u_aspect * u_aspect + 1.0);
+        float dist = length(centered) / max(maxDist, 0.0001);
+        float softness = max(u_vignetteSoftness, 0.0001);
+        float radius = max(u_vignetteRadius, 0.0);
+        float vig = smoothstep(radius, radius + softness, dist);
+        float amount = clamp(vig * max(u_vignetteIntensity, 0.0), 0.0, 1.0);
+        color = mix(color, u_vignetteColor, amount);
     }
     
     // Set the final pixel color

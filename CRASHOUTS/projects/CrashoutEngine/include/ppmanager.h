@@ -29,7 +29,21 @@ namespace CrashoutsEngine {
 		extern float g_bloomThreshold;
 		extern float g_bloomIntensity;
 		extern int g_bloomIterations;		
-		extern bool active;
+		//extern bool active;
+		extern Entity g_ppSourceEntity;
+		extern Entity g_ppOverrideEntity;
+		extern bool g_heatEnabled;
+		extern bool g_heatDebugMarker;
+		extern float g_heatStrength;
+		extern float g_heatSpeed;
+		extern float g_heatScale;
+		extern bool g_distortionEnabled;
+		extern bool g_distortionDebugMarker;
+		extern float g_distortionStrength;
+		extern float g_distortionSpeed;
+		extern float g_distortionWaveScale1;
+		extern float g_distortionWaveScale2;
+		extern float g_distortionNoiseStrength;
 
 		// --- Declare OpenGL Handles ---
 		extern GLuint quadvao; // The full-screen quad VAO

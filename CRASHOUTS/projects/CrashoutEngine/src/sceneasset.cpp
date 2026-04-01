@@ -494,6 +494,9 @@ namespace CrashoutsEngine {
 					clipObj.AddMember("spatial3D", clip.spatial3D, allocator);
 					clipObj.AddMember("looping", clip.looping, allocator);
 					clipObj.AddMember("isMusic", clip.isMusic, allocator);
+					clipObj.AddMember("minDistance", clip.minDistance, allocator);
+					clipObj.AddMember("maxDistance", clip.maxDistance, allocator);
+					clipObj.AddMember("dspType", clip.dspType, allocator);
 					clipsArr.PushBack(clipObj, allocator);
 				}
 				val.AddMember("clips", clipsArr, allocator);
@@ -661,6 +664,46 @@ namespace CrashoutsEngine {
 				val.AddMember("ambient", c.ambient, allocator);
 				val.AddMember("shadowsEnabled", c.shadowsEnabled, allocator);
 				val.AddMember("shadowRays", c.shadowRays, allocator);
+				val.AddMember("shadowDarkness", c.shadowDarkness, allocator);
+				WriteVec3(val, "shadowColor", c.shadowColor, allocator);
+				val.AddMember("shadowColorStrength", c.shadowColorStrength, allocator);
+				val.AddMember("shadowMapStrength", c.shadowMapStrength, allocator);
+				val.AddMember("raymarchShadowStrength", c.raymarchShadowStrength, allocator);
+				val.AddMember("heatDistortionEnabled", c.heatDistortionEnabled, allocator);
+				val.AddMember("heatDebugMarker", c.heatDebugMarker, allocator);
+				val.AddMember("heatStrength", c.heatStrength, allocator);
+				val.AddMember("heatSpeed", c.heatSpeed, allocator);
+				val.AddMember("heatScale", c.heatScale, allocator);
+				WriteVec3(val, "heatTintColor", c.heatTintColor, allocator);
+				val.AddMember("heatTintStrength", c.heatTintStrength, allocator);
+				val.AddMember("distortionEnabled", c.distortionEnabled, allocator);
+				val.AddMember("distortionDebugMarker", c.distortionDebugMarker, allocator);
+				val.AddMember("distortionStrength", c.distortionStrength, allocator);
+				val.AddMember("distortionSpeed", c.distortionSpeed, allocator);
+				val.AddMember("distortionWaveScale1", c.distortionWaveScale1, allocator);
+				val.AddMember("distortionWaveScale2", c.distortionWaveScale2, allocator);
+				val.AddMember("distortionNoiseStrength", c.distortionNoiseStrength, allocator);
+				val.AddMember("distortionLavaHeight", c.distortionLavaHeight, allocator);
+				val.AddMember("distortionLavaBoost", c.distortionLavaBoost, allocator);
+				WriteVec2(val, "distortionPlayerPos", c.distortionPlayerPos, allocator);
+				val.AddMember("distortionPlayerRadius", c.distortionPlayerRadius, allocator);
+				val.AddMember("distortionPlayerStrength", c.distortionPlayerStrength, allocator);
+				WriteVec3(val, "distortionGlowColor", c.distortionGlowColor, allocator);
+				val.AddMember("distortionGlowStrength", c.distortionGlowStrength, allocator);
+				val.AddMember("distortionShockEnabled", c.distortionShockEnabled, allocator);
+				WriteVec2(val, "distortionShockPos", c.distortionShockPos, allocator);
+				val.AddMember("distortionShockTime", c.distortionShockTime, allocator);
+				val.AddMember("distortionShockStrength", c.distortionShockStrength, allocator);
+				val.AddMember("vignetteEnabled", c.vignetteEnabled, allocator);
+				val.AddMember("vignetteIntensity", c.vignetteIntensity, allocator);
+				val.AddMember("vignetteRadius", c.vignetteRadius, allocator);
+				val.AddMember("vignetteSoftness", c.vignetteSoftness, allocator);
+				WriteVec3(val, "vignetteColor", c.vignetteColor, allocator);
+				val.AddMember("vignetteLag", c.vignetteLag, allocator);
+				val.AddMember("vignettePulseIntensity", c.vignettePulseIntensity, allocator);
+				val.AddMember("vignettePulseRadius", c.vignettePulseRadius, allocator);
+				val.AddMember("vignettePulseSpeed", c.vignettePulseSpeed, allocator);
+				val.AddMember("vignetteFollowPlayer", c.vignetteFollowPlayer, allocator);
 				val.AddMember("bloomEnabled", c.bloomEnabled, allocator);
 				val.AddMember("bloomThreshold", c.bloomThreshold, allocator);
 				val.AddMember("bloomIntensity", c.bloomIntensity, allocator);
@@ -684,6 +727,9 @@ namespace CrashoutsEngine {
 				val.AddMember("shadowTechnique", c.shadowTechnique, allocator);
 				val.AddMember("raymarchSteps", c.raymarchSteps, allocator);
 				val.AddMember("raymarchThreshold", c.raymarchThreshold, allocator);
+				val.AddMember("flickerEnabled", c.flickerEnabled, allocator);
+				val.AddMember("flickerStrength", c.flickerStrength, allocator);
+				val.AddMember("flickerSpeed", c.flickerSpeed, allocator);
 				WriteVec3(val, "color", c.color, allocator);
 				WriteVec3(val, "position", c.position, allocator);
 				entityValue.AddMember(rapidjson::StringRef(Keys::LIGHT_COMPONENT), val, allocator);
@@ -869,6 +915,13 @@ namespace CrashoutsEngine {
 				pVal.AddMember("useTexture", pc.useTexture, allocator);
 				pVal.AddMember("textureName", rapidjson::Value(pc.textureName.c_str(), allocator), allocator);
 				WriteVec2(pVal, "textureUV", pc.textureUV, allocator);
+
+				pVal.AddMember("gpuSimulation", pc.gpuSimulation, allocator);
+				pVal.AddMember("additiveBlend", pc.additiveBlend, allocator);
+				pVal.AddMember("emberRandomDirections", pc.emberRandomDirections, allocator);
+				pVal.AddMember("flowStrength", pc.flowStrength, allocator);
+				pVal.AddMember("flowSpeed", pc.flowSpeed, allocator);
+				pVal.AddMember("flowFrequency", pc.flowFrequency, allocator);
 
 				entityValue.AddMember(rapidjson::StringRef(Keys::PARTICLE_COMPONENT), pVal, allocator);
 			}
@@ -1210,6 +1263,9 @@ namespace CrashoutsEngine {
 						if (cVal.HasMember("looping")) clip.looping = cVal["looping"].GetBool();
 						if (cVal.HasMember("isMusic")) clip.isMusic = cVal["isMusic"].GetBool();
 						if (cVal.HasMember("spatial3D")) clip.spatial3D = cVal["spatial3D"].GetBool();
+						if (cVal.HasMember("minDistance")) clip.minDistance = cVal["minDistance"].GetFloat();
+						if (cVal.HasMember("maxDistance")) clip.maxDistance = cVal["maxDistance"].GetFloat();
+						if (cVal.HasMember("dspType")) clip.dspType = cVal["dspType"].GetInt();
 						ac.clips.push_back(clip);
 					}
 				}
@@ -1221,6 +1277,9 @@ namespace CrashoutsEngine {
 					if (v.HasMember("pitch")) clip.pitch = v["pitch"].GetFloat();
 					if (v.HasMember("spatial3D")) clip.spatial3D = v["spatial3D"].GetBool();
 					if (v.HasMember("looping")) clip.looping = v["looping"].GetBool();
+					if (v.HasMember("minDistance")) clip.minDistance = v["minDistance"].GetFloat();
+					if (v.HasMember("maxDistance")) clip.maxDistance = v["maxDistance"].GetFloat();
+					if (v.HasMember("dspType")) clip.dspType = v["dspType"].GetInt();
 					ac.clips.push_back(clip);
 				}
 			}
@@ -1303,6 +1362,46 @@ namespace CrashoutsEngine {
 				p.ambient = GetFloat(v, "ambient", p.ambient);
 				p.shadowsEnabled = GetBool(v, "shadowsEnabled", p.shadowsEnabled);
 				p.shadowRays = GetInt(v, "shadowRays", p.shadowRays);
+				p.shadowDarkness = GetFloat(v, "shadowDarkness", p.shadowDarkness);
+				if (v.HasMember("shadowColor")) p.shadowColor = ReadVec3(v["shadowColor"], p.shadowColor);
+				p.shadowColorStrength = GetFloat(v, "shadowColorStrength", p.shadowColorStrength);
+				p.shadowMapStrength = GetFloat(v, "shadowMapStrength", p.shadowMapStrength);
+				p.raymarchShadowStrength = GetFloat(v, "raymarchShadowStrength", p.raymarchShadowStrength);
+				p.heatDistortionEnabled = GetBool(v, "heatDistortionEnabled", p.heatDistortionEnabled);
+				p.heatDebugMarker = GetBool(v, "heatDebugMarker", p.heatDebugMarker);
+				p.heatStrength = GetFloat(v, "heatStrength", p.heatStrength);
+				p.heatSpeed = GetFloat(v, "heatSpeed", p.heatSpeed);
+				p.heatScale = GetFloat(v, "heatScale", p.heatScale);
+				if (v.HasMember("heatTintColor")) p.heatTintColor = ReadVec3(v["heatTintColor"], p.heatTintColor);
+				p.heatTintStrength = GetFloat(v, "heatTintStrength", p.heatTintStrength);
+				p.distortionEnabled = GetBool(v, "distortionEnabled", p.distortionEnabled);
+				p.distortionDebugMarker = GetBool(v, "distortionDebugMarker", p.distortionDebugMarker);
+				p.distortionStrength = GetFloat(v, "distortionStrength", p.distortionStrength);
+				p.distortionSpeed = GetFloat(v, "distortionSpeed", p.distortionSpeed);
+				p.distortionWaveScale1 = GetFloat(v, "distortionWaveScale1", p.distortionWaveScale1);
+				p.distortionWaveScale2 = GetFloat(v, "distortionWaveScale2", p.distortionWaveScale2);
+				p.distortionNoiseStrength = GetFloat(v, "distortionNoiseStrength", p.distortionNoiseStrength);
+				p.distortionLavaHeight = GetFloat(v, "distortionLavaHeight", p.distortionLavaHeight);
+				p.distortionLavaBoost = GetFloat(v, "distortionLavaBoost", p.distortionLavaBoost);
+				if (v.HasMember("distortionPlayerPos")) p.distortionPlayerPos = ReadVec2(v["distortionPlayerPos"], p.distortionPlayerPos);
+				p.distortionPlayerRadius = GetFloat(v, "distortionPlayerRadius", p.distortionPlayerRadius);
+				p.distortionPlayerStrength = GetFloat(v, "distortionPlayerStrength", p.distortionPlayerStrength);
+				if (v.HasMember("distortionGlowColor")) p.distortionGlowColor = ReadVec3(v["distortionGlowColor"], p.distortionGlowColor);
+				p.distortionGlowStrength = GetFloat(v, "distortionGlowStrength", p.distortionGlowStrength);
+				p.distortionShockEnabled = GetBool(v, "distortionShockEnabled", p.distortionShockEnabled);
+				if (v.HasMember("distortionShockPos")) p.distortionShockPos = ReadVec2(v["distortionShockPos"], p.distortionShockPos);
+				p.distortionShockTime = GetFloat(v, "distortionShockTime", p.distortionShockTime);
+				p.distortionShockStrength = GetFloat(v, "distortionShockStrength", p.distortionShockStrength);
+				p.vignetteEnabled = GetBool(v, "vignetteEnabled", p.vignetteEnabled);
+				p.vignetteIntensity = GetFloat(v, "vignetteIntensity", p.vignetteIntensity);
+				p.vignetteRadius = GetFloat(v, "vignetteRadius", p.vignetteRadius);
+				p.vignetteSoftness = GetFloat(v, "vignetteSoftness", p.vignetteSoftness);
+				if (v.HasMember("vignetteColor")) p.vignetteColor = ReadVec3(v["vignetteColor"], p.vignetteColor);
+				p.vignetteLag = GetFloat(v, "vignetteLag", p.vignetteLag);
+				p.vignettePulseIntensity = GetFloat(v, "vignettePulseIntensity", p.vignettePulseIntensity);
+				p.vignettePulseRadius = GetFloat(v, "vignettePulseRadius", p.vignettePulseRadius);
+				p.vignettePulseSpeed = GetFloat(v, "vignettePulseSpeed", p.vignettePulseSpeed);
+				p.vignetteFollowPlayer = GetBool(v, "vignetteFollowPlayer", p.vignetteFollowPlayer);
 				p.bloomEnabled = GetBool(v, "bloomEnabled", p.bloomEnabled);
 				p.bloomThreshold = GetFloat(v, "bloomThreshold", p.bloomThreshold);
 				p.bloomIntensity = GetFloat(v, "bloomIntensity", p.bloomIntensity);
@@ -1326,6 +1425,9 @@ namespace CrashoutsEngine {
 				l.shadowTechnique = GetInt(v, "shadowTechnique", l.shadowTechnique);
 				l.raymarchSteps = GetInt(v, "raymarchSteps", l.raymarchSteps);
 				l.raymarchThreshold = GetFloat(v, "raymarchThreshold", l.raymarchThreshold);
+				l.flickerEnabled = GetBool(v, "flickerEnabled", l.flickerEnabled);
+				l.flickerStrength = GetFloat(v, "flickerStrength", l.flickerStrength);
+				l.flickerSpeed = GetFloat(v, "flickerSpeed", l.flickerSpeed);
 				if (v.HasMember("color")) l.color = ReadVec3(v["color"], l.color);
 				if (v.HasMember("position")) l.position = ReadVec3(v["position"], l.position);
 			}
@@ -1515,6 +1617,13 @@ namespace CrashoutsEngine {
 				pc.useTexture = GetBool(v, "useTexture", false);
 				pc.textureName = GetString(v, "textureName", "");
 				if (v.HasMember("textureUV")) pc.textureUV = ReadVec2(v["textureUV"], { 1.f, 1.f });
+
+				pc.gpuSimulation = GetBool(v, "gpuSimulation", true);
+				pc.additiveBlend = GetBool(v, "additiveBlend", false);
+				pc.emberRandomDirections = GetBool(v, "emberRandomDirections", false);
+				pc.flowStrength = GetFloat(v, "flowStrength", 0.f);
+				pc.flowSpeed = GetFloat(v, "flowSpeed", 0.f);
+				pc.flowFrequency = GetFloat(v, "flowFrequency", 0.f);
 
 				ParticleSystem::ParticleInit(pc);
 			}

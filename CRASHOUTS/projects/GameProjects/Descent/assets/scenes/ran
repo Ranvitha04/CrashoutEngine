@@ -234,60 +234,103 @@
         },
         {
             "active": true,
-            "name": "Tex_Chibi-2",
-            "uuid": 14373703683802825089,
+            "name": "Entity 24",
+            "uuid": 13812507850138104692,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 9.116057395935059,
-                    "y": -1.0415706634521485,
+                    "x": 1.0880579948425294,
+                    "y": -0.7420870065689087,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 50.0,
-                    "y": 50.0
-                }
-            },
-            "shape": {
-                "useTexture": true,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "Chibi-2",
-                "uvSize": {
                     "x": 1.0,
                     "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
                 }
             },
             "layer": {
-                "layerName": "Players",
+                "layerName": "",
                 "z": 0
+            },
+            "particle": {
+                "preset": 5,
+                "burstCount": 0,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 2000,
+                "emitRate": 420.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 10.0,
+                "lengthMax": 14.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.3499999940395355,
+                "startLifeMax": 1.4500000476837159,
+                "startSpeedMin": 0.6000000238418579,
+                "startSpeedMax": 3.4000000953674318,
+                "uniformSize": true,
+                "startSizeXMin": 3.200000047683716,
+                "startSizeXMax": 1.149999976158142,
+                "startSizeYMin": 0.20000000298023225,
+                "startSizeYMax": 0.6499999761581421,
+                "sizeOverTime": 0.25,
+                "rotationOverTime": 40.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 0.3499999940395355,
+                    "z": 0.05000000074505806,
+                    "w": 0.8999999761581421
+                },
+                "endColor": {
+                    "x": 0.3499999940395355,
+                    "y": 0.05000000074505806,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.800000011920929,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.800000011920929,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 2.2699999809265138,
+                "flowSpeed": 3.450000047683716,
+                "flowFrequency": 2.4100000858306886
             }
         },
         {
@@ -360,6 +403,7 @@
                             "minThrowSpeed": 300.0,
                             "maxThrowSpeed": 2000.0,
                             "maxMouseDragDist": 400.0,
+                            "controllerAimDeadzone": 0.20000000298023225,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
                             "pickAnimDuration": 60.0,
@@ -374,8 +418,7 @@
                         }
                     },
                     {
-                        "className": "NewScript",
-                        "fields": {}
+                        "className": "NewScript"
                     }
                 ]
             },
@@ -386,299 +429,21 @@
         },
         {
             "active": true,
-            "name": "Entity 8",
-            "uuid": 3813912751566637841,
+            "name": "Entity 7",
+            "uuid": 4523495699218258266,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 4.328769683837891,
-                    "y": -5.472539901733398,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "size": {
                     "x": 1.0,
                     "y": 1.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 1,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.36464089155197146,
-                    "y": 0.3606117069721222,
-                    "z": 0.3606117069721222,
-                    "w": 0.0
-                },
-                "p1": {
-                    "x": -0.5,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 0.5,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            },
-            "particle": {
-                "preset": 4,
-                "burstCount": 650,
-                "renderShape": 1,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 15.199999809265137,
-                "superheroLandingAngleSpreadDeg": 15.5,
-                "isEmitting": false,
-                "useWorldSpace": true,
-                "maxParticles": 900,
-                "emitRate": 1200.0,
-                "playOnStop": true,
-                "emissionShape": 1,
-                "radiusMin": 0.0,
-                "radiusMax": 0.15000000596046449,
-                "lengthMin": 0.0,
-                "lengthMax": 21.899999618530275,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 5.0,
-                    "y": 5.0
-                },
-                "startLifeMin": 0.3499999940395355,
-                "startLifeMax": 0.8999999761581421,
-                "startSpeedMin": 10.0,
-                "startSpeedMax": 26.0,
-                "uniformSize": true,
-                "startSizeXMin": 1.5,
-                "startSizeXMax": 1.7000000476837159,
-                "startSizeYMin": 0.20000000298023225,
-                "startSizeYMax": 0.550000011920929,
-                "sizeOverTime": -0.6000000238418579,
-                "rotationOverTime": 220.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 360.0,
-                "startColor": {
-                    "x": 0.6277056336402893,
-                    "y": 0.44020915031433108,
-                    "z": 0.2527126669883728,
-                    "w": 0.8999999761581421
-                },
-                "endColor": {
-                    "x": 0.30000001192092898,
-                    "y": 0.2800000011920929,
-                    "z": 0.25,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -25.0,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": 2.0,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            }
-        },
-        {
-            "active": true,
-            "name": "Entity 8",
-            "uuid": 17583392732745852167,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": -0.8561357259750366,
-                    "y": -2.302053451538086,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            },
-            "particle": {
-                "preset": 1,
-                "burstCount": 0,
-                "renderShape": 2,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": true,
-                "useWorldSpace": true,
-                "maxParticles": 1200,
-                "emitRate": 220.0,
-                "playOnStop": true,
-                "emissionShape": 1,
-                "radiusMin": 0.0,
-                "radiusMax": 0.699999988079071,
-                "lengthMin": 0.0,
-                "lengthMax": 5.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 5.0,
-                    "y": 5.0
-                },
-                "startLifeMin": 1.399999976158142,
-                "startLifeMax": 2.5999999046325685,
-                "startSpeedMin": 0.4000000059604645,
-                "startSpeedMax": 1.2000000476837159,
-                "uniformSize": true,
-                "startSizeXMin": 0.3499999940395355,
-                "startSizeXMax": 0.75,
-                "startSizeYMin": 0.3499999940395355,
-                "startSizeYMax": 0.75,
-                "sizeOverTime": 0.25,
-                "rotationOverTime": 10.0,
-                "startRotationMin": 90.0,
-                "startRotationMax": 90.0,
-                "startColor": {
-                    "x": 0.44999998807907107,
-                    "y": 0.44999998807907107,
-                    "z": 0.44999998807907107,
-                    "w": 0.3499999940395355
-                },
-                "endColor": {
-                    "x": 0.15000000596046449,
-                    "y": 0.15000000596046449,
-                    "z": 0.15000000596046449,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": 0.8999999761581421,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": 0.8999999761581421,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            }
-        },
-        {
-            "active": true,
-            "name": "Entity 9",
-            "uuid": 3779137326170547163,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 32.06644821166992,
-                    "y": -13.801592826843262,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 0.5,
-                    "y": -0.4000000059604645
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "missing.png",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "light": {
-                "active": true,
-                "intensity": 9.050000190734864,
-                "radius": 278.0,
-                "affectBloom": true,
-                "useTransform": true,
-                "renderSelf": true,
-                "renderBehind": true,
-                "ignoreParentOccluders": true,
-                "color": {
-                    "x": 0.4950980544090271,
-                    "y": 0.03883121907711029,
-                    "z": 0.03883121907711029
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
                 }
             },
             "layer": {
