@@ -121,6 +121,13 @@ namespace {
         return tc->revealedCharCount >= (int)tc->text.length();
     }
 
+    static int Internal_GetTextRevealedCount(uint32_t entityID) {
+        auto* ecs = CrashoutsEngine::ECS::getInstance();
+        if (!ecs->HasComponent<Component::TextComponent>(entityID)) return 0;
+        auto* tc = ecs->GetComponent<Component::TextComponent>(entityID);
+        return tc->revealedCharCount;
+    }
+
 }
 
 // =============================================================
@@ -144,6 +151,7 @@ void CrashoutsEngine::Bindings::RegisterAnimatorBindings() {
     mono_add_internal_call("CrashoutsEngine.Animator::InternalGetCurrentClip", (void*)InternalGetCurrentClip);
 
     mono_add_internal_call("CrashoutsEngine.InternalCalls::IsTextFinished", (const void*)Internal_IsTextFinished);
+    mono_add_internal_call("CrashoutsEngine.InternalCalls::GetTextRevealedCount", (const void*)Internal_GetTextRevealedCount);
 
     std::cout << "[Mono] Registered Keyframe Animator Bindings" << std::endl;
 }

@@ -13,9 +13,9 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": -20.576072692871095,
-                            "z": 50.0
+                            "x": -178.62266540527345,
+                            "y": -8.407669067382813,
+                            "z": 0.0
                         },
                         "size": {
                             "x": 140.0,
@@ -37,27 +37,28 @@
                     },
                     "collider": {
                         "ColliderType": 1,
+                        "isContinuous": false,
                         "isTrigger": false,
                         "enabled": true,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": -25.576072692871095,
-                            "z": 50.0
+                            "x": -178.50357055664063,
+                            "y": -34.9000244140625,
+                            "z": 0.0
                         },
                         "offset": {
                             "x": 0.0,
-                            "y": -5.0,
+                            "y": -2.200000047683716,
                             "z": 0.0
                         },
                         "min": {
-                            "x": -227.82041931152345,
-                            "y": -56.076072692871097,
-                            "z": 50.0
+                            "x": -187.12266540527345,
+                            "y": -39.707637786865237,
+                            "z": 0.0
                         },
                         "max": {
-                            "x": -209.82041931152345,
-                            "y": 4.923927307128906,
-                            "z": 50.0
+                            "x": -170.12266540527345,
+                            "y": 18.492298126220704,
+                            "z": 0.0
                         }
                     },
                     "shape": {
@@ -99,88 +100,88 @@
                             {
                                 "name": "footstep1",
                                 "path": "footsteps 1.wav",
-                                "volume": 1.5,
+                                "volume": 0.30000001192092898,
                                 "pitch": 1.0,
-                                "spatial3D": false,
+                                "spatial3D": true,
                                 "looping": false,
                                 "isMusic": false
                             },
                             {
                                 "name": "footstep2",
                                 "path": "footsteps 2.wav",
-                                "volume": 1.5,
+                                "volume": 0.30000001192092898,
                                 "pitch": 1.0,
-                                "spatial3D": false,
+                                "spatial3D": true,
                                 "looping": false,
                                 "isMusic": false
                             },
                             {
                                 "name": "footstep3",
                                 "path": "footsteps 3.wav",
-                                "volume": 1.5,
+                                "volume": 0.30000001192092898,
                                 "pitch": 1.0,
-                                "spatial3D": false,
+                                "spatial3D": true,
                                 "looping": false,
                                 "isMusic": false
                             },
                             {
                                 "name": "footstep4",
                                 "path": "footsteps 4.wav",
-                                "volume": 1.5,
+                                "volume": 0.30000001192092898,
                                 "pitch": 1.0,
-                                "spatial3D": false,
+                                "spatial3D": true,
                                 "looping": false,
                                 "isMusic": false
                             },
                             {
                                 "name": "footstep5",
                                 "path": "footsteps 5.wav",
-                                "volume": 1.5,
+                                "volume": 0.30000001192092898,
                                 "pitch": 1.0,
-                                "spatial3D": false,
+                                "spatial3D": true,
                                 "looping": false,
                                 "isMusic": false
                             },
                             {
                                 "name": "footstep6",
                                 "path": "footsteps 6.wav",
-                                "volume": 1.5,
+                                "volume": 0.30000001192092898,
                                 "pitch": 1.0,
-                                "spatial3D": false,
+                                "spatial3D": true,
                                 "looping": false,
                                 "isMusic": false
                             },
                             {
                                 "name": "footstep7",
                                 "path": "footsteps 7.wav",
-                                "volume": 1.5,
+                                "volume": 0.30000001192092898,
                                 "pitch": 1.0,
-                                "spatial3D": false,
+                                "spatial3D": true,
                                 "looping": false,
                                 "isMusic": false
                             },
                             {
                                 "name": "footstep8",
                                 "path": "footsteps 8.wav",
-                                "volume": 1.5,
+                                "volume": 0.30000001192092898,
                                 "pitch": 1.0,
-                                "spatial3D": false,
+                                "spatial3D": true,
                                 "looping": false,
                                 "isMusic": false
                             },
                             {
                                 "name": "jumpLand",
                                 "path": "jump landing.wav",
-                                "volume": 1.0,
+                                "volume": 0.05000000074505806,
                                 "pitch": 1.0,
-                                "spatial3D": false,
+                                "spatial3D": true,
                                 "looping": false,
                                 "isMusic": false
                             },
                             {
                                 "name": "jumpUp",
                                 "path": "jump.wav",
-                                "volume": 1.0,
+                                "volume": 0.30000001192092898,
                                 "pitch": 1.0,
                                 "spatial3D": false,
                                 "looping": false,
@@ -189,6 +190,42 @@
                             {
                                 "name": "switchMassSound",
                                 "path": "switch state.wav",
+                                "volume": 0.20000000298023225,
+                                "pitch": 1.0,
+                                "spatial3D": true,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "speak",
+                                "path": "in game/speak.wav",
+                                "volume": 0.5,
+                                "pitch": 0.699999988079071,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "jumpVoice",
+                                "path": "player/jump.wav",
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "landVoice",
+                                "path": "player/land.wav",
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "spatial3D": false,
+                                "looping": false,
+                                "isMusic": false
+                            },
+                            {
+                                "name": "deathSound",
+                                "path": "player/death.wav",
                                 "volume": 1.0,
                                 "pitch": 1.0,
                                 "spatial3D": false,
@@ -208,34 +245,206 @@
                                     "deceleration": 10.0,
                                     "airAcceleration": 2.0,
                                     "jumpPower": 50000.0,
-                                    "gravityScale": 2.0,
+                                    "gravityScale": 2.5,
                                     "gravityForceMultiplier": 10.0,
                                     "fallGravityMultiplier": 2.5,
-                                    "footstepInterval": 0.30000001192092898,
+                                    "footstepInterval": 0.5,
                                     "swapPause": 1.0,
                                     "energyConsumption": 12.5,
-                                    "coyoteFrames": 6,
+                                    "coyoteTime": 0.15000000596046449,
                                     "goalNoOfPlates": 2,
                                     "currentGoalPlates": 0,
                                     "landingDustName": "LandingDust",
                                     "dustBurstDuration": 0.15000000596046449,
+                                    "landingRumbleMinFallSpeed": 60.0,
+                                    "landingRumbleMaxFallSpeed": 260.0,
+                                    "landingRumbleMinStrength": 0.15000000596046449,
+                                    "landingRumbleMaxStrength": 0.6499999761581421,
+                                    "landingRumbleDuration": 0.11999999731779099,
                                     "normalMass": 2.9000000953674318,
                                     "lightMass": 2.0,
                                     "groundCheckDistance": 5.0,
                                     "groundCheckWidth": 10.0,
                                     "playDialogueOnStart": true,
                                     "dialogueCooldown": 1.0,
+                                    "dialogueParentName": "DialogueContainer",
+                                    "dialoguePrefix": "PlayerDialogue_",
+                                    "numberOfDialogues": 5,
                                     "isDialogueActive": true,
                                     "facingRight": true,
-                                    "CurrentEnergy": 75.0,
+                                    "lockBookGlowToPlayer": false,
+                                    "CurrentEnergy": 100.0,
                                     "MaxEnergy": 100.0,
                                     "alive": true,
+                                    "normalDeathAnimName": "playerDeathNoBook",
+                                    "changedMassDeathAnimName": "playerDeath",
+                                    "unlimitedEnergy": false,
+                                    "godMode": false,
+                                    "normalDeathDelay": 2.0,
+                                    "changedMassDeathDelay": 2.0,
                                     "isPaused": false,
                                     "reloadOnDeath": false,
-                                    "reloadSceneName": ""
+                                    "reloadSceneName": "",
+                                    "gameOverSceneName": "Defeat"
+                                }
+                            },
+                            {
+                                "className": "PlayerBookGlowController",
+                                "fields": {
+                                    "bookGlowEntityName": "PlayerBookGlow",
+                                    "onlyGlowInLightMode": false,
+                                    "followZ": false,
+                                    "useAngledPath": false,
+                                    "pathFirstPortion": 24.75,
+                                    "pathAngleDeg": 0.0,
+                                    "pathDistance": 50.900001525878909,
+                                    "moveSpeed": 1.0,
+                                    "useAlphaTransition": true,
+                                    "alphaStart": 0.0,
+                                    "alphaEnd": 1.0,
+                                    "alphaSpeed": 0.4000000059604645,
+                                    "forceShowStart": false,
+                                    "forceShowEnd": false,
+                                    "showOffsetGizmos": false,
+                                    "useDragHandleEntities": false,
+                                    "startHandleEntityName": "BookGlow_StartHandle",
+                                    "endHandleEntityName": "BookGlow_EndHandle",
+                                    "lineEntityName": "BookGlow_PathLine",
+                                    "handleRadius": 14.0,
+                                    "lineThickness": 4.0,
+                                    "finalizeAndDisableHandles": false,
+                                    "hideHandleEntitiesWhenDisabled": true,
+                                    "snapStartToEnd": false,
+                                    "snapEndToStart": false,
+                                    "overrideStartEnd": true,
+                                    "mirrorXForLeft": true,
+                                    "lockEndToBookCenter": true,
+                                    "useAirEndOffset": true,
+                                    "startOffset": {
+                                        "x": -1.7999687194824219,
+                                        "y": -15.700160026550293,
+                                        "z": 0.0
+                                    },
+                                    "endOffset": {
+                                        "x": 33.70000076293945,
+                                        "y": -12.199999809265137,
+                                        "z": 0.0
+                                    },
+                                    "endOffsetAir": {
+                                        "x": 31.299999237060548,
+                                        "y": 5.800000190734863,
+                                        "z": 0.0
+                                    },
+                                    "snapAirToGround": false,
+                                    "snapGroundToAir": false,
+                                    "offsetBehindRight": {
+                                        "x": -30.0,
+                                        "y": -5.0,
+                                        "z": 0.0
+                                    },
+                                    "offsetBehindLeft": {
+                                        "x": 30.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "offsetRight": {
+                                        "x": 27.0,
+                                        "y": -5.300000190734863,
+                                        "z": 0.0
+                                    },
+                                    "offsetLeft": {
+                                        "x": -30.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "offsetRightSwitch": {
+                                        "x": 30.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "offsetLeftSwitch": {
+                                        "x": -30.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "previewEnabled": false,
+                                    "previewSwitchT01": 0.0,
+                                    "previewStartIsLight": false,
+                                    "previewTargetIsLight": true,
+                                    "previewFacingRight": true,
+                                    "previewUseSwitchClip": true,
+                                    "previewForceVisible": true
                                 }
                             }
                         ]
+                    },
+                    "button": {
+                        "buttonState": 0,
+                        "shapeNormalColor": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        },
+                        "shapeHoveredColor": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 0.5
+                        },
+                        "shapePressedColor": {
+                            "x": 0.699999988079071,
+                            "y": 0.699999988079071,
+                            "z": 0.699999988079071,
+                            "w": 0.699999988079071
+                        },
+                        "textNormalColor": {
+                            "x": 0.30000001192092898,
+                            "y": 0.30000001192092898,
+                            "z": 0.30000001192092898,
+                            "w": 0.699999988079071
+                        },
+                        "textHoveredColor": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.0
+                        },
+                        "textPressedColor": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.5
+                        },
+                        "textureNormal": "",
+                        "textureHovered": "",
+                        "texturePressed": "",
+                        "hoverScale": 1.100000023841858,
+                        "pressedScale": 0.949999988079071
+                    },
+                    "light": {
+                        "active": true,
+                        "intensity": 0.15000000596046449,
+                        "radius": 70.0,
+                        "affectBloom": false,
+                        "useTransform": true,
+                        "renderSelf": true,
+                        "renderBehind": true,
+                        "ignoreParentOccluders": true,
+                        "ignoreOccluders": true,
+                        "shadowTechnique": 0,
+                        "raymarchSteps": 24,
+                        "raymarchThreshold": 0.5,
+                        "color": {
+                            "x": 0.9058823585510254,
+                            "y": 0.7921568751335144,
+                            "z": 0.7921568751335144
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
                     },
                     "layer": {
                         "layerName": "Player",
@@ -243,7 +452,7 @@
                     },
                     "keyframe_animator": {
                         "current": "playerIdle",
-                        "t": 5.60001802444458,
+                        "t": 33.98298645019531,
                         "playing": true,
                         "clips": [
                             {
@@ -464,49 +673,49 @@
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 0.25,
+                                                "t": 0.0625,
                                                 "v": 1.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 0.5,
+                                                "t": 0.125,
                                                 "v": 2.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 0.75,
+                                                "t": 0.1875,
                                                 "v": 3.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 1.0,
+                                                "t": 0.25,
                                                 "v": 4.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 1.25,
+                                                "t": 0.3125,
                                                 "v": 5.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 1.5,
+                                                "t": 0.375,
                                                 "v": 6.0,
                                                 "i": 0,
                                                 "in": 0.0,
                                                 "out": 0.0
                                             },
                                             {
-                                                "t": 1.75,
+                                                "t": 0.4375,
                                                 "v": 6.0,
                                                 "i": 0,
                                                 "in": 0.0,
@@ -681,6 +890,239 @@
                                         ]
                                     }
                                 ]
+                            },
+                            {
+                                "name": "playerDeath",
+                                "wrap": 1,
+                                "textureAsset": "images/Character\\DeathAnimBook\\Light Death spritesheet.png",
+                                "spriteCols": 3,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.0625,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.125,
+                                                "v": 2.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.1875,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 4.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.3125,
+                                                "v": 5.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.375,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.4375,
+                                                "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.5,
+                                                "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerDeathNoBook",
+                                "wrap": 1,
+                                "textureAsset": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
+                                "spriteCols": 3,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.0625,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.125,
+                                                "v": 2.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.1875,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 4.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.3125,
+                                                "v": 5.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.375,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.4375,
+                                                "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.5,
+                                                "v": 7.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "playerSwitchL",
+                                "wrap": 1,
+                                "textureAsset": "images/Character\\New Artstyle\\Switch-State-SpriteSheet-Reverse.png",
+                                "spriteCols": 3,
+                                "spriteRows": 3,
+                                "useCustomSize": true,
+                                "targetWidth": 140.0,
+                                "targetHeight": 100.0,
+                                "bindings": [
+                                    {
+                                        "property": 6,
+                                        "keys": [
+                                            {
+                                                "t": 0.0,
+                                                "v": 0.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.0625,
+                                                "v": 1.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.125,
+                                                "v": 2.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.1875,
+                                                "v": 3.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.25,
+                                                "v": 4.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.3125,
+                                                "v": 5.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.375,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            },
+                                            {
+                                                "t": 0.4375,
+                                                "v": 6.0,
+                                                "i": 0,
+                                                "in": 0.0,
+                                                "out": 0.0
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -695,9 +1137,9 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": 37.79383850097656,
-                            "z": 50.0
+                            "x": -178.62266540527345,
+                            "y": 49.962242126464847,
+                            "z": 0.0
                         },
                         "size": {
                             "x": 98.0,
@@ -813,9 +1255,9 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": 37.79383850097656,
-                            "z": 50.0
+                            "x": -178.62266540527345,
+                            "y": 49.962242126464847,
+                            "z": 0.0
                         },
                         "size": {
                             "x": 98.0,
@@ -858,7 +1300,7 @@
                     },
                     "text": {
                         "font": "AlegreyaSC-Regular",
-                        "text": "Heh. It’s less fire and brimstone than I thought.",
+                        "text": "Heh. It's less fire and brimstone than I thought.",
                         "scale": 3.5,
                         "offset": {
                             "x": 0.0,
@@ -931,9 +1373,9 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": 37.79383850097656,
-                            "z": 50.0
+                            "x": -178.62266540527345,
+                            "y": 49.962242126464847,
+                            "z": 0.0
                         },
                         "size": {
                             "x": 98.0,
@@ -1049,9 +1491,9 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -218.82041931152345,
-                            "y": 37.79383850097656,
-                            "z": 50.0
+                            "x": -178.62266540527345,
+                            "y": 49.962242126464847,
+                            "z": 0.0
                         },
                         "size": {
                             "x": 98.0,
@@ -1167,9 +1609,9 @@
                     "transform": {
                         "rotation": 0.0,
                         "position": {
-                            "x": -504.61468505859377,
-                            "y": -219.93362426757813,
-                            "z": 50.0
+                            "x": -464.41693115234377,
+                            "y": -207.7652130126953,
+                            "z": 0.0
                         },
                         "size": {
                             "x": 98.0,
@@ -1212,7 +1654,7 @@
                     },
                     "text": {
                         "font": "AlegreyaSC-Regular",
-                        "text": "I wonder, if at the end of this journey, I’ll find you, Keiran?",
+                        "text": "I wonder, if at the end of this journey, I'll find you, Keiran?",
                         "scale": 3.5,
                         "offset": {
                             "x": 0.0,
@@ -1273,6 +1715,247 @@
                     "layer": {
                         "layerName": "Default",
                         "z": 0
+                    }
+                },
+                {
+                    "active": true,
+                    "name": "PlayerBookGlow",
+                    "uuid": 11223344556677890101,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -180.42263793945313,
+                            "y": -24.107830047607423,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 273.8399963378906,
+                            "y": 44.5
+                        }
+                    },
+                    "shape": {
+                        "useTexture": true,
+                        "isWorldSpace": true,
+                        "wrapModeU": 0,
+                        "wrapModeV": 0,
+                        "thickness": 1.0,
+                        "preview": false,
+                        "type": 0,
+                        "textureName": "UI/Icon.png",
+                        "uvSize": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "uvOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "color": {
+                            "x": 0.20441991090774537,
+                            "y": 0.20441991090774537,
+                            "z": 0.20441991090774537,
+                            "w": 0.0
+                        },
+                        "p1": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "p2": {
+                            "x": 32.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "light": {
+                        "active": true,
+                        "intensity": 0.0,
+                        "radius": 31.0,
+                        "affectBloom": true,
+                        "useTransform": true,
+                        "renderSelf": true,
+                        "renderBehind": true,
+                        "ignoreParentOccluders": true,
+                        "ignoreOccluders": true,
+                        "shadowTechnique": 0,
+                        "raymarchSteps": 24,
+                        "raymarchThreshold": 0.5,
+                        "color": {
+                            "x": 0.8823529481887817,
+                            "y": 0.08650518953800202,
+                            "z": 0.08650518953800202
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17142618762681968282,
+                        "localPos": {
+                            "x": -0.012856919318437577,
+                            "y": -0.15700159966945649,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 1.9559999704360963,
+                            "y": 0.4449999928474426
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Player",
+                        "z": 1
+                    }
+                },
+                {
+                    "active": false,
+                    "name": "Book_Particles",
+                    "uuid": 610112534705000572,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": -144.994384765625,
+                            "y": -16.455476760864259,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    "light": {
+                        "active": false,
+                        "intensity": 0.15000000596046449,
+                        "radius": 39.0,
+                        "affectBloom": true,
+                        "useTransform": true,
+                        "renderSelf": true,
+                        "renderBehind": true,
+                        "ignoreParentOccluders": true,
+                        "ignoreOccluders": true,
+                        "shadowTechnique": 0,
+                        "raymarchSteps": 24,
+                        "raymarchThreshold": 0.5,
+                        "color": {
+                            "x": 0.7941176891326904,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "parent": {
+                        "parentUUID": 17142618762681968282,
+                        "localPos": {
+                            "x": 0.24020200967788697,
+                            "y": -0.08047807961702347,
+                            "z": 0.0
+                        },
+                        "localRot": 0.0,
+                        "localScale": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "inheritColor": false,
+                        "colorMul": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0,
+                            "w": 1.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "UI",
+                        "z": -100
+                    },
+                    "particle": {
+                        "preset": 1,
+                        "burstCount": 0,
+                        "renderShape": 1,
+                        "squareSizeMultiplier": 1.0,
+                        "circleRadiusMultiplier": 1.0,
+                        "circleSegments": 48,
+                        "triangleWidthMultiplier": 1.0,
+                        "triangleHeightMultiplier": 1.0,
+                        "superheroLandingAngleDeg": 8.0,
+                        "superheroLandingAngleSpreadDeg": 18.0,
+                        "isEmitting": true,
+                        "useWorldSpace": true,
+                        "maxParticles": 1200,
+                        "emitRate": 220.0,
+                        "playOnStop": true,
+                        "emissionShape": 1,
+                        "radiusMin": 0.0,
+                        "radiusMax": 0.699999988079071,
+                        "lengthMin": 0.0,
+                        "lengthMax": 5.0,
+                        "areaMin": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "areaMax": {
+                            "x": 5.0,
+                            "y": 5.0
+                        },
+                        "startLifeMin": 1.399999976158142,
+                        "startLifeMax": 2.5999999046325685,
+                        "startSpeedMin": 38.79999923706055,
+                        "startSpeedMax": 24.200000762939454,
+                        "uniformSize": true,
+                        "startSizeXMin": 7.650000095367432,
+                        "startSizeXMax": 0.75,
+                        "startSizeYMin": 0.3499999940395355,
+                        "startSizeYMax": 0.75,
+                        "sizeOverTime": -0.8999999761581421,
+                        "rotationOverTime": 10.0,
+                        "startRotationMin": 0.0,
+                        "startRotationMax": 360.0,
+                        "startColor": {
+                            "x": 1.0,
+                            "y": 0.6961326003074646,
+                            "z": 0.0,
+                            "w": 0.28729283809661868
+                        },
+                        "endColor": {
+                            "x": 0.6547418832778931,
+                            "y": 0.6604183316230774,
+                            "z": 0.9116021990776062,
+                            "w": 0.0
+                        },
+                        "gravity": {
+                            "x": 0.0,
+                            "y": 0.8999999761581421,
+                            "z": 0.0
+                        },
+                        "startVelocity": {
+                            "x": 0.0,
+                            "y": 13.100000381469727,
+                            "z": 0.0
+                        },
+                        "useTexture": false,
+                        "textureName": "",
+                        "textureUV": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
                     }
                 }
             ]

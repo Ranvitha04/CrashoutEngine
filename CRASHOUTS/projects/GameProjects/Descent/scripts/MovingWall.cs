@@ -76,6 +76,8 @@ namespace CrashoutsEngine
 
         public override void Start()
         {
+            AudioManager.SetClip3DDistances(Entity.ID, "rockSFX", 20.0f, 1600.0f);
+
             _isOpen = false;
             _stopMoving = false;
             transform = Entity.GetComponent<TransformComponent>();
@@ -100,10 +102,12 @@ namespace CrashoutsEngine
             // Logic: If enough plates are pressed, Open.
             if (PlatesActive >= PlatesRequired && !_isOpen)
             {
+                AudioManager.GetInstance().PlayAttached("rockSFX", Entity.ID);
                 OpenWall();
             }
             else if (PlatesActive < PlatesRequired && _isOpen)
             {
+                AudioManager.GetInstance().PlayAttached("rockSFX", Entity.ID);
                 CloseWall();
             }
             

@@ -8,14 +8,24 @@
 
 namespace CrashoutEngine
 {
-    // Owns SDL GameController handles and snapshots previous controller state so
-    // action queries can expose pressed/released transitions.
+    /*!
+    @brief Owns SDL controller state, axis polling, and controller rumble backends.
+
+    The manager wraps SDL controller handles and haptic handles so the engine can
+    expose action/axis queries and vibration through a single abstraction. It
+    snapshots previous-frame button/axis state to support triggered and released
+    style input queries used by the gameplay scripts.
+    */
     class ControllerManager
     {
     public:
         ControllerManager() = default;
         ~ControllerManager();
 
+        /*!
+        @brief Initialize SDL controller and haptic subsystems and open connected pads.
+        @return True if controller support initialized successfully.
+        */
         bool Initialize();
         void Shutdown();
 
@@ -29,6 +39,12 @@ namespace CrashoutEngine
 
         float GetAxis(SDL_GameControllerAxis axis, float deadzone) const;
         float GetPreviousAxis(SDL_GameControllerAxis axis, float deadzone) const;
+        /*!
+        @brief Trigger vibration on connected controllers using SDL rumble/haptics.
+        @param lowFrequency Low-frequency motor strength in the range [0, 1].
+        @param highFrequency High-frequency motor strength in the range [0, 1].
+        @param durationMs Duration of the vibration pulse in milliseconds.
+        */
         void SetVibration(float lowFrequency, float highFrequency, std::uint32_t durationMs) const;
 
         std::size_t GetConnectedControllerCount() const;

@@ -342,6 +342,7 @@ namespace CrashoutsEngine
             if (btn != null && btn.IsClicked() && isMouseReleased)
             {
                 isMouseReleased = false; // Lock the gate until mouse is lifted
+                AudioManager.GetInstance().PlayAttached("Click", btnEntity.ID);
                 return true;
             }
             return false;
@@ -355,6 +356,13 @@ namespace CrashoutsEngine
             InternalCalls.UI_ClearForcedHoveredButton();
         }
 
+        /*!
+        @brief Update vertical controller selection for pause, restart, and book menus.
+        @param buttons Active buttons for the current pause sub-menu.
+
+        This method coordinates controller-driven forced hover and emits a short
+        rumble pulse whenever the highlighted button changes.
+        */
         private void UpdateControllerSelection(Entity[] buttons)
         {
             if (buttons == null || buttons.Length == 0)
@@ -508,7 +516,12 @@ namespace CrashoutsEngine
                 return false;
             }
 
-            return buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit");
+            if (buttons[selectedButtonIndex] == target && Input.GetActionTriggered("UISubmit"))
+            {
+                AudioManager.GetInstance().PlayAttached("Click", target.ID);
+                return true;
+            }
+            return false;
         }
 
         private bool IsPauseController()

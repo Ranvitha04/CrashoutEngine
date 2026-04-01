@@ -11269,6 +11269,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "rockSFX",
+                        "path": "in game/rocks.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 1600.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -11344,7 +11360,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1219.7755126953126,
+                    "x": 849.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -12027,7 +12043,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1139.7755126953126,
+                    "x": 769.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -16834,6 +16850,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -16965,6 +16997,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -17098,6 +17146,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -17229,6 +17293,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -17440,6 +17520,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -17571,6 +17667,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -17800,7 +17912,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -19271,7 +19386,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -19384,7 +19502,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
-                        "isMusic": true
+                        "isMusic": true,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -19527,6 +19648,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -19656,6 +19793,22 @@
                     "y": -159.5450439453125,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -19787,6 +19940,56 @@
                     "z": 0.0
                 }
             },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/default.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -19916,6 +20119,22 @@
                     "y": -672.4913330078125,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -20105,8 +20324,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": -32.70002365112305,
+                    "x": -190.9333038330078,
+                    "y": -24.999223709106447,
                     "z": 0.0
                 },
                 "size": {
@@ -20143,13 +20362,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -187.00357055664063,
-                    "y": -64.0,
+                    "x": -199.4333038330078,
+                    "y": -56.29918670654297,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -170.00357055664063,
-                    "y": -5.800045013427734,
+                    "x": -182.4333038330078,
+                    "y": 1.900735855102539,
                     "z": 0.0
                 }
             },
@@ -20196,7 +20415,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep2",
@@ -20205,7 +20427,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep3",
@@ -20214,7 +20439,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep4",
@@ -20223,7 +20451,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep5",
@@ -20232,7 +20463,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep6",
@@ -20241,7 +20475,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep7",
@@ -20250,7 +20487,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep8",
@@ -20259,7 +20499,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "jumpLand",
@@ -20268,7 +20511,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "jumpUp",
@@ -20277,7 +20523,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "switchMassSound",
@@ -20286,7 +20535,58 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "speak",
+                        "path": "in game/speak.wav",
+                        "volume": 0.5,
+                        "pitch": 0.699999988079071,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "jumpVoice",
+                        "path": "player/jump.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "landVoice",
+                        "path": "player/land.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "deathSound",
+                        "path": "player/death.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -20323,7 +20623,10 @@
                             "groundCheckWidth": 10.0,
                             "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
-                            "isDialogueActive": false,
+                            "dialogueParentName": "DialogueContainer",
+                            "dialoguePrefix": "PlayerDialogue_",
+                            "numberOfDialogues": 5,
+                            "isDialogueActive": true,
                             "facingRight": true,
                             "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 100.0,
@@ -21193,8 +21496,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.66988754272461,
+                    "x": -190.9333038330078,
+                    "y": 33.370689392089847,
                     "z": 0.0
                 },
                 "size": {
@@ -21311,8 +21614,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.66988754272461,
+                    "x": -190.9333038330078,
+                    "y": 33.370689392089847,
                     "z": 0.0
                 },
                 "size": {
@@ -21356,7 +21659,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "Heh. It’s less fire and brimstone than I thought.",
+                "text": "Heh. It's less fire and brimstone than I thought.",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -21429,8 +21732,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.66988754272461,
+                    "x": -190.9333038330078,
+                    "y": 33.370689392089847,
                     "z": 0.0
                 },
                 "size": {
@@ -21547,8 +21850,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.66988754272461,
+                    "x": -190.9333038330078,
+                    "y": 33.370689392089847,
                     "z": 0.0
                 },
                 "size": {
@@ -21665,8 +21968,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -464.2978210449219,
-                    "y": -232.0575714111328,
+                    "x": -476.7275390625,
+                    "y": -224.3567657470703,
                     "z": 0.0
                 },
                 "size": {
@@ -21710,7 +22013,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "I wonder, if at the end of this journey, I’ll find you, Keiran?",
+                "text": "I wonder, if at the end of this journey, I'll find you, Keiran?",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -22944,7 +23247,7 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 967.9703979492188,
+                    "x": 967.9703369140625,
                     "y": -391.3429870605469,
                     "z": 0.0
                 },
@@ -23409,7 +23712,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 784.1422729492188,
+                    "x": 325.4507141113281,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23447,12 +23750,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 716.80029296875,
+                    "x": 258.1087341308594,
                     "y": -334.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 851.4842529296875,
+                    "x": 392.7926940917969,
                     "y": -318.3426513671875,
                     "z": 0.0
                 }
@@ -23522,7 +23825,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 723.8261108398438,
+                    "x": 265.1345520019531,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23600,7 +23903,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 763.7864379882813,
+                    "x": 305.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23678,7 +23981,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 783.7864379882813,
+                    "x": 325.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23756,7 +24059,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 803.7864379882813,
+                    "x": 345.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23834,7 +24137,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 843.7864379882813,
+                    "x": 385.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23912,7 +24215,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 743.7864379882813,
+                    "x": 285.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23990,7 +24293,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 823.7864379882813,
+                    "x": 365.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -24068,7 +24371,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1180.13134765625,
+                    "x": 809.6680908203125,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24106,12 +24409,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1112.63134765625,
+                    "x": 742.1680908203125,
                     "y": -769.9077758789063,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1247.63134765625,
+                    "x": 877.1680908203125,
                     "y": -753.9077758789063,
                     "z": 0.0
                 }
@@ -24181,7 +24484,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1119.815185546875,
+                    "x": 749.3519287109375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24259,7 +24562,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1159.7755126953126,
+                    "x": 789.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24337,7 +24640,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1179.7755126953126,
+                    "x": 809.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24415,7 +24718,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1199.7755126953126,
+                    "x": 829.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24493,7 +24796,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1239.7755126953126,
+                    "x": 869.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24571,7 +24874,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 543.4737548828125,
+                    "x": 252.51597595214845,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -24609,12 +24912,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 495.4737548828125,
+                    "x": 204.51597595214845,
                     "y": -836.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 591.4737548828125,
+                    "x": 300.5159912109375,
                     "y": -820.3426513671875,
                     "z": 0.0
                 }
@@ -24684,7 +24987,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 503.1575927734375,
+                    "x": 212.19981384277345,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -24762,7 +25065,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 523.117919921875,
+                    "x": 232.16014099121095,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -24840,7 +25143,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 543.117919921875,
+                    "x": 252.16014099121095,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -24918,7 +25221,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 563.117919921875,
+                    "x": 272.16015625,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -24996,7 +25299,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 583.117919921875,
+                    "x": 292.16015625,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -26018,8 +26321,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -180.3035430908203,
-                    "y": -48.400184631347659,
+                    "x": -192.7332763671875,
+                    "y": -40.69938278198242,
                     "z": 0.0
                 },
                 "size": {
@@ -26222,8 +26525,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -144.8752899169922,
-                    "y": -40.747833251953128,
+                    "x": -157.30502319335938,
+                    "y": -33.04703140258789,
                     "z": 0.0
                 },
                 "size": {
@@ -26958,9 +27261,12 @@
                         "path": "mana chime.wav",
                         "volume": 0.5,
                         "pitch": 1.0,
-                        "spatial3D": true,
+                        "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27213,9 +27519,12 @@
                         "path": "mana chime.wav",
                         "volume": 0.5,
                         "pitch": 1.0,
-                        "spatial3D": true,
+                        "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27474,7 +27783,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27640,7 +27952,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27806,7 +28121,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27962,6 +28280,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "rockSFX",
+                        "path": "in game/rocks.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 1600.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -32021,6 +32355,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -32152,6 +32502,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -33508,6 +33874,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,
@@ -35495,6 +35877,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "Click",
+                        "path": "button click.wav",
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "button": {
                 "buttonState": 0,
                 "shapeNormalColor": {
@@ -36701,6 +37099,84 @@
         },
         {
             "active": true,
+            "name": "CheckPoint",
+            "uuid": 10484335782450517413,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 737.5445556640625,
+                    "y": -343.8509216308594,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Checkpoint Marker.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.649402379989624
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 2252181654068074954,
+                "localPos": {
+                    "x": -22.35479736328125,
+                    "y": -72.00588989257813,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
             "name": "Embers_1",
             "uuid": 16145686243575674740,
             "tag": {
@@ -36802,6 +37278,84 @@
         },
         {
             "active": true,
+            "name": "CheckPoint",
+            "uuid": 6859963062229300182,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -192.05099487304688,
+                    "y": -817.77392578125,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Checkpoint Marker.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.649402379989624
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 17336117045593986883,
+                "localPos": {
+                    "x": 16.16827392578125,
+                    "y": -250.36651611328126,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
             "name": "Embers_2",
             "uuid": 9613774648081027558,
             "tag": {
@@ -36899,6 +37453,162 @@
                 "flowStrength": 0.18000000715255738,
                 "flowSpeed": 3.0,
                 "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "CheckPoint",
+            "uuid": 297902381123705581,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1718.6534423828126,
+                    "y": -440.99041748046877,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Checkpoint Marker.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.649402379989624
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 1895781001044336769,
+                "localPos": {
+                    "x": 208.190185546875,
+                    "y": -104.92538452148438,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "CheckPoint",
+            "uuid": 16378921849300182958,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 670.1892700195313,
+                    "y": -794.578857421875,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                }
+            },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": true,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "UI/Checkpoint Marker.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 0.649402379989624
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "parent": {
+                "parentUUID": 11105831048619170058,
+                "localPos": {
+                    "x": 58.98797607421875,
+                    "y": -24.6875,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 80.9000015258789,
+                    "y": 84.05000305175781
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Default",
+                "z": 0
             }
         },
         {

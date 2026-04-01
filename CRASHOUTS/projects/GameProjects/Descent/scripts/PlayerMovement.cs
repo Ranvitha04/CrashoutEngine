@@ -30,7 +30,6 @@ namespace CrashoutsEngine
         public float energyConsumption = 12.5f;
         
         [SerializeField] private float coyoteTime = 0.15f;
-        //[SerializeField] private string tutorialDoorName = "tutorial1door"; 
         public int goalNoOfPlates = 1;
         public int currentGoalPlates = 0;
 
@@ -49,9 +48,15 @@ namespace CrashoutsEngine
         public float groundCheckDistance = 26.0f;
         public float groundCheckWidth = 10.0f;
 
-        // --- DIALOGUE VARIABLES ---
+        // --- DIALOGUE VARIABLES (UPDATED) ---
         [SerializeField] public bool playDialogueOnStart = true;
         [SerializeField] public float dialogueCooldown = 1.0f;
+        
+        [SerializeField] public string dialogueParentName = "DialogueContainer";
+        [SerializeField] public string dialoguePrefix = "PlayerDialogue_";
+        [SerializeField] public int numberOfDialogues = 5;
+        
+        private Entity dialogueParentEntity;
         private Entity[] dialogueEntities;
         private int currentDialogueIndex = 0;
         public bool isDialogueActive = false;
@@ -76,7 +81,6 @@ namespace CrashoutsEngine
         private Animator anim;
 
         private float footstepTimer = 0.0f;
-        //private bool wasGroundedLastFrame = true;
         private Random rng = new Random();
         private const float FIXED_TIMESTEP = 0.02f;
 
@@ -194,11 +198,8 @@ namespace CrashoutsEngine
             }
 
             rb.Mass = normalMass;
-            //rb.Restitution = 0.0f;
             IsGrounded = false;
             
-            // If this is a brand new level OR we aren't respawning, 
-            // set the respawn point to the current start position and full energy.
             if (string.IsNullOrEmpty(lastLevelName) || lastLevelName != currentLevel || !RespawnNextLoad)
             {
                 respawnPos = tf.Position;
@@ -221,10 +222,17 @@ namespace CrashoutsEngine
             AudioManager.SetClip3DDistances(Entity.ID, "switchMassSound", 20.0f, 600.0f);
             AudioManager.AddClipDSP(Entity.ID, "switchMassSound", AudioManager.FMOD_DSP_TYPE.LOWPASS);
 
-            dialogueEntities = new Entity[5];
-            for (int i = 0; i < 5; ++i)
+            // --- DYNAMIC DIALOGUE SETUP ---
+            if (!string.IsNullOrEmpty(dialogueParentName))
             {
-                dialogueEntities[i] = Entity.Find("PlayerDialogue_" + (i + 1));
+                dialogueParentEntity = Entity.Find(dialogueParentName);
+                if (dialogueParentEntity != null) InternalCalls.SetActive(dialogueParentEntity.ID, false);
+            }
+
+            dialogueEntities = new Entity[numberOfDialogues];
+            for (int i = 0; i < numberOfDialogues; ++i)
+            {
+                dialogueEntities[i] = Entity.Find(dialoguePrefix + (i + 1));
                 if (dialogueEntities[i] != null) InternalCalls.SetActive(dialogueEntities[i].ID, false);
             }
 
@@ -235,36 +243,33 @@ namespace CrashoutsEngine
 
         public override void Update()
         {
-            
             if (tf == null || rb == null) return;
             if (unlimitedEnergy)
                 CurrentEnergy = MaxEnergy;
+                
             if (Input.IsKeyTriggered(Key.Num1))
             {
                 unlimitedEnergy = !unlimitedEnergy;
                 Debug.Log("Unlimited Energy: " + (unlimitedEnergy ? "ON" : "OFF"));
             }
 
-            if (unlimitedEnergy)
-                CurrentEnergy = MaxEnergy;
-
             if (Input.IsKeyTriggered(Key.Num2))
             {
                 godMode = !godMode;
                 Debug.Log("God Mode: " + (godMode ? "ON" : "OFF"));
-                
             }
-            
 
             if (godMode)
             {
                 IsGrounded = true;
                 coyoteTimeTimer = coyoteTime;
             }
+            
             if (Input.IsKeyTriggered(Key.Num3))
             {
                 TeleportToTutorialDoor();
             }
+            
             AudioManager.SetListenerPosition(tf.Position);
             if (isDying)
             {
@@ -287,8 +292,16 @@ namespace CrashoutsEngine
             {
                 if (!hasDialogueStarted && !SceneManager.IsTransitioning())
                 {
-                    hasDialogueStarted = true; isDialogueActive = true; currentDialogueIndex = 0;
-                    if (dialogueEntities[0] != null) InternalCalls.SetActive(dialogueEntities[0].ID, true);
+                    hasDialogueStarted = true; 
+                    isDialogueActive = true; 
+                    currentDialogueIndex = 0;
+                    
+                    // Activate the parent container
+                    if (dialogueParentEntity != null) InternalCalls.SetActive(dialogueParentEntity.ID, true);
+
+                    // Activate the first dialogue
+                    if (dialogueEntities.Length > 0 && dialogueEntities[0] != null) 
+                        InternalCalls.SetActive(dialogueEntities[0].ID, true);
                 }
                 HandleDialogueSequence();
                 horizontalInput = 0f;
@@ -305,6 +318,7 @@ namespace CrashoutsEngine
                 stateChangedThisSwap = false;
                 rb.LinearVelocity = new CEVec3(0, 0, 0);
                 AudioManager.GetInstance().PlayAttached("switchMassSound", Entity.ID);
+                AudioManager.GetInstance().PlayAttached("speak", Entity.ID);
             }
 
             if (swapPauseTimer > 0.0f)
@@ -326,10 +340,6 @@ namespace CrashoutsEngine
             if (IsGrounded) coyoteTimeTimer = coyoteTime;
             else if (coyoteTimeTimer > 0.0f) coyoteTimeTimer -= (float)Time.DT;
 
-            // ---------------------------------------------------------
-            // 6. PASSTHROUGH LOGIC (HEARTBEAT)
-            // ---------------------------------------------------------
-            // If the heartbeat timer runs out, we have physically separated from the platform.
             if (passthroughOverlapTimer > 0.0f)
             {
                 passthroughOverlapTimer -= (float)Time.DT;
@@ -339,16 +349,12 @@ namespace CrashoutsEngine
                 }
             }
 
-            // Drop down trigger (S Key)
             if (Input.GetAction("DropDown") && IsGrounded && !isPhasing)
             {
                 isPhasing = true;
-                passthroughOverlapTimer = 0.1f; // Kickstart the heartbeat so we don't immediately un-phase
+                passthroughOverlapTimer = 0.1f; 
             }
 
-            // ---------------------------------------------------------
-            // 7. JUMP LOGIC
-            // ---------------------------------------------------------
             if (Input.GetActionTriggered("Jump") && (IsGrounded || coyoteTimeTimer > 0.0f) && jumpReady && !isPhasing) 
             {
                 jumpRequested = true;
@@ -356,7 +362,6 @@ namespace CrashoutsEngine
                 coyoteTimeTimer = 0.0f;
             }
 
-            // 8. LANDING LOGIC
             if (!IsGrounded && rb.LinearVelocity.y < -1.0f) landingDustArmed = true;
 
             if (!wasGroundedThisFrame && IsGrounded && landingDustArmed)
@@ -405,6 +410,7 @@ namespace CrashoutsEngine
             if (jumpRequested && !isDialogueActive)
             {
                 AudioManager.GetInstance().PlayAttached("JumpUp", Entity.ID);
+                AudioManager.GetInstance().PlayAttached("jumpVoice", Entity.ID);
                 rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
                 
@@ -470,7 +476,6 @@ namespace CrashoutsEngine
         }
         private void FinishDeathTransition()
         {
-            // If a Game Over scene is defined, ALWAYS go there first
             if (!string.IsNullOrEmpty(gameOverSceneName))
             {
                 if (!SceneManager.IsTransitioning())
@@ -480,7 +485,6 @@ namespace CrashoutsEngine
                 return;
             }
 
-            // Fallback: reload the level directly ONLY if no Game Over scene exists
             if (reloadOnDeath)
             {
                 if (!SceneManager.IsTransitioning())
@@ -522,7 +526,6 @@ namespace CrashoutsEngine
             if (tag.HasTag("Ground") || tag.HasTag("Platform")) return true;
             if (tag.HasTag("Passthrough"))
             {
-                // Ignore grounding if we are in the middle of phasing
                 if (isPhasing) return false;
                 return true;
             }
@@ -553,38 +556,13 @@ namespace CrashoutsEngine
 
             return true;
         }
-        /*
-        public bool OnPreSolve(uint otherID)
-        {
-            var tag = new Entity(otherID).GetComponent<TagComponent>();
-            if (tag != null && tag.HasTag("Passthrough"))
-            {
-                // THE HEARTBEAT: As long as we are physically inside the platform, 
-                // refresh the timer. This stops the state from turning off prematurely!
-                passthroughOverlapTimer = 0.1f;
-
-                // STATE TRIGGER: If we hit a platform while moving up, activate the phasing state!
-                if (rb.LinearVelocity.y > 0.1f) 
-                {
-                    isPhasing = true;
-                }
-
-                // If the state is active, IGNORE collision math.
-                if (isPhasing) return false;
-                
-                return true; // Safe to land!
-            }
-            return true;
-        }
-        */
+        
         public void OnCollideEnter(uint otherID)
         {
             var tag = new Entity(otherID).GetComponent<TagComponent>();
             if (tag == null) return;
             if (tag.HasTag("Wall")) { OnWall = true; rb.LinearVelocity = new CEVec3(0, rb.LinearVelocity.y, 0); }
             if (tag.HasTag("Lava") || tag.HasTag("Enemy")) HandleDeath();
-            
-            // Cleaned out the ContactCount hacks entirely!
         }
 
         public void OnCollideExit(uint otherID)
@@ -598,16 +576,31 @@ namespace CrashoutsEngine
 
         private void HandleDialogueSequence()
         {
-            if (currentDialogueIndex >= dialogueEntities.Length) { isDialogueActive = false; return; }
+            if (currentDialogueIndex >= dialogueEntities.Length) { EndDialogue(); return; }
             Entity ent = dialogueEntities[currentDialogueIndex];
-            if (ent == null) { isDialogueActive = false; return; }
+            if (ent == null) { EndDialogue(); return; }
+            
             if (Input.GetActionTriggered("Jump") || (InternalCalls.IsTextFinished(ent.ID) && (dialogueTimer += (float)Time.DT) >= dialogueCooldown))
             {
-                InternalCalls.SetActive(ent.ID, false); currentDialogueIndex++; dialogueTimer = 0.0f;
+                InternalCalls.SetActive(ent.ID, false); 
+                currentDialogueIndex++; 
+                dialogueTimer = 0.0f;
+                
                 if (currentDialogueIndex < dialogueEntities.Length && dialogueEntities[currentDialogueIndex] != null)
+                {
                     InternalCalls.SetActive(dialogueEntities[currentDialogueIndex].ID, true);
-                else isDialogueActive = false;
+                }
+                else 
+                {
+                    EndDialogue();
+                }
             }
+        }
+        
+        private void EndDialogue()
+        {
+            isDialogueActive = false;
+            if (dialogueParentEntity != null) InternalCalls.SetActive(dialogueParentEntity.ID, false);
         }
 
         private void HandleFootsteps()
@@ -625,6 +618,7 @@ namespace CrashoutsEngine
         private void HandleLanding()
         {
             AudioManager.GetInstance().PlayAttached("jumpLand", Entity.ID);
+            AudioManager.GetInstance().PlayAttached("landVoice", Entity.ID);
 
             if (strongestAirborneFallSpeed < landingRumbleMinFallSpeed || landingRumbleMaxFallSpeed <= landingRumbleMinFallSpeed)
             {
@@ -647,6 +641,7 @@ namespace CrashoutsEngine
             InternalCalls.Particle_SetEmitting(landingDustID, true); 
             landingDustTimer = dustBurstDuration; 
         }
+
         public void VS_RemoveEnergy25()
         {
             RemoveEnergy(25.0f);
@@ -663,7 +658,7 @@ namespace CrashoutsEngine
         {
             Debug.Log("CurrentEnergy = " + CurrentEnergy);
         }
-        //Death Anim
+        
         private void HandleDeath()
         {
             if (godMode) return;
@@ -681,6 +676,8 @@ namespace CrashoutsEngine
                 anim.Play(deathClip, true);
                 currentAnimState = deathClip;
             }
+
+            AudioManager.GetInstance().PlayAttached("deathSound", Entity.ID);
         }
 
         private void TeleportToTutorialDoor()
@@ -701,7 +698,6 @@ namespace CrashoutsEngine
                 rb.LinearVelocity = new CEVec3(0, 0, 0);
         }
 
-        //Testing VSnode
         public void VS_Grounded()
         {
             Debug.Log("Branch TRUE: Player is grounded");
@@ -711,6 +707,7 @@ namespace CrashoutsEngine
         {
             Debug.Log("Branch FALSE: Player is airborne");
         }
+        
         public void VS_TwoPlusTwoTrue()
         {
             Console.WriteLine("2 + 2 is 4");
@@ -720,6 +717,7 @@ namespace CrashoutsEngine
         {
             Console.WriteLine("2 + 2 is NOT 4");
         }
+        
         public void Respawn() 
         { 
             alive = true; 
@@ -731,18 +729,17 @@ namespace CrashoutsEngine
             jumpReady = true;
             isDying = false;
             deathTimer = 0.0f;
-            // REMIND MYSELF TO LIKE FIGURE PERSISTING MASS STATE
             isLight = false;
             rb.Mass = normalMass;
             swapPauseTimer = 0.0f;
 
-            // Force animation reset
             if (anim != null)
             {
                 anim.Play("playerIdle", true);
                 currentAnimState = "playerIdle";
             }
         }
+        
         private void TeleportToCheckpoint()
         {
             tf.Position = respawnPos;
@@ -750,6 +747,7 @@ namespace CrashoutsEngine
             isPhasing = false;
             passthroughOverlapTimer = 0.0f;
         }
+        
         public void AddEnergy(float amount) { CurrentEnergy = Math.Min(CurrentEnergy + amount, MaxEnergy); }
         public void RemoveEnergy(float amount)
         {
