@@ -565,32 +565,16 @@
             "path": "backgrounds/ducky.png"
         },
         {
-            "name": "spikes_15",
-            "path": "spritesheet/spikes/spikes_15.png"
+            "name": "Darker Platform_21",
+            "path": "spritesheet/Darker Platform/Darker Platform_21.png"
         },
         {
-            "name": "foreground base",
-            "path": "backgrounds/foreground base.png"
+            "name": "foreground bottom",
+            "path": "backgrounds/foreground bottom.png"
         },
         {
             "name": "foreground top",
             "path": "backgrounds/foreground top.png"
-        },
-        {
-            "name": "Rock_29",
-            "path": "spritesheet/Rock/Rock_29.png"
-        },
-        {
-            "name": "Platform_12",
-            "path": "spritesheet/Platform/Platform_12.png"
-        },
-        {
-            "name": "lava platform_01",
-            "path": "spritesheet/lava platform/lava platform_01.png"
-        },
-        {
-            "name": "foreground",
-            "path": "backgrounds/foreground.png"
         },
         {
             "name": "Chibi-1",
@@ -1205,10 +1189,6 @@
             "path": "spritesheet/Darker Platform/Darker Platform_20.png"
         },
         {
-            "name": "Darker Platform_21",
-            "path": "spritesheet/Darker Platform/Darker Platform_21.png"
-        },
-        {
             "name": "Darker Platform_23",
             "path": "spritesheet/Darker Platform/Darker Platform_23.png"
         },
@@ -1335,6 +1315,18 @@
         {
             "name": "lava platform_00",
             "path": "spritesheet/lava platform/lava platform_00.png"
+        },
+        {
+            "name": "Rock_29",
+            "path": "spritesheet/Rock/Rock_29.png"
+        },
+        {
+            "name": "Platform_12",
+            "path": "spritesheet/Platform/Platform_12.png"
+        },
+        {
+            "name": "lava platform_01",
+            "path": "spritesheet/lava platform/lava platform_01.png"
         },
         {
             "name": "New mana bar",
@@ -1907,6 +1899,10 @@
         {
             "name": "spikes_13",
             "path": "spritesheet/spikes/spikes_13.png"
+        },
+        {
+            "name": "spikes_15",
+            "path": "spritesheet/spikes/spikes_15.png"
         },
         {
             "name": "spikes_16",
