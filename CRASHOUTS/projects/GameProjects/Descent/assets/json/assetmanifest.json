@@ -389,6 +389,26 @@
             "path": "missing.png"
         },
         {
+            "name": "Rock_40",
+            "path": "spritesheet/Rock/Rock_40.png"
+        },
+        {
+            "name": "Sus Face Right",
+            "path": "Monsters/Sus Face Right.png"
+        },
+        {
+            "name": "crashouts",
+            "path": "backgrounds/crashouts.png"
+        },
+        {
+            "name": "pause settings text",
+            "path": "UI/pause settings text.png"
+        },
+        {
+            "name": "background",
+            "path": "backgrounds/background.png"
+        },
+        {
             "name": "Darker Platform_22",
             "path": "spritesheet/Darker Platform/Darker Platform_22.png"
         },
@@ -399,18 +419,6 @@
         {
             "name": "bg 1 base",
             "path": "backgrounds/bg 1 base.png"
-        },
-        {
-            "name": "throw 1-Sheet-sheet_00",
-            "path": "spritesheet/throw 1-Sheet-sheet/throw 1-Sheet-sheet_00.png"
-        },
-        {
-            "name": "bg2 base",
-            "path": "backgrounds/bg2 base.png"
-        },
-        {
-            "name": "Light Death spritesheet",
-            "path": "Character/DeathAnimBook/Light Death spritesheet.png"
         },
         {
             "name": "spikes updated",
@@ -461,16 +469,24 @@
             "path": "backgrounds/bg 1 top.png"
         },
         {
+            "name": "throw 1-Sheet-sheet_00",
+            "path": "spritesheet/throw 1-Sheet-sheet/throw 1-Sheet-sheet_00.png"
+        },
+        {
+            "name": "bg2 base",
+            "path": "backgrounds/bg2 base.png"
+        },
+        {
+            "name": "Light Death spritesheet",
+            "path": "Character/DeathAnimBook/Light Death spritesheet.png"
+        },
+        {
             "name": "Chibi-5",
             "path": "Character/Normal Mode/Chibi-5.png"
         },
         {
             "name": "bg2 p2",
             "path": "backgrounds/bg2 p2.png"
-        },
-        {
-            "name": "EndCutscene_2",
-            "path": "Cutscenes/EndCutscene_2.png"
         },
         {
             "name": "spikes_22",
@@ -517,24 +533,20 @@
             "path": "Character/Normal Mode/Chibi-7.png"
         },
         {
+            "name": "Switch-State-SpriteSheet_03",
+            "path": "spritesheet/Switch-State-SpriteSheet/Switch-State-SpriteSheet_03.png"
+        },
+        {
+            "name": "middleground front",
+            "path": "backgrounds/middleground front.png"
+        },
+        {
             "name": "Platform_09",
             "path": "spritesheet/Platform/Platform_09.png"
         },
         {
             "name": "bg3 top",
             "path": "backgrounds/bg3 top.png"
-        },
-        {
-            "name": "Rock_40",
-            "path": "spritesheet/Rock/Rock_40.png"
-        },
-        {
-            "name": "Sus Face Right",
-            "path": "Monsters/Sus Face Right.png"
-        },
-        {
-            "name": "crashouts",
-            "path": "backgrounds/crashouts.png"
         },
         {
             "name": "Idle spritesheet",
@@ -565,6 +577,30 @@
             "path": "backgrounds/foreground top.png"
         },
         {
+            "name": "Rock_29",
+            "path": "spritesheet/Rock/Rock_29.png"
+        },
+        {
+            "name": "Platform_12",
+            "path": "spritesheet/Platform/Platform_12.png"
+        },
+        {
+            "name": "lava platform_01",
+            "path": "spritesheet/lava platform/lava platform_01.png"
+        },
+        {
+            "name": "foreground",
+            "path": "backgrounds/foreground.png"
+        },
+        {
+            "name": "Chibi-1",
+            "path": "Character/Normal Mode/Chibi-1.png"
+        },
+        {
+            "name": "lava back",
+            "path": "backgrounds/lava back.png"
+        },
+        {
             "name": "spacebar",
             "path": "UI/Tutorial/spacebar.png"
         },
@@ -585,6 +621,14 @@
             "path": "backgrounds/lava far.png"
         },
         {
+            "name": "1",
+            "path": "UI/Energy Ball/1.png"
+        },
+        {
+            "name": "lava front",
+            "path": "backgrounds/lava front.png"
+        },
+        {
             "name": "tut_text_4",
             "path": "UI/Tutorial/tut_text_4.png"
         },
@@ -601,8 +645,8 @@
             "path": "backgrounds/lava near.png"
         },
         {
-            "name": "Chibi-1",
-            "path": "Character/Normal Mode/Chibi-1.png"
+            "name": "middleground back",
+            "path": "backgrounds/middleground back.png"
         },
         {
             "name": "Switch State spritesheet",
@@ -649,10 +693,6 @@
             "path": "Character/Light Mode/Left/Run 1.png"
         },
         {
-            "name": "EndCutscene_3",
-            "path": "Cutscenes/EndCutscene_3.png"
-        },
-        {
             "name": "restart yellow",
             "path": "UI/settings/restart yellow.png"
         },
@@ -695,10 +735,6 @@
         {
             "name": "Jump spritesheet",
             "path": "Character/New Artstyle/Jump spritesheet.png"
-        },
-        {
-            "name": "1",
-            "path": "UI/Energy Ball/1.png"
         },
         {
             "name": "2",
@@ -749,10 +785,6 @@
             "path": "Character/New Artstyle/Run/7.png"
         },
         {
-            "name": "Cutscene_2",
-            "path": "Cutscenes/Cutscene_2.png"
-        },
-        {
             "name": "key_A",
             "path": "UI/settings/key_A.png"
         },
@@ -777,6 +809,10 @@
             "path": "Cutscenes/Cutscene_1.png"
         },
         {
+            "name": "Cutscene_2",
+            "path": "Cutscenes/Cutscene_2.png"
+        },
+        {
             "name": "Cutscene_3",
             "path": "Cutscenes/Cutscene_3.png"
         },
@@ -787,6 +823,14 @@
         {
             "name": "EndCutscene_1",
             "path": "Cutscenes/EndCutscene_1.png"
+        },
+        {
+            "name": "EndCutscene_2",
+            "path": "Cutscenes/EndCutscene_2.png"
+        },
+        {
+            "name": "EndCutscene_3",
+            "path": "Cutscenes/EndCutscene_3.png"
         },
         {
             "name": "fourth",
@@ -1291,18 +1335,6 @@
         {
             "name": "lava platform_00",
             "path": "spritesheet/lava platform/lava platform_00.png"
-        },
-        {
-            "name": "Rock_29",
-            "path": "spritesheet/Rock/Rock_29.png"
-        },
-        {
-            "name": "Platform_12",
-            "path": "spritesheet/Platform/Platform_12.png"
-        },
-        {
-            "name": "lava platform_01",
-            "path": "spritesheet/lava platform/lava platform_01.png"
         },
         {
             "name": "New mana bar",
@@ -2121,10 +2153,6 @@
             "path": "spritesheet/Switch-State-SpriteSheet/Switch-State-SpriteSheet_02.png"
         },
         {
-            "name": "Switch-State-SpriteSheet_03",
-            "path": "spritesheet/Switch-State-SpriteSheet/Switch-State-SpriteSheet_03.png"
-        },
-        {
             "name": "Switch-State-SpriteSheet_05",
             "path": "spritesheet/Switch-State-SpriteSheet/Switch-State-SpriteSheet_05.png"
         },
@@ -2223,10 +2251,6 @@
         {
             "name": "mouse click",
             "path": "UI/mouse click.png"
-        },
-        {
-            "name": "pause settings text",
-            "path": "UI/pause settings text.png"
         },
         {
             "name": "Resume game hover",

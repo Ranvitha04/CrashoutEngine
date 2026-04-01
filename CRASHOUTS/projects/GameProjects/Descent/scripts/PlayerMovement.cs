@@ -212,6 +212,10 @@ namespace CrashoutsEngine
 
             if (RespawnNextLoad)
             {
+                // Disable dialogue flags since we are respawning from a Game Over
+                playDialogueOnStart = false;
+                isDialogueActive = false;
+
                 Respawn();
                 RespawnNextLoad = false;
             }
