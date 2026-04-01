@@ -95,6 +95,7 @@ namespace CrashoutsEngine
             // Transition to victory scene
             if (!SceneManager.IsTransitioning())
             {
+                AudioManager.GetInstance().PlayAttached("WinMusic", Entity.ID);
                 SceneManager.LoadScene(victorySceneName, victoryFadeDuration);
             }
 

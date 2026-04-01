@@ -494,6 +494,9 @@ namespace CrashoutsEngine {
 					clipObj.AddMember("spatial3D", clip.spatial3D, allocator);
 					clipObj.AddMember("looping", clip.looping, allocator);
 					clipObj.AddMember("isMusic", clip.isMusic, allocator);
+					clipObj.AddMember("minDistance", clip.minDistance, allocator);
+					clipObj.AddMember("maxDistance", clip.maxDistance, allocator);
+					clipObj.AddMember("dspType", clip.dspType, allocator);
 					clipsArr.PushBack(clipObj, allocator);
 				}
 				val.AddMember("clips", clipsArr, allocator);
@@ -1210,6 +1213,9 @@ namespace CrashoutsEngine {
 						if (cVal.HasMember("looping")) clip.looping = cVal["looping"].GetBool();
 						if (cVal.HasMember("isMusic")) clip.isMusic = cVal["isMusic"].GetBool();
 						if (cVal.HasMember("spatial3D")) clip.spatial3D = cVal["spatial3D"].GetBool();
+						if (cVal.HasMember("minDistance")) clip.minDistance = cVal["minDistance"].GetFloat();
+						if (cVal.HasMember("maxDistance")) clip.maxDistance = cVal["maxDistance"].GetFloat();
+						if (cVal.HasMember("dspType")) clip.dspType = cVal["dspType"].GetInt();
 						ac.clips.push_back(clip);
 					}
 				}
@@ -1221,6 +1227,9 @@ namespace CrashoutsEngine {
 					if (v.HasMember("pitch")) clip.pitch = v["pitch"].GetFloat();
 					if (v.HasMember("spatial3D")) clip.spatial3D = v["spatial3D"].GetBool();
 					if (v.HasMember("looping")) clip.looping = v["looping"].GetBool();
+					if (v.HasMember("minDistance")) clip.minDistance = v["minDistance"].GetFloat();
+					if (v.HasMember("maxDistance")) clip.maxDistance = v["maxDistance"].GetFloat();
+					if (v.HasMember("dspType")) clip.dspType = v["dspType"].GetInt();
 					ac.clips.push_back(clip);
 				}
 			}

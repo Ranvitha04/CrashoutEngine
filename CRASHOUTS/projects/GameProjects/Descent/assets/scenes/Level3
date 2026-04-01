@@ -17463,6 +17463,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "rockSFX",
+                        "path": "in game/rocks.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 1600.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -20606,6 +20622,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -20861,7 +20893,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep2",
@@ -20870,7 +20905,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep3",
@@ -20879,7 +20917,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep4",
@@ -20888,7 +20929,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep5",
@@ -20897,7 +20941,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep6",
@@ -20906,7 +20953,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep7",
@@ -20915,7 +20965,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep8",
@@ -20924,7 +20977,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "jumpLand",
@@ -20933,7 +20989,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "jumpUp",
@@ -20942,7 +21001,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "switchMassSound",
@@ -20951,7 +21013,58 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "speak",
+                        "path": "in game/speak.wav",
+                        "volume": 0.5,
+                        "pitch": 0.699999988079071,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "jumpVoice",
+                        "path": "player/jump.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "landVoice",
+                        "path": "player/land.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "deathSound",
+                        "path": "player/death.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -20988,6 +21101,9 @@
                             "groundCheckWidth": 10.0,
                             "playDialogueOnStart": false,
                             "dialogueCooldown": 1.0,
+                            "dialogueParentName": "DialogueContainer",
+                            "dialoguePrefix": "PlayerDialogue_",
+                            "numberOfDialogues": 5,
                             "isDialogueActive": false,
                             "facingRight": true,
                             "lockBookGlowToPlayer": false,
@@ -22032,7 +22148,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "Heh. It’s less fire and brimstone than I thought.",
+                "text": "Heh. It's less fire and brimstone than I thought.",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -22386,7 +22502,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "I wonder, if at the end of this journey, I’ll find you, Keiran?",
+                "text": "I wonder, if at the end of this journey, I'll find you, Keiran?",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -23612,7 +23728,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -24020,7 +24139,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -25190,7 +25312,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1456.19921875,
-                    "y": -21.881301879882814,
+                    "y": -22.65753746032715,
                     "z": 0.0
                 },
                 "offset": {
@@ -25201,7 +25323,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 1456.19921875,
-                    "y": -21.881301879882814,
+                    "y": -22.65753746032715,
                     "z": 0.0
                 }
             },
@@ -25248,7 +25370,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -25442,7 +25567,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1411.4249267578126,
-                    "y": -615.045166015625,
+                    "y": -615.8214111328125,
                     "z": 0.0
                 },
                 "offset": {
@@ -25453,7 +25578,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 1411.4249267578126,
-                    "y": -615.045166015625,
+                    "y": -615.8214111328125,
                     "z": 0.0
                 }
             },
@@ -25500,7 +25625,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -25756,7 +25884,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -25922,7 +26053,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27173,6 +27307,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "rockSFX",
+                        "path": "in game/rocks.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 1600.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -27726,7 +27876,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
-                        "isMusic": true
+                        "isMusic": true,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27795,7 +27948,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -28330,7 +28486,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -28452,7 +28611,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove2",
@@ -28461,7 +28623,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove3",
@@ -28470,7 +28635,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove4",
@@ -28479,7 +28647,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove5",
@@ -28488,7 +28659,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeImpact",
@@ -28497,7 +28671,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -29082,7 +29259,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove2",
@@ -29091,7 +29271,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove3",
@@ -29100,7 +29283,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove4",
@@ -29109,7 +29295,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeMove5",
@@ -29118,7 +29307,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "slimeImpact",
@@ -29127,7 +29319,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -30137,6 +30332,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -30266,6 +30477,22 @@
                     "y": -601.2950439453125,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -31134,7 +31361,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -33150,7 +33380,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },

@@ -318,6 +318,7 @@ namespace CrashoutsEngine
                 stateChangedThisSwap = false;
                 rb.LinearVelocity = new CEVec3(0, 0, 0);
                 AudioManager.GetInstance().PlayAttached("switchMassSound", Entity.ID);
+                AudioManager.GetInstance().PlayAttached("speak", Entity.ID);
             }
 
             if (swapPauseTimer > 0.0f)
@@ -409,6 +410,7 @@ namespace CrashoutsEngine
             if (jumpRequested && !isDialogueActive)
             {
                 AudioManager.GetInstance().PlayAttached("JumpUp", Entity.ID);
+                AudioManager.GetInstance().PlayAttached("jumpVoice", Entity.ID);
                 rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
                 
@@ -616,6 +618,7 @@ namespace CrashoutsEngine
         private void HandleLanding()
         {
             AudioManager.GetInstance().PlayAttached("jumpLand", Entity.ID);
+            AudioManager.GetInstance().PlayAttached("landVoice", Entity.ID);
 
             if (strongestAirborneFallSpeed < landingRumbleMinFallSpeed || landingRumbleMaxFallSpeed <= landingRumbleMinFallSpeed)
             {
@@ -673,6 +676,8 @@ namespace CrashoutsEngine
                 anim.Play(deathClip, true);
                 currentAnimState = deathClip;
             }
+
+            AudioManager.GetInstance().PlayAttached("deathSound", Entity.ID);
         }
 
         private void TeleportToTutorialDoor()

@@ -11266,6 +11266,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "rockSFX",
+                        "path": "in game/rocks.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 1600.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -11411,7 +11427,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1219.7755126953126,
+                    "x": 849.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -12064,7 +12080,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1139.7755126953126,
+                    "x": 769.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -17775,7 +17791,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -19246,7 +19265,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -19359,7 +19381,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
-                        "isMusic": true
+                        "isMusic": true,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -19502,6 +19527,22 @@
                     "z": 0.0
                 }
             },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -19631,6 +19672,22 @@
                     "y": -159.5450439453125,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -19762,6 +19819,56 @@
                     "z": 0.0
                 }
             },
+            "shape": {
+                "useTexture": true,
+                "isWorldSpace": false,
+                "wrapModeU": 0,
+                "wrapModeV": 0,
+                "thickness": 1.0,
+                "preview": false,
+                "type": 0,
+                "textureName": "images/default.png",
+                "uvSize": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "uvOffset": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "p1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 32.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
+            },
             "script": {
                 "scripts": [
                     {
@@ -19891,6 +19998,22 @@
                     "y": -672.4913330078125,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "checkpointSound",
+                        "path": "in game/checkpoint.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "script": {
                 "scripts": [
@@ -20080,8 +20203,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": -32.70002365112305,
+                    "x": -190.9333038330078,
+                    "y": 3.646925926208496,
                     "z": 0.0
                 },
                 "size": {
@@ -20118,13 +20241,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -187.00357055664063,
-                    "y": -64.0,
+                    "x": -199.4333038330078,
+                    "y": -27.653034210205079,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -170.00357055664063,
-                    "y": -5.800045013427734,
+                    "x": -182.4333038330078,
+                    "y": 30.546886444091798,
                     "z": 0.0
                 }
             },
@@ -20171,7 +20294,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep2",
@@ -20180,7 +20306,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep3",
@@ -20189,7 +20318,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep4",
@@ -20198,7 +20330,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep5",
@@ -20207,7 +20342,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep6",
@@ -20216,7 +20354,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep7",
@@ -20225,7 +20366,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep8",
@@ -20234,7 +20378,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "jumpLand",
@@ -20243,7 +20390,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "jumpUp",
@@ -20252,7 +20402,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "switchMassSound",
@@ -20261,7 +20414,58 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "speak",
+                        "path": "in game/speak.wav",
+                        "volume": 0.5,
+                        "pitch": 0.699999988079071,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "jumpVoice",
+                        "path": "player/jump.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "landVoice",
+                        "path": "player/land.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
+                    },
+                    {
+                        "name": "deathSound",
+                        "path": "player/death.wav",
+                        "volume": 0.30000001192092898,
+                        "pitch": 1.0,
+                        "spatial3D": false,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -20298,7 +20502,10 @@
                             "groundCheckWidth": 10.0,
                             "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
-                            "isDialogueActive": false,
+                            "dialogueParentName": "DialogueContainer",
+                            "dialoguePrefix": "PlayerDialogue_",
+                            "numberOfDialogues": 5,
+                            "isDialogueActive": true,
                             "facingRight": true,
                             "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 100.0,
@@ -20484,6 +20691,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -20536,7 +20774,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -20550,14 +20788,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20610,37 +20848,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21165,8 +21372,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.66988754272461,
+                    "x": -190.9333038330078,
+                    "y": 62.01683807373047,
                     "z": 0.0
                 },
                 "size": {
@@ -21283,8 +21490,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.66988754272461,
+                    "x": -190.9333038330078,
+                    "y": 62.01683807373047,
                     "z": 0.0
                 },
                 "size": {
@@ -21328,7 +21535,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "Heh. It’s less fire and brimstone than I thought.",
+                "text": "Heh. It's less fire and brimstone than I thought.",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -21401,8 +21608,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.66988754272461,
+                    "x": -190.9333038330078,
+                    "y": 62.01683807373047,
                     "z": 0.0
                 },
                 "size": {
@@ -21519,8 +21726,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.66988754272461,
+                    "x": -190.9333038330078,
+                    "y": 62.01683807373047,
                     "z": 0.0
                 },
                 "size": {
@@ -21637,8 +21844,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -464.2978210449219,
-                    "y": -232.0575714111328,
+                    "x": -476.7275390625,
+                    "y": -195.7106170654297,
                     "z": 0.0
                 },
                 "size": {
@@ -21682,7 +21889,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "I wonder, if at the end of this journey, I’ll find you, Keiran?",
+                "text": "I wonder, if at the end of this journey, I'll find you, Keiran?",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -22668,7 +22875,7 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 967.9703979492188,
+                    "x": 967.9703369140625,
                     "y": -391.3429870605469,
                     "z": 0.0
                 },
@@ -23133,7 +23340,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 784.1422729492188,
+                    "x": 325.4507141113281,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23171,12 +23378,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 716.80029296875,
+                    "x": 258.1087341308594,
                     "y": -334.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 851.4842529296875,
+                    "x": 392.7926940917969,
                     "y": -318.3426513671875,
                     "z": 0.0
                 }
@@ -23246,7 +23453,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 723.8261108398438,
+                    "x": 265.1345520019531,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23324,7 +23531,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 763.7864379882813,
+                    "x": 305.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23402,7 +23609,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 783.7864379882813,
+                    "x": 325.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23480,7 +23687,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 803.7864379882813,
+                    "x": 345.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23558,7 +23765,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 843.7864379882813,
+                    "x": 385.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23636,7 +23843,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 743.7864379882813,
+                    "x": 285.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23714,7 +23921,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 823.7864379882813,
+                    "x": 365.0948791503906,
                     "y": -326.3426513671875,
                     "z": 0.0
                 },
@@ -23792,7 +23999,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1180.13134765625,
+                    "x": 809.6680908203125,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -23830,12 +24037,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1112.63134765625,
+                    "x": 742.1680908203125,
                     "y": -769.9077758789063,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1247.63134765625,
+                    "x": 877.1680908203125,
                     "y": -753.9077758789063,
                     "z": 0.0
                 }
@@ -23905,7 +24112,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1119.815185546875,
+                    "x": 749.3519287109375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -23983,7 +24190,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1159.7755126953126,
+                    "x": 789.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24061,7 +24268,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1179.7755126953126,
+                    "x": 809.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24139,7 +24346,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1199.7755126953126,
+                    "x": 829.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24217,7 +24424,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1239.7755126953126,
+                    "x": 869.312255859375,
                     "y": -761.9077758789063,
                     "z": 0.0
                 },
@@ -24295,7 +24502,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 543.4737548828125,
+                    "x": 252.51597595214845,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -24333,12 +24540,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 495.4737548828125,
+                    "x": 204.51597595214845,
                     "y": -836.3426513671875,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 591.4737548828125,
+                    "x": 300.5159912109375,
                     "y": -820.3426513671875,
                     "z": 0.0
                 }
@@ -24408,7 +24615,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 503.1575927734375,
+                    "x": 212.19981384277345,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -24486,7 +24693,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 523.117919921875,
+                    "x": 232.16014099121095,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -24564,7 +24771,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 543.117919921875,
+                    "x": 252.16014099121095,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -24642,7 +24849,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 563.117919921875,
+                    "x": 272.16015625,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -24720,7 +24927,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 583.117919921875,
+                    "x": 292.16015625,
                     "y": -828.3426513671875,
                     "z": 0.0
                 },
@@ -25742,8 +25949,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -180.3035430908203,
-                    "y": -48.400184631347659,
+                    "x": -192.7332763671875,
+                    "y": -12.053234100341797,
                     "z": 0.0
                 },
                 "size": {
@@ -25881,8 +26088,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -144.8752899169922,
-                    "y": -40.747833251953128,
+                    "x": -157.30502319335938,
+                    "y": -4.400881767272949,
                     "z": 0.0
                 },
                 "size": {
@@ -26608,9 +26815,12 @@
                         "path": "mana chime.wav",
                         "volume": 0.5,
                         "pitch": 1.0,
-                        "spatial3D": true,
+                        "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -26860,9 +27070,12 @@
                         "path": "mana chime.wav",
                         "volume": 0.5,
                         "pitch": 1.0,
-                        "spatial3D": true,
+                        "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27118,7 +27331,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27284,7 +27500,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27450,7 +27669,10 @@
                         "pitch": 1.0,
                         "spatial3D": true,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -27606,6 +27828,22 @@
                     "y": 0.0,
                     "z": 0.0
                 }
+            },
+            "audio": {
+                "clips": [
+                    {
+                        "name": "rockSFX",
+                        "path": "in game/rocks.wav",
+                        "volume": 0.5,
+                        "pitch": 1.0,
+                        "spatial3D": true,
+                        "looping": false,
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 1600.0,
+                        "dspType": -1
+                    }
+                ]
             },
             "script": {
                 "scripts": [
