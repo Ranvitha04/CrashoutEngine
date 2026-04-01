@@ -20021,14 +20021,14 @@
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": true,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "images/Character\\NormalDeathAnim\\Normal Death spritesheet.png",
+                "textureName": "",
                 "uvSize": {
                     "x": 0.3333333432674408,
                     "y": 0.3333333432674408
