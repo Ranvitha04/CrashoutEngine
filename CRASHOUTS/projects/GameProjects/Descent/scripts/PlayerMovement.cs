@@ -302,6 +302,7 @@ namespace CrashoutsEngine
                     // Activate the first dialogue
                     if (dialogueEntities.Length > 0 && dialogueEntities[0] != null) 
                         InternalCalls.SetActive(dialogueEntities[0].ID, true);
+                        AudioManager.GetInstance().PlayAttached("SpeakVoice", Entity.ID);
                 }
                 HandleDialogueSequence();
                 horizontalInput = 0f;
@@ -409,6 +410,7 @@ namespace CrashoutsEngine
             if (jumpRequested && !isDialogueActive)
             {
                 AudioManager.GetInstance().PlayAttached("JumpUp", Entity.ID);
+                AudioManager.GetInstance().PlayAttached("JumpVoice", Entity.ID);
                 rb.LinearVelocity = new CEVec3(rb.LinearVelocity.x, 0f, 0f);
                 rb.AddForce(new CEVec3(0f, jumpPower, 0f));
                 
@@ -587,6 +589,7 @@ namespace CrashoutsEngine
                 if (currentDialogueIndex < dialogueEntities.Length && dialogueEntities[currentDialogueIndex] != null)
                 {
                     InternalCalls.SetActive(dialogueEntities[currentDialogueIndex].ID, true);
+                    AudioManager.GetInstance().PlayAttached("SpeakVoice", Entity.ID);
                 }
                 else 
                 {
@@ -616,6 +619,7 @@ namespace CrashoutsEngine
         private void HandleLanding()
         {
             AudioManager.GetInstance().PlayAttached("jumpLand", Entity.ID);
+            AudioManager.GetInstance().PlayAttached("LandVoice", Entity.ID);
 
             if (strongestAirborneFallSpeed < landingRumbleMinFallSpeed || landingRumbleMaxFallSpeed <= landingRumbleMinFallSpeed)
             {
@@ -664,6 +668,7 @@ namespace CrashoutsEngine
             alive = false;
             isDying = true;
             rb.LinearVelocity = new CEVec3(0, 0, 0);
+            AudioManager.GetInstance().PlayAttached("DeathSound", Entity.ID);
 
             string deathClip = isLight ? normalDeathAnimName : changedMassDeathAnimName;
             deathTimer = isLight ? changedMassDeathDelay : normalDeathDelay;

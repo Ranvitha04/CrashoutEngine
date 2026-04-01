@@ -38,6 +38,7 @@ namespace CrashoutsEngine
             Console.WriteLine("Wall Opening!");
             _isOpen = true;
             _stopMoving = false;
+            AudioManager.GetInstance().PlayAttached("RockSFX", Entity.ID);
             TriggerDoorDust();
         }
 
@@ -46,6 +47,7 @@ namespace CrashoutsEngine
             Console.WriteLine("Wall Closing!");
             _isOpen = false;
             _stopMoving = false;
+            AudioManager.GetInstance().PlayAttached("RockSFX", Entity.ID);
             TriggerDoorDust();
         }
 

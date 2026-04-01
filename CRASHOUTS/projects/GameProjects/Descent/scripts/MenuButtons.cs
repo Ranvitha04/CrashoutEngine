@@ -40,6 +40,7 @@ namespace CrashoutsEngine
         [SerializeField] private float navigationRumbleLow = 0.15f;
         [SerializeField] private float navigationRumbleHigh = 0.25f;
         [SerializeField] private float navigationRumbleDuration = 0.05f;
+        private System.Collections.Generic.Dictionary<uint, bool> _hoverStates = new System.Collections.Generic.Dictionary<uint, bool>();
 
         /*!
         @brief Initialize internal click state.
@@ -48,6 +49,7 @@ namespace CrashoutsEngine
         {
             isClicking = false;
             isMouseReleased = true;
+            _hoverStates.Clear();
             ResetControllerSelection();
             if (IsMenuController()) InternalCalls.UI_ClearForcedHoveredButton();
         }
@@ -74,6 +76,7 @@ namespace CrashoutsEngine
 
             Entity[] activeButtons = GetActiveButtons();
             UpdateControllerSelection(activeButtons);
+            UpdateMouseHoverSound(activeButtons);
 
             // --- MAIN MENU ---
             if (CheckButtonClick(StartBtn) || IsControllerSubmit(activeButtons, StartBtn))
@@ -317,6 +320,10 @@ namespace CrashoutsEngine
             if (movedDown || movedUp)
             {
                 Input.SetControllerVibration(navigationRumbleLow, navigationRumbleHigh, navigationRumbleDuration);
+                if (selectedButtonIndex >= 0 && selectedButtonIndex < buttons.Length)
+                {
+                    AudioManager.GetInstance().PlayAttached("Click", buttons[selectedButtonIndex].ID);
+                }
             }
 
             if (!controllerNavigationActive)
@@ -333,6 +340,27 @@ namespace CrashoutsEngine
             else
             {
                 InternalCalls.UI_ClearForcedHoveredButton();
+            }
+        }
+
+        private void UpdateMouseHoverSound(Entity[] buttons)
+        {
+            if (buttons == null) return;
+            foreach (var btnEnt in buttons)
+            {
+                if (btnEnt == null || btnEnt.ID == 0) continue;
+                var btn = btnEnt.GetComponent<ButtonComponent>();
+                if (btn == null) continue;
+
+                bool currentlyHovered = btn.IsHovered();
+                bool previouslyHovered = false;
+                _hoverStates.TryGetValue(btnEnt.ID, out previouslyHovered);
+
+                if (currentlyHovered && !previouslyHovered)
+                {
+                    AudioManager.GetInstance().PlayAttached("Click", btnEnt.ID);
+                }
+                _hoverStates[btnEnt.ID] = currentlyHovered;
             }
         }
 

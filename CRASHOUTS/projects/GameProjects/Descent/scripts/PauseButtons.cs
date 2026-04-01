@@ -50,6 +50,7 @@ namespace CrashoutsEngine
         [SerializeField] private float navigationRumbleHigh = 0.25f;
         [SerializeField] private float navigationRumbleDuration = 0.05f;
         private CEVec2 lastMousePos;
+        private System.Collections.Generic.Dictionary<uint, bool> _hoverStates = new System.Collections.Generic.Dictionary<uint, bool>();
 
         // NEW: The Trigger Gate
         private bool isMouseReleased = true; 
@@ -63,6 +64,7 @@ namespace CrashoutsEngine
 
             playerScript = PlayerMovement.Instance;
             lastMousePos = Input.GetMousePosition();
+            _hoverStates.Clear();
 
             pauseScreen = Entity.Find("Pause");
             restartCheckScreen = Entity.Find("RestartCheck");
@@ -122,7 +124,13 @@ namespace CrashoutsEngine
             // 3. Logic: Only process if mouse was released first and cooldown has passed
             if (isPaused && isMouseReleased && inputCooldown <= 0.0f)
             {
-                if (isRestartMenuOpen) HandleRestartConfirmButtons();
+                if (isRestartMenuOpen) 
+                {
+                    Entity[] buttons = { btnYes, btnNo };
+                    UpdateControllerSelection(buttons);
+                    UpdateMouseHoverSound(buttons);
+                    HandleRestartConfirmButtons();
+                }
                 else if (isSettingsMenuOpen)
                 {
                     if (isHowTo2Open)
@@ -131,6 +139,7 @@ namespace CrashoutsEngine
                         if (backBtn == null) backBtn = Entity.Find("BackBtn"); // Fallback
                         Entity[] buttons = { backBtn };
                         UpdateControllerSelection(buttons);
+                        UpdateMouseHoverSound(buttons);
                         if (CheckButtonClick(backBtn) || IsControllerSubmit(buttons, backBtn)) OpenHowTo1();
                     }
                     else if (isHowTo1Open)
@@ -141,6 +150,7 @@ namespace CrashoutsEngine
                         if (backBtn == null) backBtn = Entity.Find("BackBtn"); // Fallback
                         Entity[] buttons = { nextBtn, backBtn };
                         UpdateControllerSelection(buttons);
+                        UpdateMouseHoverSound(buttons);
 
                         if (CheckButtonClick(nextBtn) || IsControllerSubmit(buttons, nextBtn)) OpenHowTo2();
                         else if (CheckButtonClick(backBtn) || IsControllerSubmit(buttons, backBtn)) OpenSettings();
@@ -151,6 +161,7 @@ namespace CrashoutsEngine
                         if (nextBtn == null) nextBtn = Entity.Find("NextPageBtn"); // Fallback
                         Entity[] buttons = { btnCloseBook, musicSliderEntity, sfxSliderEntity, nextBtn };
                         UpdateControllerSelection(buttons);
+                        UpdateMouseHoverSound(buttons);
                         HandleSelectedSliderAdjustment(buttons);
                         UpdateSettingsLabelHighlight(buttons);
 
@@ -158,7 +169,13 @@ namespace CrashoutsEngine
                         else if (CheckButtonClick(nextBtn) || IsControllerSubmit(buttons, nextBtn)) OpenHowTo1();
                     }
                 }
-                else HandleMainPauseButtons();
+                else 
+                {
+                    Entity[] buttons = { btnResume, btnRestart, btnSettings, btnQuit };
+                    UpdateControllerSelection(buttons);
+                    UpdateMouseHoverSound(buttons);
+                    HandleMainPauseButtons();
+                }
             }
 
             if (inputCooldown > 0.0f) inputCooldown -= (float)Time.DT;
@@ -171,7 +188,6 @@ namespace CrashoutsEngine
         private void HandleMainPauseButtons()
         {
             Entity[] buttons = { btnResume, btnRestart, btnSettings, btnQuit };
-            UpdateControllerSelection(buttons);
 
             if (CheckButtonClick(btnResume) || IsControllerSubmit(buttons, btnResume)) ResumeGame();
             else if (CheckButtonClick(btnRestart) || IsControllerSubmit(buttons, btnRestart)) OpenRestartMenu();
@@ -185,7 +201,6 @@ namespace CrashoutsEngine
         private void HandleRestartConfirmButtons()
         {
             Entity[] buttons = { btnYes, btnNo };
-            UpdateControllerSelection(buttons);
 
             if (CheckButtonClick(btnYes) || IsControllerSubmit(buttons, btnYes))
             {
@@ -394,12 +409,20 @@ namespace CrashoutsEngine
                     selectedButtonIndex = (selectedButtonIndex + 1) % buttons.Length;
                     menuNavigationCooldown = 0.2f;
                     Input.SetControllerVibration(navigationRumbleLow, navigationRumbleHigh, navigationRumbleDuration);
+                    if (selectedButtonIndex >= 0 && selectedButtonIndex < buttons.Length)
+                    {
+                        AudioManager.GetInstance().PlayAttached("Click", buttons[selectedButtonIndex].ID);
+                    }
                 }
                 else if (Input.GetActionTriggered("UIUp") || menuY >= 0.5f)
                 {
                     selectedButtonIndex = (selectedButtonIndex - 1 + buttons.Length) % buttons.Length;
                     menuNavigationCooldown = 0.2f;
                     Input.SetControllerVibration(navigationRumbleLow, navigationRumbleHigh, navigationRumbleDuration);
+                    if (selectedButtonIndex >= 0 && selectedButtonIndex < buttons.Length)
+                    {
+                        AudioManager.GetInstance().PlayAttached("Click", buttons[selectedButtonIndex].ID);
+                    }
                 }
             }
 
@@ -416,6 +439,27 @@ namespace CrashoutsEngine
             else
             {
                 InternalCalls.UI_ClearForcedHoveredButton();
+            }
+        }
+
+        private void UpdateMouseHoverSound(Entity[] buttons)
+        {
+            if (buttons == null) return;
+            foreach (var btnEnt in buttons)
+            {
+                if (btnEnt == null || btnEnt.ID == 0) continue;
+                var btn = btnEnt.GetComponent<ButtonComponent>();
+                if (btn == null) continue;
+
+                bool currentlyHovered = btn.IsHovered();
+                bool previouslyHovered = false;
+                _hoverStates.TryGetValue(btnEnt.ID, out previouslyHovered);
+
+                if (currentlyHovered && !previouslyHovered)
+                {
+                    AudioManager.GetInstance().PlayAttached("Click", btnEnt.ID);
+                }
+                _hoverStates[btnEnt.ID] = currentlyHovered;
             }
         }
 
