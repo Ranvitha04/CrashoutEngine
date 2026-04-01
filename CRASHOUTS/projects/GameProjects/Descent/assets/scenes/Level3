@@ -17479,6 +17479,8 @@
                             "MoveRight": true,
                             "MoveDist": -160.0,
                             "MoveSpeed": 40.0,
+                            "emitMoveDust": true,
+                            "landingDustEntityName": "PlatformLandingDust",
                             "dustBurstDuration": 1.0
                         }
                     }
@@ -17531,83 +17533,6 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": false,
-                "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 100.0,
-                "playOnStop": true,
-                "emissionShape": 2,
-                "radiusMin": -0.10000000149011612,
-                "radiusMax": 1.0,
-                "lengthMin": 0.0,
-                "lengthMax": 1.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "startLifeMin": 0.5,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 1.25,
-                "startSizeXMax": 3.25,
-                "startSizeYMin": 1.25,
-                "startSizeYMax": 3.25,
-                "sizeOverTime": 0.0,
-                "rotationOverTime": 0.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 360.0,
-                "startColor": {
-                    "x": 0.7900552749633789,
-                    "y": 0.4297234117984772,
-                    "z": 0.19205762445926667,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 0.14364641904830934,
-                    "y": 0.11262043565511704,
-                    "z": 0.05158573016524315,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": -20.0,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "gpuSimulation": true,
-                "additiveBlend": false,
-                "emberRandomDirections": false,
-                "flowStrength": 0.0,
-                "flowSpeed": 0.0,
-                "flowFrequency": 0.0
             }
         },
         {
@@ -22920,7 +22845,11 @@
                             "isMusicVolume": false,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0
+                            "clickHeight": 3.0,
+                            "totalBalls": 10,
+                            "ballBaseName": "VolumeBall_",
+                            "activeAlpha": 1.0,
+                            "inactiveAlpha": 0.20000000298023225
                         }
                     }
                 ]
@@ -23011,7 +22940,11 @@
                             "isMusicVolume": true,
                             "smoothingSpeed": 15.0,
                             "clickWidth": 24.0,
-                            "clickHeight": 3.0
+                            "clickHeight": 3.0,
+                            "totalBalls": 10,
+                            "ballBaseName": "VolumeBall_",
+                            "activeAlpha": 1.0,
+                            "inactiveAlpha": 0.20000000298023225
                         }
                     }
                 ]
@@ -24543,7 +24476,6 @@
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "coyoteTime": 0.15000000596046449,
-                            "tutorialDoorName": "tutorial1door",
                             "goalNoOfPlates": 2,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
@@ -24743,6 +24675,37 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -24795,7 +24758,7 @@
                         ]
                     },
                     {
-                        "name": "playerFall",
+                        "name": "playerFallLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -24809,14 +24772,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -24869,37 +24832,6 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -26022,6 +25954,107 @@
             "active": true,
             "name": "LandingDust",
             "uuid": 5978115013613082295,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1061.227294921875,
+                    "y": -791.65576171875,
+                    "z": -50.0
+                },
+                "size": {
+                    "x": 140.97999572753907,
+                    "y": 101.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            },
+            "particle": {
+                "preset": 4,
+                "burstCount": 650,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 76.0999984741211,
+                "superheroLandingAngleSpreadDeg": 5.599999904632568,
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 900,
+                "emitRate": 1200.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 0.15000000596046449,
+                "lengthMin": -0.4000000059604645,
+                "lengthMax": -0.10000000149011612,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.3499999940395355,
+                "startLifeMax": 0.8999999761581421,
+                "startSpeedMin": 10.0,
+                "startSpeedMax": 26.0,
+                "uniformSize": true,
+                "startSizeXMin": 3.200000047683716,
+                "startSizeXMax": 4.5,
+                "startSizeYMin": 0.20000000298023225,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.6000000238418579,
+                "rotationOverTime": 220.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.9134199023246765,
+                    "y": 0.7730458378791809,
+                    "z": 0.6326717734336853,
+                    "w": 0.8999999761581421
+                },
+                "endColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.2800000011920929,
+                    "z": 0.25,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -25.0,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 2.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "PlatformLandingDust",
+            "uuid": 5978115013613082299,
             "tag": {
                 "tagMask": 0
             },
@@ -28591,6 +28624,59 @@
                 "shadowColorStrength": 1.0,
                 "shadowMapStrength": 1.0,
                 "raymarchShadowStrength": 1.0,
+                "heatDistortionEnabled": false,
+                "heatDebugMarker": false,
+                "heatStrength": 0.003000000026077032,
+                "heatSpeed": 2.0,
+                "heatScale": 20.0,
+                "heatTintColor": {
+                    "x": 1.0,
+                    "y": 0.5,
+                    "z": 0.10000000149011612
+                },
+                "heatTintStrength": 0.0,
+                "distortionEnabled": false,
+                "distortionDebugMarker": false,
+                "distortionStrength": 0.003000000026077032,
+                "distortionSpeed": 2.0,
+                "distortionWaveScale1": 20.0,
+                "distortionWaveScale2": 10.0,
+                "distortionNoiseStrength": 0.800000011920929,
+                "distortionLavaHeight": 0.30000001192092898,
+                "distortionLavaBoost": 2.5,
+                "distortionPlayerPos": {
+                    "x": 0.5,
+                    "y": 0.5
+                },
+                "distortionPlayerRadius": 0.10000000149011612,
+                "distortionPlayerStrength": 0.009999999776482582,
+                "distortionGlowColor": {
+                    "x": 1.0,
+                    "y": 0.4000000059604645,
+                    "z": 0.10000000149011612
+                },
+                "distortionGlowStrength": 1.0,
+                "distortionShockEnabled": false,
+                "distortionShockPos": {
+                    "x": 0.5,
+                    "y": 0.0
+                },
+                "distortionShockTime": 999.0,
+                "distortionShockStrength": 0.019999999552965165,
+                "vignetteEnabled": false,
+                "vignetteIntensity": 0.6000000238418579,
+                "vignetteRadius": 0.75,
+                "vignetteSoftness": 0.3499999940395355,
+                "vignetteColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "vignetteLag": 0.0,
+                "vignettePulseIntensity": 0.0,
+                "vignettePulseRadius": 0.0,
+                "vignettePulseSpeed": 2.0,
+                "vignetteFollowPlayer": false,
                 "bloomEnabled": false,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,
@@ -29694,6 +29780,8 @@
                             "MoveRight": false,
                             "MoveDist": 200.0,
                             "MoveSpeed": 40.0,
+                            "emitMoveDust": true,
+                            "landingDustEntityName": "PlatformLandingDust",
                             "dustBurstDuration": 1.0
                         }
                     }
@@ -29746,83 +29834,6 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": false,
-                "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 100.0,
-                "playOnStop": true,
-                "emissionShape": 2,
-                "radiusMin": -0.10000000149011612,
-                "radiusMax": 1.0,
-                "lengthMin": 0.0,
-                "lengthMax": 1.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "startLifeMin": 0.5,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 1.25,
-                "startSizeXMax": 3.25,
-                "startSizeYMin": 1.25,
-                "startSizeYMax": 3.25,
-                "sizeOverTime": 0.0,
-                "rotationOverTime": 0.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 360.0,
-                "startColor": {
-                    "x": 0.7900552749633789,
-                    "y": 0.4297234117984772,
-                    "z": 0.19205762445926667,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 0.14364641904830934,
-                    "y": 0.11262043565511704,
-                    "z": 0.05158573016524315,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": -20.0,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "gpuSimulation": true,
-                "additiveBlend": false,
-                "emberRandomDirections": false,
-                "flowStrength": 0.0,
-                "flowSpeed": 0.0,
-                "flowFrequency": 0.0
             }
         },
         {
@@ -30800,6 +30811,8 @@
                             "MoveRight": false,
                             "MoveDist": -200.0,
                             "MoveSpeed": 40.0,
+                            "emitMoveDust": true,
+                            "landingDustEntityName": "PlatformLandingDust",
                             "dustBurstDuration": 1.0
                         }
                     }
@@ -30852,83 +30865,6 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": false,
-                "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 100.0,
-                "playOnStop": true,
-                "emissionShape": 2,
-                "radiusMin": -0.10000000149011612,
-                "radiusMax": 1.0,
-                "lengthMin": 0.0,
-                "lengthMax": 1.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "startLifeMin": 0.5,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 1.25,
-                "startSizeXMax": 3.25,
-                "startSizeYMin": 1.25,
-                "startSizeYMax": 3.25,
-                "sizeOverTime": 0.0,
-                "rotationOverTime": 0.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 360.0,
-                "startColor": {
-                    "x": 0.7900552749633789,
-                    "y": 0.4297234117984772,
-                    "z": 0.19205762445926667,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 0.14364641904830934,
-                    "y": 0.11262043565511704,
-                    "z": 0.05158573016524315,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": -20.0,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "gpuSimulation": true,
-                "additiveBlend": false,
-                "emberRandomDirections": false,
-                "flowStrength": 0.0,
-                "flowSpeed": 0.0,
-                "flowFrequency": 0.0
             }
         },
         {
@@ -32250,44 +32186,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -32340,7 +32238,7 @@
                         ]
                     },
                     {
-                        "name": "slimeStunned",
+                        "name": "slimeWalk",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -32354,14 +32252,21 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32393,6 +32298,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32879,6 +32815,44 @@
                 "playing": true,
                 "clips": [
                     {
+                        "name": "slimeWalk",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 5.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -32931,7 +32905,7 @@
                         ]
                     },
                     {
-                        "name": "slimeWalk",
+                        "name": "slimeStunned",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -32945,21 +32919,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 5.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -32991,37 +32958,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeStunned",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0

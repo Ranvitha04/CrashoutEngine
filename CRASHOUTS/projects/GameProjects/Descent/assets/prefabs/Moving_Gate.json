@@ -99,67 +99,6 @@
                     "layer": {
                         "layerName": "Foreground",
                         "z": 100
-                    },
-                    "particle": {
-                        "isEmitting": true,
-                        "useWorldSpace": true,
-                        "maxParticles": 1000,
-                        "emitRate": 100.0,
-                        "playOnStop": true,
-                        "emissionShape": 2,
-                        "radiusMin": -0.10000000149011612,
-                        "radiusMax": 1.0,
-                        "lengthMin": 0.0,
-                        "lengthMax": 1.0,
-                        "areaMin": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "areaMax": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "startLifeMin": 0.5,
-                        "startLifeMax": 5.0,
-                        "startSpeedMin": 0.0,
-                        "startSpeedMax": 0.0,
-                        "uniformSize": true,
-                        "startSizeXMin": 1.25,
-                        "startSizeXMax": 3.25,
-                        "startSizeYMin": 1.25,
-                        "startSizeYMax": 3.25,
-                        "sizeOverTime": 0.0,
-                        "rotationOverTime": 0.0,
-                        "startRotationMin": 0.0,
-                        "startRotationMax": 360.0,
-                        "startColor": {
-                            "x": 0.7900552749633789,
-                            "y": 0.4297234117984772,
-                            "z": 0.19205762445926667,
-                            "w": 1.0
-                        },
-                        "endColor": {
-                            "x": 0.14364641904830934,
-                            "y": 0.11262043565511704,
-                            "z": 0.05158573016524315,
-                            "w": 0.0
-                        },
-                        "gravity": {
-                            "x": 0.0,
-                            "y": -9.800000190734864,
-                            "z": 0.0
-                        },
-                        "startVelocity": {
-                            "x": 0.0,
-                            "y": -20.0,
-                            "z": 0.0
-                        },
-                        "useTexture": false,
-                        "textureName": "",
-                        "textureUV": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
                     }
                 },
                 {

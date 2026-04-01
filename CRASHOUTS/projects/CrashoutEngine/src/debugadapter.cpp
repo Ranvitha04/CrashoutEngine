@@ -3036,6 +3036,9 @@ namespace CrashoutsEngine
 									childLight->radius = lc->radius;
 									childLight->affectBloom = lc->affectBloom;
 									childLight->active = lc->active;
+									childLight->flickerEnabled = lc->flickerEnabled;
+									childLight->flickerStrength = lc->flickerStrength;
+									childLight->flickerSpeed = lc->flickerSpeed;
 									childLight->useTransform = true;
 									childLight->renderSelf = true;
 									childLight->renderBehind = lc->renderBehind;

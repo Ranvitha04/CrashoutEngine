@@ -326,21 +326,11 @@
                     "y": 1.0
                 },
                 "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
                 "flowStrength": 2.2699999809265138,
                 "flowSpeed": 3.450000047683716,
-                "flowFrequency": 2.4100000858306886,
-                "emberLightsEnabled": false,
-                "emberLightCount": 0,
-                "emberLightIntensity": 1.0,
-                "emberLightRadius": 20.0,
-                "emberLightColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612,
-                    "w": 1.0
-                },
-                "emberLightAffectBloom": true,
-                "emberLightRenderBehind": true
+                "flowFrequency": 2.4100000858306886
             }
         },
         {
@@ -413,6 +403,7 @@
                             "minThrowSpeed": 300.0,
                             "maxThrowSpeed": 2000.0,
                             "maxMouseDragDist": 400.0,
+                            "controllerAimDeadzone": 0.20000000298023225,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
                             "pickAnimDuration": 60.0,
@@ -434,6 +425,30 @@
             "layer": {
                 "layerName": "Players",
                 "z": 5
+            }
+        },
+        {
+            "active": true,
+            "name": "Entity 7",
+            "uuid": 4523495699218258266,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
             }
         }
     ],

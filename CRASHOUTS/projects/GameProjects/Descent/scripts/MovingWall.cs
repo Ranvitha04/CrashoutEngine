@@ -25,20 +25,45 @@ namespace CrashoutsEngine
         private float MoveSpeed = 5.0f;
 
         [SerializeField]
-        private float dustBurstDuration = 0.15f;
+        private bool emitMoveDust = true;
+        [SerializeField]
+        private string landingDustEntityName = "";
 
         private bool _isOpen = false;
         private bool _stopMoving = false;
-        private float _dustTimer = 0.0f;
+        private bool _dustPending = false;
+        private uint _landingDustID = 0;
         TransformComponent transform;
         private CEVec2 newXY, startXY;
+
+        private void ResolveDustEntity()
+        {
+            if (!emitMoveDust) return;
+            if (_landingDustID != 0) return;
+
+            string resolved = landingDustEntityName;
+            if (!string.IsNullOrEmpty(resolved))
+            {
+                _landingDustID = InternalCalls.FindEntityByName(resolved);
+            }
+
+            if (_landingDustID == 0)
+            {
+                _landingDustID = InternalCalls.FindEntityByName("PlatformLandingDust_" + Entity.ID.ToString());
+            }
+
+            if (_landingDustID == 0)
+            {
+                _landingDustID = InternalCalls.FindEntityByName("PlatformLandingDust");
+            }
+        }
 
         void OpenWall()
         {
             Console.WriteLine("Wall Opening!");
             _isOpen = true;
             _stopMoving = false;
-            TriggerDoorDust();
+            _dustPending = true;
         }
 
         void CloseWall()
@@ -46,14 +71,13 @@ namespace CrashoutsEngine
             Console.WriteLine("Wall Closing!");
             _isOpen = false;
             _stopMoving = false;
-            TriggerDoorDust();
+            _dustPending = true;
         }
 
         public override void Start()
         {
             _isOpen = false;
             _stopMoving = false;
-            _dustTimer = 0.0f;
             transform = Entity.GetComponent<TransformComponent>();
             if (transform != null)
             {
@@ -68,20 +92,11 @@ namespace CrashoutsEngine
                 }
             }
 
-            InternalCalls.Particle_SetEmitting(Entity.ID, false);
+            ResolveDustEntity();
         }
 
         public override void Update()
         {
-            if (_dustTimer > 0.0f)
-            {
-                _dustTimer -= (float)Time.DT;
-                if (_dustTimer <= 0.0f)
-                {
-                    InternalCalls.Particle_SetEmitting(Entity.ID, false);
-                }
-            }
-
             // Logic: If enough plates are pressed, Open.
             if (PlatesActive >= PlatesRequired && !_isOpen)
             {
@@ -140,13 +155,36 @@ namespace CrashoutsEngine
                     }
                 }
             }
+
+            if (_dustPending && _stopMoving)
+            {
+                TriggerDoorDust();
+                _dustPending = false;
+            }
         }
 
         private void TriggerDoorDust()
         {
-            if (dustBurstDuration <= 0.0f) return;
-            InternalCalls.Particle_SetEmitting(Entity.ID, true);
-            _dustTimer = dustBurstDuration;
+            if (!emitMoveDust) return;
+            if (_landingDustID == 0) ResolveDustEntity();
+            if (_landingDustID == 0 || transform == null) return;
+
+            var dustTf = new Entity(_landingDustID).GetComponent<TransformComponent>();
+            if (dustTf != null) {
+                if (InternalCalls.EntityHasParent(_landingDustID))
+                {
+                    CEVec3 local = new CEVec3(0.0f, -Math.Abs(transform.Size.y) * 0.5f, 0.0f);
+                    InternalCalls.HierarchySetLocalPos(_landingDustID, ref local);
+                }
+                else
+                {
+                    CEVec3 pos = transform.Position;
+                    pos.y -= Math.Abs(transform.Size.y) * 0.5f;
+                    dustTf.Position = new CEVec3(pos.x, pos.y, dustTf.Position.z);
+                }
+            }
+
+            InternalCalls.Particle_TriggerBurst(_landingDustID);
         }
 
         public override void FixedUpdate()

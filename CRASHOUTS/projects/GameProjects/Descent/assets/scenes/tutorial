@@ -11279,7 +11279,8 @@
                             "MoveRight": true,
                             "MoveDist": 300.0,
                             "MoveSpeed": 40.0,
-                            "dustBurstDuration": 1.0
+                            "emitMoveDust": true,
+                            "landingDustEntityName": "PlatformLandingDust_3684520867669057414"
                         }
                     }
                 ]
@@ -11331,83 +11332,6 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": false,
-                "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 100.0,
-                "playOnStop": true,
-                "emissionShape": 2,
-                "radiusMin": -0.10000000149011612,
-                "radiusMax": 1.0,
-                "lengthMin": 0.0,
-                "lengthMax": 1.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "startLifeMin": 0.5,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 1.25,
-                "startSizeXMax": 3.25,
-                "startSizeYMin": 1.25,
-                "startSizeYMax": 3.25,
-                "sizeOverTime": 0.0,
-                "rotationOverTime": 0.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 360.0,
-                "startColor": {
-                    "x": 0.7900552749633789,
-                    "y": 0.4297234117984772,
-                    "z": 0.19205762445926667,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 0.14364641904830934,
-                    "y": 0.11262043565511704,
-                    "z": 0.05158573016524315,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": -20.0,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "gpuSimulation": true,
-                "additiveBlend": false,
-                "emberRandomDirections": false,
-                "flowStrength": 0.0,
-                "flowSpeed": 0.0,
-                "flowFrequency": 0.0
             }
         },
         {
@@ -15935,6 +15859,59 @@
                 "shadowColorStrength": 1.0,
                 "shadowMapStrength": 1.0,
                 "raymarchShadowStrength": 1.0,
+                "heatDistortionEnabled": false,
+                "heatDebugMarker": false,
+                "heatStrength": 0.003000000026077032,
+                "heatSpeed": 2.0,
+                "heatScale": 20.0,
+                "heatTintColor": {
+                    "x": 1.0,
+                    "y": 0.5,
+                    "z": 0.10000000149011612
+                },
+                "heatTintStrength": 0.0,
+                "distortionEnabled": false,
+                "distortionDebugMarker": false,
+                "distortionStrength": 0.003000000026077032,
+                "distortionSpeed": 2.0,
+                "distortionWaveScale1": 20.0,
+                "distortionWaveScale2": 10.0,
+                "distortionNoiseStrength": 0.800000011920929,
+                "distortionLavaHeight": 0.30000001192092898,
+                "distortionLavaBoost": 2.5,
+                "distortionPlayerPos": {
+                    "x": 0.5,
+                    "y": 0.5
+                },
+                "distortionPlayerRadius": 0.10000000149011612,
+                "distortionPlayerStrength": 0.009999999776482582,
+                "distortionGlowColor": {
+                    "x": 1.0,
+                    "y": 0.4000000059604645,
+                    "z": 0.10000000149011612
+                },
+                "distortionGlowStrength": 1.0,
+                "distortionShockEnabled": false,
+                "distortionShockPos": {
+                    "x": 0.5,
+                    "y": 0.0
+                },
+                "distortionShockTime": 999.0,
+                "distortionShockStrength": 0.019999999552965165,
+                "vignetteEnabled": false,
+                "vignetteIntensity": 0.6000000238418579,
+                "vignetteRadius": 0.75,
+                "vignetteSoftness": 0.3499999940395355,
+                "vignetteColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "vignetteLag": 0.0,
+                "vignettePulseIntensity": 0.0,
+                "vignettePulseRadius": 0.0,
+                "vignettePulseSpeed": 2.0,
+                "vignetteFollowPlayer": false,
                 "bloomEnabled": true,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,
@@ -20122,8 +20099,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": -32.72383117675781,
+                    "x": -157.12156677246095,
+                    "y": -32.596256256103519,
                     "z": 0.0
                 },
                 "size": {
@@ -20160,13 +20137,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -187.00357055664063,
-                    "y": -64.02381134033203,
+                    "x": -165.62156677246095,
+                    "y": -63.89623260498047,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -170.00357055664063,
-                    "y": -5.8238525390625,
+                    "x": -148.62156677246095,
+                    "y": -5.696281433105469,
                     "z": 0.0
                 }
             },
@@ -20325,7 +20302,6 @@
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
                             "coyoteTime": 0.15000000596046449,
-                            "tutorialDoorName": "tutorial1door",
                             "goalNoOfPlates": 2,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
@@ -21206,8 +21182,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.646080017089845,
+                    "x": -157.12156677246095,
+                    "y": 25.77365493774414,
                     "z": 0.0
                 },
                 "size": {
@@ -21324,8 +21300,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.646080017089845,
+                    "x": -157.12156677246095,
+                    "y": 25.77365493774414,
                     "z": 0.0
                 },
                 "size": {
@@ -21442,8 +21418,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.646080017089845,
+                    "x": -157.12156677246095,
+                    "y": 25.77365493774414,
                     "z": 0.0
                 },
                 "size": {
@@ -21560,8 +21536,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -178.50357055664063,
-                    "y": 25.646080017089845,
+                    "x": -157.12156677246095,
+                    "y": 25.77365493774414,
                     "z": 0.0
                 },
                 "size": {
@@ -21678,8 +21654,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -464.2978210449219,
-                    "y": -232.0813751220703,
+                    "x": -442.91583251953127,
+                    "y": -231.95379638671876,
                     "z": 0.0
                 },
                 "size": {
@@ -21855,6 +21831,248 @@
                     "x": 0.9134199023246765,
                     "y": 0.7730458378791809,
                     "z": 0.6326717734336853,
+                    "w": 0.8999999761581421
+                },
+                "endColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.2800000011920929,
+                    "z": 0.25,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -25.0,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 2.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "PlatformLandingDust_3684520867669057414",
+            "uuid": 18000000000000000001,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -204.47128295898438,
+                    "y": -469.6745300292969,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 200.0,
+                    "y": 25.0
+                }
+            },
+            "parent": {
+                "parentUUID": 3684520867669057414,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            },
+            "particle": {
+                "preset": 4,
+                "burstCount": 650,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 76.0999984741211,
+                "superheroLandingAngleSpreadDeg": 5.599999904632568,
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 900,
+                "emitRate": 1200.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 0.15000000596046449,
+                "lengthMin": -0.4000000059604645,
+                "lengthMax": -0.10000000149011612,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.3499999940395355,
+                "startLifeMax": 0.8999999761581421,
+                "startSpeedMin": 10.0,
+                "startSpeedMax": 26.0,
+                "uniformSize": true,
+                "startSizeXMin": 3.200000047683716,
+                "startSizeXMax": 4.5,
+                "startSizeYMin": 0.20000000298023225,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.6000000238418579,
+                "rotationOverTime": 220.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.4640883803367615,
+                    "y": 0.24101829528808595,
+                    "z": 0.017948180437088014,
+                    "w": 0.8999999761581421
+                },
+                "endColor": {
+                    "x": 0.30000001192092898,
+                    "y": 0.2800000011920929,
+                    "z": 0.25,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -25.0,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 2.0,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "PlatformLandingDust_5830775415537986151",
+            "uuid": 18000000000000000002,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 90.0,
+                "position": {
+                    "x": 1682.158935546875,
+                    "y": -721.2136840820313,
+                    "z": -5.0
+                },
+                "size": {
+                    "x": 269.6667785644531,
+                    "y": 25.0
+                }
+            },
+            "parent": {
+                "parentUUID": 5830775415537986151,
+                "localPos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "UI",
+                "z": 0
+            },
+            "particle": {
+                "preset": 4,
+                "burstCount": 650,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 76.0999984741211,
+                "superheroLandingAngleSpreadDeg": 5.599999904632568,
+                "isEmitting": false,
+                "useWorldSpace": true,
+                "maxParticles": 900,
+                "emitRate": 1200.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 0.15000000596046449,
+                "lengthMin": -0.4000000059604645,
+                "lengthMax": -0.10000000149011612,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 0.3499999940395355,
+                "startLifeMax": 0.8999999761581421,
+                "startSpeedMin": 10.0,
+                "startSpeedMax": 26.0,
+                "uniformSize": true,
+                "startSizeXMin": 3.200000047683716,
+                "startSizeXMax": 4.5,
+                "startSizeYMin": 0.20000000298023225,
+                "startSizeYMax": 0.550000011920929,
+                "sizeOverTime": -0.6000000238418579,
+                "rotationOverTime": 220.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.4640883803367615,
+                    "y": 0.24101829528808595,
+                    "z": 0.017948180437088014,
                     "w": 0.8999999761581421
                 },
                 "endColor": {
@@ -25789,8 +26007,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -180.3035430908203,
-                    "y": -48.42399215698242,
+                    "x": -158.92153930664063,
+                    "y": -48.296417236328128,
                     "z": 0.0
                 },
                 "size": {
@@ -25834,7 +26052,7 @@
             },
             "light": {
                 "active": true,
-                "intensity": 0.0,
+                "intensity": 0.550000011920929,
                 "radius": 31.0,
                 "affectBloom": true,
                 "useTransform": true,
@@ -25919,6 +26137,59 @@
                 "shadowColorStrength": 1.0,
                 "shadowMapStrength": 0.6399999856948853,
                 "raymarchShadowStrength": 1.0,
+                "heatDistortionEnabled": false,
+                "heatDebugMarker": false,
+                "heatStrength": 0.003000000026077032,
+                "heatSpeed": 2.0,
+                "heatScale": 20.0,
+                "heatTintColor": {
+                    "x": 1.0,
+                    "y": 0.5,
+                    "z": 0.10000000149011612
+                },
+                "heatTintStrength": 0.0,
+                "distortionEnabled": true,
+                "distortionDebugMarker": false,
+                "distortionStrength": 0.003000000026077032,
+                "distortionSpeed": 2.2200000286102297,
+                "distortionWaveScale1": 20.0,
+                "distortionWaveScale2": 10.0,
+                "distortionNoiseStrength": 0.800000011920929,
+                "distortionLavaHeight": 0.8700000047683716,
+                "distortionLavaBoost": 10.0,
+                "distortionPlayerPos": {
+                    "x": 0.5,
+                    "y": 0.5
+                },
+                "distortionPlayerRadius": 0.10000000149011612,
+                "distortionPlayerStrength": 0.009999999776482582,
+                "distortionGlowColor": {
+                    "x": 1.0,
+                    "y": 0.4000000059604645,
+                    "z": 0.10000000149011612
+                },
+                "distortionGlowStrength": 1.0,
+                "distortionShockEnabled": false,
+                "distortionShockPos": {
+                    "x": 0.5,
+                    "y": 0.0
+                },
+                "distortionShockTime": 999.0,
+                "distortionShockStrength": 0.019999999552965165,
+                "vignetteEnabled": true,
+                "vignetteIntensity": 0.6700000166893005,
+                "vignetteRadius": 0.44999998807907107,
+                "vignetteSoftness": 0.41999998688697817,
+                "vignetteColor": {
+                    "x": 0.15294118225574494,
+                    "y": 0.09803921729326248,
+                    "z": 0.09803921729326248
+                },
+                "vignetteLag": 0.0,
+                "vignettePulseIntensity": 0.0,
+                "vignettePulseRadius": 0.0,
+                "vignettePulseSpeed": 2.0,
+                "vignetteFollowPlayer": false,
                 "bloomEnabled": false,
                 "bloomThreshold": 1.0,
                 "bloomIntensity": 0.800000011920929,
@@ -25926,8 +26197,8 @@
                 "active": true
             },
             "layer": {
-                "layerName": "",
-                "z": 0
+                "layerName": "Player",
+                "z": 1
             }
         },
         {
@@ -25940,8 +26211,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -144.8752899169922,
-                    "y": -40.771636962890628,
+                    "x": -123.4932861328125,
+                    "y": -40.644065856933597,
                     "z": 0.0
                 },
                 "size": {
@@ -27691,7 +27962,8 @@
                             "MoveRight": false,
                             "MoveDist": 200.0,
                             "MoveSpeed": 40.0,
-                            "dustBurstDuration": 1.0
+                            "emitMoveDust": true,
+                            "landingDustEntityName": "PlatformLandingDust_5830775415537986151"
                         }
                     }
                 ]
@@ -27743,83 +28015,6 @@
             "layer": {
                 "layerName": "Foreground",
                 "z": 100
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": false,
-                "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 100.0,
-                "playOnStop": true,
-                "emissionShape": 2,
-                "radiusMin": -0.10000000149011612,
-                "radiusMax": 1.0,
-                "lengthMin": 0.0,
-                "lengthMax": 1.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "startLifeMin": 0.5,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 1.25,
-                "startSizeXMax": 3.25,
-                "startSizeYMin": 1.25,
-                "startSizeYMax": 3.25,
-                "sizeOverTime": 0.0,
-                "rotationOverTime": 0.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 360.0,
-                "startColor": {
-                    "x": 0.7900552749633789,
-                    "y": 0.4297234117984772,
-                    "z": 0.19205762445926667,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 0.14364641904830934,
-                    "y": 0.11262043565511704,
-                    "z": 0.05158573016524315,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 0.0,
-                    "y": -20.0,
-                    "z": 0.0
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "gpuSimulation": true,
-                "additiveBlend": false,
-                "emberRandomDirections": false,
-                "flowStrength": 0.0,
-                "flowSpeed": 0.0,
-                "flowFrequency": 0.0
             }
         },
         {
@@ -36293,6 +36488,309 @@
                         ]
                     }
                 ]
+            }
+        },
+        {
+            "active": true,
+            "name": "embers_1",
+            "uuid": 8163388285833894350,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 793.2968139648438,
+                    "y": -460.2839660644531,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 94.9000015258789,
+                    "y": 71.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            },
+            "particle": {
+                "preset": 6,
+                "burstCount": 0,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 24,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 900,
+                "emitRate": 240.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": 0.0,
+                "radiusMax": 0.5,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 11.800000190734864,
+                    "y": 5.599999904632568
+                },
+                "areaMax": {
+                    "x": 12.0,
+                    "y": -2.5999999046325685
+                },
+                "startLifeMin": 0.6000000238418579,
+                "startLifeMax": 1.7999999523162842,
+                "startSpeedMin": 0.20000000298023225,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.05000000074505806,
+                "startSizeXMax": 0.14000000059604646,
+                "startSizeYMin": 0.05000000074505806,
+                "startSizeYMax": 0.14000000059604646,
+                "sizeOverTime": -0.019999999552965165,
+                "rotationOverTime": 120.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 0.75,
+                    "z": 0.20000000298023225,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.2199999988079071,
+                    "y": 0.029999999329447748,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.25,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.550000011920929,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": true,
+                "emberRandomDirections": false,
+                "flowStrength": 0.18000000715255738,
+                "flowSpeed": 3.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "embers_2",
+            "uuid": 12487713888721310465,
+            "tag": {
+                "tagMask": 64
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1000.0902099609375,
+                    "y": -817.9420776367188,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 94.0,
+                    "y": 71.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 40
+            },
+            "particle": {
+                "preset": 6,
+                "burstCount": 0,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 24,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 534,
+                "emitRate": 240.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": 0.0,
+                "radiusMax": 0.5,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": -1.7999999523162842,
+                    "y": 0.699999988079071
+                },
+                "areaMax": {
+                    "x": 6.800000190734863,
+                    "y": 2.0999999046325685
+                },
+                "startLifeMin": 0.6000000238418579,
+                "startLifeMax": 1.7999999523162842,
+                "startSpeedMin": 0.20000000298023225,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.05000000074505806,
+                "startSizeXMax": 0.14000000059604646,
+                "startSizeYMin": 0.05000000074505806,
+                "startSizeYMax": 0.14000000059604646,
+                "sizeOverTime": -0.019999999552965165,
+                "rotationOverTime": 120.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 0.75,
+                    "z": 0.20000000298023225,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.2199999988079071,
+                    "y": 0.029999999329447748,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.25,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.550000011920929,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": true,
+                "emberRandomDirections": true,
+                "flowStrength": 0.18000000715255738,
+                "flowSpeed": 3.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "embers_3",
+            "uuid": 6154363925504703837,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 401.6025390625,
+                    "y": -894.7097778320313,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 94.0,
+                    "y": 71.0
+                }
+            },
+            "layer": {
+                "layerName": "Foreground",
+                "z": 24
+            },
+            "particle": {
+                "preset": 6,
+                "burstCount": 0,
+                "renderShape": 1,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 24,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 900,
+                "emitRate": 240.0,
+                "playOnStop": true,
+                "emissionShape": 2,
+                "radiusMin": 0.0,
+                "radiusMax": 0.5,
+                "lengthMin": 0.0,
+                "lengthMax": 5.0,
+                "areaMin": {
+                    "x": 1.7999999523162842,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 8.399999618530274,
+                    "y": 4.099999904632568
+                },
+                "startLifeMin": 0.6000000238418579,
+                "startLifeMax": 1.7999999523162842,
+                "startSpeedMin": 0.20000000298023225,
+                "startSpeedMax": 1.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.05000000074505806,
+                "startSizeXMax": 0.14000000059604646,
+                "startSizeYMin": 0.05000000074505806,
+                "startSizeYMax": 0.14000000059604646,
+                "sizeOverTime": -0.019999999552965165,
+                "rotationOverTime": 120.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 1.0,
+                    "y": 0.75,
+                    "z": 0.20000000298023225,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 0.2199999988079071,
+                    "y": 0.029999999329447748,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": 0.25,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 0.0,
+                    "y": 0.550000011920929,
+                    "z": 0.0
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": true,
+                "emberRandomDirections": false,
+                "flowStrength": 0.18000000715255738,
+                "flowSpeed": 3.0,
+                "flowFrequency": 0.0
             }
         }
     ],
