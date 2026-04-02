@@ -409,16 +409,12 @@
             "path": "backgrounds/background.png"
         },
         {
-            "name": "Darker Platform_22",
-            "path": "spritesheet/Darker Platform/Darker Platform_22.png"
-        },
-        {
-            "name": "bg colour",
-            "path": "backgrounds/bg colour.png"
-        },
-        {
             "name": "bg 1 base",
             "path": "backgrounds/bg 1 base.png"
+        },
+        {
+            "name": "bg 1",
+            "path": "backgrounds/bg 1.png"
         },
         {
             "name": "spikes updated",
@@ -467,6 +463,14 @@
         {
             "name": "bg 1 top",
             "path": "backgrounds/bg 1 top.png"
+        },
+        {
+            "name": "Darker Platform_22",
+            "path": "spritesheet/Darker Platform/Darker Platform_22.png"
+        },
+        {
+            "name": "bg colour",
+            "path": "backgrounds/bg colour.png"
         },
         {
             "name": "throw 1-Sheet-sheet_00",
