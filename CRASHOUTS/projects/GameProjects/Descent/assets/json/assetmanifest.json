@@ -541,6 +541,10 @@
             "path": "backgrounds/middleground front.png"
         },
         {
+            "name": "new yes hover",
+            "path": "UI/new yes hover.png"
+        },
+        {
             "name": "Platform_09",
             "path": "spritesheet/Platform/Platform_09.png"
         },
@@ -2249,6 +2253,18 @@
             "path": "UI/mouse click.png"
         },
         {
+            "name": "new no hover",
+            "path": "UI/new no hover.png"
+        },
+        {
+            "name": "new no",
+            "path": "UI/new no.png"
+        },
+        {
+            "name": "nwe yes",
+            "path": "UI/nwe yes.png"
+        },
+        {
             "name": "Resume game hover",
             "path": "UI/Resume game hover.png"
         },
@@ -2375,6 +2391,14 @@
     ],
     "prefabs": [
         {
+            "name": "Empty_HowTo",
+            "path": "Empty_HowTo.json"
+        },
+        {
+            "name": "AllBG_Prefab",
+            "path": "AllBG_Prefab.json"
+        },
+        {
             "name": "MyBox",
             "path": "MyBox.json"
         },
@@ -2399,10 +2423,6 @@
             "path": "Cam_Zone_Prefab.json"
         },
         {
-            "name": "EnergyBall_Prefab",
-            "path": "EnergyBall_Prefab.json"
-        },
-        {
             "name": "CheckPoint",
             "path": "CheckPoint.json"
         },
@@ -2411,8 +2431,8 @@
             "path": "Door_Prefab.json"
         },
         {
-            "name": "Empty_HowTo",
-            "path": "Empty_HowTo.json"
+            "name": "EnergyBall_Prefab",
+            "path": "EnergyBall_Prefab.json"
         },
         {
             "name": "FilledAudioManager_Prefab",

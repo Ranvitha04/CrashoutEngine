@@ -424,7 +424,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 420.0,
+                    "x": 450.5777282714844,
                     "y": 100.0
                 }
             },
@@ -733,13 +733,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -53.2227668762207,
+                    "x": -62.428001403808597,
                     "y": -148.96295166015626,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 61.79999923706055,
-                    "y": 26.799997329711915
+                    "x": 108.375,
+                    "y": 34.16999816894531
                 }
             },
             "shape": {
@@ -750,7 +750,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/Yes.png",
+                "textureName": "UI/nwe yes.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -814,9 +814,9 @@
                     "z": 1.0,
                     "w": 1.0
                 },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
+                "textureNormal": "UI/nwe yes.png",
+                "textureHovered": "UI/new yes hover.png",
+                "texturePressed": "UI/nwe yes.png",
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
             },
@@ -833,14 +833,14 @@
             "parent": {
                 "parentUUID": 17994454554155245929,
                 "localPos": {
-                    "x": -53.2227668762207,
+                    "x": -62.428001403808597,
                     "y": -148.9629669189453,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 61.79999923706055,
-                    "y": 26.799999237060548
+                    "x": 108.375,
+                    "y": 34.17000198364258
                 },
                 "inheritColor": false,
                 "colorMul": {
@@ -865,13 +865,13 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 53.222999572753909,
+                    "x": 62.428001403808597,
                     "y": -148.96295166015626,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 54.5,
-                    "y": 26.799997329711915
+                    "x": 108.375,
+                    "y": 34.16999435424805
                 }
             },
             "shape": {
@@ -882,7 +882,7 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "UI/No.png",
+                "textureName": "UI/new no.png",
                 "uvSize": {
                     "x": 1.0,
                     "y": 1.0
@@ -892,10 +892,10 @@
                     "y": 0.0
                 },
                 "color": {
-                    "x": 0.699999988079071,
-                    "y": 0.699999988079071,
-                    "z": 0.699999988079071,
-                    "w": 0.699999988079071
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
                 },
                 "p1": {
                     "x": 0.0,
@@ -932,7 +932,7 @@
                     "x": 0.30000001192092898,
                     "y": 0.30000001192092898,
                     "z": 0.30000001192092898,
-                    "w": 0.699999988079071
+                    "w": 1.0
                 },
                 "textHoveredColor": {
                     "x": 0.0,
@@ -946,9 +946,9 @@
                     "z": 0.0,
                     "w": 0.5
                 },
-                "textureNormal": "",
-                "textureHovered": "",
-                "texturePressed": "",
+                "textureNormal": "UI/new no.png",
+                "textureHovered": "UI/new no hover.png",
+                "texturePressed": "UI/new no.png",
                 "hoverScale": 1.100000023841858,
                 "pressedScale": 0.949999988079071
             },
@@ -965,14 +965,14 @@
             "parent": {
                 "parentUUID": 17994454554155245929,
                 "localPos": {
-                    "x": 53.222999572753909,
+                    "x": 62.428001403808597,
                     "y": -148.9629669189453,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 54.5,
-                    "y": 26.799999237060548
+                    "x": 108.375,
+                    "y": 34.16999816894531
                 },
                 "inheritColor": false,
                 "colorMul": {
