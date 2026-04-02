@@ -14067,7 +14067,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1036.438720703125,
+                    "x": 502.84674072265627,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -14145,7 +14145,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 956.438720703125,
+                    "x": 422.84674072265627,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -20206,37 +20206,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -20289,7 +20258,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -20303,14 +20272,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20363,6 +20332,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22280,7 +22280,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 39.21402359008789,
+                    "x": -52.923675537109378,
                     "y": -623.0357666015625,
                     "z": 0.0
                 },
@@ -22318,12 +22318,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -28.28597640991211,
+                    "x": -120.42367553710938,
                     "y": -631.0357666015625,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 106.71401977539063,
+                    "x": 14.576324462890625,
                     "y": -615.0357666015625,
                     "z": 0.0
                 }
@@ -22393,7 +22393,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -21.10213851928711,
+                    "x": -113.23983764648438,
                     "y": -623.0357666015625,
                     "z": 0.0
                 },
@@ -22471,7 +22471,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 18.85818862915039,
+                    "x": -73.27951049804688,
                     "y": -623.0357666015625,
                     "z": 0.0
                 },
@@ -22549,7 +22549,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 38.85818862915039,
+                    "x": -53.279510498046878,
                     "y": -623.0357666015625,
                     "z": 0.0
                 },
@@ -22627,7 +22627,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 58.85818862915039,
+                    "x": -33.279510498046878,
                     "y": -623.0357666015625,
                     "z": 0.0
                 },
@@ -22705,7 +22705,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 98.85818481445313,
+                    "x": 6.720485687255859,
                     "y": -623.0357666015625,
                     "z": 0.0
                 },
@@ -22783,7 +22783,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -1.1418113708496094,
+                    "x": -93.27951049804688,
                     "y": -623.0357666015625,
                     "z": 0.0
                 },
@@ -22861,7 +22861,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 78.85818481445313,
+                    "x": -13.279510498046875,
                     "y": -623.0357666015625,
                     "z": 0.0
                 },
@@ -22939,7 +22939,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 996.7945556640625,
+                    "x": 463.20257568359377,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -22977,12 +22977,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 929.2945556640625,
+                    "x": 395.70257568359377,
                     "y": -735.9077758789063,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1064.2945556640626,
+                    "x": 530.7025756835938,
                     "y": -719.9077758789063,
                     "z": 0.0
                 }
@@ -23052,7 +23052,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 936.4783935546875,
+                    "x": 402.88641357421877,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -23130,7 +23130,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 976.438720703125,
+                    "x": 442.84674072265627,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -23208,7 +23208,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 996.438720703125,
+                    "x": 462.84674072265627,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -23286,7 +23286,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1016.438720703125,
+                    "x": 482.84674072265627,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -23364,7 +23364,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1056.438720703125,
+                    "x": 522.8467407226563,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -29335,44 +29335,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -29425,7 +29387,7 @@
                         ]
                     },
                     {
-                        "name": "slimeStunned",
+                        "name": "slimeWalk",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -29439,14 +29401,21 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -29478,6 +29447,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
