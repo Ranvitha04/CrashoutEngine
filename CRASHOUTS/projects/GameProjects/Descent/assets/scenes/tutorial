@@ -11430,33 +11430,33 @@
         },
         {
             "active": true,
-            "name": "lavaParticle",
-            "uuid": 7470256824246531283,
+            "name": "lavaParticle_1",
+            "uuid": 8438067562298895777,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1066.8714599609376,
+                    "x": 1055.6170654296876,
                     "y": -487.3373107910156,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 10.0,
+                    "x": 5.0,
                     "y": 5.0
                 }
             },
             "parent": {
                 "parentUUID": 6529571415753105255,
                 "localPos": {
-                    "x": 1066.8714599609376,
+                    "x": 1055.6170654296876,
                     "y": -487.3373107910156,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 10.0,
+                    "x": 5.0,
                     "y": 5.0
                 },
                 "inheritColor": false,
@@ -11469,7 +11469,7 @@
             },
             "layer": {
                 "layerName": "Player",
-                "z": -5
+                "z": 0
             },
             "particle": {
                 "preset": 0,
@@ -11485,13 +11485,13 @@
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
-                "emitRate": 25.0,
+                "emitRate": 50.0,
                 "playOnStop": true,
                 "emissionShape": 0,
                 "radiusMin": 0.0,
                 "radiusMax": 5.0,
-                "lengthMin": 60.0,
-                "lengthMax": 50.0,
+                "lengthMin": 100.0,
+                "lengthMax": 130.0,
                 "areaMin": {
                     "x": 0.0,
                     "y": 0.0
@@ -11512,7 +11512,7 @@
                 "sizeOverTime": -2.5,
                 "rotationOverTime": 15.0,
                 "startRotationMin": 0.0,
-                "startRotationMax": 0.0,
+                "startRotationMax": 360.0,
                 "startColor": {
                     "x": 0.9641433954238892,
                     "y": 0.8495192527770996,
@@ -11559,25 +11559,25 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 482.0133056640625,
+                    "x": 480.7331848144531,
                     "y": -487.3373107910156,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 10.0,
+                    "x": 5.0,
                     "y": 5.0
                 }
             },
             "parent": {
                 "parentUUID": 6529571415753105255,
                 "localPos": {
-                    "x": 482.0133056640625,
+                    "x": 480.7331848144531,
                     "y": -487.3373107910156,
                     "z": 0.0
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 10.0,
+                    "x": 5.0,
                     "y": 5.0
                 },
                 "inheritColor": false,
@@ -11606,13 +11606,13 @@
                 "isEmitting": true,
                 "useWorldSpace": true,
                 "maxParticles": 1000,
-                "emitRate": 25.0,
+                "emitRate": 50.0,
                 "playOnStop": true,
                 "emissionShape": 0,
                 "radiusMin": 0.0,
                 "radiusMax": 5.0,
-                "lengthMin": 35.0,
-                "lengthMax": 45.0,
+                "lengthMin": 80.0,
+                "lengthMax": 100.0,
                 "areaMin": {
                     "x": 0.0,
                     "y": 0.0
@@ -11633,370 +11633,7 @@
                 "sizeOverTime": -2.5,
                 "rotationOverTime": 15.0,
                 "startRotationMin": 0.0,
-                "startRotationMax": 0.0,
-                "startColor": {
-                    "x": 0.9641433954238892,
-                    "y": 0.8495192527770996,
-                    "z": 0.1421246975660324,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 1.0,
-                    "y": 0.3585657477378845,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 7.099999904632568,
-                    "y": 13.100000381469727,
-                    "z": 5.800000190734863
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "gpuSimulation": true,
-                "additiveBlend": false,
-                "emberRandomDirections": false,
-                "flowStrength": 0.0,
-                "flowSpeed": 0.0,
-                "flowFrequency": 0.0
-            }
-        },
-        {
-            "active": true,
-            "name": "lavaParticle_3",
-            "uuid": 6018949049669402141,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 406.81719970703127,
-                    "y": -904.0194091796875,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 10.0,
-                    "y": 5.0
-                }
-            },
-            "parent": {
-                "parentUUID": 6529571415753105255,
-                "localPos": {
-                    "x": 406.81719970703127,
-                    "y": -904.0194091796875,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 10.0,
-                    "y": 5.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Player",
-                "z": 0
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": true,
-                "useWorldSpace": true,
-                "maxParticles": 1000,
-                "emitRate": 25.0,
-                "playOnStop": false,
-                "emissionShape": 0,
-                "radiusMin": 0.0,
-                "radiusMax": 5.0,
-                "lengthMin": 30.0,
-                "lengthMax": 40.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 5.0,
-                    "y": 5.0
-                },
-                "startLifeMin": 5.0,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 0.15000000596046449,
-                "startSizeXMax": 1.5,
-                "startSizeYMin": 1.0,
-                "startSizeYMax": 1.0,
-                "sizeOverTime": -2.5,
-                "rotationOverTime": 15.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 0.0,
-                "startColor": {
-                    "x": 0.9641433954238892,
-                    "y": 0.8495192527770996,
-                    "z": 0.1421246975660324,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 1.0,
-                    "y": 0.3585657477378845,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 7.099999904632568,
-                    "y": 13.100000381469727,
-                    "z": 5.800000190734863
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "gpuSimulation": true,
-                "additiveBlend": false,
-                "emberRandomDirections": false,
-                "flowStrength": 0.0,
-                "flowSpeed": 0.0,
-                "flowFrequency": 0.0
-            }
-        },
-        {
-            "active": true,
-            "name": "lavaParticle_4",
-            "uuid": 16206247867570381603,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 899.1729125976563,
-                    "y": -839.6849365234375,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 10.0,
-                    "y": 5.0
-                }
-            },
-            "parent": {
-                "parentUUID": 6529571415753105255,
-                "localPos": {
-                    "x": 899.1729125976563,
-                    "y": -839.6849365234375,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 10.0,
-                    "y": 5.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Player",
-                "z": 0
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": true,
-                "useWorldSpace": true,
-                "maxParticles": 100,
-                "emitRate": 25.0,
-                "playOnStop": false,
-                "emissionShape": 0,
-                "radiusMin": 0.0,
-                "radiusMax": 5.0,
-                "lengthMin": 25.0,
-                "lengthMax": 35.0,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 5.0,
-                    "y": 5.0
-                },
-                "startLifeMin": 5.0,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 0.15000000596046449,
-                "startSizeXMax": 1.5,
-                "startSizeYMin": 1.0,
-                "startSizeYMax": 1.0,
-                "sizeOverTime": -2.5,
-                "rotationOverTime": 15.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 0.0,
-                "startColor": {
-                    "x": 0.9641433954238892,
-                    "y": 0.8495192527770996,
-                    "z": 0.1421246975660324,
-                    "w": 1.0
-                },
-                "endColor": {
-                    "x": 1.0,
-                    "y": 0.3585657477378845,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "gravity": {
-                    "x": 0.0,
-                    "y": -9.800000190734864,
-                    "z": 0.0
-                },
-                "startVelocity": {
-                    "x": 7.099999904632568,
-                    "y": 13.100000381469727,
-                    "z": 5.800000190734863
-                },
-                "useTexture": false,
-                "textureName": "",
-                "textureUV": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "gpuSimulation": true,
-                "additiveBlend": false,
-                "emberRandomDirections": false,
-                "flowStrength": 0.0,
-                "flowSpeed": 0.0,
-                "flowFrequency": 0.0
-            }
-        },
-        {
-            "active": true,
-            "name": "lavaParticle_5",
-            "uuid": 7918079471820939445,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 1115.8731689453126,
-                    "y": -807.369140625,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 10.0,
-                    "y": 5.0
-                }
-            },
-            "parent": {
-                "parentUUID": 6529571415753105255,
-                "localPos": {
-                    "x": 1115.8731689453126,
-                    "y": -807.369140625,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 10.0,
-                    "y": 5.0
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Player",
-                "z": 0
-            },
-            "particle": {
-                "preset": 0,
-                "burstCount": 0,
-                "renderShape": 0,
-                "squareSizeMultiplier": 1.0,
-                "circleRadiusMultiplier": 1.0,
-                "circleSegments": 48,
-                "triangleWidthMultiplier": 1.0,
-                "triangleHeightMultiplier": 1.0,
-                "superheroLandingAngleDeg": 8.0,
-                "superheroLandingAngleSpreadDeg": 18.0,
-                "isEmitting": true,
-                "useWorldSpace": true,
-                "maxParticles": 100,
-                "emitRate": 10.0,
-                "playOnStop": false,
-                "emissionShape": 0,
-                "radiusMin": 0.0,
-                "radiusMax": 5.0,
-                "lengthMin": 7.5,
-                "lengthMax": 12.5,
-                "areaMin": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "areaMax": {
-                    "x": 5.0,
-                    "y": 5.0
-                },
-                "startLifeMin": 5.0,
-                "startLifeMax": 5.0,
-                "startSpeedMin": 0.0,
-                "startSpeedMax": 0.0,
-                "uniformSize": true,
-                "startSizeXMin": 0.15000000596046449,
-                "startSizeXMax": 1.5,
-                "startSizeYMin": 1.0,
-                "startSizeYMax": 1.0,
-                "sizeOverTime": -2.5,
-                "rotationOverTime": 15.0,
-                "startRotationMin": 0.0,
-                "startRotationMax": 0.0,
+                "startRotationMax": 360.0,
                 "startColor": {
                     "x": 0.9641433954238892,
                     "y": 0.8495192527770996,
@@ -16187,7 +15824,7 @@
                         "fields": {
                             "StartBtn": 2241071384,
                             "SettingsBtn": 2241071384,
-                            "CloseBtn": 82,
+                            "CloseBtn": 57,
                             "QuitBtn": 2241071384,
                             "QuitCheckPanel": 2241071384,
                             "YesBtn": 2241071384,
@@ -17016,7 +16653,7 @@
                     {
                         "className": "GameOverUI",
                         "fields": {
-                            "currentSceneName": "descentgame",
+                            "currentSceneName": "tutorial",
                             "mainMenuScene": "descentmenu"
                         }
                     }
@@ -23565,7 +23202,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -108.50373077392578,
+                    "x": -106.15426635742188,
                     "y": -12.700030326843262,
                     "z": 0.0
                 },
@@ -23692,7 +23329,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 134,
+                            "lookAtEntity": 131,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -23831,7 +23468,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 136,
+                            "lookAtEntity": 133,
                             "resetOnExit": true,
                             "zoneDampingY": 1.7000000476837159
                         }
@@ -23970,7 +23607,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 138,
+                            "lookAtEntity": 135,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -24912,7 +24549,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1445.7991943359376,
-                    "y": -381.75823974609377,
+                    "y": -447.21185302734377,
                     "z": 0.0
                 },
                 "size": {
@@ -24940,7 +24577,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1445.7991943359376,
-                    "y": -381.75823974609377,
+                    "y": -447.21185302734377,
                     "z": 0.0
                 },
                 "offset": {
@@ -24951,7 +24588,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 1445.7991943359376,
-                    "y": -381.75823974609377,
+                    "y": -447.21185302734377,
                     "z": 0.0
                 }
             },
@@ -25170,7 +24807,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 96.24138641357422,
-                    "y": -670.450439453125,
+                    "y": -734.24951171875,
                     "z": 0.0
                 },
                 "size": {
@@ -25198,7 +24835,7 @@
                 "enabled": true,
                 "position": {
                     "x": 96.24138641357422,
-                    "y": -670.450439453125,
+                    "y": -734.24951171875,
                     "z": 0.0
                 },
                 "offset": {
@@ -25209,7 +24846,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 96.24138641357422,
-                    "y": -670.450439453125,
+                    "y": -734.24951171875,
                     "z": 0.0
                 }
             },
@@ -34843,7 +34480,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 737.5445556640625,
-                    "y": -343.8509216308594,
+                    "y": -346.9298400878906,
                     "z": 0.0
                 },
                 "size": {
@@ -34916,7 +34553,7 @@
                 "parentUUID": 2252181654068074954,
                 "localPos": {
                     "x": -22.35479736328125,
-                    "y": -72.00588989257813,
+                    "y": -75.08480834960938,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -34947,8 +34584,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 821.1738891601563,
-                    "y": -442.03448486328127,
+                    "x": 804.7849731445313,
+                    "y": -480.21234130859377,
                     "z": 0.0
                 },
                 "size": {
@@ -34982,23 +34619,23 @@
                 "lengthMin": 0.0,
                 "lengthMax": 5.0,
                 "areaMin": {
-                    "x": 5.099999904632568,
+                    "x": 10.0,
                     "y": 0.0
                 },
                 "areaMax": {
-                    "x": 16.299999237060548,
-                    "y": 5.0
+                    "x": 12.0,
+                    "y": 0.0
                 },
                 "startLifeMin": 0.6000000238418579,
                 "startLifeMax": 1.7999999523162842,
-                "startSpeedMin": 0.20000000298023225,
-                "startSpeedMax": 1.0,
+                "startSpeedMin": 15.0,
+                "startSpeedMax": 45.0,
                 "uniformSize": true,
-                "startSizeXMin": 0.05000000074505806,
-                "startSizeXMax": 0.14000000059604646,
+                "startSizeXMin": 0.009999999776482582,
+                "startSizeXMax": 0.05000000074505806,
                 "startSizeYMin": 0.05000000074505806,
                 "startSizeYMax": 0.14000000059604646,
-                "sizeOverTime": -0.019999999552965165,
+                "sizeOverTime": -0.05000000074505806,
                 "rotationOverTime": 120.0,
                 "startRotationMin": 0.0,
                 "startRotationMax": 360.0,
@@ -35146,25 +34783,25 @@
         {
             "active": true,
             "name": "Embers_2",
-            "uuid": 9613774648081027558,
+            "uuid": 11670375651952304112,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 972.1742553710938,
-                    "y": -832.8311767578125,
+                    "x": 401.12255859375,
+                    "y": -894.5968017578125,
                     "z": 0.0
                 },
                 "size": {
                     "x": 94.80000305175781,
-                    "y": 74.0
+                    "y": 73.0999984741211
                 }
             },
             "layer": {
                 "layerName": "Foreground",
-                "z": 73
+                "z": 76
             },
             "particle": {
                 "preset": 6,
@@ -35179,8 +34816,8 @@
                 "superheroLandingAngleSpreadDeg": 18.0,
                 "isEmitting": true,
                 "useWorldSpace": true,
-                "maxParticles": 408,
-                "emitRate": 240.0,
+                "maxParticles": 900,
+                "emitRate": 120.0,
                 "playOnStop": true,
                 "emissionShape": 2,
                 "radiusMin": 0.0,
@@ -35188,23 +34825,23 @@
                 "lengthMin": 0.0,
                 "lengthMax": 5.0,
                 "areaMin": {
-                    "x": 0.0,
+                    "x": 3.0,
                     "y": 0.0
                 },
                 "areaMax": {
                     "x": 5.0,
-                    "y": 5.0
+                    "y": 0.0
                 },
                 "startLifeMin": 0.6000000238418579,
                 "startLifeMax": 1.7999999523162842,
-                "startSpeedMin": 0.20000000298023225,
-                "startSpeedMax": 1.0,
+                "startSpeedMin": 15.0,
+                "startSpeedMax": 45.0,
                 "uniformSize": true,
-                "startSizeXMin": 0.05000000074505806,
-                "startSizeXMax": 0.14000000059604646,
+                "startSizeXMin": 0.009999999776482582,
+                "startSizeXMax": 0.05000000074505806,
                 "startSizeYMin": 0.05000000074505806,
                 "startSizeYMax": 0.14000000059604646,
-                "sizeOverTime": -0.019999999552965165,
+                "sizeOverTime": -0.05000000074505806,
                 "rotationOverTime": 120.0,
                 "startRotationMin": 0.0,
                 "startRotationMax": 360.0,
@@ -35255,7 +34892,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1718.6534423828126,
-                    "y": -440.99041748046877,
+                    "y": -443.5561828613281,
                     "z": 0.0
                 },
                 "size": {
@@ -35328,7 +34965,7 @@
                 "parentUUID": 1895781001044336769,
                 "localPos": {
                     "x": 208.190185546875,
-                    "y": -104.92538452148438,
+                    "y": -107.49114990234375,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -35457,25 +35094,25 @@
         {
             "active": true,
             "name": "Embers_3",
-            "uuid": 12022143232802532514,
+            "uuid": 2449543359237618487,
             "tag": {
                 "tagMask": 0
             },
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 391.27392578125,
-                    "y": -901.0072631835938,
+                    "x": 955.1295166015625,
+                    "y": -824.2442626953125,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 94.0,
-                    "y": 74.19999694824219
+                    "x": 94.80000305175781,
+                    "y": 73.0999984741211
                 }
             },
             "layer": {
                 "layerName": "Foreground",
-                "z": 217
+                "z": 76
             },
             "particle": {
                 "preset": 6,
@@ -35499,23 +35136,23 @@
                 "lengthMin": 0.0,
                 "lengthMax": 5.0,
                 "areaMin": {
-                    "x": 4.5,
+                    "x": 3.0,
                     "y": 0.0
                 },
                 "areaMax": {
                     "x": 5.0,
-                    "y": 2.700000047683716
+                    "y": 2.0
                 },
                 "startLifeMin": 0.6000000238418579,
                 "startLifeMax": 1.7999999523162842,
-                "startSpeedMin": 0.20000000298023225,
-                "startSpeedMax": 1.0,
+                "startSpeedMin": 15.0,
+                "startSpeedMax": 45.0,
                 "uniformSize": true,
-                "startSizeXMin": 0.05000000074505806,
-                "startSizeXMax": 0.14000000059604646,
+                "startSizeXMin": 0.009999999776482582,
+                "startSizeXMax": 0.05000000074505806,
                 "startSizeYMin": 0.05000000074505806,
                 "startSizeYMax": 0.14000000059604646,
-                "sizeOverTime": -0.019999999552965165,
+                "sizeOverTime": -0.05000000074505806,
                 "rotationOverTime": 120.0,
                 "startRotationMin": 0.0,
                 "startRotationMax": 360.0,
@@ -36489,6 +36126,369 @@
             "layer": {
                 "layerName": "Default",
                 "z": -48
+            }
+        },
+        {
+            "active": true,
+            "name": "lavaParticle_3",
+            "uuid": 5560733987123475205,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 402.94110107421877,
+                    "y": -901.0675659179688,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5.0,
+                    "y": 5.0
+                }
+            },
+            "parent": {
+                "parentUUID": 6529571415753105255,
+                "localPos": {
+                    "x": 402.94110107421877,
+                    "y": -901.0675659179688,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
+            },
+            "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 50.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 75.0,
+                "lengthMax": 90.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 5.0,
+                "startLifeMax": 5.0,
+                "startSpeedMin": 0.0,
+                "startSpeedMax": 0.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.15000000596046449,
+                "startSizeXMax": 1.5,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": -2.5,
+                "rotationOverTime": 15.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.9641433954238892,
+                    "y": 0.8495192527770996,
+                    "z": 0.1421246975660324,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 1.0,
+                    "y": 0.3585657477378845,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 7.099999904632568,
+                    "y": 13.100000381469727,
+                    "z": 5.800000190734863
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "lavaParticle_4",
+            "uuid": 597982282251213237,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 895.158935546875,
+                    "y": -836.8611450195313,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5.0,
+                    "y": 5.0
+                }
+            },
+            "parent": {
+                "parentUUID": 6529571415753105255,
+                "localPos": {
+                    "x": 895.158935546875,
+                    "y": -836.8611450195313,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
+            },
+            "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 30.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 45.0,
+                "lengthMax": 75.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 5.0,
+                "startLifeMax": 5.0,
+                "startSpeedMin": 0.0,
+                "startSpeedMax": 0.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.15000000596046449,
+                "startSizeXMax": 1.5,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": -2.5,
+                "rotationOverTime": 15.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.9641433954238892,
+                    "y": 0.8495192527770996,
+                    "z": 0.1421246975660324,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 1.0,
+                    "y": 0.3585657477378845,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 7.099999904632568,
+                    "y": 13.100000381469727,
+                    "z": 5.800000190734863
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
+            }
+        },
+        {
+            "active": true,
+            "name": "lavaParticle_5",
+            "uuid": 5861516994819421387,
+            "tag": {
+                "tagMask": 0
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": 1121.998046875,
+                    "y": -804.6360473632813,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 5.0,
+                    "y": 5.0
+                }
+            },
+            "parent": {
+                "parentUUID": 6529571415753105255,
+                "localPos": {
+                    "x": 1121.998046875,
+                    "y": -804.6360473632813,
+                    "z": 0.0
+                },
+                "localRot": 0.0,
+                "localScale": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "inheritColor": false,
+                "colorMul": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                }
+            },
+            "layer": {
+                "layerName": "Player",
+                "z": 0
+            },
+            "particle": {
+                "preset": 0,
+                "burstCount": 0,
+                "renderShape": 0,
+                "squareSizeMultiplier": 1.0,
+                "circleRadiusMultiplier": 1.0,
+                "circleSegments": 48,
+                "triangleWidthMultiplier": 1.0,
+                "triangleHeightMultiplier": 1.0,
+                "superheroLandingAngleDeg": 8.0,
+                "superheroLandingAngleSpreadDeg": 18.0,
+                "isEmitting": true,
+                "useWorldSpace": true,
+                "maxParticles": 1000,
+                "emitRate": 15.0,
+                "playOnStop": true,
+                "emissionShape": 0,
+                "radiusMin": 0.0,
+                "radiusMax": 5.0,
+                "lengthMin": 15.0,
+                "lengthMax": 30.0,
+                "areaMin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "areaMax": {
+                    "x": 5.0,
+                    "y": 5.0
+                },
+                "startLifeMin": 5.0,
+                "startLifeMax": 5.0,
+                "startSpeedMin": 0.0,
+                "startSpeedMax": 0.0,
+                "uniformSize": true,
+                "startSizeXMin": 0.15000000596046449,
+                "startSizeXMax": 1.5,
+                "startSizeYMin": 1.0,
+                "startSizeYMax": 1.0,
+                "sizeOverTime": -2.5,
+                "rotationOverTime": 15.0,
+                "startRotationMin": 0.0,
+                "startRotationMax": 360.0,
+                "startColor": {
+                    "x": 0.9641433954238892,
+                    "y": 0.8495192527770996,
+                    "z": 0.1421246975660324,
+                    "w": 1.0
+                },
+                "endColor": {
+                    "x": 1.0,
+                    "y": 0.3585657477378845,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "gravity": {
+                    "x": 0.0,
+                    "y": -9.800000190734864,
+                    "z": 0.0
+                },
+                "startVelocity": {
+                    "x": 7.099999904632568,
+                    "y": 13.100000381469727,
+                    "z": 5.800000190734863
+                },
+                "useTexture": false,
+                "textureName": "",
+                "textureUV": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "gpuSimulation": true,
+                "additiveBlend": false,
+                "emberRandomDirections": false,
+                "flowStrength": 0.0,
+                "flowSpeed": 0.0,
+                "flowFrequency": 0.0
             }
         }
     ],

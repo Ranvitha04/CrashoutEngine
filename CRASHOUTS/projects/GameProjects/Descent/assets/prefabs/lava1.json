@@ -1,0 +1,110 @@
+{
+    "prefabs": [
+        {
+            "name": "lava1",
+            "entities": [
+                {
+                    "active": true,
+                    "name": "lavaParticle_1",
+                    "uuid": 18104591714996579259,
+                    "tag": {
+                        "tagMask": 0
+                    },
+                    "transform": {
+                        "rotation": 0.0,
+                        "position": {
+                            "x": 1055.6170654296876,
+                            "y": -487.3373107910156,
+                            "z": 0.0
+                        },
+                        "size": {
+                            "x": 5.0,
+                            "y": 5.0
+                        }
+                    },
+                    "layer": {
+                        "layerName": "Player",
+                        "z": 0
+                    },
+                    "particle": {
+                        "preset": 0,
+                        "burstCount": 0,
+                        "renderShape": 0,
+                        "squareSizeMultiplier": 1.0,
+                        "circleRadiusMultiplier": 1.0,
+                        "circleSegments": 48,
+                        "triangleWidthMultiplier": 1.0,
+                        "triangleHeightMultiplier": 1.0,
+                        "superheroLandingAngleDeg": 8.0,
+                        "superheroLandingAngleSpreadDeg": 18.0,
+                        "isEmitting": true,
+                        "useWorldSpace": true,
+                        "maxParticles": 1000,
+                        "emitRate": 50.0,
+                        "playOnStop": true,
+                        "emissionShape": 0,
+                        "radiusMin": 0.0,
+                        "radiusMax": 5.0,
+                        "lengthMin": 100.0,
+                        "lengthMax": 130.0,
+                        "areaMin": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "areaMax": {
+                            "x": 5.0,
+                            "y": 5.0
+                        },
+                        "startLifeMin": 5.0,
+                        "startLifeMax": 5.0,
+                        "startSpeedMin": 0.0,
+                        "startSpeedMax": 0.0,
+                        "uniformSize": true,
+                        "startSizeXMin": 0.15000000596046449,
+                        "startSizeXMax": 1.5,
+                        "startSizeYMin": 1.0,
+                        "startSizeYMax": 1.0,
+                        "sizeOverTime": -2.5,
+                        "rotationOverTime": 15.0,
+                        "startRotationMin": 0.0,
+                        "startRotationMax": 360.0,
+                        "startColor": {
+                            "x": 0.9641433954238892,
+                            "y": 0.8495192527770996,
+                            "z": 0.1421246975660324,
+                            "w": 1.0
+                        },
+                        "endColor": {
+                            "x": 1.0,
+                            "y": 0.3585657477378845,
+                            "z": 0.0,
+                            "w": 0.0
+                        },
+                        "gravity": {
+                            "x": 0.0,
+                            "y": -9.800000190734864,
+                            "z": 0.0
+                        },
+                        "startVelocity": {
+                            "x": 7.099999904632568,
+                            "y": 13.100000381469727,
+                            "z": 5.800000190734863
+                        },
+                        "useTexture": false,
+                        "textureName": "",
+                        "textureUV": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "gpuSimulation": true,
+                        "additiveBlend": false,
+                        "emberRandomDirections": false,
+                        "flowStrength": 0.0,
+                        "flowSpeed": 0.0,
+                        "flowFrequency": 0.0
+                    }
+                }
+            ]
+        }
+    ]
+}
