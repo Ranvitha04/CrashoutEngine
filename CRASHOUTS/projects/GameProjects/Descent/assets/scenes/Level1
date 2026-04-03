@@ -14067,7 +14067,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 502.84674072265627,
+                    "x": 479.4471740722656,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -14145,7 +14145,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 422.84674072265627,
+                    "x": 399.4471740722656,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -19629,7 +19629,7 @@
                 },
                 "targetRespawnEntity": 0,
                 "targetEntityName": "respawn1",
-                "activated": true
+                "activated": false
             },
             "trigger_metadata": {
                 "triggerID": "",
@@ -22939,7 +22939,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 463.20257568359377,
+                    "x": 439.8030090332031,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -22977,12 +22977,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 395.70257568359377,
+                    "x": 372.3030090332031,
                     "y": -735.9077758789063,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 530.7025756835938,
+                    "x": 507.3030090332031,
                     "y": -719.9077758789063,
                     "z": 0.0
                 }
@@ -23028,7 +23028,7 @@
                         "fields": {
                             "IsMoving": true,
                             "MoveRight": true,
-                            "MovementDistance": 550.0,
+                            "MovementDistance": 566.9000244140625,
                             "MoveSpeed": 50.0,
                             "VerticalSpeed": 150.0,
                             "maxDrop": 125.0,
@@ -23052,7 +23052,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 402.88641357421877,
+                    "x": 379.4868469238281,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -23130,7 +23130,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 442.84674072265627,
+                    "x": 419.4471740722656,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -23208,7 +23208,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 462.84674072265627,
+                    "x": 439.4471740722656,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -23286,7 +23286,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 482.84674072265627,
+                    "x": 459.4471740722656,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -23364,7 +23364,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 522.8467407226563,
+                    "x": 499.4471740722656,
                     "y": -727.9077758789063,
                     "z": 0.0
                 },
@@ -25255,7 +25255,7 @@
                             "PlatesActive": 0,
                             "PlatesRequired": 1,
                             "MoveRight": false,
-                            "MoveDist": 200.0,
+                            "MoveDist": -200.0,
                             "MoveSpeed": 40.0,
                             "emitMoveDust": true,
                             "landingDustEntityName": "PlatformLandingDust"
@@ -25795,7 +25795,7 @@
                     {
                         "className": "DoorScript",
                         "fields": {
-                            "nextSceneName": "Level2",
+                            "nextSceneName": "Level3",
                             "transitionDelay": 2.0,
                             "doorParticleName": "Door Particles"
                         }
