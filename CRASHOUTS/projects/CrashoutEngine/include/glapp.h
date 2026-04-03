@@ -53,6 +53,7 @@ struct GLApp
 	static void ToggleFullscreen();
 	static void ToggleMaximize();
 	static void Minimize();
+	static void Show();
 
 	// State tracking variables
 	static bool is_fullscreen;

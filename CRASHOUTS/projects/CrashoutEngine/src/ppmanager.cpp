@@ -183,6 +183,21 @@ namespace CrashoutsEngine {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
+        /*!
+        @brief Clear a framebuffer to opaque black immediately after allocating its attachments.
+        @param fbo Framebuffer object to clear.
+        @param width Target width in pixels.
+        @param height Target height in pixels.
+        */
+        static void ClearFramebufferToBlack(GLuint fbo, int width, int height) {
+            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+            glViewport(0, 0, width, height);
+            glDisable(GL_SCISSOR_TEST);
+            glClearColor(0.f, 0.f, 0.f, 1.f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
         static void CreateFboWithTexturesMRT(GLuint& fbo, GLuint tex[2], int w, int h) {
             if (fbo == 0) glGenFramebuffers(1, &fbo);
             glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -216,6 +231,7 @@ namespace CrashoutsEngine {
                 std::cout << "ERROR: Post-Processing Framebuffer is not complete!" << std::endl;
             }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            ClearFramebufferToBlack(fbo, w, h);
         }
 
         static void EnsureTargets() {
@@ -251,6 +267,7 @@ namespace CrashoutsEngine {
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
                 std::cout << "ERROR: Post-Processing Framebuffer is not complete!" << std::endl;
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            ClearFramebufferToBlack(ppFboID, cachedWidth, cachedHeight);
         }
 
         void InitPP() {

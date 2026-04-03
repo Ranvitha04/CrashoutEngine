@@ -1,7 +1,7 @@
 {
     "entities": [
         {
-            "active": true,
+            "active": false,
             "name": "DigipenLogo",
             "uuid": 15637052167642996182,
             "tag": {
@@ -59,7 +59,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "TeamLogo",
             "uuid": 11294304295536029903,
             "tag": {

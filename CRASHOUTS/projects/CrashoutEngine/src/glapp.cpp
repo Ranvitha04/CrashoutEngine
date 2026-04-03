@@ -150,6 +150,9 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
+    // Keep the window hidden until the engine has submitted its first valid frame.
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
 #if !USE_IMGUI_EDITOR
     // Force 1920x1080 default for Standalone Game
     w = 1920;
@@ -178,16 +181,13 @@ bool GLApp::init(GLint w, GLint h, std::string t) {
     windowed_w = w;
     windowed_h = h;
 
-    // MAXIMIZE SECOND (This ensures it stays maximized on boot!)
-    glfwMaximizeWindow(GLApp::ptr_window);
-    is_maximized = true;
-
     // make the previously created OpenGL context current ...
     glfwMakeContextCurrent(GLApp::ptr_window);
 
     // --- Inject our Windows hook here ---
 #ifdef _WIN32
     HWND hwnd = glfwGetWin32Window(GLApp::ptr_window);
+    SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)GetStockObject(BLACK_BRUSH));
     originalWndProc = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)EngineWindowProc);
 #endif
     // ------------------------------------
@@ -356,6 +356,16 @@ void GLApp::ToggleMaximize() {
 
 void GLApp::Minimize() {
     glfwIconifyWindow(ptr_window);
+}
+
+void GLApp::Show() {
+    if (!ptr_window) return;
+    glfwShowWindow(ptr_window);
+#if USE_IMGUI_EDITOR
+    glfwMaximizeWindow(ptr_window);
+    is_maximized = true;
+#endif
+    glfwFocusWindow(ptr_window);
 }
 
 /* _________________________________________________________________________ */

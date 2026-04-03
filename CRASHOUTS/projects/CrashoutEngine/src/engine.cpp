@@ -433,6 +433,18 @@ void Init() {
         std::cout << "ERROR: Game framebuffer not complete!" << std::endl;
     }
 
+    // Initialize the startup render target so the first presented frame is black,
+    // not undefined texture memory.
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, CrashoutsEngine::PostProcessing::ppFboID);
+    glViewport(0, 0, gameTextureWidth, gameTextureHeight);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
     Scene::InitScene(*CrashoutsEngine::ECS::getInstance());
@@ -444,6 +456,14 @@ void Init() {
         CrashoutsEngine::Assets::AssetManager::GetInstance().Update();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
+
+    // Submit a guaranteed black frame before the standalone window becomes visible.
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, GLApp::width, GLApp::height);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glfwSwapBuffers(GLApp::ptr_window);
+    GLApp::Show();
 }
 
 /*  _________________________________________________________________________ */

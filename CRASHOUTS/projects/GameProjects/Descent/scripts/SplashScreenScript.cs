@@ -39,8 +39,8 @@ namespace CrashoutsEngine
             digipenLogo = Entity.Find("DigipenLogo");
             teamLogo = Entity.Find("TeamLogo");
 
-            // Initialize standard state
-            if (digipenLogo != null) InternalCalls.SetActive(digipenLogo.ID, true);
+            // Keep the screen black until the startup transition and initial scene load have settled.
+            if (digipenLogo != null) InternalCalls.SetActive(digipenLogo.ID, false);
             if (teamLogo != null) InternalCalls.SetActive(teamLogo.ID, false);
 
             currentState = 0;
@@ -53,7 +53,8 @@ namespace CrashoutsEngine
             if (!hasSequenceStarted)
             {
                 if (SceneManager.IsTransitioning()) return;
-                
+
+                if (digipenLogo != null) InternalCalls.SetActive(digipenLogo.ID, true);
                 hasSequenceStarted = true;
                 timer = logoDisplayTime;
                 return;
