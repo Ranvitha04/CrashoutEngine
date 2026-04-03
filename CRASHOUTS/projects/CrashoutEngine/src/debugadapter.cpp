@@ -71,7 +71,6 @@ All content
 #include "uilayoutcomponent.h"
 #include "debugmenu.h"
 #include "collisionmanager.h"
-#include "gamestatemanager.h"
 #include "assetmanager.h"
 #include "sceneasset.h"
 #include "monomanager.h"
@@ -3513,27 +3512,6 @@ namespace CrashoutsEngine
 	};
 
 	/*!
-	@brief Game-state provider installed at runtime (no hardcoded state list).
-	@details Bridges GameStateManager to the Debug Menu; exposes current/previous/next and issues ChangeGameState() transitions from a reflected state list.
-	*/
-	struct GameStateProvider final : DebugReflection::IGameStateProvider {
-		int  current()  const override { return (int)CurrentGameState; }
-		int  previous() const override { return (int)PreviousGameState; }
-		int  next()     const override { return (int)NextGameState; }
-		void changeTo(int id) override { ChangeGameState((GameState)id); }
-
-		const std::vector<std::pair<const char*, int>>& states() const override {
-			static std::vector<std::pair<const char*, int>> cache;
-			cache.clear();
-			for (auto const& [st, desc] : GetStateRegistry()) {
-				const char* label = desc.Label ? desc.Label : "(unnamed)";
-				cache.emplace_back(label, (int)st);
-			}
-			return cache;
-		}
-	};
-
-	/*!
 	@brief Adapter for editing Component::ParticleSystem.
 	@details Uses ImGui controls to manage particle system data.
 	*/
@@ -4336,7 +4314,6 @@ namespace CrashoutsEngine
 	static PPAdapter gPPAdapter;
 	static LightAdapter gLightAdapter;
 	static TileMapAdapter gTileMapAdapter;
-	static GameStateProvider gProvider;
 	static BuiltinPhysicsProvider gBuiltinPhys;
 	static KeyframeAnimatorAdapter gKeyframeAdapter;
 	static ParticleSystemAdapter gParticleAdapter;
@@ -4349,14 +4326,12 @@ namespace CrashoutsEngine
 
 /*!
  @brief Registers all built-in component adapters and debug providers.
- @details Call once during startup (after ECS and GameStateManager are initialized).
+ @details Call once during startup.
 		  - Registers ECS component adapters with DebugReflection::ComponentRegistry
-		  - Installs the Game State provider used by the Game State panel
 		  - Registers physics providers (e.g., gravity/damping) with PhysicsRegistry
  @note    Safe to call exactly once; repeated calls will duplicate entries.
  @see     DebugReflection::ComponentRegistry
  @see     DebugReflection::PhysicsRegistry
- @see     DebugReflection::SetGameStateProvider
 */
 extern "C" void RegisterBuiltinComponentAdapters() {
 	using namespace DebugReflection;
@@ -4379,7 +4354,6 @@ extern "C" void RegisterBuiltinComponentAdapters() {
 	ComponentRegistry::instance().registerAdapter(&gLeaderboardAdapter);
 	ComponentRegistry::instance().registerAdapter(&gCheckpointAdapter);
 	ComponentRegistry::instance().registerAdapter(&gTriggerMetadataAdapter);
-	DebugReflection::SetGameStateProvider(&gProvider);
 	DebugReflection::PhysicsRegistry::instance().registerProvider(&gBuiltinPhys);
 	ComponentRegistry::instance().registerAdapter(&gVisualScriptAdapter);
 }

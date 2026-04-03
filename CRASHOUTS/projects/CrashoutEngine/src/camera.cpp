@@ -150,8 +150,6 @@ namespace CrashoutsEngine {
 			float xDiff = mousePos.x - oldMousePos.x;
 			float yDiff = mousePos.y - oldMousePos.y;
 
-			std::cout << "X diff is " << xDiff << " and yDiff is " << yDiff << std::endl;
-			
 			position.x -= xDiff * panSpeed;
 			position.y += yDiff * panSpeed;
 			oldMousePos = mousePos;

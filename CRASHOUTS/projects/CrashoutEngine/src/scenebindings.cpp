@@ -44,7 +44,6 @@ namespace
         g_PendingSceneName = nameString;
         g_IsSceneLoadPending = true;
 
-        std::cout << "[Engine] Scene Load Scheduled: " << nameString << std::endl;
     }
 
     static void InternalFadeEffect(float fadeOut, float fadeIn) {
@@ -69,8 +68,6 @@ namespace
         std::string nameString{ utf8 };
         mono_free(utf8);
         if (nameString.empty()) return;
-
-        std::cout << "[Engine] Transitioning to: " << nameString << " (Out: " << fadeOut << "s, In: " << fadeIn << "s)" << std::endl;
 
         CrashoutsEngine::SceneTransition::Start(nameString, fadeOut, fadeIn);
     }

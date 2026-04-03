@@ -92,40 +92,14 @@ namespace CrashoutsEngine
 			script.MethodOnDestroy = mono_class_get_method_from_name(script.Class, "OnDestroy", 0);
 
 
-			if (script.MethodStart)
-			{
-				std::cout << "[Mono] Found Start() for " << script.ClassName << '\n';
-			}
-			else
+			if (!script.MethodStart)
 			{
 				std::cerr << "[Mono] Missing Start() in " << script.ClassName << '\n';
 			}
 
-			if (script.MethodUpdate)
-			{
-				std::cout << "[Mono] Found Update() for " << script.ClassName << '\n';
-			}
-			else
+			if (!script.MethodUpdate)
 			{
 				std::cerr << "[Mono] Missing Update() in " << script.ClassName << '\n';
-			}
-
-			if (script.MethodFixedUpdate)
-			{
-				std::cout << "[Mono] Found FixedUpdate() for " << script.ClassName << '\n';
-			}
-			else
-			{
-				std::cout << "[Mono] No FixedUpdate() in " << script.ClassName << '\n';
-			}
-
-			if (script.MethodOnDestroy)
-			{
-				std::cout << "[Mono] Found OnDestroy() for " << script.ClassName << '\n';
-			}
-			else
-			{
-				std::cout << "[Mono] No OnDestroy() in " << script.ClassName << '\n';
 			}
 
 			// Register in ScriptManager
@@ -149,9 +123,6 @@ namespace CrashoutsEngine
 				void* args[1] = { instance };
 				mono_runtime_invoke(s_RegisterScript, nullptr, args, nullptr);
 			}
-
-			std::cout << "[Mono] ScriptInstance for class " << script.ClassName
-				<< " initialized successfully\n";
 
 			script.Started = false;
 			return true;

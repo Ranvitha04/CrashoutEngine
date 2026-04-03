@@ -689,51 +689,6 @@ namespace UI {
     }
 
     /*!
-     @brief Renders the gameState panel for changing high-level FSM states.
-     @param ui UI state toggles.
-    */
-    void RenderGameStatePanel(UIState& ui) {
-        if (!ui.showGameState) return;
-
-        ScopedWindow w("GameState", LockFlags(ui.lockLayout));
-
-        auto* P = DebugReflection::GetGameStateProvider();
-        if (!P) { ImGui::TextDisabled("No GameStateProvider registered."); return; }
-
-        auto nameFor = [&](int id) -> const char* {
-            for (auto const& kv : P->states()) {
-                if (kv.second == id) return kv.first;
-            }
-            return "(unknown)";
-            };
-
-        const int cur = P->current() ? P->current() : -1;
-        const int prev = P->previous() ? P->previous() : -1;
-
-        ImGui::Text("Current:  %s", nameFor(cur));
-        ImGui::Text("Previous: %s", nameFor(prev));
-
-        if (cur != GameState::SCENE && !currSceneName.empty()) currSceneName.clear();
-
-        ImGui::Separator();
-        int col = 0;
-        for (auto const& [label, id] : P->states()) {
-            if (ImGui::Button(label)) P->changeTo(id);
-            if (++col % 10 != 0) ImGui::SameLine();
-        }
-
-        ImGui::Separator();
-
-        if (ImGui::Button("Restart Current State")) {
-            RestartGameState();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Quit")) {
-            glfwSetWindowShouldClose(GLApp::ptr_window, GLFW_TRUE);
-        }
-    }
-
-    /*!
      @brief Renders the scene management panel (Create, Switch, Set Start Scene).
      @param ui UI state toggles.
     */

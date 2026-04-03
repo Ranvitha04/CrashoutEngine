@@ -131,7 +131,6 @@ namespace UI {
         bool showInspector = true;
         bool showECS = true;
         bool showAssets = true;
-        bool showGameState = true;
         bool showGameScene = true;
         bool showPhysics = true;
         bool showAudio = true;

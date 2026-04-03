@@ -204,7 +204,6 @@ void Settings::SaveEditorSettings(const UI::UIState& uiState) {
     UPDATE_OR_ADD("showInspector", uiState.showInspector);
     UPDATE_OR_ADD("showECS", uiState.showECS);
     UPDATE_OR_ADD("showAssets", uiState.showAssets);
-    UPDATE_OR_ADD("showGameState", uiState.showGameState);
     UPDATE_OR_ADD("showGameScene", uiState.showGameScene);
     UPDATE_OR_ADD("showPhysics", uiState.showPhysics);
     UPDATE_OR_ADD("showAudio", uiState.showAudio);
@@ -305,7 +304,6 @@ void Settings::LoadEditorSettings(UI::UIState& uiState) {
     LOAD_BOOL(showInspector);
     LOAD_BOOL(showECS);
     LOAD_BOOL(showAssets);
-    LOAD_BOOL(showGameState);
     LOAD_BOOL(showGameScene);
     LOAD_BOOL(showPhysics);
     LOAD_BOOL(showAudio);

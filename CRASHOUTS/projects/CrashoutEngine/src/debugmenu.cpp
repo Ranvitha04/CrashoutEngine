@@ -308,7 +308,6 @@ namespace UI { // --------------------------------------------------------------
 				ImGui::MenuItem("Audio", nullptr, &ui.showAudio);
 				ImGui::MenuItem("Animation", nullptr, &ui.showAnimation);
 				ImGui::MenuItem("Visual Scripting", nullptr, &ui.showVisualScripting);
-				ImGui::MenuItem("Game State", nullptr, &ui.showGameState);
 				ImGui::MenuItem("Game Scene", nullptr, &ui.showGameScene);
 				ImGui::MenuItem("Project Manager", nullptr, &ui.showProjectManager);
 				ImGui::MenuItem("Build Settings", nullptr, &ui.showBuildPanel);
@@ -424,7 +423,6 @@ namespace UI { // --------------------------------------------------------------
 			ImGui::DockBuilderDockWindow("Physics / Collision", dock_bottom);
 			ImGui::DockBuilderDockWindow("Console", dock_bottom);
 			ImGui::DockBuilderDockWindow("Performance", dock_left_bottom);
-			ImGui::DockBuilderDockWindow("GameState", dock_bottom);
 			ImGui::DockBuilderDockWindow("GameScene", dock_bottom);
 			ImGui::DockBuilderDockWindow("Animation", dock_bottom);
 			ImGui::DockBuilderDockWindow("Audio", dock_right_bottom);
@@ -484,9 +482,6 @@ namespace UI { // --------------------------------------------------------------
 		}
 		if (ui.showConsole) {
 			RenderConsolePanel(ui);
-		}
-		if (ui.showGameState) {
-			RenderGameStatePanel(ui);
 		}
 		if (ui.showGameScene) {
 			RenderGameScenePanel(ui);

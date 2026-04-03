@@ -22,13 +22,13 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 static std::unordered_map<GameState, GameStateDescriptor> StateRegistry;
 
 /// The current active game state
-GameState CurrentGameState = MAIN_MENU;
+GameState CurrentGameState = SCENE;
 
 /// The next game state requested
-GameState NextGameState = MAIN_MENU;
+GameState NextGameState = SCENE;
 
 /// The previous game state before the last transition
-GameState PreviousGameState = MAIN_MENU;
+GameState PreviousGameState = SCENE;
 
 /// Pointer to the descriptor of the current active state
 GameStateDescriptor* CurrentDescriptor = nullptr;
@@ -141,6 +141,6 @@ void ShutdownGameStateManager() {
     StateRegistry.clear();
 
     CurrentDescriptor = nullptr;
-    CurrentGameState = NextGameState = PreviousGameState = MAIN_MENU;
+    CurrentGameState = NextGameState = PreviousGameState = SCENE;
     RestartRequested = false;
 }

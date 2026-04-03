@@ -725,7 +725,6 @@ void InvalidateVisualScriptCache(const std::string& path)
 */
 void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& comp, float dt)
 {
-    std::cout << "[VisualScript] Current node id = " << comp.currentNodeId << "\n";
     if (!comp.graph)
         return;
 
@@ -757,22 +756,7 @@ void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& c
         {
         case UI::VSNodeType::Start:
         {
-            std::cout << "[VisualScript] Start node hit\n";
-
-            for (const auto& link : graph.links)
-            {
-                if (link.toNode == current->id && link.toPin == 1)
-                {
-                    std::cout << "[VisualScript] Start outgoing link: fromNode=" << link.fromNode
-                        << " fromPin=" << link.fromPin
-                        << " toNode=" << link.toNode
-                        << " toPin=" << link.toPin << "\n";
-                }
-            }
-
             UI::VSNode* next = FindNextNode(graph, current->id, 0);
-            std::cout << "[VisualScript] Start next = " << (next ? next->id : 0) << "\n";
-
             comp.currentNodeId = next ? next->id : 0;
             break;
         }
@@ -783,8 +767,6 @@ void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& c
                 transform->position.x += 10.0f;
             }
 
-            std::cout << "[VisualScript] Move node executed on entity " << e << "\n";
-
             UI::VSNode* next = FindNextNode(graph, current->id, 0);
             comp.currentNodeId = next ? next->id : 0;
             break;
@@ -792,8 +774,6 @@ void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& c
 
         case UI::VSNodeType::Attack:
         {
-            std::cout << "[VisualScript] Attack node executed on entity " << e << "\n";
-
             UI::VSNode* next = FindNextNode(graph, current->id, 0);
             comp.currentNodeId = next ? next->id : 0;
             break;
@@ -829,28 +809,15 @@ void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& c
             {
                 if (link.toNode == current->id)
                 {
-                    std::cout << "[VisualScript] Branch incoming link: fromNode=" << link.fromNode
-                        << " fromPin=" << link.fromPin
-                        << " toNode=" << link.toNode
-                        << " toPin=" << link.toPin << "\n";
-
                     gotCondition = EvaluateBoolNode(ecs, e, comp, graph, link.fromNode, condition);
-                    if (gotCondition)
-                    {
-                        std::cout << "[VisualScript] Branch got condition from node "
-                            << link.fromNode << " value=" << (condition ? "true" : "false") << "\n";
-                        break;
-                    }
+                    if (gotCondition) break;
                 }
             }
 
             if (!gotCondition)
             {
-                std::cout << "[VisualScript] Branch did NOT get connected bool, using fallback IsGrounded\n";
-
                 if (!GetMonoBoolProperty(ecs, e, "PlayerMovement", "IsGrounded", condition))
                 {
-                    std::cout << "[VisualScript] Failed to read IsGrounded too\n";
                 }
             }
 
@@ -865,11 +832,6 @@ void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& c
         case UI::VSNodeType::ScriptCall:
         {
             bool ok = ExecuteMonoInstanceMethod(ecs, e, current->scriptName, current->functionName);
-
-            std::cout << "[VisualScript] ScriptCall on entity " << e
-                << " script=" << current->scriptName
-                << " function=" << current->functionName
-                << " result=" << (ok ? "success" : "failed") << "\n";
 
             UI::VSNode* next = FindNextNode(graph, current->id, 0);
             comp.currentNodeId = next ? next->id : 0;
@@ -898,41 +860,29 @@ void UpdateVisualScripts(ECS& ecs, float dt)
 {
     auto& arr = ecs.GetComponentArray<Component::VisualScriptComponent>();
 
-    std::cout << "[VisualScript] UpdateVisualScripts: components=" << arr.indexToEntity.size() << "\n";
-
     for (CrashoutsEngine::Entity e : arr.indexToEntity)
     {
-        std::cout << "[VisualScript] Entity iterate: " << e << "\n";
-
         if (!ecs.HasComponent<Component::VisualScriptComponent>(e)) {
-            std::cout << "[VisualScript]  - no component present (skipped)\n";
             continue;
         }
 
         auto* comp = ecs.GetComponent<Component::VisualScriptComponent>(e);
         if (!comp) {
-            std::cout << "[VisualScript]  - component pointer null (skipped)\n";
             continue;
         }
 
-        std::cout << "[VisualScript]  - enabled=" << comp->enabled << " graphPath=\"" << comp->graphPath
-                  << "\" graphLoaded=" << comp->graphLoaded << " currentNodeId=" << comp->currentNodeId << "\n";
-
         if (!comp->enabled) {
-            std::cout << "[VisualScript]  - disabled (skipped)\n";
             continue;
         }
 
         if (!comp->graphLoaded && !comp->graphPath.empty())
         {
-            std::cout << "[VisualScript]  - loading graph: " << comp->graphPath << "\n";
             comp->graph = GetOrLoadGraph(comp->graphPath);
             if (comp->graph) {
                 UI::VSNode* start = FindStartNode(*comp->graph);
                 comp->currentNodeId = start ? start->id : 0;
                 comp->waitTimer = 0.0f;
                 comp->graphLoaded = true;
-                std::cout << "[VisualScript]  - graph loaded, start node id=" << comp->currentNodeId << "\n";
             }
             else {
                 std::cerr << "[VisualScript] Failed to load graph '" << comp->graphPath

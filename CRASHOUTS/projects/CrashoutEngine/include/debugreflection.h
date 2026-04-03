@@ -7,7 +7,6 @@
 
 @brief      Lightweight registry hooks for the Debug Menu. Provides:
             - IComponentAdapter + ComponentRegistry: ECS inspectors (add/remove/edit)
-            - IGameStateProvider setter/getter: data-driven Game State panel
             - PanelRegistry: register custom ImGui panels at runtime
             - IPhysicsProvider + PhysicsRegistry: physics debug controls
 
@@ -110,55 +109,6 @@ namespace DebugReflection {
     private:
         std::vector<IComponentAdapter*> list;
     };
-
-    // -------------------------------------------------------------------------
-    // Game State Provider
-    // -------------------------------------------------------------------------
-
-    /*!
-     @struct IGameStateProvider
-     @brief Interface for exposing runtime game state to the debug panel.
-     @details
-     Implement this interface to expose game state data (e.g., current/next
-     states) and provide control over state changes from the debug UI.
-    */
-    struct IGameStateProvider {
-        virtual ~IGameStateProvider() = default;
-
-        /*! @brief Returns the ID of the current game state. */
-        virtual int current() const = 0;
-
-        /*! @brief Returns the ID of the previous game state. */
-        virtual int previous() const = 0;
-
-        /*! @brief Returns the ID of the next game state. */
-        virtual int next() const = 0;
-
-        /*!
-         @brief Changes the current game state to the specified ID.
-         @param id ID of the target game state.
-        */
-        virtual void changeTo(int id) = 0;
-
-        /*!
-         @brief Returns a list of available game states.
-         @return A vector of `(name, id)` pairs.
-        */
-        virtual const std::vector<std::pair<const char*, int>>& states() const = 0;
-    };
-
-    /*!
-     @brief Sets the global game state provider.
-     @param p Pointer to the provider instance.
-     @note Should be called once at game startup.
-    */
-    void SetGameStateProvider(IGameStateProvider* p);
-
-    /*!
-     @brief Retrieves the global game state provider.
-     @return Pointer to the provider, or nullptr if none is set.
-    */
-    IGameStateProvider* GetGameStateProvider();
 
     // -------------------------------------------------------------------------
     // Panel Registry

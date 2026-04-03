@@ -52,31 +52,6 @@ namespace DebugReflection {
         list.push_back(adapter);
     }
 
-    // -- Game State Provider --------------------------------------------------
-
-    /*!
-     @brief Global pointer to the installed game state provider.
-     @details This is set at runtime by the game to allow debug UI to query game-specific state.
-    */
-    static IGameStateProvider* g_gsProvider = nullptr;
-
-    /*!
-     @brief Sets the global game state provider.
-     @param p Pointer to an implementation of `IGameStateProvider`.
-     @note This should be called once at startup by the game layer.
-    */
-    void SetGameStateProvider(IGameStateProvider* p) {
-        g_gsProvider = p;
-    }
-
-    /*!
-     @brief Retrieves the global game state provider pointer.
-     @return Pointer to the currently installed `IGameStateProvider`, or nullptr if none set.
-    */
-    IGameStateProvider* GetGameStateProvider() {
-        return g_gsProvider;
-    }
-
     // -- Panel Registry -------------------------------------------------------
 
     /*!

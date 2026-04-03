@@ -168,7 +168,6 @@ namespace UI {
     void RenderPhysicsPanel(FrameProfiler& profiler, CrashoutsEngine::ECS& ecs, UIState& ui);
     void RenderPerformancePanel(FrameProfiler& profiler, UIState& ui);
     void RenderConsolePanel(UIState& ui);
-    void RenderGameStatePanel(UIState& ui);
     void RenderGameScenePanel(UIState& ui);
     void RenderEngineStateBar(UIState& ui);
     void RenderProjectManager(UIState& ui);

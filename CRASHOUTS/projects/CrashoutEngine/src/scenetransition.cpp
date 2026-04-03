@@ -59,7 +59,6 @@ namespace CrashoutsEngine {
         // Capture volume before fade starts
         s_baseMasterVolume = Audio::AudioSystem::instance().GetMasterVolume();
 
-        std::cout << "[SceneTransition] Fade to " << nextSceneName << " (Out: " << s_durationOut << "s, In: " << s_durationIn << "s)" << std::endl;
     }
 
     void SceneTransition::StartFade(float fadeOutTime, float fadeInTime) {
@@ -78,7 +77,6 @@ namespace CrashoutsEngine {
         // Capture volume before fade starts
         s_baseMasterVolume = Audio::AudioSystem::instance().GetMasterVolume();
 
-        std::cout << "[SceneTransition] Effect started." << std::endl;
     }
 
     void SceneTransition::Update(float dt) {

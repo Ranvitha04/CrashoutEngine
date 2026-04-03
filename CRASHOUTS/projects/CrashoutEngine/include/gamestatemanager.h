@@ -23,15 +23,6 @@ void RestartGameState();
 /// Enumeration of possible game states
 enum GameState{
 	QUIT,
-	MAIN_MENU,
-	RENFRED,
-	RAIN,
-	AMIR,
-	AFIQ,
-	TRISTAN,
-	RAN,
-	//DESCENT_MENU,
-	//DESCENT_GAME,
 	SCENE
 };
 

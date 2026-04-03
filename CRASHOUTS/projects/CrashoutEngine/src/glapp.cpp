@@ -26,7 +26,6 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include "engine.h"
 #include "shapes.h"
 #include "textureasset.h"
-#include "ranscene.h"
 #include <glm/glm.hpp>
 #include <iostream>      
 #include <sstream>
@@ -40,7 +39,6 @@ All content © 2025 Digipen Institute of Technology Singapore. All rights reserv
 #include <backends/imgui_impl_opengl3.h>
 #include <filesystem>
 #include <algorithm>
-#include "assetmanager.h" 
 #include "frameratecontroller.h"
 #include "key.h"
 
@@ -454,9 +452,6 @@ void GLApp::key_cb(GLFWwindow* pwin, int key, [[maybe_unused]] int scancode, int
         LOGI(Input, std::string(KeyToString(k)) + " is released");
     }
 #endif
-
-    // Safely delegate to sprite input handler (ignore unknown keys inside function)
-    HandleSpriteKeyInput(key, action);
 
     if (action != GLFW_PRESS) return;
 
