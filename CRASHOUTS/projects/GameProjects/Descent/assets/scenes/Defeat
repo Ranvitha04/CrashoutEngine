@@ -338,7 +338,15 @@
                 ]
             },
             "script": {
-                "scripts": []
+                "scripts": [
+                    {
+                        "className": "QuitToSceneButton",
+                        "fields": {
+                            "targetScene": "descentmenu",
+                            "fadeDuration": 0.5
+                        }
+                    }
+                ]
             },
             "button": {
                 "buttonState": 0,

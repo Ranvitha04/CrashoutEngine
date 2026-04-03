@@ -1,6 +1,5 @@
 ﻿/*!
 @file       leaderboardbindings.cpp
-@author     Renfred (RTIS)
 @author     Renfred Lee
 @author     Shahrin Idzuan
 @date       08/03/2026
@@ -19,7 +18,11 @@ using namespace Component;
 
 namespace {
 
-    // The C++ function that C# will call (URL removed)
+    /*!
+    @brief Native C# binding that submits a player score to the default leaderboard backend.
+    @param nameObj Managed player name string.
+    @param score Score value to submit.
+    */
     static void SubmitScore_Internal(MonoString* nameObj, int score) {
         if (!nameObj) return;
 
@@ -37,7 +40,10 @@ namespace {
         svc.SubmitScoreAsync(name, score);
     }
 
-    // This allows C# to instantly update the UI after submitting a score
+    /*!
+    @brief Native C# binding that flags a leaderboard component for immediate refresh.
+    @param entityID Entity containing the LeaderboardComponent to refresh.
+    */
     static void ForceRefresh_Internal(Entity entityID) {
         auto* ecs = ECS::getInstance();
         if (ecs->HasComponent<Component::LeaderboardComponent>(entityID)) {
@@ -47,6 +53,9 @@ namespace {
 
 }
 
+/*!
+@brief Register Mono internal calls exposed by the leaderboard system to managed scripts.
+*/
 void CrashoutsEngine::Bindings::RegisterLeaderboardBindings() {
     // Register the Submit function
     mono_add_internal_call("CrashoutsEngine.Leaderboard::SubmitScore_Internal", (void*)SubmitScore_Internal);

@@ -1,6 +1,7 @@
 /*
 @file       leaderboardsystem.cpp
-@author
+@author     Renfred Lee
+@author     Shahrin Idzuan
 @date       04/03/2026
 @brief      Runtime update system for LeaderboardComponent.
 */
@@ -23,12 +24,21 @@
 namespace {
     using CrashoutsEngine::Entity;
 
+    /*!
+    @brief Tracks an outstanding asynchronous leaderboard fetch for a UI entity.
+    */
     struct PendingFetch {
         std::future<std::vector<CrashoutsEngine::LeaderboardEntry>> future;
     };
 
     static std::unordered_map<Entity, PendingFetch> g_pendingFetches;
 
+    /*!
+    @brief Replace all occurrences of a token inside a string.
+    @param s Mutable destination string.
+    @param from Token to search for.
+    @param to Replacement text.
+    */
     static void ReplaceAll(std::string& s, const std::string& from, const std::string& to) {
         if (from.empty()) return;
         size_t start = 0;
@@ -38,6 +48,12 @@ namespace {
         }
     }
 
+    /*!
+    @brief Resolve a display field from a cached leaderboard entry.
+    @param e Source leaderboard entry data.
+    @param key Requested field key such as rank, name, score, or a custom field.
+    @return Field value converted to string, or an empty string if not found.
+    */
     static std::string GetFieldValue(const Component::LeaderboardEntryData& e, const std::string& key) {
         if (key == "rank") return std::to_string(e.rank);
         if (key == "name") return e.name;
@@ -48,6 +64,11 @@ namespace {
         return "";
     }
 
+    /*!
+    @brief Format a millisecond score into mm:ss.xx text for UI display.
+    @param totalMs Score value in milliseconds.
+    @return Time-formatted score string.
+    */
     static std::string FormatScoreAsTime(int totalMs) {
         int mins = totalMs / 60000;
         int secs = (totalMs % 60000) / 1000;
@@ -57,6 +78,12 @@ namespace {
         return std::string(buf);
     }
 
+    /*!
+    @brief Expand a leaderboard line template using entry fields.
+    @param comp Leaderboard component providing the line format.
+    @param e Entry to inject into the format string.
+    @return Final rendered line for one leaderboard row.
+    */
     static std::string FormatLine(const Component::LeaderboardComponent& comp,
         const Component::LeaderboardEntryData& e) {
         std::string out = comp.lineFormat;
@@ -75,6 +102,12 @@ namespace {
         return out;
     }
 
+    /*!
+    @brief Attempt to parse a numeric string into a double.
+    @param value Source text.
+    @param out Parsed numeric result on success.
+    @return True if the entire string was parsed as a number.
+    */
     static bool TryParseDouble(const std::string& value, double& out) {
         if (value.empty()) return false;
         char* end = nullptr;
@@ -82,6 +115,13 @@ namespace {
         return end != value.c_str() && end && *end == '\0';
     }
 
+    /*!
+    @brief Read a sortable numeric field from a leaderboard entry.
+    @param e Source entry.
+    @param key Field name to inspect.
+    @param out Parsed numeric value on success.
+    @return True if the field exists and can be treated as numeric.
+    */
     static bool TryGetNumericFieldValue(const Component::LeaderboardEntryData& e,
         const std::string& key, double& out) {
         if (key == "rank") {
@@ -98,6 +138,10 @@ namespace {
         return TryParseDouble(it->second, out);
     }
 
+    /*!
+    @brief Re-sort locally cached entries using the component's sort configuration.
+    @param comp Leaderboard component containing cached entries and sort settings.
+    */
     static void ApplyLocalSort(Component::LeaderboardComponent& comp) {
         if (comp.sortBy.empty() || comp.entries.empty()) return;
 
@@ -127,6 +171,12 @@ namespace {
         }
     }
 
+    /*!
+    @brief Search the ECS for an entity with a matching NameComponent.
+    @param ecs Active ECS instance.
+    @param name Target entity name.
+    @return Matching entity id, or 0 if not found.
+    */
     static CrashoutsEngine::Entity FindEntityByName(CrashoutsEngine::ECS& ecs, const std::string& name) {
         if (name.empty()) return 0;
         auto& arr = ecs.GetComponentArray<Component::NameComponent>();
@@ -136,6 +186,12 @@ namespace {
         return 0;
     }
 
+    /*!
+    @brief Build a lookup of named text entities under a leaderboard root.
+    @param ecs Active ECS instance.
+    @param root Root entity used for descendant traversal.
+    @param out Destination map from entity name to entity id.
+    */
     static void BuildNameMap(CrashoutsEngine::ECS& ecs, CrashoutsEngine::Entity root,
         std::unordered_map<std::string, CrashoutsEngine::Entity>& out) {
         out.clear();
@@ -154,6 +210,13 @@ namespace {
         }
     }
 
+    /*!
+    @brief Update a named text entity if it exists in the prepared lookup map.
+    @param ecs Active ECS instance.
+    @param nameMap Name-to-entity lookup built for the leaderboard root.
+    @param name Target entity name.
+    @param text Text to assign to the target entity.
+    */
     static void ApplyTextIfFound(CrashoutsEngine::ECS& ecs,
         const std::unordered_map<std::string, CrashoutsEngine::Entity>& nameMap,
         const std::string& name, const std::string& text) {
@@ -168,6 +231,12 @@ namespace {
 
 namespace CrashoutsEngine::LeaderboardSystem {
 
+    /*!
+    @brief Update all leaderboard components, fetch remote data, and push results into UI text entities.
+    @param ecs Active ECS instance.
+    @param dt Frame delta time in seconds.
+    @param inEditor True when running in editor mode, allowing opt-in editor refreshes.
+    */
     void Update(ECS& ecs, float dt, bool inEditor) {
         auto& arr = ecs.GetComponentArray<Component::LeaderboardComponent>();
         std::unordered_map<std::string, Entity> nameMap;

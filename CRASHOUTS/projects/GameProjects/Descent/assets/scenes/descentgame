@@ -21,6 +21,9 @@
             },
             "tilemap": {
                 "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
                 "activeAsset": "tilemaps/Rock",
                 "tileAssetNames": [
                     "Rock",
@@ -14359,6 +14362,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -14425,7 +14429,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
-                        "isMusic": true
+                        "isMusic": true,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "ambient",
@@ -14434,7 +14441,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": true,
-                        "isMusic": true
+                        "isMusic": true,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep1",
@@ -14443,7 +14453,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep2",
@@ -14452,7 +14465,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep3",
@@ -14461,7 +14477,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep4",
@@ -14470,7 +14489,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep5",
@@ -14479,7 +14501,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     },
                     {
                         "name": "footstep6",
@@ -14488,7 +14513,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -14505,23 +14533,45 @@
                             "jumpPower": 20000.0,
                             "gravityScale": 2.5,
                             "gravityForceMultiplier": 10.0,
+                            "fallGravityMultiplier": 1.5,
                             "footstepInterval": 0.07500000298023224,
                             "swapPause": 1.0,
                             "energyConsumption": 12.5,
+                            "coyoteTime": 0.15000000596046449,
                             "goalNoOfPlates": 1,
                             "currentGoalPlates": 0,
                             "landingDustName": "LandingDust",
                             "dustBurstDuration": 0.15000000596046449,
+                            "landingRumbleMinFallSpeed": 60.0,
+                            "landingRumbleMaxFallSpeed": 260.0,
+                            "landingRumbleMinStrength": 0.15000000596046449,
+                            "landingRumbleMaxStrength": 0.6499999761581421,
+                            "landingRumbleDuration": 0.11999999731779099,
                             "normalMass": 7.0,
                             "lightMass": 4.5,
                             "groundCheckDistance": 26.0,
                             "groundCheckWidth": 10.0,
+                            "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
+                            "dialogueParentName": "DialogueContainer",
+                            "dialoguePrefix": "PlayerDialogue_",
+                            "numberOfDialogues": 5,
                             "isDialogueActive": false,
+                            "facingRight": true,
+                            "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 0.0,
                             "MaxEnergy": 100.0,
                             "alive": true,
-                            "isPaused": false
+                            "normalDeathAnimName": "playerDeathNoBook",
+                            "changedMassDeathAnimName": "playerDeath",
+                            "unlimitedEnergy": false,
+                            "godMode": false,
+                            "normalDeathDelay": 2.0,
+                            "changedMassDeathDelay": 2.0,
+                            "isPaused": false,
+                            "reloadOnDeath": false,
+                            "reloadSceneName": "",
+                            "gameOverSceneName": "Defeat"
                         }
                     }
                 ]
@@ -14546,37 +14596,6 @@
                 "t": 0.01666666753590107,
                 "playing": true,
                 "clips": [
-                    {
-                        "name": "playerJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "name": "playerSwitch",
                         "wrap": 0,
@@ -14644,6 +14663,37 @@
                         ]
                     },
                     {
+                        "name": "playerJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "playerIdleLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Switch State spritesheet.png",
@@ -14666,6 +14716,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14727,37 +14808,6 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerJumpLight",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Jump spritesheet.png",
@@ -14780,37 +14830,6 @@
                                     {
                                         "t": 0.25,
                                         "v": 1.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 158.0,
-                        "targetHeight": 104.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14863,6 +14882,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFall",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 158.0,
+                        "targetHeight": 104.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -14994,6 +15044,75 @@
                 "brightness": -0.009999999776482582,
                 "contrast": 0.009999999776482582,
                 "saturation": 0.05000000074505806,
+                "ambient": 0.15000000596046449,
+                "shadowsEnabled": true,
+                "shadowRays": 128,
+                "shadowDarkness": 1.0,
+                "shadowColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "shadowColorStrength": 1.0,
+                "shadowMapStrength": 1.0,
+                "raymarchShadowStrength": 1.0,
+                "heatDistortionEnabled": false,
+                "heatDebugMarker": false,
+                "heatStrength": 0.003000000026077032,
+                "heatSpeed": 2.0,
+                "heatScale": 20.0,
+                "heatTintColor": {
+                    "x": 1.0,
+                    "y": 0.5,
+                    "z": 0.10000000149011612
+                },
+                "heatTintStrength": 0.0,
+                "distortionEnabled": false,
+                "distortionDebugMarker": false,
+                "distortionStrength": 0.003000000026077032,
+                "distortionSpeed": 2.0,
+                "distortionWaveScale1": 20.0,
+                "distortionWaveScale2": 10.0,
+                "distortionNoiseStrength": 0.800000011920929,
+                "distortionLavaHeight": 0.30000001192092898,
+                "distortionLavaBoost": 2.5,
+                "distortionPlayerPos": {
+                    "x": 0.5,
+                    "y": 0.5
+                },
+                "distortionPlayerRadius": 0.10000000149011612,
+                "distortionPlayerStrength": 0.009999999776482582,
+                "distortionGlowColor": {
+                    "x": 1.0,
+                    "y": 0.4000000059604645,
+                    "z": 0.10000000149011612
+                },
+                "distortionGlowStrength": 1.0,
+                "distortionShockEnabled": false,
+                "distortionShockPos": {
+                    "x": 0.5,
+                    "y": 0.0
+                },
+                "distortionShockTime": 999.0,
+                "distortionShockStrength": 0.019999999552965165,
+                "vignetteEnabled": false,
+                "vignetteIntensity": 0.6000000238418579,
+                "vignetteRadius": 0.75,
+                "vignetteSoftness": 0.3499999940395355,
+                "vignetteColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "vignetteLag": 0.0,
+                "vignettePulseIntensity": 0.0,
+                "vignettePulseRadius": 0.0,
+                "vignettePulseSpeed": 2.0,
+                "vignetteFollowPlayer": false,
+                "bloomEnabled": true,
+                "bloomThreshold": 1.0,
+                "bloomIntensity": 0.800000011920929,
+                "bloomIterations": 6,
                 "active": true
             },
             "layer": {
@@ -15022,6 +15141,9 @@
             },
             "tilemap": {
                 "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
                 "activeAsset": "tilemaps/Darker_Platform",
                 "tileAssetNames": [
                     "Darker_Platform"
@@ -16004,8 +16126,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 926.4397583007813,
-                    "y": -1598.6455078125,
+                    "x": 1246.54150390625,
+                    "y": -2425.921875,
                     "z": 50.0
                 },
                 "size": {
@@ -17284,6 +17406,7 @@
             },
             "collider": {
                 "ColliderType": 2,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -17421,7 +17544,8 @@
                             "MoveRight": false,
                             "MoveDist": 10.0,
                             "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
+                            "emitMoveDust": true,
+                            "landingDustEntityName": ""
                         }
                     }
                 ]
@@ -17465,6 +17589,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -17561,6 +17686,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -17657,6 +17783,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -17753,6 +17880,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -17849,6 +17977,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -17974,13 +18103,17 @@
                             "MoveRight": false,
                             "MoveDist": 10.0,
                             "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
+                            "emitMoveDust": true,
+                            "landingDustEntityName": ""
                         }
                     }
                 ]
             },
             "tilemap": {
                 "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
                 "activeAsset": "tilemaps/Rock_Door",
                 "tileAssetNames": [
                     "Rock_Door"
@@ -18057,6 +18190,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18164,6 +18298,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18296,13 +18431,17 @@
                             "MoveRight": false,
                             "MoveDist": 10.0,
                             "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
+                            "emitMoveDust": true,
+                            "landingDustEntityName": ""
                         }
                     }
                 ]
             },
             "tilemap": {
                 "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
                 "activeAsset": "tilemaps/Rock_Door",
                 "tileAssetNames": [
                     "Rock_Door"
@@ -18384,6 +18523,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18487,6 +18627,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18590,6 +18731,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18693,6 +18835,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18796,6 +18939,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -18853,7 +18997,11 @@
                 "scripts": [
                     {
                         "className": "WinGame",
-                        "fields": {}
+                        "fields": {
+                            "victorySceneName": "Victory",
+                            "victoryFadeDuration": 1.0,
+                            "doorParticleName": "Door Particele"
+                        }
                     }
                 ]
             },
@@ -18925,7 +19073,8 @@
                             "MoveRight": false,
                             "MoveDist": 10.0,
                             "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
+                            "emitMoveDust": true,
+                            "landingDustEntityName": ""
                         }
                     }
                 ]
@@ -18969,6 +19118,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -19061,6 +19211,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -19153,6 +19304,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -19245,6 +19397,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -19337,6 +19490,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -19400,7 +19554,8 @@
                             "MovementDistance": 100.0,
                             "MoveSpeed": 20.0,
                             "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
+                            "maxDrop": 50.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -19473,13 +19628,17 @@
                             "MoveRight": false,
                             "MoveDist": 10.0,
                             "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
+                            "emitMoveDust": true,
+                            "landingDustEntityName": ""
                         }
                     }
                 ]
             },
             "tilemap": {
                 "tileSize": 32,
+                "excludeOuterBoundary": false,
+                "lightPerTile": true,
+                "emissiveBoost": 0.0,
                 "activeAsset": "tilemaps/Rock_Door",
                 "tileAssetNames": [
                     "Rock_Door"
@@ -19585,7 +19744,8 @@
                             "MoveRight": false,
                             "MoveDist": 10.0,
                             "MoveSpeed": 5.0,
-                            "dustBurstDuration": 0.15000000596046449
+                            "emitMoveDust": true,
+                            "landingDustEntityName": ""
                         }
                     }
                 ]
@@ -19629,6 +19789,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -19721,6 +19882,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -19813,6 +19975,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -19905,6 +20068,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -19997,6 +20161,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -20089,6 +20254,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -20181,6 +20347,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -20244,7 +20411,8 @@
                             "MovementDistance": 100.0,
                             "MoveSpeed": 20.0,
                             "VerticalSpeed": 50.0,
-                            "maxDrop": 50.0
+                            "maxDrop": 50.0,
+                            "WaitTime": 0.5
                         }
                     }
                 ]
@@ -20427,7 +20595,11 @@
                 "scripts": [
                     {
                         "className": "PauseButtons",
-                        "fields": {}
+                        "fields": {
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
+                        }
                     }
                 ]
             },
@@ -20547,7 +20719,11 @@
                 "scripts": [
                     {
                         "className": "PauseButtons",
-                        "fields": {}
+                        "fields": {
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
+                        }
                     }
                 ]
             },
@@ -20667,7 +20843,11 @@
                 "scripts": [
                     {
                         "className": "PauseButtons",
-                        "fields": {}
+                        "fields": {
+                            "navigationRumbleLow": 0.15000000596046449,
+                            "navigationRumbleHigh": 0.25,
+                            "navigationRumbleDuration": 0.05000000074505806
+                        }
                     }
                 ]
             },
@@ -20764,6 +20944,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -20985,6 +21166,7 @@
             },
             "collider": {
                 "ColliderType": 1,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -21051,7 +21233,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -21063,19 +21248,31 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
+                            "MaxVolumeMinDistance": 50.0,
+                            "MinVolumeMaxDistance": 250.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
+                            "controllerAimDeadzone": 0.20000000298023225,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
+                            "pickAnimDuration": 60.0,
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "heldRumbleLow": 0.07999999821186066,
+                            "heldRumbleHigh": 0.14000000059604646,
+                            "heldRumbleDuration": 0.11999999731779099,
+                            "heldRumbleRefreshInterval": 0.07999999821186066,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
                         }
                     }
                 ]
@@ -21183,37 +21380,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21243,6 +21409,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21388,6 +21585,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -21450,7 +21648,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -21462,19 +21663,31 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
+                            "MaxVolumeMinDistance": 50.0,
+                            "MinVolumeMaxDistance": 250.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
+                            "controllerAimDeadzone": 0.20000000298023225,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
+                            "pickAnimDuration": 60.0,
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "heldRumbleLow": 0.07999999821186066,
+                            "heldRumbleHigh": 0.14000000059604646,
+                            "heldRumbleDuration": 0.11999999731779099,
+                            "heldRumbleRefreshInterval": 0.07999999821186066,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
                         }
                     }
                 ]
@@ -21582,6 +21795,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -21611,37 +21855,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21787,6 +22000,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -21849,7 +22063,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -21861,19 +22078,31 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
+                            "MaxVolumeMinDistance": 50.0,
+                            "MinVolumeMaxDistance": 250.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
+                            "controllerAimDeadzone": 0.20000000298023225,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
+                            "pickAnimDuration": 60.0,
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "heldRumbleLow": 0.07999999821186066,
+                            "heldRumbleHigh": 0.14000000059604646,
+                            "heldRumbleDuration": 0.11999999731779099,
+                            "heldRumbleRefreshInterval": 0.07999999821186066,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
                         }
                     }
                 ]
@@ -21981,37 +22210,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22041,6 +22239,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22326,6 +22555,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -22388,7 +22618,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -22400,19 +22633,31 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
+                            "MaxVolumeMinDistance": 50.0,
+                            "MinVolumeMaxDistance": 250.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
+                            "controllerAimDeadzone": 0.20000000298023225,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
+                            "pickAnimDuration": 60.0,
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "heldRumbleLow": 0.07999999821186066,
+                            "heldRumbleHigh": 0.14000000059604646,
+                            "heldRumbleDuration": 0.11999999731779099,
+                            "heldRumbleRefreshInterval": 0.07999999821186066,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
                         }
                     }
                 ]
@@ -22520,6 +22765,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22549,37 +22825,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -22725,6 +22970,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -22787,7 +23033,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -22799,19 +23048,31 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
+                            "MaxVolumeMinDistance": 50.0,
+                            "MinVolumeMaxDistance": 250.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
+                            "controllerAimDeadzone": 0.20000000298023225,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
+                            "pickAnimDuration": 60.0,
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "heldRumbleLow": 0.07999999821186066,
+                            "heldRumbleHigh": 0.14000000059604646,
+                            "heldRumbleDuration": 0.11999999731779099,
+                            "heldRumbleRefreshInterval": 0.07999999821186066,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
                         }
                     }
                 ]
@@ -22919,6 +23180,37 @@
                         ]
                     },
                     {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -22948,37 +23240,6 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23124,6 +23385,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -23186,7 +23448,10 @@
                         "pitch": 1.0,
                         "spatial3D": false,
                         "looping": false,
-                        "isMusic": false
+                        "isMusic": false,
+                        "minDistance": 1.0,
+                        "maxDistance": 100.0,
+                        "dspType": -1
                     }
                 ]
             },
@@ -23198,19 +23463,31 @@
                             "moveSpeed": 600.0,
                             "maxSpeed": 15.0,
                             "moveAudioInterval": 0.4000000059604645,
-                            "stopAudioDistance": 40.0,
+                            "MaxVolumeMinDistance": 50.0,
+                            "MinVolumeMaxDistance": 250.0,
                             "detectionRange": 250.0,
                             "gravityScale": 2.0,
                             "grabRange": 100.0,
+                            "lineOfSightYTolerance": 25.0,
                             "minThrowSpeed": 50.0,
                             "maxThrowSpeed": 200.0,
                             "maxMouseDragDist": 400.0,
+                            "controllerAimDeadzone": 0.20000000298023225,
                             "airDrag": 1.0,
                             "stunDuration": 1.0,
+                            "pickAnimDuration": 60.0,
                             "ledgeBuffer": 40.0,
                             "ledgeRayCastDistance": 50.0,
                             "grabEnergyDrainRate": 5.0,
-                            "patrolTurnInterval": 3.0
+                            "patrolTurnInterval": 3.0,
+                            "resizePlayerColliderWhileHolding": true,
+                            "carryBoundsPadding": 10.0,
+                            "heldRumbleLow": 0.07999999821186066,
+                            "heldRumbleHigh": 0.14000000059604646,
+                            "heldRumbleDuration": 0.11999999731779099,
+                            "heldRumbleRefreshInterval": 0.07999999821186066,
+                            "ignorePlayerStopDuration": 0.20000000298023225,
+                            "maxLeashDistance": 3000.0
                         }
                     }
                 ]
@@ -23318,37 +23595,6 @@
                         ]
                     },
                     {
-                        "name": "slimeJump",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": 72.0,
-                        "targetHeight": 67.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 2.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimeChase",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
@@ -23378,6 +23624,37 @@
                                     {
                                         "t": 0.5,
                                         "v": 9.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeJump",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": 72.0,
+                        "targetHeight": 67.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 2.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 2.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23523,6 +23800,7 @@
             },
             "collider": {
                 "ColliderType": 0,
+                "isContinuous": false,
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
@@ -24243,7 +24521,11 @@
                 "scripts": [
                     {
                         "className": "WinGame",
-                        "fields": {}
+                        "fields": {
+                            "victorySceneName": "Victory",
+                            "victoryFadeDuration": 1.0,
+                            "doorParticleName": "Door Particele"
+                        }
                     }
                 ]
             },
@@ -24753,5 +25035,10 @@
             "x": 2000.0,
             "y": 2000.0
         }
+    },
+    "VisualScripting": {
+        "nextNodeId": 1,
+        "nodes": [],
+        "links": []
     }
 }

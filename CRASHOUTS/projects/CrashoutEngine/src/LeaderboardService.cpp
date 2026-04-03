@@ -1,6 +1,7 @@
 /*
 @file       LeaderboardService.cpp
-@author     
+@author     Renfred Lee
+@author     Shahrin Idzuan
 @date       04/03/2026
 @brief      Leaderboard client for backend API.
 */
@@ -14,6 +15,11 @@
 
 namespace CrashoutsEngine {
     namespace {
+        /*!
+        @brief Build HTTP headers required for authenticated leaderboard requests.
+        @param apiKey Optional API key configured for the backend.
+        @return Header list suitable for HttpClient calls.
+        */
         static std::vector<std::string> BuildApiKeyHeaders(const std::string& apiKey) {
             if (apiKey.empty()) return {};
             return {
@@ -21,6 +27,14 @@ namespace CrashoutsEngine {
             };
         }
 
+        /*!
+        @brief Construct a leaderboard GET endpoint with query parameters.
+        @param baseUrl Base backend URL.
+        @param limit Maximum number of entries to request.
+        @param sortBy Field name to sort by.
+        @param sortOrder Requested sort order such as asc or desc.
+        @return Fully composed leaderboard request URL.
+        */
         static std::string BuildLeaderboardUrl(const std::string& baseUrl, int limit,
             const std::string& sortBy, const std::string& sortOrder) {
             std::string url = baseUrl + "/leaderboard?limit=" + std::to_string(limit);
@@ -34,6 +48,11 @@ namespace CrashoutsEngine {
         }
     }
 
+    /*!
+    @brief Convert an arbitrary RapidJSON value into a string for extra leaderboard fields.
+    @param v JSON value to convert.
+    @return String representation of the input value, or an empty string for unsupported types.
+    */
     static std::string JsonValueToString(const rapidjson::Value& v) {
         if (v.IsString()) return v.GetString();
         if (v.IsInt()) return std::to_string(v.GetInt());
@@ -45,9 +64,20 @@ namespace CrashoutsEngine {
         return "";
     }
 
+    /*!
+    @brief Construct a service wrapper for one leaderboard backend.
+    @param baseUrl Base backend URL.
+    @param apiKey Optional API key header value.
+    */
     LeaderboardService::LeaderboardService(const std::string& baseUrl, const std::string& apiKey)
         : baseUrl_(baseUrl), apiKey_(apiKey) {}
 
+    /*!
+    @brief Fetch leaderboard entries synchronously and cache them in the service instance.
+    @param limit Maximum number of entries to request.
+    @param sortBy Field name to sort by.
+    @param sortOrder Requested sort order such as asc or desc.
+    */
     void LeaderboardService::FetchLeaderboard(int limit, const std::string& sortBy, const std::string& sortOrder) {
         entries_.clear();
 
@@ -80,6 +110,11 @@ namespace CrashoutsEngine {
         }
     }
 
+    /*!
+    @brief Submit a score synchronously to the backend.
+    @param name Player name to submit.
+    @param score Score value to send.
+    */
     void LeaderboardService::SubmitScore(const std::string& name, int score) {
         rapidjson::Document doc;
         doc.SetObject();
@@ -96,6 +131,13 @@ namespace CrashoutsEngine {
         http.HttpPostJson(url, buffer.GetString(), BuildApiKeyHeaders(apiKey_));
     }
 
+    /*!
+    @brief Queue an asynchronous leaderboard fetch on the job system.
+    @param limit Maximum number of entries to request.
+    @param sortBy Field name to sort by.
+    @param sortOrder Requested sort order such as asc or desc.
+    @return Future containing the fetched leaderboard entries.
+    */
     std::future<std::vector<LeaderboardEntry>> LeaderboardService::FetchLeaderboardAsync(
         int limit, const std::string& sortBy, const std::string& sortOrder) {
         std::string baseUrl = baseUrl_;
@@ -137,6 +179,12 @@ namespace CrashoutsEngine {
         });
     }
 
+    /*!
+    @brief Queue an asynchronous score submission on the job system.
+    @param name Player name to submit.
+    @param score Score value to send.
+    @return Future resolving to true when the backend returned a non-empty response.
+    */
     std::future<bool> LeaderboardService::SubmitScoreAsync(const std::string& name, int score) {
         std::string baseUrl = baseUrl_;
         std::string apiKey = apiKey_;
