@@ -1216,6 +1216,26 @@
                     },
                     {
                         "x": -9,
+                        "y": -23,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -9,
+                        "y": -20,
+                        "asset": ""
+                    },
+                    {
+                        "x": -9,
+                        "y": -12,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -9,
                         "y": -4,
                         "asset": "tilemaps/Rock"
                     },
@@ -1277,6 +1297,26 @@
                     {
                         "x": -8,
                         "y": -28,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -8,
+                        "y": -23,
+                        "asset": ""
+                    },
+                    {
+                        "x": -8,
+                        "y": -21,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -8,
+                        "y": -20,
+                        "asset": ""
+                    },
+                    {
+                        "x": -8,
+                        "y": -12,
                         "asset": "tilemaps/Rock"
                     },
                     {
@@ -1406,6 +1446,21 @@
                     },
                     {
                         "x": -6,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -6,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
+                        "y": -13,
+                        "asset": ""
+                    },
+                    {
+                        "x": -6,
                         "y": -4,
                         "asset": "tilemaps/Rock"
                     },
@@ -1473,6 +1528,21 @@
                         "x": -5,
                         "y": -28,
                         "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -17,
+                        "asset": "tilemaps/Rock"
+                    },
+                    {
+                        "x": -5,
+                        "y": -14,
+                        "asset": ""
+                    },
+                    {
+                        "x": -5,
+                        "y": -13,
+                        "asset": ""
                     },
                     {
                         "x": -5,
@@ -18614,37 +18684,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -18697,7 +18736,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -18711,14 +18750,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -18771,6 +18810,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -23446,7 +23516,7 @@
             }
         },
         {
-            "active": true,
+            "active": false,
             "name": "Cam_Zone_3",
             "uuid": 15210152257478282386,
             "tag": {

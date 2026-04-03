@@ -437,9 +437,36 @@ namespace CrashoutsEngine
                 var playerTf = playerScript.Entity.GetComponent<TransformComponent>();
                 if (playerTf != null)
                 {
-                    float offsetX = playerTf.Size.x < 0 ? -30.0f : 30.0f;
-                    CEVec3 targetPos = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y - 5.0f, playerTf.Position.z + 1f);
+                    // 1. Determine base intended offset
+                    float facingDir = playerTf.Size.x < 0 ? -1.0f : 1.0f;
+                    float offsetX = facingDir * 30.0f;
+                    float offsetY = -5.0f;
 
+                    // 2. THE FIX: "Smart Hold" Wall Check
+                    // Cast a short ray to see if holding the slime here shoves it into a wall
+                    CEVec3 rayStart = playerTf.Position;
+                    float slimeHalfWidth = Math.Abs(tf.Size.x) * 0.5f;
+                    float checkDist = 30.0f + slimeHalfWidth + 5.0f; // Offset + Slime Width + Buffer
+                    
+                    CEVec3 rayEnd = new CEVec3(playerTf.Position.x + (facingDir * checkDist), playerTf.Position.y, playerTf.Position.z);
+                    uint hitID;
+
+                    // Ignore the player so we only hit environment geometry
+                    if (InternalCalls.Raycast(ref rayStart, ref rayEnd, out hitID, playerScript.Entity.ID))
+                    {
+                        Entity hitEnt = new Entity(hitID);
+                        var hitTag = hitEnt.GetComponent<TagComponent>();
+                        if (hitTag != null && (hitTag.HasTag("Wall") || hitTag.HasTag("Ground") || hitTag.HasTag("Tilemap")))
+                        {
+                            // Wall detected! Pull the slime to the center/above the player to prevent clipping.
+                            offsetX = 0.0f; 
+                            offsetY = 25.0f; // Hold slightly higher when pressed against a wall
+                        }
+                    }
+
+                    CEVec3 targetPos = new CEVec3(playerTf.Position.x + offsetX, playerTf.Position.y + offsetY, playerTf.Position.z + 1f);
+
+                    // 3. Handle Pick Animation
                     if (isPicking && pickStartPosValid)
                     {
                         float total = Math.Max(pickAnimDuration, 0.0001f);
@@ -458,7 +485,9 @@ namespace CrashoutsEngine
                     }
 
                     rb.LinearVelocity = new CEVec3(0, 0, 0);
-                    UpdatePlayerAabb(true, playerTf);
+                    
+                    // We can now safely disable the player collider resizing entirely!
+                    UpdatePlayerAabb(false, playerTf); 
                     UpdateHoldColliders(true);
                 }
                 return; 
