@@ -89,7 +89,7 @@
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": false,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
@@ -878,7 +878,7 @@
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": false,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
@@ -1064,7 +1064,7 @@
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": false,
                 "wrapModeU": 0,
                 "wrapModeV": 0,
@@ -1521,7 +1521,7 @@
                 }
             },
             "shape": {
-                "useTexture": true,
+                "useTexture": false,
                 "isWorldSpace": false,
                 "wrapModeU": 0,
                 "wrapModeV": 0,

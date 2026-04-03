@@ -16544,7 +16544,7 @@
                 "brightness": -0.019999999552965165,
                 "contrast": -0.07999999821186066,
                 "saturation": 0.10000000149011612,
-                "ambient": 0.15000000596046449,
+                "ambient": 0.4399999976158142,
                 "shadowsEnabled": true,
                 "shadowRays": 128,
                 "shadowDarkness": 1.0,
@@ -16595,7 +16595,7 @@
                 },
                 "distortionShockTime": 999.0,
                 "distortionShockStrength": 0.019999999552965165,
-                "vignetteEnabled": false,
+                "vignetteEnabled": true,
                 "vignetteIntensity": 0.6000000238418579,
                 "vignetteRadius": 0.75,
                 "vignetteSoftness": 0.3499999940395355,
@@ -23886,105 +23886,6 @@
             }
         },
         {
-            "active": true,
-            "name": "PPManager",
-            "uuid": 1600728882397032906,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 1.0,
-                    "y": 1.0
-                }
-            },
-            "postprocessing": {
-                "brightness": 0.0,
-                "contrast": 0.0,
-                "saturation": 0.0,
-                "ambient": 0.4399999976158142,
-                "shadowsEnabled": true,
-                "shadowRays": 512,
-                "shadowDarkness": 1.0,
-                "shadowColor": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "shadowColorStrength": 1.0,
-                "shadowMapStrength": 1.0,
-                "raymarchShadowStrength": 1.0,
-                "heatDistortionEnabled": false,
-                "heatDebugMarker": false,
-                "heatStrength": 0.003000000026077032,
-                "heatSpeed": 2.0,
-                "heatScale": 20.0,
-                "heatTintColor": {
-                    "x": 1.0,
-                    "y": 0.5,
-                    "z": 0.10000000149011612
-                },
-                "heatTintStrength": 0.0,
-                "distortionEnabled": false,
-                "distortionDebugMarker": false,
-                "distortionStrength": 0.003000000026077032,
-                "distortionSpeed": 2.0,
-                "distortionWaveScale1": 20.0,
-                "distortionWaveScale2": 10.0,
-                "distortionNoiseStrength": 0.800000011920929,
-                "distortionLavaHeight": 0.30000001192092898,
-                "distortionLavaBoost": 2.5,
-                "distortionPlayerPos": {
-                    "x": 0.5,
-                    "y": 0.5
-                },
-                "distortionPlayerRadius": 0.10000000149011612,
-                "distortionPlayerStrength": 0.009999999776482582,
-                "distortionGlowColor": {
-                    "x": 1.0,
-                    "y": 0.4000000059604645,
-                    "z": 0.10000000149011612
-                },
-                "distortionGlowStrength": 1.0,
-                "distortionShockEnabled": false,
-                "distortionShockPos": {
-                    "x": 0.5,
-                    "y": 0.0
-                },
-                "distortionShockTime": 999.0,
-                "distortionShockStrength": 0.019999999552965165,
-                "vignetteEnabled": true,
-                "vignetteIntensity": 0.6700000166893005,
-                "vignetteRadius": 0.44999998807907107,
-                "vignetteSoftness": 0.41999998688697817,
-                "vignetteColor": {
-                    "x": 0.15294118225574494,
-                    "y": 0.09803921729326248,
-                    "z": 0.09803921729326248
-                },
-                "vignetteLag": 0.0,
-                "vignettePulseIntensity": 0.0,
-                "vignettePulseRadius": 0.0,
-                "vignettePulseSpeed": 2.0,
-                "vignetteFollowPlayer": false,
-                "bloomEnabled": false,
-                "bloomThreshold": 1.0,
-                "bloomIntensity": 0.800000011920929,
-                "bloomIterations": 6,
-                "active": true
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
             "active": false,
             "name": "Book_Particles",
             "uuid": 610112534705000572,
@@ -26109,7 +26010,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 113,
+                            "lookAtEntity": 112,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -28875,7 +28776,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 142,
+                            "lookAtEntity": 141,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
