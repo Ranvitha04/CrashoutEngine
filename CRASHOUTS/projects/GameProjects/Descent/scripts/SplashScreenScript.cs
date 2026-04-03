@@ -63,9 +63,14 @@ namespace CrashoutsEngine
             // 2. Allow the player to skip the intro sequence
             if (currentState < 4 && (Input.IsKeyTriggered(Key.Space) || Input.IsKeyTriggered(Key.Escape)))
             {
-                SceneManager.LoadScene(nextSceneName, fadeDuration);
-                currentState = 4; // Lock the state machine
-                return;
+                // PREVENT SOFTLOCK: Only attempt to skip if the engine isn't already busy fading.
+                // If it is fading, we ignore the button press so the state machine stays intact.
+                if (!SceneManager.IsTransitioning())
+                {
+                    SceneManager.LoadScene(nextSceneName, fadeDuration);
+                    currentState = 4; // Lock the state machine
+                    return;
+                }
             }
 
             // 3. State Machine Logic
