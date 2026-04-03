@@ -160,12 +160,16 @@ std::string GetGameRoot() {
 std::string GetStartingSceneName()
 {
     std::string manifestPath;
+#if USE_IMGUI_EDITOR
+    manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+#else
     if (std::filesystem::exists("core-assets")) {
         manifestPath = "assets/json/assetmanifest.json";
     }
     else {
         manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
     }
+#endif
     std::ifstream ifs(manifestPath);
 
     if (ifs.is_open()) {
@@ -298,6 +302,9 @@ void Init() {
     namespace fs = std::filesystem;
 
     fs::path prefabDir;
+#if USE_IMGUI_EDITOR
+    prefabDir = fs::path(GetGameRoot()) / "assets" / "prefabs";
+#else
     if (fs::exists("core-assets")) {
         // STANDALONE MODE
         prefabDir = "assets/prefabs";
@@ -306,6 +313,7 @@ void Init() {
         // EDITOR MODE
         prefabDir = fs::path(GetGameRoot()) / "assets" / "prefabs";
     }
+#endif
 
     fs::create_directories(prefabDir);
     CrashoutsEngine::ReloadPrefabsFromDisk(prefabDir.generic_string());
@@ -365,6 +373,11 @@ void Init() {
 
     std::string manifestPath;
 
+#if USE_IMGUI_EDITOR
+    CrashoutsEngine::Audio::AudioSystem::instance().init(GetGameRoot() + "/assets/audio/");
+    manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
+    CrashoutsEngine::Assets::GenerateAssetManifest(manifestPath);
+#else
     if (std::filesystem::exists("core-assets")) {
         // STANDALONE MODE
         CrashoutsEngine::Audio::AudioSystem::instance().init("assets/audio/");
@@ -377,6 +390,7 @@ void Init() {
         manifestPath = GetGameRoot() + "/assets/json/assetmanifest.json";
         CrashoutsEngine::Assets::GenerateAssetManifest(manifestPath);
     }
+#endif
 
     // 3. Load the manifest we just created
     CrashoutsEngine::Assets::AssetManager::GetInstance().LoadManifestAssets(manifestPath);

@@ -80,6 +80,18 @@ namespace CrashoutsEngine {
 		AssetManager::AssetManager() {
 
 			// --- RUNTIME DETECTION ---
+#if USE_IMGUI_EDITOR
+			// Editor mode must always use the selected project asset tree for game assets.
+			// Otherwise save writes to GetGameRoot() while reload may read from local build assets.
+			{
+				std::string rawPath = TOSTRING(ENGINE_CORE_ASSETS_PATH);
+				if (rawPath.size() >= 2 && rawPath.front() == '"' && rawPath.back() == '"') {
+					rawPath = rawPath.substr(1, rawPath.size() - 2);
+				}
+				coreAssetPath = rawPath;
+				gameAssetPath = GetGameRoot() + "/assets/";
+			}
+#else
 			if (std::filesystem::exists("core-assets")) {
 				// STANDALONE MODE: Local folders next to the .exe
 				coreAssetPath = "core-assets/";
@@ -94,6 +106,7 @@ namespace CrashoutsEngine {
 				coreAssetPath = rawPath;
 				gameAssetPath = GetGameRoot() + "/assets/";
 			}
+#endif
 
 			assetManifestPath = gameAssetPath + "json/assetmanifest.json";
 

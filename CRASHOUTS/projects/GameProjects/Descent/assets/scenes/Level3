@@ -17479,7 +17479,7 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
+                        "minDistance": 20.0,
                         "maxDistance": 1600.0,
                         "dspType": -1
                     }
@@ -18265,11 +18265,11 @@
                         "path": "in game/checkpoint.wav",
                         "volume": 0.5,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 1000.0,
                         "dspType": -1
                     }
                 ]
@@ -18434,12 +18434,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -261.9136657714844,
-                    "y": 6.490846633911133,
+                    "x": -320.254150390625,
+                    "y": -0.723833441734314,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -140.0,
+                    "x": 140.0,
                     "y": 100.0
                 }
             },
@@ -18462,8 +18462,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1062.875244140625,
-                    "y": -770.9793701171875,
+                    "x": -320.254150390625,
+                    "y": -2.97938871383667,
                     "z": 0.0
                 },
                 "offset": {
@@ -18472,13 +18472,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": -270.4136657714844,
-                    "y": -24.809127807617189,
+                    "x": -328.754150390625,
+                    "y": -32.07936477661133,
                     "z": 0.0
                 },
                 "max": {
-                    "x": -253.41366577148438,
-                    "y": 33.39082336425781,
+                    "x": -311.754150390625,
+                    "y": 26.120586395263673,
                     "z": 0.0
                 }
             },
@@ -18490,13 +18490,13 @@
                 "thickness": 1.0,
                 "preview": false,
                 "type": 0,
-                "textureName": "images/Character\\New Artstyle\\Switch State\\Switch State spritesheet.png",
+                "textureName": "images/Character/New Artstyle/Idle spritesheet.png",
                 "uvSize": {
-                    "x": 0.3333333432674408,
+                    "x": 0.1666666716337204,
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.0,
+                    "x": 0.6666666865348816,
                     "y": 0.0
                 },
                 "color": {
@@ -18526,8 +18526,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 25.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -18538,8 +18538,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 25.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -18550,8 +18550,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 25.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -18562,8 +18562,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 25.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -18574,8 +18574,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 25.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -18586,8 +18586,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 25.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -18598,8 +18598,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 25.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -18610,8 +18610,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 25.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -18622,8 +18622,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 20.0,
+                        "maxDistance": 600.0,
                         "dspType": -1
                     },
                     {
@@ -18646,8 +18646,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 20.0,
+                        "maxDistance": 600.0,
                         "dspType": -1
                     },
                     {
@@ -18736,7 +18736,7 @@
                             "dialogueParentName": "DialogueContainer",
                             "dialoguePrefix": "PlayerDialogue_",
                             "numberOfDialogues": 5,
-                            "isDialogueActive": true,
+                            "isDialogueActive": false,
                             "facingRight": true,
                             "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 100.0,
@@ -18921,7 +18921,7 @@
             },
             "keyframe_animator": {
                 "current": "playerIdle",
-                "t": 33.98298645019531,
+                "t": 6.400028705596924,
                 "playing": true,
                 "clips": [
                     {
@@ -19704,12 +19704,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -261.9136657714844,
-                    "y": 64.86075592041016,
+                    "x": -320.254150390625,
+                    "y": 57.64607620239258,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -98.0,
+                    "x": 98.0,
                     "y": 50.0
                 }
             },
@@ -19822,12 +19822,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -261.9136657714844,
-                    "y": 64.86075592041016,
+                    "x": -320.254150390625,
+                    "y": 57.64607620239258,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -98.0,
+                    "x": 98.0,
                     "y": 50.0
                 }
             },
@@ -19940,12 +19940,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -261.9136657714844,
-                    "y": 64.86075592041016,
+                    "x": -320.254150390625,
+                    "y": 57.64607620239258,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -98.0,
+                    "x": 98.0,
                     "y": 50.0
                 }
             },
@@ -20058,12 +20058,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -261.9136657714844,
-                    "y": 64.86075592041016,
+                    "x": -320.254150390625,
+                    "y": 57.64607620239258,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -98.0,
+                    "x": 98.0,
                     "y": 50.0
                 }
             },
@@ -20378,7 +20378,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 442.19287109375,
+                    "x": 498.861328125,
                     "y": -661.1882934570313,
                     "z": 0.0
                 },
@@ -20406,7 +20406,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 490.34661865234377,
+                    "x": 498.861328125,
                     "y": -661.1882934570313,
                     "z": 0.0
                 },
@@ -20416,12 +20416,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 413.49285888671877,
+                    "x": 470.16131591796877,
                     "y": -669.1882934570313,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 470.89288330078127,
+                    "x": 527.5613403320313,
                     "y": -653.1882934570313,
                     "z": 0.0
                 }
@@ -20491,7 +20491,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 421.876708984375,
+                    "x": 478.545166015625,
                     "y": -661.1882934570313,
                     "z": 0.0
                 },
@@ -20570,7 +20570,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": -185.2224578857422,
-                    "y": -352.5858459472656,
+                    "y": -351.1314697265625,
                     "z": 0.0
                 },
                 "size": {
@@ -20598,7 +20598,7 @@
                 "enabled": true,
                 "position": {
                     "x": -185.2224578857422,
-                    "y": -352.5858459472656,
+                    "y": -351.1314697265625,
                     "z": 0.0
                 },
                 "offset": {
@@ -20609,7 +20609,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": -185.2224578857422,
-                    "y": -352.5858459472656,
+                    "y": -351.1314697265625,
                     "z": 0.0
                 }
             },
@@ -20657,8 +20657,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 800.0,
                         "dspType": -1
                     }
                 ]
@@ -20707,7 +20707,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 15.049942016601563,
+                "t": 16.516586303710939,
                 "playing": true,
                 "clips": [
                     {
@@ -20827,7 +20827,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 441.8370361328125,
+                    "x": 498.5054931640625,
                     "y": -661.1882934570313,
                     "z": 0.0
                 },
@@ -20905,7 +20905,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 461.8370361328125,
+                    "x": 518.5054931640625,
                     "y": -661.1882934570313,
                     "z": 0.0
                 },
@@ -20984,7 +20984,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1183.748046875,
-                    "y": -321.7275085449219,
+                    "y": -320.27313232421877,
                     "z": 0.0
                 },
                 "size": {
@@ -21012,7 +21012,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1183.748046875,
-                    "y": -321.7275085449219,
+                    "y": -320.27313232421877,
                     "z": 0.0
                 },
                 "offset": {
@@ -21023,7 +21023,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 1183.748046875,
-                    "y": -321.7275085449219,
+                    "y": -320.27313232421877,
                     "z": 0.0
                 }
             },
@@ -21071,8 +21071,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 800.0,
                         "dspType": -1
                     }
                 ]
@@ -21121,7 +21121,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 15.049942016601563,
+                "t": 16.516586303710939,
                 "playing": true,
                 "clips": [
                     {
@@ -21241,7 +21241,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 39.38835906982422,
+                    "x": 108.55512237548828,
                     "y": -723.1188354492188,
                     "z": 0.0
                 },
@@ -21269,7 +21269,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 267.544921875,
+                    "x": 108.55512237548828,
                     "y": -723.1188354492188,
                     "z": 0.0
                 },
@@ -21279,12 +21279,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 11.1883544921875,
+                    "x": 80.35511779785156,
                     "y": -731.1188354492188,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 67.58836364746094,
+                    "x": 136.755126953125,
                     "y": -715.1188354492188,
                     "z": 0.0
                 }
@@ -21354,7 +21354,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 19.07219696044922,
+                    "x": 88.23896026611328,
                     "y": -723.1188354492188,
                     "z": 0.0
                 },
@@ -21432,7 +21432,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 39.03252410888672,
+                    "x": 108.19928741455078,
                     "y": -723.1188354492188,
                     "z": 0.0
                 },
@@ -21510,7 +21510,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 59.03252410888672,
+                    "x": 128.19927978515626,
                     "y": -723.1188354492188,
                     "z": 0.0
                 },
@@ -22140,12 +22140,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -295.54193115234377,
-                    "y": -1.5569610595703126,
+                    "x": -286.6258544921875,
+                    "y": -8.77164077758789,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -0.0,
+                    "x": 0.0,
                     "y": 0.0
                 }
             },
@@ -22289,7 +22289,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1456.19921875,
-                    "y": -38.18093490600586,
+                    "y": -36.72660446166992,
                     "z": 0.0
                 },
                 "size": {
@@ -22317,7 +22317,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1456.19921875,
-                    "y": -38.18093490600586,
+                    "y": -36.72660446166992,
                     "z": 0.0
                 },
                 "offset": {
@@ -22328,7 +22328,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 1456.19921875,
-                    "y": -38.18093490600586,
+                    "y": -36.72660446166992,
                     "z": 0.0
                 }
             },
@@ -22376,8 +22376,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 800.0,
                         "dspType": -1
                     }
                 ]
@@ -22426,7 +22426,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 15.049942016601563,
+                "t": 16.516586303710939,
                 "playing": true,
                 "clips": [
                     {
@@ -22547,7 +22547,7 @@
                 "rotation": 0.0,
                 "position": {
                     "x": 1411.4249267578126,
-                    "y": -640.076416015625,
+                    "y": -638.6231079101563,
                     "z": 0.0
                 },
                 "size": {
@@ -22575,7 +22575,7 @@
                 "enabled": true,
                 "position": {
                     "x": 1411.4249267578126,
-                    "y": -640.076416015625,
+                    "y": -638.6231079101563,
                     "z": 0.0
                 },
                 "offset": {
@@ -22586,7 +22586,7 @@
                 "radius": 11.649999618530274,
                 "center": {
                     "x": 1411.4249267578126,
-                    "y": -640.076416015625,
+                    "y": -638.6231079101563,
                     "z": 0.0
                 }
             },
@@ -22634,8 +22634,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 800.0,
                         "dspType": -1
                     }
                 ]
@@ -22684,7 +22684,7 @@
             },
             "keyframe_animator": {
                 "current": "charged",
-                "t": 15.049942016601563,
+                "t": 16.516586303710939,
                 "playing": true,
                 "clips": [
                     {
@@ -22896,8 +22896,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 20.0,
+                        "maxDistance": 1000.0,
                         "dspType": -1
                     }
                 ]
@@ -23001,8 +23001,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 1520.0870361328126,
-                    "y": 4.340057373046875,
+                    "x": 1519.928955078125,
+                    "y": 2.10888671875,
                     "z": -1.0
                 },
                 "offset": {
@@ -23065,8 +23065,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 20.0,
+                        "maxDistance": 1000.0,
                         "dspType": -1
                     }
                 ]
@@ -23959,8 +23959,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -257.8328857421875,
-                    "y": 23.059677124023439,
+                    "x": -250.263916015625,
+                    "y": 19.276153564453126,
                     "z": 0.0
                 },
                 "size": {
@@ -24264,7 +24264,7 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
+                        "minDistance": 20.0,
                         "maxDistance": 1600.0,
                         "dspType": -1
                     }
@@ -25070,8 +25070,8 @@
                 "isTrigger": true,
                 "enabled": true,
                 "position": {
-                    "x": 1456.26611328125,
-                    "y": -768.4609985351563,
+                    "x": 1455.708251953125,
+                    "y": -766.78759765625,
                     "z": -1.0
                 },
                 "offset": {
@@ -25134,8 +25134,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 20.0,
+                        "maxDistance": 1000.0,
                         "dspType": -1
                     }
                 ]
@@ -25167,7 +25167,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1489.6990966796876,
+                    "x": 1577.4981689453126,
                     "y": -786.557373046875,
                     "z": 51.0
                 },
@@ -25195,7 +25195,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1490.3990478515626,
+                    "x": 1578.1981201171876,
                     "y": -790.657958984375,
                     "z": 51.0
                 },
@@ -25205,13 +25205,13 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1480.3990478515626,
-                    "y": -800.2573852539063,
+                    "x": 1568.1981201171876,
+                    "y": -800.8579711914063,
                     "z": 51.0
                 },
                 "max": {
-                    "x": 1500.3990478515626,
-                    "y": -779.8573608398438,
+                    "x": 1588.1981201171876,
+                    "y": -780.4579467773438,
                     "z": 51.0
                 }
             },
@@ -25259,8 +25259,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -25271,8 +25271,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -25283,8 +25283,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -25295,8 +25295,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -25307,8 +25307,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -25319,8 +25319,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     }
                 ]
@@ -25439,7 +25439,7 @@
             },
             "keyframe_animator": {
                 "current": "slimeWalk",
-                "t": 15.016609191894532,
+                "t": 16.149925231933595,
                 "playing": true,
                 "clips": [
                     {
@@ -25818,7 +25818,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1365.62158203125,
+                    "x": 1273.24853515625,
                     "y": -82.81188201904297,
                     "z": 51.0
                 },
@@ -25846,7 +25846,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1366.321533203125,
+                    "x": 1273.948486328125,
                     "y": -86.91243743896485,
                     "z": 51.0
                 },
@@ -25856,12 +25856,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1356.321533203125,
+                    "x": 1263.948486328125,
                     "y": -96.51189422607422,
                     "z": 51.0
                 },
                 "max": {
-                    "x": 1376.321533203125,
+                    "x": 1283.948486328125,
                     "y": -76.11186981201172,
                     "z": 51.0
                 }
@@ -25880,7 +25880,7 @@
                     "y": 0.3333333432674408
                 },
                 "uvOffset": {
-                    "x": 0.25,
+                    "x": 0.5,
                     "y": 0.3333333432674408
                 },
                 "color": {
@@ -25910,8 +25910,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -25922,8 +25922,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -25934,8 +25934,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -25946,8 +25946,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -25958,8 +25958,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     },
                     {
@@ -25970,8 +25970,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 250.0,
                         "dspType": -1
                     }
                 ]
@@ -26090,7 +26090,7 @@
             },
             "keyframe_animator": {
                 "current": "slimeWalk",
-                "t": 2.566664934158325,
+                "t": 3.9999969005584719,
                 "playing": true,
                 "clips": [
                     {
@@ -26319,132 +26319,6 @@
         },
         {
             "active": true,
-            "name": "Filler",
-            "uuid": 3884955572056252072,
-            "tag": {
-                "tagMask": 2
-            },
-            "transform": {
-                "rotation": -90.0,
-                "position": {
-                    "x": -160.49136352539063,
-                    "y": -16.40677833557129,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 32.0,
-                    "y": 1.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 3,
-                "isContinuous": false,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": -160.49136352539063,
-                    "y": -16.40677833557129,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p1": {
-                    "x": -16.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 16.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
-            "name": "Filler",
-            "uuid": 1380810547397968878,
-            "tag": {
-                "tagMask": 2
-            },
-            "transform": {
-                "rotation": -90.0,
-                "position": {
-                    "x": -352.0740051269531,
-                    "y": -15.80265998840332,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": 32.0,
-                    "y": 1.0
-                }
-            },
-            "rigidbody": {
-                "mass": 0.0,
-                "restitutionCoeff": 0.0,
-                "maximumVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "staticFriction": 0.5,
-                "dynamicFriction": 0.5,
-                "inertia": 0.0,
-                "invInertia": 0.0
-            },
-            "collider": {
-                "ColliderType": 3,
-                "isContinuous": false,
-                "isTrigger": false,
-                "enabled": true,
-                "position": {
-                    "x": -352.0740051269531,
-                    "y": -15.80265998840332,
-                    "z": 0.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p1": {
-                    "x": -16.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 16.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "layer": {
-                "layerName": "",
-                "z": 0
-            }
-        },
-        {
-            "active": true,
             "name": "Cam_Zone_3",
             "uuid": 12179009855837808703,
             "tag": {
@@ -26647,11 +26521,11 @@
                         "path": "in game/checkpoint.wav",
                         "volume": 0.5,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 1000.0,
                         "dspType": -1
                     }
                 ]
@@ -26793,11 +26667,11 @@
                         "path": "in game/checkpoint.wav",
                         "volume": 0.5,
                         "pitch": 1.0,
-                        "spatial3D": false,
+                        "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 50.0,
+                        "maxDistance": 1000.0,
                         "dspType": -1
                     }
                 ]
@@ -26884,7 +26758,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 169.12774658203126,
+                    "x": 173.29232788085938,
                     "y": 15.224735260009766,
                     "z": 0.0
                 },
@@ -26912,7 +26786,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 470.3493957519531,
+                    "x": 173.29232788085938,
                     "y": 15.224735260009766,
                     "z": 0.0
                 },
@@ -26922,12 +26796,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 140.427734375,
+                    "x": 144.59231567382813,
                     "y": 7.224735260009766,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 197.8277587890625,
+                    "x": 201.99234008789063,
                     "y": 23.224735260009767,
                     "z": 0.0
                 }
@@ -26997,7 +26871,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 148.81158447265626,
+                    "x": 152.97616577148438,
                     "y": 15.224735260009766,
                     "z": 0.0
                 },
@@ -27075,7 +26949,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 168.77191162109376,
+                    "x": 172.93649291992188,
                     "y": 15.224735260009766,
                     "z": 0.0
                 },
@@ -27153,7 +27027,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 188.77191162109376,
+                    "x": 192.93649291992188,
                     "y": 15.224735260009766,
                     "z": 0.0
                 },
@@ -27231,7 +27105,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1078.2232666015626,
+                    "x": 1249.06494140625,
                     "y": -677.5701293945313,
                     "z": 0.0
                 },
@@ -27259,7 +27133,7 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": 1208.9248046875,
+                    "x": 1249.06494140625,
                     "y": -677.5701293945313,
                     "z": 0.0
                 },
@@ -27269,12 +27143,12 @@
                     "z": 0.0
                 },
                 "min": {
-                    "x": 1049.5233154296876,
+                    "x": 1220.364990234375,
                     "y": -685.5701293945313,
                     "z": 0.0
                 },
                 "max": {
-                    "x": 1106.9232177734376,
+                    "x": 1277.764892578125,
                     "y": -669.5701293945313,
                     "z": 0.0
                 }
@@ -27344,7 +27218,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1057.9071044921876,
+                    "x": 1228.748779296875,
                     "y": -677.5701293945313,
                     "z": 0.0
                 },
@@ -27422,7 +27296,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1077.867431640625,
+                    "x": 1248.7091064453126,
                     "y": -677.5701293945313,
                     "z": 0.0
                 },
@@ -27500,7 +27374,7 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1097.867431640625,
+                    "x": 1268.7091064453126,
                     "y": -677.5701293945313,
                     "z": 0.0
                 },
@@ -27670,8 +27544,8 @@
                         "spatial3D": true,
                         "looping": false,
                         "isMusic": false,
-                        "minDistance": 1.0,
-                        "maxDistance": 100.0,
+                        "minDistance": 20.0,
+                        "maxDistance": 1000.0,
                         "dspType": -1
                     }
                 ]
@@ -28400,12 +28274,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -294.4568786621094,
-                    "y": 0.7686786651611328,
+                    "x": -322.0541076660156,
+                    "y": -16.423994064331056,
                     "z": 0.0
                 },
                 "size": {
-                    "x": -273.8399963378906,
+                    "x": 273.8399963378906,
                     "y": 44.5
                 }
             },
@@ -28445,7 +28319,7 @@
             },
             "light": {
                 "active": true,
-                "intensity": 0.550000011920929,
+                "intensity": 0.0,
                 "radius": 31.0,
                 "affectBloom": true,
                 "useTransform": true,
@@ -28473,8 +28347,8 @@
             "parent": {
                 "parentUUID": 17142618762681968282,
                 "localPos": {
-                    "x": 0.23245151340961457,
-                    "y": -0.057221680879592898,
+                    "x": -0.012856919318437577,
+                    "y": -0.15700159966945649,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -31756,7 +31630,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.5,
+                    "x": 0.75,
                     "y": 0.0
                 },
                 "color": {
@@ -31812,7 +31686,7 @@
             },
             "keyframe_animator": {
                 "current": "throwing_update",
-                "t": 37.23293685913086,
+                "t": 53.76601791381836,
                 "playing": true,
                 "clips": [
                     {
@@ -31903,7 +31777,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.0,
+                    "x": 0.5,
                     "y": 0.0
                 },
                 "color": {
@@ -31959,7 +31833,7 @@
             },
             "keyframe_animator": {
                 "current": "click_update",
-                "t": 37.23293685913086,
+                "t": 53.76601791381836,
                 "playing": true,
                 "clips": [
                     {
@@ -32080,7 +31954,7 @@
                     "y": 1.0
                 },
                 "uvOffset": {
-                    "x": 0.0,
+                    "x": 0.5,
                     "y": 0.0
                 },
                 "color": {
@@ -32136,7 +32010,7 @@
             },
             "keyframe_animator": {
                 "current": "pickup_update",
-                "t": 37.23293685913086,
+                "t": 53.76601791381836,
                 "playing": true,
                 "clips": [
                     {
@@ -38493,12 +38367,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 0.000030517578125,
-                    "y": 6.499998092651367,
+                    "x": -582.1678466796875,
+                    "y": -0.7146819829940796,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 1.0,
+                    "x": -1.0,
                     "y": 1.0
                 }
             },
@@ -38551,12 +38425,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -82.99996948242188,
-                    "y": 39.5,
+                    "x": -499.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -38629,12 +38503,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -82.99996948242188,
-                    "y": 39.5,
+                    "x": -499.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -38707,12 +38581,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -77.99996948242188,
-                    "y": 39.5,
+                    "x": -504.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -38785,12 +38659,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -77.99996948242188,
-                    "y": 39.5,
+                    "x": -504.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -38863,12 +38737,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -72.99996948242188,
-                    "y": 39.5,
+                    "x": -509.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -38941,12 +38815,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -72.99996948242188,
-                    "y": 39.5,
+                    "x": -509.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39019,12 +38893,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -67.99996948242188,
-                    "y": 39.5,
+                    "x": -514.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39097,12 +38971,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -67.99996948242188,
-                    "y": 39.5,
+                    "x": -514.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39175,12 +39049,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -62.999969482421878,
-                    "y": 39.5,
+                    "x": -519.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39253,12 +39127,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -62.999969482421878,
-                    "y": 39.5,
+                    "x": -519.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39331,12 +39205,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -57.999969482421878,
-                    "y": 39.5,
+                    "x": -524.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39409,12 +39283,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -57.999969482421878,
-                    "y": 39.5,
+                    "x": -524.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39487,12 +39361,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -52.999969482421878,
-                    "y": 39.5,
+                    "x": -529.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39565,12 +39439,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -52.999969482421878,
-                    "y": 39.5,
+                    "x": -529.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39643,12 +39517,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -47.999969482421878,
-                    "y": 39.5,
+                    "x": -534.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39721,12 +39595,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -47.999969482421878,
-                    "y": 39.5,
+                    "x": -534.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39799,12 +39673,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -42.999969482421878,
-                    "y": 39.5,
+                    "x": -539.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39877,12 +39751,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -42.999969482421878,
-                    "y": 39.5,
+                    "x": -539.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -39955,12 +39829,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -37.999969482421878,
-                    "y": 39.5,
+                    "x": -544.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -40033,12 +39907,12 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -37.999969482421878,
-                    "y": 39.5,
+                    "x": -544.1678466796875,
+                    "y": 32.285316467285159,
                     "z": 0.0
                 },
                 "size": {
-                    "x": 30.0,
+                    "x": -30.0,
                     "y": 15.0
                 }
             },
@@ -40450,8 +40324,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -206.45050048828126,
-                    "y": -44.31288146972656,
+                    "x": -199.638427734375,
+                    "y": -47.71805191040039,
                     "z": 0.0
                 },
                 "size": {
@@ -40488,8 +40362,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -6.45050048828125,
-                    "y": -194.31288146972657,
+                    "x": 0.361572265625,
+                    "y": -197.71804809570313,
                     "z": 0.0
                 },
                 "size": {
@@ -40566,8 +40440,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -6.45050048828125,
-                    "y": -194.31288146972657,
+                    "x": 0.361572265625,
+                    "y": -197.71804809570313,
                     "z": 0.0
                 },
                 "size": {
@@ -40644,8 +40518,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1433.549560546875,
-                    "y": -194.31288146972657,
+                    "x": 1440.361572265625,
+                    "y": -197.71804809570313,
                     "z": 0.0
                 },
                 "size": {
@@ -40722,8 +40596,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1433.549560546875,
-                    "y": -194.31288146972657,
+                    "x": 1440.361572265625,
+                    "y": -197.71804809570313,
                     "z": 0.0
                 },
                 "size": {
@@ -40872,8 +40746,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -259.3788146972656,
-                    "y": -44.31288146972656,
+                    "x": -254.83743286132813,
+                    "y": -46.5829963684082,
                     "z": 0.0
                 },
                 "size": {
@@ -40910,8 +40784,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -59.378814697265628,
-                    "y": -194.31288146972657,
+                    "x": -54.837432861328128,
+                    "y": -196.58299255371095,
                     "z": 0.0
                 },
                 "size": {
@@ -40988,8 +40862,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -59.378814697265628,
-                    "y": -194.31288146972657,
+                    "x": -54.837432861328128,
+                    "y": -196.58299255371095,
                     "z": 0.0
                 },
                 "size": {
@@ -41066,8 +40940,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -59.378814697265628,
-                    "y": -194.31288146972657,
+                    "x": -54.837432861328128,
+                    "y": -196.58299255371095,
                     "z": 0.0
                 },
                 "size": {
@@ -41144,8 +41018,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1380.6212158203126,
-                    "y": -194.31288146972657,
+                    "x": 1385.16259765625,
+                    "y": -196.58299255371095,
                     "z": 0.0
                 },
                 "size": {
@@ -41222,8 +41096,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1380.6212158203126,
-                    "y": -194.31288146972657,
+                    "x": 1385.16259765625,
+                    "y": -196.58299255371095,
                     "z": 0.0
                 },
                 "size": {
@@ -41300,8 +41174,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1380.6212158203126,
-                    "y": -194.31288146972657,
+                    "x": 1385.16259765625,
+                    "y": -196.58299255371095,
                     "z": 0.0
                 },
                 "size": {
@@ -41378,8 +41252,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": -142.43772888183595,
-                    "y": -44.31288146972656,
+                    "x": -140.1670379638672,
+                    "y": -45.44793701171875,
                     "z": 0.0
                 },
                 "size": {
@@ -41416,8 +41290,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 57.56227111816406,
-                    "y": -194.31288146972657,
+                    "x": 59.83296203613281,
+                    "y": -195.44793701171876,
                     "z": 0.0
                 },
                 "size": {
@@ -41494,8 +41368,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1497.562255859375,
-                    "y": -194.31288146972657,
+                    "x": 1499.8330078125,
+                    "y": -195.44793701171876,
                     "z": 0.0
                 },
                 "size": {
@@ -41572,8 +41446,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 57.56227111816406,
-                    "y": -344.3128662109375,
+                    "x": 59.83296203613281,
+                    "y": -345.44793701171877,
                     "z": 0.0
                 },
                 "size": {
@@ -41650,8 +41524,8 @@
             "transform": {
                 "rotation": 0.0,
                 "position": {
-                    "x": 1497.562255859375,
-                    "y": -344.3128662109375,
+                    "x": 1499.8330078125,
+                    "y": -345.44793701171877,
                     "z": 0.0
                 },
                 "size": {
@@ -44568,16 +44442,16 @@
         },
         {
             "active": true,
-            "name": "Entity 2499",
-            "uuid": 11572032198108170465,
+            "name": "Entity 2497",
+            "uuid": 4769750531443201371,
             "tag": {
-                "tagMask": 0
+                "tagMask": 2
             },
             "transform": {
-                "rotation": -90.0,
+                "rotation": 0.0,
                 "position": {
-                    "x": -351.9619445800781,
-                    "y": 0.5232207775115967,
+                    "x": -352.4662170410156,
+                    "y": -10.481664657592774,
                     "z": 0.0
                 },
                 "size": {
@@ -44604,8 +44478,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -351.9619445800781,
-                    "y": 0.5232207775115967,
+                    "x": -352.4662170410156,
+                    "y": -10.481664657592774,
                     "z": 0.0
                 },
                 "offset": {
@@ -44614,13 +44488,13 @@
                     "z": 0.0
                 },
                 "p1": {
-                    "x": 32.599998474121097,
-                    "y": 0.0,
+                    "x": 0.0,
+                    "y": 25.5,
                     "z": 0.0
                 },
                 "p2": {
                     "x": 0.5,
-                    "y": 0.0,
+                    "y": -22.799999237060548,
                     "z": 0.0
                 }
             },
@@ -44631,16 +44505,16 @@
         },
         {
             "active": true,
-            "name": "Entity 2499",
-            "uuid": 518662214328114774,
+            "name": "Entity 2497",
+            "uuid": 5621317161823750802,
             "tag": {
-                "tagMask": 0
+                "tagMask": 2
             },
             "transform": {
-                "rotation": -90.0,
+                "rotation": 0.0,
                 "position": {
-                    "x": -206.92718505859376,
-                    "y": 8.249613761901856,
+                    "x": -160.27255249023438,
+                    "y": -25.131689071655275,
                     "z": 0.0
                 },
                 "size": {
@@ -44667,8 +44541,8 @@
                 "isTrigger": false,
                 "enabled": true,
                 "position": {
-                    "x": -206.92718505859376,
-                    "y": 8.249613761901856,
+                    "x": -160.27255249023438,
+                    "y": -25.131689071655275,
                     "z": 0.0
                 },
                 "offset": {
@@ -44677,7 +44551,70 @@
                     "z": 0.0
                 },
                 "p1": {
-                    "x": 32.599998474121097,
+                    "x": 0.0,
+                    "y": 25.5,
+                    "z": 0.0
+                },
+                "p2": {
+                    "x": 0.5,
+                    "y": -22.799999237060548,
+                    "z": 0.0
+                }
+            },
+            "layer": {
+                "layerName": "",
+                "z": 0
+            }
+        },
+        {
+            "active": true,
+            "name": "Entity 2500",
+            "uuid": 15445722088783963718,
+            "tag": {
+                "tagMask": 2
+            },
+            "transform": {
+                "rotation": 0.0,
+                "position": {
+                    "x": -37.39369583129883,
+                    "y": -607.4776000976563,
+                    "z": 0.0
+                },
+                "size": {
+                    "x": 1.0,
+                    "y": 1.0
+                }
+            },
+            "rigidbody": {
+                "mass": 0.0,
+                "restitutionCoeff": 0.0,
+                "maximumVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "staticFriction": 0.5,
+                "dynamicFriction": 0.5,
+                "inertia": 0.0,
+                "invInertia": 0.0
+            },
+            "collider": {
+                "ColliderType": 3,
+                "isContinuous": false,
+                "isTrigger": false,
+                "enabled": true,
+                "position": {
+                    "x": -37.39369583129883,
+                    "y": -607.4776000976563,
+                    "z": 0.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "p1": {
+                    "x": 37.599998474121097,
                     "y": 0.0,
                     "z": 0.0
                 },
