@@ -2503,6 +2503,10 @@
             "path": "PauseMenu_Prefab_With_Animation.json"
         },
         {
+            "name": "Post-Process",
+            "path": "Post-Process.json"
+        },
+        {
             "name": "PlayerBarrier",
             "path": "PlayerBarrier.json"
         },
