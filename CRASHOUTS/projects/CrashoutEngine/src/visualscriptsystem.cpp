@@ -831,7 +831,7 @@ void ExecuteVisualScript(ECS& ecs, Entity e, Component::VisualScriptComponent& c
 
         case UI::VSNodeType::ScriptCall:
         {
-            bool ok = ExecuteMonoInstanceMethod(ecs, e, current->scriptName, current->functionName);
+            //bool ok = ExecuteMonoInstanceMethod(ecs, e, current->scriptName, current->functionName);
 
             UI::VSNode* next = FindNextNode(graph, current->id, 0);
             comp.currentNodeId = next ? next->id : 0;
