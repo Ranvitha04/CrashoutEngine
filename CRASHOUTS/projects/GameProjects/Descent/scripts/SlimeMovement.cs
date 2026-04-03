@@ -633,7 +633,8 @@ namespace CrashoutsEngine
                     float halfW = Math.Abs(tf.Size.x) * 0.5f + 100.0f;
                     float halfH = Math.Abs(tf.Size.y) * 0.5f + 100.0f;
 
-                    bool aimOverSlime = controllerGrabHeld ||
+                    bool aimOverSlime = mouseGrabHeld ||
+                                        controllerGrabHeld ||
                                         (aimPos.x >= worldPos.x - halfW && aimPos.x <= worldPos.x + halfW &&
                                          aimPos.y >= worldPos.y - halfH && aimPos.y <= worldPos.y + halfH);
 
