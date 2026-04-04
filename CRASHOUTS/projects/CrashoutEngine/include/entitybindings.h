@@ -1,7 +1,5 @@
 /*!
 @file		entitybindings.h
-@author     m.biniswandi
-@author     Ranvitha
 @author     Shahrin Idzuan
 @date       06/11/2025
 @brief		Declaration of entitybindings

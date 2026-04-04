@@ -2,7 +2,7 @@
 @file		memorypool.h
 @author     Shahrin Idzuan
 @date       06/01/2026
-@brief		im getting cooked here chat
+@brief		Memory pool header file
 
 All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
 

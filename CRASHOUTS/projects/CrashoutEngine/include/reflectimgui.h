@@ -1,6 +1,6 @@
 /*!
 @file   reflectimgui.h
-@author Mohamad Amir Akmal (48%), Ranvitha (42%), Shahrin Idzuan (10%)
+@author Mohamad Amir Akmal
 @date   28/09/2025
 
 @brief  Generic ImGui drawers powered by getml/reflect-cpp (rfl::to_view).

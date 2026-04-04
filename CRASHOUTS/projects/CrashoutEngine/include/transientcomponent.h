@@ -1,6 +1,6 @@
 /*!
 @file   transientcomponent.h
-@author Ranvitha (68%), Renfred Lee (32%)
+@author Renfred Lee
 @date   23/11/2025
 
 @brief  This file contains the transientcomponent flag, which tells others that

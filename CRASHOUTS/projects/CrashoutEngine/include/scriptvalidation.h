@@ -1,6 +1,6 @@
 /* !
 @file       scriptvalidation.h
-@author     mohamadamirakmal.b@digipen.edu
+@author     Amir
 @date       26/11/2025
 
 Declares the function to validate if a given class name corresponds to a valid script behaviour class.

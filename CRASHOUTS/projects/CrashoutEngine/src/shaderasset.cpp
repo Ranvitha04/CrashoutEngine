@@ -1,6 +1,6 @@
 /*!
 @file   shaderasset.cpp
-@author Shahrin Idzuan (72%), Ranvitha (19%), Renfred (RTIS) (9%)
+@author Shahrin Idzuan (72%), Ranvitha (19%), Renfred Lee (9%)
 @date   16/09/2025
 
 @brief  This file contains the definition of the ShaderAsset class.

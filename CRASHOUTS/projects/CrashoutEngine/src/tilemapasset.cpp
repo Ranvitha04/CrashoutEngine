@@ -1,8 +1,6 @@
 /*!
 @file   tilemapasset.cpp
 @author Renfred Lee
-@author Renfred (RTIS)
-@author Ranvitha
 @date   16/09/2025
 
 @brief	This file contains the definition of the tile map asset class, as well

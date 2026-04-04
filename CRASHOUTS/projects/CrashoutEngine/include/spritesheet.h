@@ -1,8 +1,6 @@
 /*!
 @file       spritesheet.h
-@author     Afiq
-@author     Shahrin Idzuan
-@author     Ranvitha
+@author     Ranvitha (57%), Afiq (19%), Renfred Lee (24%)
 @date       19/11/2025
 @brief      This file contains the declaration of sprite sheet related components
 

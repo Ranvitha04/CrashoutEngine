@@ -1,6 +1,6 @@
 /*!
 @file   tagbindings.h
-@author Shahrin Idzuan (59%), Renfred (RTIS) (41%)
+@author Renfred Lee
 @date   29/11/2025
 
 @brief  registers tag bindings for scripting or other systems

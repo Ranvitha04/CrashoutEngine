@@ -1,8 +1,6 @@
 /*!
 @file       collidercomponent.h
 @author     Shahrin Idzuan
-@author     tristan
-@author     Ranvitha
 @date       29/10/2025
 @brief      Collider component to hold custom colliders for entities
 

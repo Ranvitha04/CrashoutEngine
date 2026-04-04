@@ -1,6 +1,6 @@
 /*!
 @file   namecomponent.h
-@author Ranvitha (68%), Renfred Lee (32%)
+@author Renfred Lee
 @date   05/09/2025
 
 @brief  This file defines the NameComponent, a simple data structure used to 

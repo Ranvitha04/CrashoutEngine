@@ -1,8 +1,6 @@
 /*!
 @file		gamestatemanager.h
-@author     Renfred Lee
 @author     Shahrin Idzuan
-@author     Renfred (RTIS)
 @date       13/09/2025
 @brief		Declarations for the game state manager
 

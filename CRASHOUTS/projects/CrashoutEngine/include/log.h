@@ -1,6 +1,6 @@
 /*!
 @file   log.h
-@author Mohamad Amir Akmal (44%), mohamadamirakmal.b (34%), Ranvitha (22%)
+@author Mohamad Amir Akmal
 @date   14/09/2025
 
 @brief  Lightweight logging utility for Crashout Engine.

@@ -1,6 +1,6 @@
 /*!
 @file   assetmanager.h
-@author Renfred Lee (39%), Ranvitha (24%), Renfred (RTIS) (37%)
+@author Renfred Lee (76%), Ranvitha (24%)
 @date   15/09/2025
 
 @brief  This file contains the declaration of the AssetManager, a singleton responsible

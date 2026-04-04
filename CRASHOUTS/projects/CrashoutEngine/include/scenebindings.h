@@ -1,7 +1,6 @@
 /*!
 @file        scenebindings.h
 @author      Renfred Lee
-@author      Ranvitha
 @date        23/11/2025
 @brief       Declaration of scene bindings functions
 

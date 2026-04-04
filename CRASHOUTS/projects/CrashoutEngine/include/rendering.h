@@ -3,9 +3,9 @@
 
 /*!
 @file        rendering.h
-@author      Ranvitha
-@author      Shahrin Idzuan
-@author      Renfred (RTIS)
+@author      Ranvitha (50%)
+@author      Renfred Lee (30%)
+@author      Shahrin Idzuan (20%)
 @date        09/12/2025
 
 This file declares the Rendering class, which provides a comprehensive

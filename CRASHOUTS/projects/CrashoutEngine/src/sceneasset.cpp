@@ -1,6 +1,6 @@
 /*!
 @file   sceneasset.cpp
-@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
+@author Renfred Lee
 @date   16/09/2025
 
 @brief  This file contains the definition of the Scene class, a rough implementation

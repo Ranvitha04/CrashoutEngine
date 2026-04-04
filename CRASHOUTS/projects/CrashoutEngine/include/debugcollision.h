@@ -1,6 +1,6 @@
 /*!
 @file   debugcollision.h
-@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
+@author Shahrin Idzuan (50%), Renfred Lee (50%)
 @date   28/09/2025
 
 @brief  Collision debug visualization utilities for Crashout Engine.

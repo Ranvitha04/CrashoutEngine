@@ -1,8 +1,6 @@
 /*!
 @file       scenetransition.cpp
-@author     Renfred Lee
 @author     Shahrin Idzuan
-@author     Renfred (RTIS)
 @date       31/01/2026
 @brief      Handles scene transition effects like fade in/out.
 

@@ -1,8 +1,6 @@
 /*!
 @file		monomanager.h
 @author     Shahrin Idzuan
-@author     Renfred (RTIS)
-@author     Renfred Lee
 @date       06/11/2025
 @brief		Declaration of Mono Manager class
 

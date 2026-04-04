@@ -1,9 +1,8 @@
 #pragma once
 /*!
 @file        glslshader.h
-@author      Ranvitha
-@author      Renfred Lee
-@author      Renfred (RTIS)
+@author      Ranvitha (60%)
+@author      Renfred Lee (40%)
 @date        09/12/2025
 
 This header file declares the GLSLShader class, which provides a comprehensive

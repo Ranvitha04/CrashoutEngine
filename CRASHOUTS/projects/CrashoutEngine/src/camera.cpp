@@ -1,6 +1,6 @@
 /*!
 @file   camera.cpp
-@author Renfred Lee (45%), Renfred (RTIS) (33%), Ranvitha (22%)
+@author Renfred Lee (78%), Ranvitha (22%)
 @date   29/10/2025
 
 @brief  Declaration and definition of camera

@@ -1,6 +1,6 @@
 /*!
 @file   namebindings.h
-@author Ranvitha (65%), Shahrin Idzuan (35%)
+@author Renfred Lee
 @date   29/11/2025
 
 @brief  namebindings declaration

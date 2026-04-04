@@ -1,8 +1,6 @@
 /*!
 @file        hierarchy.cpp
 @author      Afiq
-@author      Renfred Lee
-@author      Renfred (RTIS)
 @date        7/11/2025
 @brief       Parent–child hierarchy: linking, reparenting, and world transform and color.
 

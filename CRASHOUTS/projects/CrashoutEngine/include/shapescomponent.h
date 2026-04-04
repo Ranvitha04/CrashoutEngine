@@ -1,6 +1,6 @@
 /*!
 @file   shapescomponent.h
-@author Renfred Lee (45%), Renfred (RTIS) (33%), Ranvitha (22%)
+@author Ranvitha (55%), Renfred Lee (45%)
 @date   28/09/2025
 
 @brief  This file defines the ShapesComponent, a simple data structure

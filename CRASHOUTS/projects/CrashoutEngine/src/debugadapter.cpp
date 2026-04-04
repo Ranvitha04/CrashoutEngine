@@ -1,6 +1,6 @@
 /*!
 @file   debugadapter.cpp
-@author Renfred Lee (84%), Mohamad Amir Akmal (2%), Renfred (RTIS) (14%)
+@author Mohamad Amir Akmal (84%), Renfred Lee (16%)
 @date   25/09/2025
 
 @brief  File-local adapters/providers and registration.

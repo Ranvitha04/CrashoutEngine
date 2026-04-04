@@ -1,8 +1,7 @@
 /*!
 @file        keyframe.cpp
-@author      Afiq
-@author      Renfred Lee
-@author      Renfred (RTIS)
+@author      Afiq (50%)
+@author      Renfred Lee (50%)
 @date        28/11/2025
 @brief       Implements a simple keyframe animation system that drives transforms (position/rotation/scale)
 			 and sprites over time using curves.

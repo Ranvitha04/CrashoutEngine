@@ -1,8 +1,7 @@
 /*!
 @file       particleManager.cpp
-@author     Renfred Lee
-@author     Ranvitha
-@author     Renfred (RTIS)
+@author     Ranvitha (60%)
+@author     Renfred Lee (40%)
 @date       01/12/2026
 @brief      Particle Functionalities.
 @details    Functions that would be used to sync particles with the engine's update.

@@ -1,6 +1,6 @@
 /*!
 @file   crashlogger.h
-@author Renfred Lee (38%), Mohamad Amir Akmal (38%), Ranvitha (24%)
+@author Mohamad Amir Akmal
 @date   28/09/2025
 
 @brief  Process-wide crash logger installation entry point.

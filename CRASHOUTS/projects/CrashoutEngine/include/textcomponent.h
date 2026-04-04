@@ -1,6 +1,6 @@
 /*!
 @file   textcomponent.h
-@author Renfred Lee (45%), Renfred (RTIS) (33%), Ranvitha (22%)
+@author Renfred Lee
 @date   23/10/2025
 
 @brief  This file defines the TextComponent

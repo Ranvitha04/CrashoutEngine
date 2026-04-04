@@ -1,8 +1,6 @@
 /*!
 @file        hierarchy.h
 @author      Afiq
-@author      Mohamad Amir Akmal
-@author      Shahrin Idzuan
 @date        7/11/2025
 @brief
 

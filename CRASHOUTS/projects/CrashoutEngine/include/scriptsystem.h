@@ -1,8 +1,6 @@
 /*!
 @file		scriptsystem.h
 @author     Shahrin Idzuan
-@author     m.biniswandi
-@author     Renfred Lee
 @date       06/11/2025
 @brief		Declaration of script system class
 

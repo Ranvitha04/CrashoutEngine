@@ -1,6 +1,6 @@
 /*!
 @file   debugAssetLoader.h
-@author Mohamad Amir Akmal (58%), Ranvitha (42%)
+@author Mohamad Amir Akmal 
 @date   23/11/2025
 
 @brief  Helpers for asset drag-and-drop payloads in Crashout Engine's debug tools.

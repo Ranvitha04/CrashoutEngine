@@ -1,6 +1,5 @@
 /*!
 @file       checkpointcomponent.h
-@author     m.biniswandi
 @author     Shahrin Idzuan
 @brief      Checkpoint component for respawn logic.
 */

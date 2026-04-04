@@ -1,7 +1,6 @@
 /*!
 @file        prefabcomponent.h
 @author      Afiq
-@author      Ranvitha
 @date        28/9/2025
 @brief       Declares the prfabcomponent() function that registers all the prefab when it starts.
 

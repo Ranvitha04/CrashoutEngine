@@ -1,8 +1,6 @@
 /*!
 @file        renfred.cpp
-@author      Renfred (RTIS)
 @author      Renfred Lee
-@author      Ranvitha
 @date        24/11/2025
 @brief
 

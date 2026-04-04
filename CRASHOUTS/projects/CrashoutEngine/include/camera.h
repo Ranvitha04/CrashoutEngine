@@ -1,8 +1,7 @@
 /*!
 @file       camera.h
-@author     Renfred Lee
-@author     Renfred (RTIS)
-@author     Shahrin Idzuan
+@author     Renfred Lee (80%)
+@author     Shahrin Idzuan (20%)
 @date       30/10/2025
 @brief      [Brief description of camera.h]
 

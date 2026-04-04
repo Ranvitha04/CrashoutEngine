@@ -1,8 +1,7 @@
 /*!
 @file        instanceSystem.cpp
-@author      Renfred Lee
-@author      Ranvitha
-@author      Renfred (RTIS)
+@author      Ranvitha (70%)
+@author      Renfred Lee (30%)
 @date        6/11/2025
 @brief
 This source file contains the implementation of functions responsible for **instanced rendering**

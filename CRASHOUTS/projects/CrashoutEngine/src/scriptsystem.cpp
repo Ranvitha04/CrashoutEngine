@@ -1,9 +1,7 @@
 /*!
 @file        scriptsystem.cpp
-@author     Shahrin Idzuan
-@author     Renfred Lee
-@author     Renfred (RTIS)
-@date       06/11/2025
+@author      Shahrin Idzuan
+@date        06/11/2025
 @brief       Definition of script system functions
 
 All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.

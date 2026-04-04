@@ -1,6 +1,6 @@
 /*!
 @file   physicsmanager.h
-@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
+@author Renfred Lee
 @date   08/09/2025
 
 @brief  Contains Physics runSystem function for collision detection and physics resolution (calculate new pos by vel)

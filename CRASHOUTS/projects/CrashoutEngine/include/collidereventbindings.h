@@ -1,6 +1,6 @@
 /*!
 @file   collidereventbindings.h
-@author Ranvitha (65%), Shahrin Idzuan (35%)
+@author Shahrin Idzuan
 @date   29/11/2025
 
 @brief  colliderevent bindings declaration

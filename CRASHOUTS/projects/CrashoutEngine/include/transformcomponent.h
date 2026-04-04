@@ -1,6 +1,6 @@
 /*!
 @file   transformcomponent.h
-@author tristan (56%), Ranvitha (25%), Renfred Lee (19%)
+@author Renfred Lee 
 @date   05/09/2025
 
 @brief  This file defines the TransformComponent, a simple data structure 

@@ -1,6 +1,6 @@
 /*!
 @file   debugreflection.h
-@author Mohamad Amir Akmal (48%), Ranvitha (42%), Shahrin Idzuan (10%)
+@author Mohamad Amir Akmal
 @date   25/09/2025
 
 @brief  Lightweight registry hooks for the Debug Menu. Provides:

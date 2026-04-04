@@ -1,6 +1,6 @@
 /*!
 @file   CEMtx33.h
-@author Toastyship (56%), tristan (40%), Shahrin Idzuan (4%)
+@author Shahrin Idzuan
 @date   05/09/2025
 
 @brief  3x3 matrix for 2D affine transforms

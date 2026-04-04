@@ -1,6 +1,6 @@
 /*!
 @file   collisionmanager.h
-@author Renfred Lee (44%), tristan (32%), Shahrin Idzuan (24%)
+@author Renfred Lee 
 @date   08/09/2025
 
 @brief  Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)

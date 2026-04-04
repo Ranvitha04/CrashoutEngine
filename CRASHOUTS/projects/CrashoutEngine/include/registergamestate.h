@@ -1,7 +1,6 @@
 /*!
 @file		registergamestate.h
 @author     Shahrin Idzuan
-@author     Ranvitha
 @date       13/09/2025
 @brief		Declaration for game state registration
 

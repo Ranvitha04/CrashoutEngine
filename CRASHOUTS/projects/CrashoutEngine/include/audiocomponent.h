@@ -1,6 +1,6 @@
 /*!
 @file   audiocomponent.h
-@author Ranvitha (44%), Shahrin Idzuan (13%), Mohamad Amir Akmal (43%)
+@author Mohamad Amir Akmal
 @date   25/10/2025
 
 @brief  This file defines the AudioComponent

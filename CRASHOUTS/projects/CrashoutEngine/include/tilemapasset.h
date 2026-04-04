@@ -1,6 +1,6 @@
 /*!
 @file   tilemapasset.h
-@author Ranvitha (47%), Renfred Lee (43%), Renfred (RTIS) (10%)
+@author Renfred Lee
 @date   13/11/2025
 
 @brief  This file contains the declaration of the Tile Map Asset which stores 

@@ -1,6 +1,6 @@
 /*!
 @file   cameracomponent.h
-@author Renfred Lee (45%), Renfred (RTIS) (33%), Ranvitha (22%)
+@author Renfred Lee (78%), Ranvitha (22%)
 @date   17/09/2025
 
 @brief  This file defines the CameraComponent

@@ -1,6 +1,6 @@
 /*!
 @file   observer.h
-@author Ranvitha (68%), Renfred Lee (32%)
+@author Renfred Lee
 @date   19/09/2025
 
 @brief  Declaration for the Base class Observar. Allows other system to inherit from this class to listen to messages emitted by

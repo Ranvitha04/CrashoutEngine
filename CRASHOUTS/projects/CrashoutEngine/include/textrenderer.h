@@ -1,8 +1,7 @@
 /*!
 @file       textrenderer.h
-@author     Shahrin Idzuan
-@author     Renfred Lee
-@author     Renfred (RTIS)
+@author     Shahrin Idzuan (70%)
+@author     Renfred Lee (30%)
 @date       25/09/2025
 @brief      Declaration of the TextRenderer class
 

@@ -1,8 +1,6 @@
 /*!
 @file        entitymanager.cpp
 @author      Renfred Lee
-@author      Shahrin Idzuan
-@author      Renfred (RTIS)
 @date        13/09/2025
 @brief		 This file implements an entity manager
 

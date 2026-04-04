@@ -1,6 +1,6 @@
 /*!
 @file   guicomponent.h
-@author Ranvitha (51%), Renfred (RTIS) (37%), Renfred Lee (12%)
+@author Renfred Lee
 @date   02/11/2025
 
 @brief  This file defines the GuiComponent

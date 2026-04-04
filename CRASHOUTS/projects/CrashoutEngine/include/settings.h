@@ -1,7 +1,5 @@
 /*!
 @file       settings.h
-@author     Renfred Lee
-@author     mohamadamirakmal.b
 @author     Shahrin Idzuan
 @date       11/09/2025
 @brief      Declaration of the Settings class

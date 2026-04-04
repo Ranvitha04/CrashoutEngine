@@ -1,6 +1,6 @@
 /*!
 @file   Physics.cpp
-@author Renfred (RTIS) (72%), Renfred Lee (11%), tristan (17%)
+@author Renfred Lee
 @date   08/09/2025
 
 @brief  Contains Definitions for Physics runSystem function and the RigidBodyComponent

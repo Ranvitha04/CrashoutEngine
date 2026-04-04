@@ -1,8 +1,6 @@
 /*!
 @file		scriptcomponent.h
 @author     Shahrin Idzuan
-@author     Mohamad Amir Akmal
-@author     m.biniswandi
 @date       06/11/2025
 @brief		Declaration of script component struct
 

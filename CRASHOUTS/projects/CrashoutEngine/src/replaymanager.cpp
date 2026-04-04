@@ -1,7 +1,6 @@
 /*!
 @file		replaymanager.cpp
 @author     Renfred Lee
-@author     Renfred (RTIS)
 @date       03/03/2026
 @brief		Maintain code used for tracking gameplay and performing replay
             of past gameplay funtionalities.

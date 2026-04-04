@@ -1,6 +1,6 @@
 /*!
 @file        tagbindings.cpp
-@author      Renfred (RTIS)
+@author      Renfred Lee
 @date        26/11/2025
 @brief       Definition of button bindings functions
 

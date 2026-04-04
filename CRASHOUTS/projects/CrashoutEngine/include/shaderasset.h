@@ -1,6 +1,6 @@
 /*!
 @file   shaderasset.h
-@author Shahrin Idzuan (54%), Renfred (RTIS) (23%), Toastyship (23%)
+@author Renfred Lee
 @date   19/10/2025
 
 @brief  This file contains the declaration of the shader

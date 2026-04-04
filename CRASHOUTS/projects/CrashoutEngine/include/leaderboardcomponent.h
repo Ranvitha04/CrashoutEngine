@@ -1,6 +1,6 @@
 /*!
 @file       leaderboardcomponent.h
-@author
+@author     Shahrin Idzuan
 @date       04/03/2026
 @brief      Component data for leaderboard UI + refresh settings.
 */

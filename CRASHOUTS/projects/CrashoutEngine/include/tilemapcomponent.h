@@ -1,8 +1,6 @@
 /*!
 @file   tilemapcomponent.h
 @author Renfred Lee
-@author Renfred (RTIS)
-@author Shahrin Idzuan
 @date   13/11/2025
 
 @brief	This file declares the TileMapComponent, which stores reference to a 

@@ -1,7 +1,6 @@
 /*!
 @file       deleteentitycommand.h
 @author     Shahrin Idzuan
-@author     Afiq
 @date       13/01/2026
 @brief      [Brief description of deleteentitycommand.h]
 

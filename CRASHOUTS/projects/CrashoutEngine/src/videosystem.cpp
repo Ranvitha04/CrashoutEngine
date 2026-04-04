@@ -1,7 +1,6 @@
 /*!
 @file		videosystem.cpp
 @author     Shahrin Idzuan
-@author     Renfred (RTIS)
 @date       31/01/2026
 @brief		Implementation of the Video System to update Video Components in the ECS.
 

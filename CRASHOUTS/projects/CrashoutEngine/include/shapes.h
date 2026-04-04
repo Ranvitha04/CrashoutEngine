@@ -3,9 +3,7 @@
 
 /*!
 @file        shapes.h
-@author      Renfred Lee
 @author      Ranvitha
-@author      Shahrin Idzuan
 @date        05/05/2025
 
 This file declares the Shapes struct, which provides static utility

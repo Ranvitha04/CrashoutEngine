@@ -1,6 +1,6 @@
 /*!
 @file   ppcomponent.h
-@author Ranvitha (36%), Shahrin Idzuan (31%), Renfred (RTIS) (33%)
+@author Shahrin Idzuan (69%), Renfred Lee (33%)
 @date   05/11/2025
 
 @brief  This file defines the post-processing component.

@@ -1,6 +1,6 @@
 /*!
 @file   uibindings.h
-@author Shahrin Idzuan (43%), Ranvitha (29%), Renfred Lee (28%)
+@author Shahrin Idzuan 
 @date   02/11/2025
 
 @brief  this file contains the function declarations for registering UI-related bindings in the CrashoutsEngine

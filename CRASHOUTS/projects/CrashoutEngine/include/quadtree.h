@@ -1,6 +1,6 @@
 /*!
 @file   quadtree.h
-@author tristan (36%), Tristan Mira (33%), Ranvitha (31%)
+@author tristan 
 @date   27/10/2025
 
 @brief  Class declaration for the quadtree data structure, used for partitioning the screen into sections to speed up some processes (Broad phase collision)

@@ -1,8 +1,6 @@
 /*!
 @file		rendererconnector.cpp
 @author     Shahrin Idzuan
-@author     Renfred (RTIS)
-@author     Ranvitha
 @date       20/09/2025
 @brief		Forward declaration for text renderers
 

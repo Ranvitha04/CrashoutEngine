@@ -1,8 +1,6 @@
 /*!
 @file       inputmanager.h
-@author     Renfred Lee
 @author     Shahrin Idzuan
-@author     Renfred (RTIS)
 @date       11/09/2025
 @brief      Declaration of the InputManager class
 

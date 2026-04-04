@@ -1,8 +1,6 @@
 ﻿/*!
 @file        prefab.h
-@author      Renfred Lee
 @author      Afiq
-@author      Toastyship
 @date        7/11/2025
 @brief       Unified Prefab system: Registry, Factory, JSON Load/Save.
 

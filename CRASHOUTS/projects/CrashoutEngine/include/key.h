@@ -1,6 +1,6 @@
 /*!
 @file   key.h
-@author Renfred (RTIS) (42%), Renfred Lee (37%), Shahrin Idzuan (21%)
+@author Shahrin Idzuan
 @date   08/09/2025
 
 @brief  Definition of the Key enum class

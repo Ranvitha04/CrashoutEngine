@@ -1,8 +1,7 @@
 /*!
 @file        instanceSystem.h
-@author      Ranvitha
-@author      Renfred Lee
-@author      Shahrin Idzuan
+@author      Ranvitha (70%)
+@author      Renfred Lee (30%)
 @date        11/06/2025
 @brief
 

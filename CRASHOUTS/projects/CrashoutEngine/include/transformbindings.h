@@ -1,8 +1,6 @@
 /*!
 @file		transformbindings.h
 @author     Shahrin Idzuan
-@author     m.biniswandi
-@author     Ranvitha
 @date       06/11/2025
 @brief		Declaration of transformbindings
 

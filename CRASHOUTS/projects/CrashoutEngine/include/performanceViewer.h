@@ -1,6 +1,6 @@
 /*!
 @file   performanceViewer.h
-@author Mohamad Amir Akmal (80%), Shahrin Idzuan (0%), Renfred Lee (20%)
+@author Mohamad Amir Akmal
 @date   06/09/2025
 
 @brief  CPU profiling and memory tracking utilities for Crashout Engine.

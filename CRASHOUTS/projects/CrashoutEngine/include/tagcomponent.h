@@ -1,6 +1,6 @@
 /*!
 @file   tagcomponent.h
-@author Renfred (RTIS) (83%), Renfred Lee (17%)
+@author Renfred Lee
 @date   31/10/2025
 
 @brief  This file defines the TagComponent, used to store an entity's tag 

@@ -1,6 +1,6 @@
 /*!
 @file   quadtree.cpp
-@author Renfred (RTIS) (51%), tristan (15%), Renfred Lee (34%)
+@author Renfred Lee
 @date   29/11/2025
 
 @brief  quadtree function definitions

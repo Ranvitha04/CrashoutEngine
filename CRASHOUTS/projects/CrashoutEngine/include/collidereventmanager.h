@@ -1,6 +1,6 @@
 /*!
 @file   collidereventmanager.h
-@author tristan (47%), Renfred Lee (17%), Shahrin Idzuan (36%)
+@author Renfred Lee
 @date   29/11/2025
 
 @brief  colliderevent manager declaration

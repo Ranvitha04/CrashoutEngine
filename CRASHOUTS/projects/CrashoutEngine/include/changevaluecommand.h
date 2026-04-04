@@ -1,6 +1,6 @@
 /*!
 @file   changevaluecommand.h
-@author Shahrin Idzuan (37%), m.biniswandi (31%), Ranvitha (32%)
+@author Shahrin Idzuan 
 @date   29/11/2025
 
 @brief  command to change a value with undo/redo support

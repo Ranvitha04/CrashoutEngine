@@ -1,6 +1,6 @@
 /*!
 @file   crashlogger.cpp
-@author Mohamad Amir Akmal (83%), Renfred Lee (15%), Renfred (RTIS) (2%)
+@author Mohamad Amir Akmal (83%), Renfred Lee (17%)
 @date   06/09/2025
 
 @brief  This file provides a simple crash logger that writes error information

@@ -1,8 +1,8 @@
 /*!
 @file        keyframe.h
-@author      Renfred Lee
-@author      Afiq
-@author      Ranvitha
+@author      Renfred Lee (50%)
+@author      Afiq (25%)
+@author      Ranvitha (25%)
 @date        28/9/2025
 @brief       Declares the keyframe() function that registers all the keyframe when it starts.
 

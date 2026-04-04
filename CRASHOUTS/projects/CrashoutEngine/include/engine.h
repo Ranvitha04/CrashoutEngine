@@ -1,8 +1,7 @@
 /*!
 @file    	engine.h
-@author  	Renfred Lee
-@author  	Renfred (RTIS)
-@author  	m.biniswandi
+@author  	Renfred Lee (80%)
+@author  	Shahrin (20%)
 @date    	18/10/2025
 
 This file 

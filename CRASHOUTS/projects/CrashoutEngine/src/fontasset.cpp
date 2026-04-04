@@ -1,6 +1,6 @@
 /*!
 @file   fontasset.cpp
-@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
+@author Shahrin Idzuan (50%), Renfred Lee (50%)
 @date   19/10/2025
 
 @brief  This file contains the definition of the font asset class.

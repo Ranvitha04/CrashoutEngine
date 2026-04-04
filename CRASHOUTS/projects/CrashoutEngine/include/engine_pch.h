@@ -1,6 +1,6 @@
 /*!
 @file   engine_pch.h
-@author Ranvitha (51%), Renfred (RTIS) (37%), Renfred Lee (12%)
+@author Renfred Lee
 @date   13/11/2025
 
 @brief  declaration of precompiled header for the engine

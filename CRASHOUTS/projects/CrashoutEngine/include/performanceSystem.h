@@ -1,6 +1,6 @@
 /*!
 @file   performanceSystem.h
-@author Renfred Lee (64%), Mohamad Amir Akmal (8%), mohamadamirakmal.b (28%)
+@author Mohamad Amir Akmal
 @date   04/11/2025
 
 @brief  Thin runtime facade over the engine's profiler UI.

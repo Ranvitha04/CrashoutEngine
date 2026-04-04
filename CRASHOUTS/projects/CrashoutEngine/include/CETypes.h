@@ -1,6 +1,6 @@
 /*!
 @file   CETypes.h
-@author Shahrin Idzuan (46%), Renfred Lee (34%), Ranvitha (20%)
+@author Shahrin Idzuan
 @date   05/09/2025
 
 @brief  Type aliases for standard integer and floating point types

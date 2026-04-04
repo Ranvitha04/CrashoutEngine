@@ -1,8 +1,7 @@
 /*!
 @file      collidereventbindings.cpp
-@author    Shahrin Idzuan
-@author    Renfred Lee
-@author    Renfred (RTIS)
+@author    Shahrin Idzuan (50%)
+@author    Renfred Lee (50%)
 @date      29/11/2025
 @brief     Mono bindings for collision event callbacks (enter/stay/exit)
 

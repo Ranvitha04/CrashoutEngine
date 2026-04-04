@@ -1,6 +1,6 @@
 /*
 @file       LeaderboardService.h
-@author     
+@author     Shahrin Idzuan
 @date       04/03/2026
 @brief      Leaderboard client for backend API.
 */

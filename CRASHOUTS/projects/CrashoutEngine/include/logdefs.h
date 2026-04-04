@@ -1,6 +1,6 @@
 /*!
 @file   logdefs.h
-@author Shahrin Idzuan (37%), Renfred Lee (29%), Mohamad Amir Akmal (34%)
+@author Mohamad Amir Akmal
 @date   28/09/2025
 
 @brief  Lightweight logging macro lists for Crashout Engine.

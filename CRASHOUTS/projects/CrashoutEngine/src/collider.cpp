@@ -1,6 +1,6 @@
 /*!
 @file   collider.cpp
-@author Renfred Lee (37%), Tristan Mira (27%), Renfred (RTIS) (36%)
+@author Renfred Lee
 @date   29/11/2025
 
 @brief  collider class definitions and implementations

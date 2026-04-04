@@ -1,8 +1,6 @@
 /*!
 @file        uibindings.cpp
 @author      Renfred Lee
-@author      Renfred (RTIS)
-@author      Ranvitha
 @date        24/11/2025
 @brief       Definition of button bindings functions
 

@@ -1,8 +1,6 @@
 /*!
 @file		inputbindings.cpp
 @author     Shahrin Idzuan
-@author     Renfred (RTIS)
-@author     Renfred Lee
 @date       06/11/2025
 @brief		Definition of input bindings functions
 

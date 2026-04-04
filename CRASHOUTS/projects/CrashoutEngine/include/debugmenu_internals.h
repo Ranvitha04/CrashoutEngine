@@ -1,7 +1,5 @@
 /*!
 @file       debugmenu_internals.h
-@author     Renfred Lee
-@author     Afiq
 @author     Mohamad Amir Akmal
 @date       01/12/2025
 @brief      [Brief description of debugmenu_internals.h]

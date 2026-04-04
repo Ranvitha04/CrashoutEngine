@@ -1,6 +1,6 @@
 /*!
 @file   observable.h
-@author Ranvitha (68%), Renfred Lee (32%)
+@author Renfred Lee
 @date   19/09/2025
 
 @brief  Declaration for the Base class Observable. Allows other systems to inherit from this class to register Observers.

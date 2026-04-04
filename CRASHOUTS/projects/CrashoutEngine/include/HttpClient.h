@@ -1,6 +1,6 @@
 /*
 @file       HttpClient.h
-@author     
+@author     Shahrin Idzuan
 @date       04/03/2026
 @brief      Simple HTTP client wrapper for libcurl.
 */

@@ -1,6 +1,6 @@
 /*!
 @file   debugdefaults.h
-@author Mohamad Amir Akmal (52%), Renfred Lee (47%), mohamadamirakmal.b (1%)
+@author Mohamad Amir Akmal (53%), Renfred Lee (47%)
 @date   25/09/2025
 
 @brief  Stores default settings and configuration values used throughout the debug UI.
