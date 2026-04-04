@@ -20,6 +20,7 @@ namespace CrashoutsEngine {
     @tparam T Component type to remove.
     */
     template <typename T>
+    /** @brief RemoveComponentCommand */
     class RemoveComponentCommand : public EditorCommand {
     public:
         /*!

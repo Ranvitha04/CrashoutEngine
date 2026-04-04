@@ -44,6 +44,7 @@ namespace fs = std::filesystem;
 namespace UI
 {
     
+    /** @brief SpriteClipUI */
     struct SpriteClipUI
     {
         char  name[32];

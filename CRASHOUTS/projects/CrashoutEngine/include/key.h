@@ -1,14 +1,11 @@
 /*!
-@file       key.h
-@author     Shahrin Idzuan
-@author     Renfred Lee
-@author     Renfred (RTIS)
-@date       08/09/2025
-@brief Definition of the Key enum class
+@file   key.h
+@author Renfred (RTIS) (42%), Renfred Lee (37%), Shahrin Idzuan (21%)
+@date   08/09/2025
 
-Provides a wrapper around GLFW key codes
+@brief  Definition of the Key enum class
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

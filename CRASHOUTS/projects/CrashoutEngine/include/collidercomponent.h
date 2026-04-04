@@ -17,6 +17,7 @@ namespace Component {
 	@struct	ColliderComponent
 	@brief	Collider component in order to put custom colliders on an entity
 	*/
+	/** @brief ColliderComponent */
 	struct ColliderComponent {
 		std::unique_ptr<Collision::Collider> collider;
 

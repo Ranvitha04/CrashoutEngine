@@ -1,21 +1,11 @@
 /*!
-@file       performanceSystem.h
-@author     Mohamad Amir Akmal
-@author     Renfred Lee
-@author     mohamadamirakmal.b
-@date       04/11/2025
+@file   performanceSystem.h
+@author Renfred Lee (64%), Mohamad Amir Akmal (8%), mohamadamirakmal.b (28%)
+@date   04/11/2025
 
-@brief      Thin runtime facade over the engine's profiler UI.
-@details    `PerformanceSystem` is a tiny singleton whose only job is to:
-            - keep a pointer to the engine-wide @ref FrameProfiler
-              (declared in performanceViewer.h),
-            - drive per-frame begin/end calls, and
-            - expose a single `RenderUI()` that draws the Performance window.
+@brief  Thin runtime facade over the engine's profiler UI.
 
-            This keeps the ImGui performance panel code in one place instead of
-            scattering it across engine/editor files.
-
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -31,6 +21,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
  @brief Singleton wrapper that owns no data by itself, but forwards to a
         FrameProfiler supplied by the engine.
  */
+/** @brief PerformanceSystem */
 class PerformanceSystem {
 public:
     /*!

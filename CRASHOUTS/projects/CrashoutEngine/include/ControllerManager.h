@@ -1,3 +1,14 @@
+/*!
+@file   ControllerManager.h
+@author Shahrin
+@date   04/04/2026
+
+@brief  Declaration and definition of ControllerManager
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
+//__________________________________________________________________________*/
+
 #pragma once
 
 #include <SDL.h>
@@ -16,6 +27,7 @@ namespace CrashoutEngine
     snapshots previous-frame button/axis state to support triggered and released
     style input queries used by the gameplay scripts.
     */
+    /** @brief ControllerManager */
     class ControllerManager
     {
     public:
@@ -50,6 +62,7 @@ namespace CrashoutEngine
         std::size_t GetConnectedControllerCount() const;
 
     private:
+        /** @brief ControllerState */
         struct ControllerState
         {
             SDL_GameController* handle = nullptr;

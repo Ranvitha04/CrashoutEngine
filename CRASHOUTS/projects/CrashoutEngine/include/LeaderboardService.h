@@ -15,6 +15,7 @@ namespace CrashoutsEngine {
     inline constexpr const char* kDefaultLeaderboardBaseUrl = "http://104.214.187.128";
     inline constexpr const char* kDefaultLeaderboardApiKey = "leaderboardsecretapikey";
 
+    /** @brief LeaderboardEntry */
     struct LeaderboardEntry {
         int rank{};
         std::string name;
@@ -23,6 +24,7 @@ namespace CrashoutsEngine {
         std::unordered_map<std::string, std::string> extraFields;
     };
 
+    /** @brief LeaderboardService */
     class LeaderboardService {
     public:
         explicit LeaderboardService(const std::string& baseUrl,

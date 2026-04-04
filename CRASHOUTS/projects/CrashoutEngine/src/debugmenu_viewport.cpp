@@ -1,14 +1,14 @@
 /*!
-@file       debugmenu_viewport.cpp
-@author     Mohamad Amir Akmal
-@author     Renfred Lee
-@author     Shahrin Idzuan
-@date       25/12/2025
-@brief      File containing the implementation of the Debug Menu Viewport rendering functions.
+@file   debugmenu_viewport.cpp
+@author Shahrin Idzuan (37%), Renfred Lee (29%), Mohamad Amir Akmal (34%)
+@date   25/12/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  File containing the implementation of the Debug Menu Viewport rendering functions.
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #include "debugmenu_internals.h"
 #include "deleteentitycommand.h"
 #include "createprefabcommand.h"

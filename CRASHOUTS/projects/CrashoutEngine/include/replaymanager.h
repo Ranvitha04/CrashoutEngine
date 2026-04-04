@@ -26,6 +26,7 @@ namespace ReplayManager {
     @class Replay
     @brief Store replay function callbacks for record and playback
     */
+    /** @brief Replay */
     class Replay {
     private:
         std::vector<TransformEvent> recordData;     // Buffer A

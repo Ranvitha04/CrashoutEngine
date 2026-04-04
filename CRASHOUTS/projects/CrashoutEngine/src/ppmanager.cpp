@@ -1,13 +1,11 @@
 /*!
 @file   ppmanager.cpp
-@author Ranvitha
-@author Shahrin Idzuan
-@author Renfred Lee
+@author Shahrin Idzuan (43%), Ranvitha (29%), Renfred Lee (28%)
 @date   05/11/2025
 
 @brief  This file contains values and functions to manage post-processing.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -133,6 +131,7 @@ namespace CrashoutsEngine {
         static int cachedWidth = 0;
         static int cachedHeight = 0;
 
+        /** @brief LightDraw */
         struct LightDraw {
             bool active{ false };
             bool affectBloom{ true };
@@ -154,6 +153,7 @@ namespace CrashoutsEngine {
             int shadowRow{ -1 };
         };
 
+        /** @brief LightInstance */
         struct LightInstance {
             float posX;
             float posY;
@@ -966,6 +966,7 @@ namespace CrashoutsEngine {
 
                 auto* occAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("OccluderMaskShader");
                 if (occAsset) {
+                    /** @brief OccVertex */
                     struct OccVertex { float x, y, u, v; };
                     GLSLShader& occShader = occAsset->shaderObject;
                     occShader.Use();
@@ -1091,6 +1092,7 @@ namespace CrashoutsEngine {
             glClear(GL_COLOR_BUFFER_BIT);
             auto* occAsset = Assets::AssetManager::GetInstance().Get<Assets::ShaderAsset>("OccluderMaskShader");
             if (occAsset) {
+                /** @brief OccVertex */
                 struct OccVertex { float x, y, u, v; };
                 GLSLShader& occShader = occAsset->shaderObject;
                 occShader.Use();

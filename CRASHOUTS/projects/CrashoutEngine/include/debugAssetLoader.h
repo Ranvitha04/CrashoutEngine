@@ -1,11 +1,11 @@
 /*!
-@file       debugAssetLoader.h
-@author     Mohamad Amir Akmal
-@author     Ranvitha
-@date       23/11/2025
-@brief      Helpers for asset drag-and-drop payloads in Crashout Engine's debug tools.
+@file   debugAssetLoader.h
+@author Mohamad Amir Akmal (58%), Ranvitha (42%)
+@date   23/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Helpers for asset drag-and-drop payloads in Crashout Engine's debug tools.
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -22,6 +22,7 @@ enum class AssetKind : uint8_t {
     Unknown
 };
 
+/** @brief AssetDragPayload */
 struct AssetDragPayload {
     AssetKind kind{ AssetKind::Unknown };
     char name[128]{};     // manifest/manager "name" (stem)

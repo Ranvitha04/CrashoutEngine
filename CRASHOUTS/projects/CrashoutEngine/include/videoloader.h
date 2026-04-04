@@ -15,16 +15,23 @@ All content ? 2025 Digipen Institute of Technology Singapore. All rights reserve
 #include <atomic>
 #include <vector>
 
+/** @brief AVFormatContext */
 struct AVFormatContext;
+/** @brief AVCodecContext */
 struct AVCodecContext;
+/** @brief AVFrame */
 struct AVFrame;
+/** @brief AVPacket */
 struct AVPacket;
+/** @brief SwsContext */
 struct SwsContext;
+/** @brief SwrContext */
 struct SwrContext;
 namespace FMOD { class Channel; class Sound; }
 
 namespace CrashoutsEngine {
 
+    /** @brief VideoLoader */
     class VideoLoader {
     public:
         VideoLoader(const std::string& filepath);
@@ -67,6 +74,7 @@ namespace CrashoutsEngine {
         FMOD::Sound* audioSound{ nullptr };
         bool hasAudio{ false };
 
+        /** @brief VideoFrame */
         struct VideoFrame {
             std::vector<uint8_t> pixels;
             double pts;

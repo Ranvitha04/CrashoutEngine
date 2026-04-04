@@ -1,15 +1,14 @@
 /*!
 @file   fontasset.cpp
-@author Renfred Lee
-@author Renfred (RTIS)
-@author Shahrin Idzuan
+@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
 @date   19/10/2025
 
-@brief	This file contains the definition of the font asset class.
+@brief  This file contains the definition of the font asset class.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 //#pragma once
 //
 ///*                                                                   includes

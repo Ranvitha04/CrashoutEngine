@@ -17,6 +17,7 @@
 
 namespace CrashoutsEngine {
 
+    /** @brief JobSystem */
     class JobSystem {
     public:
         static JobSystem& Get() {

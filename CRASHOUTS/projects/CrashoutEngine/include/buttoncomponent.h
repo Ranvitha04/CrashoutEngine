@@ -1,15 +1,14 @@
 /*!
 @file   buttoncomponent.h
-@author Renfred Lee
-@author Renfred (RTIS)
-@author Shahrin Idzuan
+@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
 @date   02/11/2025
 
-@brief	This file defines the ButtonComponent
+@brief  This file defines the ButtonComponent
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 /*                                                                   includes
@@ -30,6 +29,7 @@ namespace Component {
 	@struct	ButtonComponent
 	@brief	A component that provides access to data required by the button component
 	*/
+	/** @brief ButtonComponent */
 	struct ButtonComponent {
 		ButtonState buttonState{ ButtonState::NORMAL };
 

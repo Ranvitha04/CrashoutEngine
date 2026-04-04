@@ -1,15 +1,14 @@
 /*!
 @file   shaderasset.h
-@author Renfred (RTIS)
-@author Shahrin Idzuan
-@author Toastyship
+@author Shahrin Idzuan (54%), Renfred (RTIS) (23%), Toastyship (23%)
 @date   19/10/2025
 
-@brief	This file contains the declaration of the shader
+@brief  This file contains the declaration of the shader
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 //#pragma once
 //
 ///*                                                                   includes
@@ -28,6 +27,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 namespace CrashoutsEngine {
     namespace Assets {
 
+        /** @brief ShaderAsset */
         class ShaderAsset : public IAsset {
         public:
 

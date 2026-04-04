@@ -1,12 +1,11 @@
-﻿/*!
-@file       debugmenu_panels.cpp
-@author     Renfred Lee
-@author     Afiq
-@author     Mohamad Amir Akmal
-@date       25/12/2025
-@brief      File containing the implementation of the ECS Debug Panel for the Debug Menu.
+/*!
+@file   debugmenu_panels.cpp
+@author Renfred Lee (54%), Afiq (30%), Mohamad Amir Akmal (16%)
+@date   25/12/2025
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  File containing the implementation of the ECS Debug Panel for the Debug Menu.
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -943,6 +942,7 @@ namespace UI {
 
         auto& audio = Audio::AudioSystem::instance();
 
+        /** @brief EditorHandle */
         struct EditorHandle {
             void* ptr = nullptr;
             enum Type { None, Event, Channel, MusicTag } type = None;

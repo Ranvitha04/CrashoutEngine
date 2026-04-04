@@ -1,17 +1,12 @@
 /*!
-@file       crashlogger.h
-@author     Renfred Lee
-@author     Mohamad Amir Akmal
-@author     Ranvitha
-@date       28/09/2025
+@file   crashlogger.h
+@author Renfred Lee (38%), Mohamad Amir Akmal (38%), Ranvitha (24%)
+@date   28/09/2025
 
-@brief      Process-wide crash logger installation entry point.
-@details    Declares a single function used to install the engine's crash
-            logging/handling hooks (e.g., unhandled exception handlers) at
-            application startup. Pass the application name so the crash
-            reporter can tag dumps/logs accordingly.
+@brief  Process-wide crash logger installation entry point.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once

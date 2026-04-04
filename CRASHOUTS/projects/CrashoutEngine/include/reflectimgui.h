@@ -1,15 +1,11 @@
 /*!
-@file       reflectimgui.h
-@author     Mohamad Amir Akmal
-@author     Ranvitha
-@author     Shahrin Idzuan
-@date       28/09/2025
-@brief      Generic ImGui drawers powered by getml/reflect-cpp (rfl::to_view).
-@details    Provides a small set of `draw_field(...)` overloads and one public
-            function `draw_reflected(T&)` that iterates the reflected fields
-            of any type `T` and renders appropriate ImGui editors.
+@file   reflectimgui.h
+@author Mohamad Amir Akmal (48%), Ranvitha (42%), Shahrin Idzuan (10%)
+@date   28/09/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Generic ImGui drawers powered by getml/reflect-cpp (rfl::to_view).
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -86,18 +82,22 @@ inline bool draw_field(const char* label, std::string& s) {
  @brief Trait to detect types with `.x` and `.y` members.
 */
 template <class T, class = void>
+/** @brief has_xy */
 struct has_xy : std::false_type {};
 
 template <class T>
+/** @brief has_xy */
 struct has_xy<T, std::void_t<decltype(std::declval<T&>().x), decltype(std::declval<T&>().y)>> : std::true_type {};
 
 /*!
  @brief Trait to detect types with `.x`, `.y`, and `.z` members.
 */
 template <class T, class = void>
+/** @brief has_xyz */
 struct has_xyz : std::false_type {};
 
 template <class T>
+/** @brief has_xyz */
 struct has_xyz<T, std::void_t<decltype(std::declval<T&>().x), decltype(std::declval<T&>().y), decltype(std::declval<T&>().z)>> : std::true_type {};
 
 // -- enums: skip  ------------------------------------------------------------

@@ -1,13 +1,11 @@
 /*!
-@file       log.h
-@author     Mohamad Amir Akmal
-@author     mohamadamirakmal.b
-@author     Ranvitha
-@date       14/09/2025
+@file   log.h
+@author Mohamad Amir Akmal (44%), mohamadamirakmal.b (34%), Ranvitha (22%)
+@date   14/09/2025
 
-@brief      Lightweight logging utility for Crashout Engine.
+@brief  Lightweight logging utility for Crashout Engine.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -36,6 +34,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
  Stores the text payload, severity level, subsystem, timestamp, and the
  originating thread ID for diagnostic and filtering purposes.
 */
+/** @brief LogMessage */
 struct LogMessage {
     std::string text;
 
@@ -101,6 +100,7 @@ inline const char* ToString(LogMessage::Subsystem v) {
  - Messages are appended to an in-memory ring buffer (bounded by capacity).
  - Each message is also printed to the terminal with colored severity tags.
 */
+/** @brief Logger */
 class Logger {
 public:
     /*!

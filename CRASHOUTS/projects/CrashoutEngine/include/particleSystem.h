@@ -18,6 +18,7 @@
 
 namespace Component {
 
+    /** @brief ParticleEmitter */
     class ParticleEmitter {
     public:
         ParticleEmitter(int maxCount = 1000);
@@ -58,6 +59,7 @@ namespace Component {
         CEColor m_endColor01;
 
     private:
+        /** @brief Particle */
         struct Particle {
             CEVec3 position;
             CEVec3 velocity;
@@ -84,6 +86,7 @@ namespace Component {
         std::vector<CrashoutsEngine::Entity> m_entities;
     };
 
+    /** @brief FireEmitter */
     class FireEmitter {
     public:
         FireEmitter(int maxCount = 2000);
@@ -124,6 +127,7 @@ namespace Component {
         float m_spread;
 
     private:
+        /** @brief Particle */
         struct Particle {
             CEVec3 position;
             CEVec3 velocity;
@@ -150,6 +154,7 @@ namespace Component {
         std::vector<CrashoutsEngine::Entity> m_entities;
     };
 
+    /** @brief FireballEmitter */
     class FireballEmitter {
     public:
         FireballEmitter(int maxCount = 2500);
@@ -198,6 +203,7 @@ namespace Component {
         float m_worldH;
 
     private:
+        /** @brief Particle */
         struct Particle {
             CEVec3 position;
             CEVec3 velocity;
@@ -231,6 +237,7 @@ namespace Component {
         std::vector<CrashoutsEngine::Entity> m_entities;
     };
 
+    /** @brief ExplosionEmitter */
     class ExplosionEmitter {
     public:
         ExplosionEmitter(int maxCount = 2000);
@@ -273,6 +280,7 @@ namespace Component {
         float m_cycleInterval{ 1.5f };
 
     private:
+        /** @brief Particle */
         struct Particle {
             CEVec3 position;
             CEVec3 velocity;
@@ -293,6 +301,7 @@ namespace Component {
         bool m_inBurst{ false };
     };
 
+    /** @brief TrajectoryEmitter */
     class TrajectoryEmitter {
     public:
         TrajectoryEmitter(int samples = 48);

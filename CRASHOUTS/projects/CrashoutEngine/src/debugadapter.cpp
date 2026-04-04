@@ -1,19 +1,11 @@
 /*!
-@file       debugadapter.cpp
-@author     Renfred Lee
-@author     Mohamad Amir Akmal
-@author     Renfred (RTIS)
-@date       25/09/2025
+@file   debugadapter.cpp
+@author Renfred Lee (84%), Mohamad Amir Akmal (2%), Renfred (RTIS) (14%)
+@date   25/09/2025
 
-Declares and registers built-in Debug Menu adapters & providers:
-- ECS component adapters: Name, Transform, RigidBody, Collider, MeshComponent
-- GameStateProvider: bridges GameStateManager to the UI
-- BuiltinPhysicsProvider: gravity & damping controls via reflection
+@brief  File-local adapters/providers and registration.
 
-These adapters make the ECS inspector and physics/game-state panels
-runtime-extensible and project-agnostic.
-
-All content 
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -382,6 +374,7 @@ namespace {
 			ImGui::EndCombo();
 		}
 	}
+	/** @brief VisualScriptAdapter */
 	struct VisualScriptAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Visual Script"; }
 
@@ -462,6 +455,7 @@ namespace {
 	@brief Unified adapter for editing core entity properties (Name, UUID, Active, Tag, Layer).
 	@details Mimics the Unity GameObject header. Combines multiple ECS components into one UI block.
 	*/
+	/** @brief CoreEntityAdapter */
 	struct CoreEntityAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Core Settings"; }
 
@@ -747,6 +741,7 @@ namespace {
 	@brief Adapter for editing Component::TransformComponent (position/scale/rotation).
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
+	/** @brief TransformAdapter */
 	struct TransformAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Transform"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -817,6 +812,7 @@ namespace {
 	@brief Adapter for editing Component::RigidBodyComponent (velocity / forces).
 	@details Displays editable velocity, read-only mass & restitution (with current API), and provides one-shot force utilities for quick testing.
 	*/
+	/** @brief RigidBodyAdapter */
 	struct RigidBodyAdapter : DebugReflection::IComponentAdapter {
 
 		bool simulateDynamics{ true };
@@ -888,6 +884,7 @@ namespace {
 	@brief Adapter for editing Component::ColliderComponent (Circle / ColliderType::AABB).
 	@details Lets users switch collider type and tweak radius/min/max; can snap to Transform.
 	*/
+	/** @brief ColliderAdapter */
 	struct ColliderAdapter : DebugReflection::IComponentAdapter {
 		std::unordered_map<Entity, bool> m_addedRigidBody;
 		const char* name() const override { return "Collider"; }
@@ -1132,6 +1129,7 @@ namespace {
 	@brief Adapter for editing Component::ShapeComponent (debug primitives).
 	@details Edits type-specific parameters and supports a per-entity preview toggle.
 	*/
+	/** @brief ShapeAdapter */
 	struct ShapeAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Shape"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -1295,6 +1293,7 @@ namespace {
 	@brief Adapter for editing Component::TextComponent.
 	@details Edits type-specific parameters and supports a per-entity preview toggle.
 	*/
+	/** @brief TextAdapter */
 	struct TextAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Text"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -1407,6 +1406,7 @@ namespace {
 	@brief Adapter for editing Component::AudioComponent.
 	@details Edits type-specific parameters and supports a per-entity preview toggle.
 	*/
+	/** @brief AudioAdapter */
 	struct AudioAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Audio"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -1618,6 +1618,7 @@ namespace {
 	@brief Adapter for editing Component::ScriptComponent.
 	@details Edits type-specific parameters and supports a per-entity preview toggle.
 	*/
+	/** @brief ScriptAdapter */
 	struct ScriptAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Script"; }
 
@@ -2311,6 +2312,7 @@ namespace CrashoutsEngine
 	@brief Adapter for editing Component::CameraComponent.
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
+	/** @brief CameraAdapter */
 	struct CameraAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Camera"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -2346,6 +2348,7 @@ namespace CrashoutsEngine
 	@brief Adapter for editing Component::ButtonComponent.
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
+	/** @brief ButtonAdapter */
 	struct ButtonAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Button"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -2416,6 +2419,7 @@ namespace CrashoutsEngine
 	@brief Adapter for editing Component::UILayoutComponent.
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
+	/** @brief UILayoutAdapater */
 	struct UILayoutAdapater : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "UI Layout"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -2513,6 +2517,7 @@ namespace CrashoutsEngine
 	@brief Adapter for editing Component::TextInputComponent.
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
+	/** @brief TextInputAdapter */
 	struct TextInputAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Text Input"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -2576,6 +2581,7 @@ namespace CrashoutsEngine
 	@brief Adapter for editing Component::GuiComponent.
 	@details Uses ImGui drag controls and writes values back to the ECS each frame.
 	*/
+	/** @brief GuiAdapter */
 	struct GuiAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "GUI"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -2675,6 +2681,7 @@ namespace CrashoutsEngine
 	 @brief Adapter for editing Component::PPComponent.
 	 @details Uses ImGui controls and writes values back to the ECS each frame.
 	 */
+	/** @brief PPAdapter */
 	struct PPAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Post-Processing"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -2821,6 +2828,7 @@ namespace CrashoutsEngine
 	/*!
 	 @brief Adapter for editing Component::LightComponent.
 	 */
+	/** @brief LightAdapter */
 	struct LightAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Light"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -2926,6 +2934,7 @@ namespace CrashoutsEngine
 	@brief Adapter for editing Component::TileMapComponent.
 	@details Uses ImGui controls to manage Tile Map assets and editor state.
 	*/
+	/** @brief TileMapAdapter */
 	struct TileMapAdapter : DebugReflection::IComponentAdapter {
 
 		// 1. Update Name
@@ -3373,6 +3382,7 @@ namespace CrashoutsEngine
 	@brief Adapter for editing Component::KeyframeAnimatorComponent.
 	@details Uses ImGui controls to manage keyframe animations.
 	*/
+	/** @brief KeyframeAnimatorAdapter */
 	struct KeyframeAnimatorAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Animation (Keyframe)"; }
 
@@ -3515,6 +3525,7 @@ namespace CrashoutsEngine
 	@brief Adapter for editing Component::ParticleSystem.
 	@details Uses ImGui controls to manage particle system data.
 	*/
+	/** @brief ParticleSystemAdapter */
 	struct ParticleSystemAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Particle System"; }
 
@@ -3841,6 +3852,7 @@ namespace CrashoutsEngine
 		}
 	};
 
+	/** @brief VideoAdapter */
 	struct VideoAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Video"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -4004,6 +4016,7 @@ namespace CrashoutsEngine
 		}
 	};
 
+	/** @brief LeaderboardAdapter */
 	struct LeaderboardAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Leaderboard"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -4135,6 +4148,7 @@ namespace CrashoutsEngine
 	@brief Physics debug provider (global forces / integrators).
 	@details Exposes gravity vector and linear damping via PhysicsHandler getters/setters.
 	*/
+	/** @brief CheckpointAdapter */
 	struct CheckpointAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Checkpoint"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -4240,6 +4254,7 @@ namespace CrashoutsEngine
 		}
 	};
 
+	/** @brief TriggerMetadataAdapter */
 	struct TriggerMetadataAdapter : DebugReflection::IComponentAdapter {
 		const char* name() const override { return "Trigger Metadata"; }
 		bool has(ECS& ecs, Entity e) const override {
@@ -4270,6 +4285,7 @@ namespace CrashoutsEngine
 		}
 	};
 
+	/** @brief BuiltinPhysicsProvider */
 	struct BuiltinPhysicsProvider final : DebugReflection::IPhysicsProvider {
 		const char* name() const override { return "Global Forces"; }
 		void draw(CrashoutsEngine::ECS&) override {

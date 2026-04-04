@@ -98,6 +98,7 @@ namespace InstancingSystem {
 	static const int DUCK_COLS = 6;
 	static const CEVec2 DUCK_SIZE = CEVec2(3.0f, 3.0f);
 
+	/** @brief DuckAnimState */
 	struct DuckAnimState {
 		int   startFrame{ 0 };
 		int   frameCount{ 1 };
@@ -1440,6 +1441,7 @@ namespace InstancingSystem {
 
 		auto& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
 
+		/** @brief RectSortItem */
 		struct RectSortItem {
 			CrashoutsEngine::Entity id;
 			Component::LayerComponent layer;
@@ -1494,6 +1496,7 @@ namespace InstancingSystem {
 		if (!globalECS) return;
 		ClearRectangleData();
 
+		/** @brief RectSortItem */
 		struct RectSortItem {
 			CrashoutsEngine::Entity id;
 			Component::LayerComponent layer;
@@ -1556,6 +1559,7 @@ namespace InstancingSystem {
 
 		auto& shapeArray = globalECS->GetComponentArray<Component::ShapeComponent>();
 
+		/** @brief CircSortItem */
 		struct CircSortItem {
 			CrashoutsEngine::Entity id;
 			Component::LayerComponent layer;
@@ -1634,6 +1638,7 @@ namespace InstancingSystem {
 		EnsureGlobalECSInitialized();
 		if (!globalECS) return;
 
+		/** @brief CircSortItem */
 		struct CircSortItem {
 			CrashoutsEngine::Entity id;
 			Component::LayerComponent layer;

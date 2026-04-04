@@ -1,15 +1,14 @@
 /*!
 @file   uilayoutcomponent.h
-@author Renfred Lee
-@author Renfred (RTIS)
-@author Ranvitha
+@author Renfred Lee (45%), Renfred (RTIS) (33%), Ranvitha (22%)
 @date   02/11/2025
 
-@brief	This file defines the UILayoutComponent
+@brief  This file defines the UILayoutComponent
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 /*                                                                   includes
@@ -49,6 +48,7 @@ namespace Component {
 	@struct	UILayoutComponent
 	@brief	A component that provides access to data required by the UI layout component
 	*/
+	/** @brief UILayoutComponent */
 	struct UILayoutComponent {
 		CEVec2 paddingXY{ 0.f, 0.f };
 		UILayout uiLayout{ UILayout::CENTER };

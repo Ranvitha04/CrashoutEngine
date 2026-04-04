@@ -1,12 +1,11 @@
 /*!
-@file       physicsmanager.h
-@author     Renfred Lee
-@author     Renfred (RTIS)
-@author     Shahrin Idzuan
-@date       08/09/2025
-@brief      Contains Physics runSystem function for collision detection and physics resolution (calculate new pos by vel)
+@file   physicsmanager.h
+@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
+@date   08/09/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Contains Physics runSystem function for collision detection and physics resolution (calculate new pos by vel)
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -24,6 +23,7 @@ namespace Physics {
 
 	void ApplyImpulse(Collision::CollisionEvent const& event, CrashoutsEngine::ECS& globalECS);
 
+	/** @brief PhysicsHandler */
 	class PhysicsHandler {
 		private:
 

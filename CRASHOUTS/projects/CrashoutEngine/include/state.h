@@ -1,12 +1,11 @@
 /*!
-@file       state.h
-@author     Renfred Lee
-@author     tristan
-@author     Ranvitha
-@date       31/10/2025
-@brief      Declaration for the template class of the FiniteStateMachine. This is used to provide a way to streamline creating a state machine for entities
+@file   state.h
+@author tristan (47%), Renfred Lee (35%), Ranvitha (18%)
+@date   31/10/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Declaration for the template class of the FiniteStateMachine. This is used to provide a way to streamline creating a state machine for entities
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -23,12 +22,15 @@ namespace State {
     using StateType = CE::s32; /*Used for ease(replacement for enums)*/
 
     template <typename T>
+    /** @brief FiniteStateMachine */
     class FiniteStateMachine;
 
     template <typename T>
+    /** @brief State */
     class State;
 
     template<typename T>
+    /** @brief StateWrapper */
     class StateWrapper {
         protected:
             StateWrapper(T mID) : mID{ mID } {}
@@ -52,6 +54,7 @@ namespace State {
     };
 
     template <typename T>
+    /** @brief State */
     class State {
     public:
         inline T GetID() { return mID; }
@@ -79,6 +82,7 @@ namespace State {
     };
 
     template <typename T>
+    /** @brief FiniteStateMachine */
     class FiniteStateMachine {
     private:
         std::map<T, State<T>> mStates;

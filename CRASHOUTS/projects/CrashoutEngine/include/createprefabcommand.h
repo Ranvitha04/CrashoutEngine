@@ -18,6 +18,7 @@ namespace CrashoutsEngine {
     @class CreatePrefabCommand
     @brief Instantiates a prefab (optionally at a position) and supports undo by destroying it.
     */
+    /** @brief CreatePrefabCommand */
     class CreatePrefabCommand : public EditorCommand {
     public:
         /*!

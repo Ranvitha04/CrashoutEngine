@@ -1,18 +1,11 @@
 /*!
-@file       editorregistry.cpp
-@author     Mohamad Amir Akmal
-@author     Ranvitha
-@date       25/09/2025
+@file   debugreflection.cpp
+@author Mohamad Amir Akmal (58%), Ranvitha (42%)
+@date   25/09/2025
 
-Implements lightweight reflection registries used by the Debug Menu:
-- ComponentRegistry: lists ECS component adapters for add/remove/inspect
-- PanelRegistry:     lists on-demand ImGui panels
-- GameStateProvider: global pointer to a runtime-installed provider
-- PhysicsRegistry:   lists physics debug providers (e.g., global gravity UI)
+@brief  Static storage for registries and provider pointer.
 
-These registries allow the UI to be data-driven instead of hardcoded.
-
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

@@ -1,13 +1,14 @@
 /*!
 @file   textcomponent.h
-@author Renfred Lee
-@author Renfred (RTIS)
-@author Ranvitha
+@author Renfred Lee (45%), Renfred (RTIS) (33%), Ranvitha (22%)
 @date   23/10/2025
 
-@brief	This file defines the TextComponent
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  This file defines the TextComponent
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
+
 #pragma once
 
 /*                                                                   includes
@@ -36,6 +37,7 @@ namespace Component {
 	@struct	TextComponent
 	@brief	A component that holds the font name, string to display,scale, offset position, color, and centered bool.
 	*/
+	/** @brief TextComponent */
 	struct TextComponent {
 		// font name
 		std::string font{ "Exo2-Regular" };

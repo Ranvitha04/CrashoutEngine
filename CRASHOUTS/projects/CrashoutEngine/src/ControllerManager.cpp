@@ -1,3 +1,14 @@
+/*!
+@file   ControllerManager.cpp
+@author Renfred
+@date   04/04/2026
+
+@brief  Declaration and definition of ControllerManager
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
+//__________________________________________________________________________*/
+
 #include "ControllerManager.h"
 #include "inputmanager.h"
 

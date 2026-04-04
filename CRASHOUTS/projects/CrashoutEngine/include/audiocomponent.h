@@ -1,12 +1,11 @@
 /*!
-@file       audiocomponent.h
-@author     Mohamad Amir Akmal
-@author     Shahrin Idzuan
-@author     Ranvitha
-@date       25/10/2025
-@brief	    This file defines the AudioComponent
+@file   audiocomponent.h
+@author Ranvitha (44%), Shahrin Idzuan (13%), Mohamad Amir Akmal (43%)
+@date   25/10/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  This file defines the AudioComponent
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -41,6 +40,7 @@ namespace Component {
         FMOD::Channel* channel = nullptr;
     };
 
+    /** @brief AudioEmitterComponent */
     struct AudioEmitterComponent {
         // The list of all sounds on this entity
         std::vector<AudioClip> clips;

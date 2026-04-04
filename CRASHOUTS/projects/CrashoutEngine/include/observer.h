@@ -1,12 +1,12 @@
 /*!
-@file       observer.h
-@author     Renfred Lee
-@author     Ranvitha
-@date       19/09/2025
-@brief      Declaration for the Base class Observar. Allows other system to inherit from this class to listen to messages emitted by
+@file   observer.h
+@author Ranvitha (68%), Renfred Lee (32%)
+@date   19/09/2025
+
+@brief  Declaration for the Base class Observar. Allows other system to inherit from this class to listen to messages emitted by
 			Observables
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -16,6 +16,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "messages.h"
 
 namespace Messaging {
+	/** @brief Observer */
 	class Observer;
 
 	using HANDLER = void (*)(Messages&, Observer&);
@@ -24,6 +25,7 @@ namespace Messaging {
 	@class Observer
 	@brief Base class that executes HANDLER when appropriate message is received from Observable
 	*/
+	/** @brief Observer */
 	class Observer {
 		protected:
 			Observer() : mType{ 0 }, delayed{ false } {}

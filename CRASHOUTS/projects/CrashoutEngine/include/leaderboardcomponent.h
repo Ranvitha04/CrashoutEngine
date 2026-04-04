@@ -14,6 +14,7 @@
 
 namespace Component {
 
+    /** @brief LeaderboardEntryData */
     struct LeaderboardEntryData {
         int rank{};
         std::string name;
@@ -22,6 +23,7 @@ namespace Component {
         std::unordered_map<std::string, std::string> extraFields;
     };
 
+    /** @brief LeaderboardComponent */
     struct LeaderboardComponent {
         // Connection
         std::string baseUrl{ CrashoutsEngine::kDefaultLeaderboardBaseUrl };

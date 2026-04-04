@@ -1,12 +1,11 @@
 /*!
-@file       quadtree.h
-@author     tristan
-@author     Tristan Mira
-@author     Ranvitha
-@date       27/10/2025
-@brief      Class declaration for the quadtree data structure, used for partitioning the screen into sections to speed up some processes (Broad phase collision)
+@file   quadtree.h
+@author tristan (36%), Tristan Mira (33%), Ranvitha (31%)
+@date   27/10/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Class declaration for the quadtree data structure, used for partitioning the screen into sections to speed up some processes (Broad phase collision)
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -20,6 +19,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 
 namespace DataStructure {
+	/** @brief QuadTree */
 	class QuadTree {
 		enum
 		{

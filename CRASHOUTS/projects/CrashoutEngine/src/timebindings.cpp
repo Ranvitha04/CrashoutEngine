@@ -1,14 +1,14 @@
 /*!
-@file       timebindings.cpp
-@author     Shahrin Idzuan
-@author     Ranvitha
-@author     Renfred Lee
-@date       29/11/2025
-@brief      bindings for Time functions
+@file   timebindings.cpp
+@author Shahrin Idzuan (63%), Ranvitha (0%), Renfred Lee (37%)
+@date   29/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  bindings for Time functions
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #include "frameratecontroller.h"
 #include "mono/metadata/loader.h"
 #include "timebindings.h"

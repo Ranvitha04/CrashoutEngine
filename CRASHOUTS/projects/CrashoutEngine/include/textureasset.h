@@ -1,22 +1,16 @@
 /*!
 @file   textureasset.h
-@author Renfred Lee
-@author Ranvitha
-@author Shahrin Idzuan
-@co-author ranvitha@digipen.edu - 30%
+@author Shahrin Idzuan (46%), Ranvitha (24%), Renfred Lee (30%)
 @date   16/09/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
-
-@brief	This file contains the declaration of the TextureAsset class, a concrete
+@brief  This file contains the declaration of the TextureAsset class, a concrete
 		asset type that encapsulates a texture's raw data and dimensions. The class
 		is designed to be used with the AssetManager and provides a static factory
 		method for safe creation and resource management.
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
-//#pragma once
-//
-///*                                                                   includes
-//----------------------------------------------------------------------------- */
 
 #ifndef TEXTUREASSET_H
 #define TEXTUREASSET_H
@@ -43,6 +37,7 @@ namespace CrashoutsEngine {
             Mirror
         };
 
+        /** @brief TextureAsset */
         class TextureAsset : public IAsset {
         public:
             using texdata = unsigned char*;
@@ -136,6 +131,7 @@ namespace Component {
     @class TextureRenderer
     @brief Component class for efficient texture rendering with caching and shared resources
     */
+    /** @brief TextureRenderer */
     class TextureRenderer {
     private:
         // Static shared resources for all texture rendering

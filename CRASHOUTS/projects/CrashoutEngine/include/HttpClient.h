@@ -11,6 +11,7 @@
 
 namespace CrashoutsEngine {
 
+    /** @brief HttpClient */
     class HttpClient {
     public:
         std::string HttpGet(const std::string& url, const std::vector<std::string>& headers = {});

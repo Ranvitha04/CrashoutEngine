@@ -16,6 +16,7 @@ All content � 2025 DigiPen Institute of Technology Singapore. All rights reser
 
 namespace CrashoutsEngine {
 
+    /** @brief DeleteEntityCommand */
     class DeleteEntityCommand : public EditorCommand {
     public:
         DeleteEntityCommand(Entity entityId);

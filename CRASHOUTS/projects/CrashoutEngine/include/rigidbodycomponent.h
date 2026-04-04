@@ -1,12 +1,11 @@
 /*!
-@file       rigidbodycomponent.h
-@author     Tristan Mira
-@author     Renfred Lee
-@author     tristan
-@date       08/09/2025
-@brief      Declaration for the class RigidBodyComponent, used for Physics system
+@file   rigidbodycomponent.h
+@author tristan (42%), Renfred Lee (36%), Tristan Mira (22%)
+@date   08/09/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Declaration for the class RigidBodyComponent, used for Physics system
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -17,6 +16,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include "physicsutils.h"
 
 namespace Component {
+	/** @brief RigidBodyComponent */
 	class RigidBodyComponent {
 	private:
 		CEVec3 mVelocity;
@@ -38,6 +38,7 @@ namespace Component {
 		f32 torque{};
 		f32 gravityScale = 1.0f;
 
+		/** @brief ReflectionType */
 		struct ReflectionType {
 			CEVec3 velocity{};
 			CEVec3 max_velocity{};

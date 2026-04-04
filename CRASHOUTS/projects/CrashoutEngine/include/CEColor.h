@@ -1,10 +1,12 @@
 /*!
-@file        CEColor.h
-@author      Renfred Lee
-@author      Ranvitha
-@date        23/11/2025
-@brief       Vector 4 for colors (Struct based, Contiguous memory)
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@file   CEColor.h
+@author Ranvitha (68%), Renfred Lee (32%)
+@date   23/11/2025
+
+@brief  Vector 4 for colors (Struct based, Contiguous memory)
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once
@@ -18,6 +20,7 @@ using CE::f32;
 @brief Vector 4 of single precision float representing a Color.
        Stored as r, g, b, a but accessible via array index or x, y, z, w aliases.
 */
+/** @brief CEColor */
 struct CEColor
 {
     // ---------------------------------------------------------------------

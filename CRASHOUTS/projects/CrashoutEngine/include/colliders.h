@@ -1,13 +1,11 @@
 /*!
-@file       colliders.h
-@author     Renfred Lee
-@author     Tristan Mira
-@author     Renfred (RTIS)
-@date       26/10/2025
-@brief      Type declarations for the different types of colliders
+@file   colliders.h
+@author Renfred Lee (59%), Tristan Mira (40%), Renfred (RTIS) (1%)
+@date   26/10/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Type declarations for the different types of colliders
 
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -51,6 +49,7 @@ namespace Collision {
 	@struct	CollisionManifold
 	@brief	Contains information regarding Collision events between Entities
 	*/
+	/** @brief CollisionManifold */
 	struct CollisionManifold {
 		CEVec3 normal;
 		std::array<CEVec3, 2> contactPoints; /*Max contact point of 2 for ColliderType::AABB, 1 for Circle*/
@@ -63,6 +62,7 @@ namespace Collision {
 	@struct	CollisionEvent
 	@brief	Contains which pairs of entity has collided along with their Collision manifold
 	*/
+	/** @brief CollisionEvent */
 	struct CollisionEvent {
 		CollisionManifold colManifold;
 		CrashoutsEngine::Entity entity1;
@@ -73,6 +73,7 @@ namespace Collision {
 	@class	Collider
 	@brief	Base class for inheriting other colliders
 	*/
+	/** @brief Collider */
 	class Collider {
 	public:
 		ColliderType type;
@@ -99,6 +100,7 @@ namespace Collision {
 	@class	Circle
 	@brief	Basic Circle collider with radius and position
 	*/
+	/** @brief Circle */
 	class Circle : public Collider {
 	public:
 		f32 radius;
@@ -115,6 +117,7 @@ namespace Collision {
 	@class	AABBRect
 	@brief	Basic aabb rectangle with CEVec3 min and CEVec3 max
 	*/
+	/** @brief AABBRect */
 	class AABBRect : public Collider {
 	public:
 		CEVec3 min;
@@ -140,6 +143,7 @@ namespace Collision {
 	@class OBBRect
 	@brief ColliderType::OBB rectangle with a collection of Vertices
 	*/
+	/** @brief OBBRect */
 	class OBBRect : public Collider {
 		/*NORMAL AND VERTEX FOR THE PAIR*/
 	public:
@@ -169,6 +173,7 @@ namespace Collision {
 	@class Polygon
 	@brief Polygon shape with a collection of Vertices
 	*/
+	/** @brief Polygon */
 	class Polygon : public Collider {
 		/*NORMAL AND VERTEX FOR THE PAIR*/
 	public:
@@ -221,6 +226,7 @@ namespace Collision {
 	@class LineSegment
 	@brief	Struct for the Line Segment collider
 	*/
+	/** @brief LineSegment */
 	class LineSegment : public Collider {
 	public:
 		// GETTERS
@@ -265,6 +271,7 @@ namespace Collision {
 		CEVec3 normal;	// Normal perpendicular to the line
 	};
 
+	/** @brief ColliderFactory */
 	class ColliderFactory
 	{
 

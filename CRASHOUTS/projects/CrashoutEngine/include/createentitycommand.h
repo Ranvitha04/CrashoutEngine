@@ -19,6 +19,7 @@ namespace CrashoutsEngine {
     @class CreateEntityCommand
     @brief Creates an entity and stores a snapshot so it can be recreated on redo.
     */
+    /** @brief CreateEntityCommand */
     class CreateEntityCommand : public EditorCommand {
     public:
         /*!

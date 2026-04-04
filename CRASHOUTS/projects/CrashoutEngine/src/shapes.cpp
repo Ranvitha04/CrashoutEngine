@@ -52,6 +52,7 @@ namespace Component {
 	The BASE_SIZE determines the world units for the smaller dimension of the screen,
 	with the larger dimension scaled proportionally based on aspect ratio.
 	*/
+	/** @brief WorldSettings */
 	struct WorldSettings {
 		/*!
 		@brief Base world size in units for the smaller screen dimension.

@@ -1,18 +1,17 @@
 /*!
 @file   sceneasset.cpp
-@author Renfred Lee
-@author Renfred (RTIS)
-@author Shahrin Idzuan
-=@date   16/09/2025
+@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
+@date   16/09/2025
 
-@brief	This file contains the definition of the Scene class, a rough implementation
+@brief  This file contains the definition of the Scene class, a rough implementation
 		of asset type that encapsulates a rapidjson value data. The class
 		is designed to be used with the AssetManager and provides a static factory
 		method for safe creation and resource management.
 
-All content ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½ 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 //#pragma once
 //
 ///*                                                                   includes

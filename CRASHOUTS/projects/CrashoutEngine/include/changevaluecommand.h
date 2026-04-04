@@ -1,13 +1,14 @@
 /*!
-@file       changevaluecommand.h
-@author     Shahrin Idzuan
-@author     m.biniswandi
-@author     Ranvitha
-@date       29/11/2025
-@brief      command to change a value with undo/redo support
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@file   changevaluecommand.h
+@author Shahrin Idzuan (37%), m.biniswandi (31%), Ranvitha (32%)
+@date   29/11/2025
+
+@brief  command to change a value with undo/redo support
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 #include "undomanager.h"
 
@@ -15,6 +16,7 @@ namespace CrashoutsEngine
 {
 
     template<typename T>
+    /** @brief ChangeValueCommand */
     class ChangeValueCommand : public EditorCommand {
         T mOldValue, mNewValue;
         std::function<void(const T&)> mSetter;
@@ -29,6 +31,7 @@ namespace CrashoutsEngine
     };
 
     template <typename T>
+    /** @brief ValueCommand */
     class ValueCommand : public EditorCommand
     {
 	    T& mRef, mOldValue, mNewValue;

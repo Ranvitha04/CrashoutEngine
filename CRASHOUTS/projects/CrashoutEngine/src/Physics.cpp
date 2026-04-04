@@ -1,12 +1,11 @@
 /*!
-@file       Physics.cpp
-@author     tristan
-@author     Renfred Lee
-@author     Renfred (RTIS)
-@date       08/09/2025
-@brief      Contains Definitions for Physics runSystem function and the RigidBodyComponent
+@file   Physics.cpp
+@author Renfred (RTIS) (72%), Renfred Lee (11%), tristan (17%)
+@date   08/09/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Contains Definitions for Physics runSystem function and the RigidBodyComponent
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

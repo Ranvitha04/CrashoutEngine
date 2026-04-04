@@ -1,14 +1,14 @@
 /*!
-@file       collidereventmanager.h
-@author     Shahrin Idzuan
-@author     Renfred Lee
-@author     tristan
-@date       29/11/2025
-@brief      colliderevent manager declaration
+@file   collidereventmanager.h
+@author tristan (47%), Renfred Lee (17%), Shahrin Idzuan (36%)
+@date   29/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  colliderevent manager declaration
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 
@@ -23,11 +23,13 @@ All content � 2025 Digipen Institute of Technology Singapore.All rights reserv
 
 namespace CrashoutsEngine {
 
+	/** @brief ContactInfo */
 	struct ContactInfo {
 		Collision::CollisionManifold info;
 		Entity collidedEntity;
 	};
 
+	/** @brief CollisionEventManager */
 	class CollisionEventManager : public Messaging::Observer {
 	public:
 		using CallbackFn = std::function<void(Entity)>;
@@ -35,6 +37,7 @@ namespace CrashoutsEngine {
 		/*
 		@brief Allows one entity to hold collider and trigger callbacks
 		*/
+		/** @brief EntityEventCollection */
 		struct EntityEventCollection {
 			// Physics Collision Callbacks
 			CallbackFn onCollisionEnter = nullptr;

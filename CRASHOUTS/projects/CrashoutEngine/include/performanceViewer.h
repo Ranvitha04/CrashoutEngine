@@ -1,24 +1,11 @@
 /*!
-@file       performanceViewer.h
-@author     Mohamad Amir Akmal
-@author     Shahrin Idzuan
-@author     Renfred Lee
-@date       06/09/2025
+@file   performanceViewer.h
+@author Mohamad Amir Akmal (80%), Shahrin Idzuan (0%), Renfred Lee (20%)
+@date   06/09/2025
 
-@brief      CPU profiling and memory tracking utilities for Crashout Engine.
-@details    This header provides two major runtime diagnostic tools:
-            - **Frame Profiler**: Measures per-frame CPU time across subsystems,
-              with EMA smoothing, percent normalization, history tracking,
-              and ImGui visualization.
-            - **Memory Tracker**: Tracks memory allocations per subsystem
-              (`MemTag`), monitors process memory usage (Working Set &
-              Private Bytes), and renders a memory usage panel.
+@brief  CPU profiling and memory tracking utilities for Crashout Engine.
 
-            These tools are intended for development builds to monitor
-            performance bottlenecks, visualize profiling history, and
-            analyze memory consumption in real-time.
-
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -61,6 +48,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 @var pct
       percentage of the chosen budget (see @ref FrameProfiler::PercentMode).
 */
+/** @brief ProfilerSample */
 struct ProfilerSample {
     std::string name;
     double ms = 0.0;
@@ -71,6 +59,7 @@ struct ProfilerSample {
 @class  FrameProfiler
 @brief  per-frame profiler with EMA smoothing and percent normalization.
 */
+/** @brief FrameProfiler */
 class FrameProfiler {
 public:
     static constexpr size_t kHistory = 240;              // ~4s @60fps
@@ -117,6 +106,7 @@ public:
     construct at scope entry and let it destruct at scope exit to record the
     elapsed milliseconds to the parent @ref FrameProfiler under a name.
     */
+    /** @brief Scoped */
     class Scoped {
     public:
         /*!
@@ -379,6 +369,7 @@ enum class MemTag : uint8_t {
  Tracks total live, allocated, and freed memory for each `MemTag` category.
  Accessed as a singleton via `MemTracker::instance()`.
 */
+/** @brief MemTracker */
 struct MemTracker {
     std::atomic<long long> live[(size_t)MemTag::Count]{};
     std::atomic<long long> allocs[(size_t)MemTag::Count]{};
@@ -393,6 +384,7 @@ inline thread_local MemTag g_memTagTLS = MemTag::Unknown;
 @struct ScopedMemTag
 @brief  RAII helper to set a temporary tag in a scope
 */
+/** @brief ScopedMemTag */
 struct ScopedMemTag {
     MemTag prev;
     explicit ScopedMemTag(MemTag t) : prev(g_memTagTLS)

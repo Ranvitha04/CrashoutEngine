@@ -20,12 +20,14 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 namespace CrashoutsEngine {
     using Entity = unsigned int;
+    /** @brief ECS */
     class ECS;
 }
 
 enum class KFInterp { Constant, Linear, Cubic };
 enum class KFWrap { Loop, Clamp };
 
+/** @brief KFKey */
 struct KFKey {
     float time = 0.f;     
     float value = 0.f;     
@@ -34,6 +36,7 @@ struct KFKey {
     KFInterp interp = KFInterp::Linear;
 };
 
+/** @brief AnimationCurve */
 struct AnimationCurve {
     std::vector<KFKey> keys;  
 
@@ -51,11 +54,13 @@ enum class KFProperty {
     SpriteIndex   
 };
 
+/** @brief KFBinding */
 struct KFBinding {
     KFProperty     property;
     AnimationCurve curve;
 };
 
+/** @brief AnimationClip */
 struct AnimationClip {
     std::string            name;
     KFWrap                 wrap = KFWrap::Loop;
@@ -76,6 +81,7 @@ struct AnimationClip {
     }
 };
 
+/** @brief KeyframeAnimatorComponent */
 struct KeyframeAnimatorComponent {
     std::unordered_map<std::string, AnimationClip> clips;
 

@@ -1,15 +1,13 @@
-/*!    
+/*!
 @file   shaderasset.cpp
-@author Renfred (RTIS)
-@author Ranvitha
-@author Shahrin Idzuan
+@author Shahrin Idzuan (72%), Ranvitha (19%), Renfred (RTIS) (9%)
 @date   16/09/2025
 
-@brief	This file contains the definition of the ShaderAsset class.
+@brief  This file contains the definition of the ShaderAsset class.
          It loads shader paths from a JSON file and uses the
          GLSLShader class to compile and link them.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

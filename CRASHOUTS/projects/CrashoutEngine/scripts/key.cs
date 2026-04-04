@@ -1,13 +1,14 @@
 /*!
-@file       Keys.cs
-@author     Renfred (RTIS)
-@author     Renfred Lee
-@date       29/11/2025
-@brief      keys enumeration for keyboard input handling
+@file   key.cs
+@author Renfred Lee (69%), Renfred (RTIS) (31%)
+@date   29/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  keys enumeration for keyboard input handling
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 namespace CrashoutsEngine
 {
     public enum Key

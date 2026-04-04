@@ -1,14 +1,14 @@
 /*!
-@file       InternalCalls.cs
-@author     Mohamad Amir Akmal
-@author     Ranvitha
-@author     mohamadamirakmal.b
-@date       29/11/2025
-@brief      internal calls between managed and native code for Crashouts Engine
+@file   InternalCall.cs
+@author Ranvitha (49%), Mohamad Amir Akmal (21%), mohamadamirakmal.b (30%)
+@date   29/11/2025
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  internal calls between managed and native code for Crashouts Engine
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 using System;
 using System.Runtime.CompilerServices;
 

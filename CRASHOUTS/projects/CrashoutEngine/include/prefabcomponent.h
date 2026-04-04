@@ -14,6 +14,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 namespace Component {
 
+    /** @brief PrefabInstanceComponent */
     struct PrefabInstanceComponent
     {
         std::string prefabName;  

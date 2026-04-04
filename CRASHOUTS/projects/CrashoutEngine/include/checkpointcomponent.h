@@ -8,6 +8,7 @@
 #include "CEVec3.h"
 
 namespace Component {
+    /** @brief CheckpointComponent */
     struct CheckpointComponent {
         CEVec3 respawnPosition{ 0.0f, 0.0f, 0.0f };
         uint32_t targetRespawnEntity = 0; // Runtime ID

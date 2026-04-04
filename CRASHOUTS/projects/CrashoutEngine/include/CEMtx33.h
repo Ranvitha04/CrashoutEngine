@@ -1,14 +1,12 @@
 /*!
-@file       CEMtx33.h
-@author     Shahrin Idzuan
-@author     tristan
-@author     Toastyship
-@date       05/09/2025
-@brief      3x3 matrix for 2D affine transforms
+@file   CEMtx33.h
+@author Toastyship (56%), tristan (40%), Shahrin Idzuan (4%)
+@date   05/09/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  3x3 matrix for 2D affine transforms
 
-bruh
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once
@@ -25,6 +23,7 @@ using CE::f32;
 
 Provides constructors,Identity, Zero, Translation/Rotation/Scale, TRS and basic matrix operations
 */
+/** @brief CEMtx33 */
 struct CEMtx33
 {
 	f32 m[3][3];

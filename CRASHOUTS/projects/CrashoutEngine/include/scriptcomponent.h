@@ -19,6 +19,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 namespace CrashoutsEngine
 {
+    /** @brief ScriptInstance */
     struct ScriptInstance
     {
         std::string ClassName; // e.g. "PlayerScript" that does something for once.
@@ -41,6 +42,7 @@ namespace CrashoutsEngine
 
 namespace Component {
 
+    /** @brief ScriptComponent */
     struct ScriptComponent
     {
         uint32_t EntityID = 0;

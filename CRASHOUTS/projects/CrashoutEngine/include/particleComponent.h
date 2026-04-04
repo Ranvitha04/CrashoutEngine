@@ -32,6 +32,7 @@ namespace Component {
     /*
 	@brief  Stores individual live particle state.
     */
+    /** @brief ParticleState */
     struct ParticleState {
         // Current live count
         size_t activeCount{ 0 };
@@ -52,6 +53,7 @@ namespace Component {
     /*
     @brief  Particle Component data.
     */
+    /** @brief ParticleComponent */
     struct ParticleComponent {
         ParticleSystem::ParticlePreset preset{ ParticleSystem::ParticlePreset::Custom };
         bool burstRequested{ false };

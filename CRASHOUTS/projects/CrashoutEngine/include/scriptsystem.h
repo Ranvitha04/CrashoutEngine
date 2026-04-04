@@ -37,6 +37,7 @@ using GlobalScriptBackup = std::map<uint32_t, ScriptBackupData>;
 
 namespace CrashoutsEngine
 {
+    /** @brief ScriptSystem */
     class ScriptSystem
     {
     public:

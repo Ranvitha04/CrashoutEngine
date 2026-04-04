@@ -19,6 +19,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 @class Settings
 @brief Provides static methods for managing screen size and configuration
 */
+/** @brief Settings */
 class Settings {
 public:
     static const float TARGET_ASPECT_RATIO;

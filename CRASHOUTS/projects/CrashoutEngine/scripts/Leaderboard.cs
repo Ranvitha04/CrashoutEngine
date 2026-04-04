@@ -1,13 +1,14 @@
 /*!
-@file       leaderboard.cs
-@author     Renfred (RTIS)
-@author     Renfred Lee
-@date       08/03/2025
-@brief      Leaderboard interface with C++ leaderboard items
+@file   Leaderboard.cs
+@author Renfred Lee (69%), Renfred (RTIS) (31%)
+@date   08/03/2025
 
-All content � 2026 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  Leaderboard interface with C++ leaderboard items
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 using System;
 using System.Runtime.CompilerServices;
 

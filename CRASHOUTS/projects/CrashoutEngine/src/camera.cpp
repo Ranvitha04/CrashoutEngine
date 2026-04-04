@@ -1,15 +1,11 @@
 /*!
-@file        camera.h
-@author      Renfred Lee
-@author      Renfred (RTIS)
-@author      Ranvitha
-@date        29/10/2025
+@file   camera.cpp
+@author Renfred Lee (45%), Renfred (RTIS) (33%), Ranvitha (22%)
+@date   29/10/2025
 
-This file
-*//*__________________________________________________________________________*/
+@brief  Declaration and definition of camera
 
-/*!
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

@@ -58,6 +58,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 namespace Component {
 
+	/** @brief WorldSettings */
 	struct WorldSettings {
 		inline static float BASE_SIZE = 100.f;
 		inline static float MAX_NEAR_FAR = 50.f;

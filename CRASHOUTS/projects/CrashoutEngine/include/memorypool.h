@@ -12,10 +12,12 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <cstdint>
 #include <new>
 
+/** @brief MemMgrConfig */
 struct MemMgrConfig {
     static bool s_useMemoryPool;
 };
 
+/** @brief MemoryPool */
 class MemoryPool {
 public:
     MemoryPool() = default;
@@ -32,8 +34,10 @@ public:
     std::size_t GetActiveAllocs()  const { return m_activeAllocs; }
 
 private:
+    /** @brief FreeNode */
     struct FreeNode { FreeNode* next; };
 
+    /** @brief PageHeader */
     struct PageHeader {
         PageHeader* next;
         // blocks follow right after header

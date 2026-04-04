@@ -1,15 +1,12 @@
 /*!
-@file       crashlogger.cpp
-@author     Mohamad Amir Akmal
-@author     Renfred Lee
-@author     Renfred (RTIS)
-@date       06/09/2025
+@file   crashlogger.cpp
+@author Mohamad Amir Akmal (83%), Renfred Lee (15%), Renfred (RTIS) (2%)
+@date   06/09/2025
 
-@brief
-This file provides a simple crash logger that writes error information
+@brief  This file provides a simple crash logger that writes error information
 to a text file when the program crashes.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

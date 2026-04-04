@@ -1,14 +1,11 @@
 /*!
-@file       debugdefaults.h
-@author     Renfred Lee
-@author     Mohamad Amir Akmal
-@author     mohamadamirakmal.b
-@date       25/09/2025
+@file   debugdefaults.h
+@author Mohamad Amir Akmal (52%), Renfred Lee (47%), mohamadamirakmal.b (1%)
+@date   25/09/2025
 
-Declare struct defaults used across Debug Menu adapters
-(e.g., drag speeds, initial rigidbody values, default collider sizes).
+@brief  Stores default settings and configuration values used throughout the debug UI.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -28,6 +25,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
  default display names. Modifying these values can tune the user experience
  and adjust the default behavior of the debug interface.
 */
+/** @brief DebugDefaults */
 struct DebugDefaults {
     // -- Entity Metadata ------------------------------------------------------
 

@@ -1,14 +1,14 @@
 /*!
-@file       CETypes.h
-@author     Shahrin Idzuan
-@author     Renfred Lee
-@author     Ranvitha
-@date       05/09/2025
-@brief      Type aliases for standard integer and floating point types
+@file   CETypes.h
+@author Shahrin Idzuan (46%), Renfred Lee (34%), Ranvitha (20%)
+@date   05/09/2025
 
-This file provides a shortened naming convention for standard fixed width integer and floating point types
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Type aliases for standard integer and floating point types
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
+
 #pragma once
 
 #include <cstdint>

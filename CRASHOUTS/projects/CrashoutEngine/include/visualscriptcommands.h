@@ -19,6 +19,7 @@ namespace UI
     @class CreateVSNodeCommand
     @brief Adds a node to a visual scripting graph.
     */
+    /** @brief CreateVSNodeCommand */
     class CreateVSNodeCommand : public EditorCommand
     {
     public:
@@ -48,6 +49,7 @@ namespace UI
     @class DeleteVSNodeCommand
     @brief Removes a node from a visual scripting graph, tracking removed links for undo.
     */
+    /** @brief DeleteVSNodeCommand */
     class DeleteVSNodeCommand : public EditorCommand
     {
     public:
@@ -79,6 +81,7 @@ namespace UI
     @class CreateVSLinkCommand
     @brief Adds a link/connection to a visual scripting graph.
     */
+    /** @brief CreateVSLinkCommand */
     class CreateVSLinkCommand : public EditorCommand
     {
     public:
@@ -108,6 +111,7 @@ namespace UI
     @class MoveVSNodeCommand
     @brief Moves a node to a new position in the visual scripting editor.
     */
+    /** @brief MoveVSNodeCommand */
     class MoveVSNodeCommand : public EditorCommand
     {
     public:
@@ -141,6 +145,7 @@ namespace UI
     @class EditVSNodeCommand
     @brief Replaces a node's data, enabling undo/redo for node edits.
     */
+    /** @brief EditVSNodeCommand */
     class EditVSNodeCommand : public EditorCommand
     {
     public:

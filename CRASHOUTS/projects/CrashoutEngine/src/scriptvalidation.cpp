@@ -1,13 +1,11 @@
 /*!
-@file       scriptvalidation.cpp
-@author     Renfred Lee
-@author     Mohamad Amir Akmal
-@author     Ranvitha
-@date       26/11/2025
+@file   scriptvalidation.cpp
+@author Renfred Lee (38%), Mohamad Amir Akmal (38%), Ranvitha (24%)
+@date   26/11/2025
 
-Defines the functions for script validation.
+@brief  Declaration and definition of scriptvalidation
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

@@ -1,14 +1,11 @@
-#pragma once
-
 /*!
 @file   uibindings.h
-@author Ranvitha
-@author Shahrin Idzuan
-@author Renfred Lee
+@author Shahrin Idzuan (43%), Ranvitha (29%), Renfred Lee (28%)
 @date   02/11/2025
-@brief	this file contains the function declarations for registering UI-related bindings in the CrashoutsEngine
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  this file contains the function declarations for registering UI-related bindings in the CrashoutsEngine
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

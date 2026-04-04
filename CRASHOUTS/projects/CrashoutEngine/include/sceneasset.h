@@ -1,16 +1,17 @@
 /*!
 @file   sceneasset.h
-@author Renfred Lee
-@author Ranvitha
-@author Shahrin Idzuan
-=@date   16/09/2025
+@author Shahrin Idzuan (46%), Ranvitha (24%), Renfred Lee (30%)
+@date   16/09/2025
 
-@brief	This file contains the declaration of the Scene class, a rough implementation
+@brief  This file contains the declaration of the Scene class, a rough implementation
         of asset type that encapsulates a rapidjson value data. The class
         is designed to be used with the AssetManager and provides a static factory
         method for safe creation and resource management.
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
+
 //#pragma once
 //
 ///*                                                                   includes
@@ -31,6 +32,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 namespace CrashoutsEngine {
     namespace Assets {
 
+        /** @brief SceneAsset */
         class SceneAsset : public IAsset {
         public:
             // Default Constructor
@@ -88,6 +90,7 @@ namespace CrashoutsEngine {
         // Helper functions for Undo/Redo and generic serialization
         rapidjson::Value SerializeEntity(uint32_t entityId, rapidjson::Document::AllocatorType& allocator);
         
+        /** @brief ParentLinkInfo */
         struct ParentLinkInfo {
             uint32_t childEntity;
             uint64_t parentUUID;

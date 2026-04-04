@@ -1,12 +1,12 @@
 /*!
-@file       collisionmanager.h
-@author     Renfred Lee
-@author     tristan
-@author     Shahrin Idzuan
-@date       08/09/2025
-@brief      Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
+@file   collisionmanager.h
+@author Renfred Lee (44%), tristan (32%), Shahrin Idzuan (24%)
+@date   08/09/2025
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once
@@ -45,6 +45,7 @@ namespace Collision {
     @class    CollisionMessage
     @brief    Used as the data to collision messages
     */
+    /** @brief CollisionMessage */
     class CollisionMessage : public Messaging::Messages {
     private:
         CollisionManifold colManifold;
@@ -60,6 +61,7 @@ namespace Collision {
     @struct    CollisionProps
     @brief    Used to pass data about entities(collider, velocity and position)
     */
+    /** @brief CollisionProps */
     struct CollisionProps {
         std::unique_ptr<Collider> const& collider;
         const CEVec3& vel;
@@ -72,6 +74,7 @@ namespace Collision {
     @class    CollisionHandler
     @brief    Used to contain functions for checking collision and able to return a function pointer based on the type of collision passed in
     */
+    /** @brief CollisionHandler */
     class CollisionHandler : public Messaging::Observable {
     public:
         using Contact = std::optional<CollisionManifold>;

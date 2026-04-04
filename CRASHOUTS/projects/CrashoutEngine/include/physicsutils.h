@@ -1,12 +1,11 @@
 /*!
-@file       physicsutils.h
-@author     Renfred Lee
-@author     tristan
-@author     Tristan Mira
-@date       02/11/2025
-@brief      Declaration for types of forces and a force manager
+@file   physicsutils.h
+@author Tristan Mira (48%), tristan (22%), Renfred Lee (30%)
+@date   02/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Declaration for types of forces and a force manager
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -27,6 +26,7 @@ namespace Physics {
 		GRAVITY
 	};*/
 
+	/** @brief LinearForce */
 	struct LinearForce {
 		CE::s32 id{};
 		CEVec3 unitDir{ CEVec3{} };
@@ -38,6 +38,7 @@ namespace Physics {
 
 	constexpr f32 DEFAULT_GRAVITY_VALUE{ 70.f };
 
+	/** @brief ForceManager */
 	class ForceManager {
 	public:
 		using ForceList = std::vector<LinearForce>;

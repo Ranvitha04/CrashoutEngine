@@ -1,27 +1,17 @@
 /*!
-@file       hierarchycomponent.h
-@author     Renfred Lee
-@author     Shahrin Idzuan
-@date       30/12/2025
-@brief      Component definitions for hierarchy system.
+@file   hierarchycomponent.h
+@author Shahrin Idzuan (94%), Renfred Lee (6%)
+@date   30/12/2025
 
-All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
-*/
+@brief  Component definitions for hierarchy system.
 
-#pragma once
-#include <vector>
-#include "entitymanager.h" 
-#include "CEVec2.h" 
-#include "CEVec3.h" 
-#include "CEColor.h" 
-
-/*!
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
-
+#pragma once
 namespace Component {
 
+    /** @brief ParentComponent */
     struct ParentComponent {
         CrashoutsEngine::Entity parent{ 0 };
 
@@ -34,6 +24,7 @@ namespace Component {
 
     };
 
+    /** @brief ChildrenComponent */
     struct ChildrenComponent {
         std::vector<CrashoutsEngine::Entity> children;
     };

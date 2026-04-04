@@ -1,17 +1,16 @@
 /*!
 @file   assetmanager.h
-@author Renfred Lee
-@author Ranvitha
-@author Renfred (RTIS)
+@author Renfred Lee (39%), Ranvitha (24%), Renfred (RTIS) (37%)
 @date   15/09/2025
 
-@brief	This file contains the declaration of the AssetManager, a singleton
+@brief  This file contains the declaration of the AssetManager, a singleton responsible
 		class responsible for managing and providing access to various game assets.
 		It uses a two-map approach for efficient asset retrieval by name.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 /*                                                                   includes
@@ -53,6 +52,7 @@ namespace CrashoutsEngine {
 			TileMap
 		};
 
+		/** @brief LoadJob */
 		struct LoadJob {
 			std::string name;
 			std::string path;
@@ -82,6 +82,7 @@ namespace CrashoutsEngine {
 		models, sounds). It provides a common interface for the AssetManager
 		to handle them uniformly.
 		*/
+		/** @brief IAsset */
 		class IAsset {
 		public: 
 			/*!
@@ -137,6 +138,7 @@ namespace CrashoutsEngine {
 		AssetManager instance. It stores assets using a two-map system for fast
 		retrieval by name.
 		*/
+        /** @brief AssetManager */
         class AssetManager {
         public:
 			/*!

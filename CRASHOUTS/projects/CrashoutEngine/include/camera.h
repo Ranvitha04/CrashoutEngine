@@ -33,6 +33,7 @@ namespace CrashoutsEngine {
 
 	namespace RenderCamera {
 
+		/** @brief Camera */
 		class Camera {
 		public:
 			// --- Constructors ---

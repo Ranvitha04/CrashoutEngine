@@ -10,6 +10,7 @@ All content ? 2025 Digipen Institute of Technology Singapore. All rights reserve
 #pragma once
 
 namespace CrashoutsEngine {
+    /** @brief VideoSystem */
     class VideoSystem {
     public:
         static void Update(float dt);

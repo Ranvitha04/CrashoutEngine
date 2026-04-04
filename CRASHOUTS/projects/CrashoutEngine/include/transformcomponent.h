@@ -1,16 +1,15 @@
 /*!
 @file   transformcomponent.h
-@author Renfred Lee
-@author Ranvitha
-@author tristan
+@author tristan (56%), Ranvitha (25%), Renfred Lee (19%)
 @date   05/09/2025
 
-@brief	This file defines the TransformComponent, a simple data structure 
+@brief  This file defines the TransformComponent, a simple data structure 
 		used to store an entity's 3D position, rotation, and scale.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 /*                                                                   includes
@@ -26,6 +25,7 @@ namespace Component {
 	@struct	TransformComponent
 	@brief	A component that holds an entity's position, rotation, and scale.
 	*/
+	/** @brief TransformComponent */
 	struct TransformComponent {
 		// Rotational transform
 		float rotation = 0.f;

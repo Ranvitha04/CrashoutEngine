@@ -1,13 +1,12 @@
 /*!
-@file       CEVec2.h
-@author     Shahrin Idzuan
-@author     Renfred Lee
-@author     Ranvitha
-@date       05/09/2025
-@brief      2D vector type with common operations
+@file   CEVec2.h
+@author Shahrin Idzuan (46%), Renfred Lee (34%), Ranvitha (20%)
+@date   05/09/2025
 
-The file defines a 2D vector structure with basic arithmetic and comparison operations
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  2D vector type with common operations
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once
@@ -21,6 +20,7 @@ using CE::f32;
 
 This struct represents a 2D vector and provides common vector operations such as addition, subtraction, scalar multiplication/division and comparison
 */
+/** @brief CEVec2 */
 struct CEVec2
 {
 	/// The x component of the vector

@@ -7,6 +7,7 @@
 #pragma once
 
 namespace CrashoutsEngine {
+    /** @brief ECS */
     class ECS;
 
     namespace LeaderboardSystem {

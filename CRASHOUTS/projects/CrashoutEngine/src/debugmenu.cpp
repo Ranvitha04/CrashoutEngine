@@ -1,26 +1,11 @@
 /*!
-@file       debugmenu.cpp
-@author     Mohamad Amir Akmal
-@author     Renfred Lee
-@author     Afiq
-@date       14/09/2025
+@file   debugmenu.cpp
+@author Afiq (39%), Renfred Lee (36%), Mohamad Amir Akmal (25%)
+@date   14/09/2025
 
-@brief      Renders the editor/debug Im
+@brief  Renders the editor/debug Im
 
-for Crashout Engine.
-@details    This module draws every editor-facing window:
-			- engine controls (play / pause / stop)
-			- game viewport (with ImGuizmo)
-			- ECS / Inspector panels
-			- Asset browser / drag-and-drop
-			- Performance / profiler view
-			- Audio test panel
-
-			It also contains all the small, file-local editor state
-			(selected entity, drag payloads, gizmo mode, etc.)
-			so that the rest of the engine code stays clean.
-
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

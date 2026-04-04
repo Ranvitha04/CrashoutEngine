@@ -168,10 +168,15 @@ namespace CaptureData {
 
 	using namespace Component;
 
+	/** @brief TransformData */
 	struct TransformData { CEVec3 pos{ 0,0,0 }; float rot{ 0.f }; CEVec2 size{ 1,1 }; };
+	/** @brief TagData */
 	struct TagData { unsigned int tagMask{ 0 }; }; // Was LayerData
+	/** @brief LayerData */
 	struct LayerData { bool hasComp{ false }; std::string layerName{ "Default" }; int z{ 0 }; }; // Changed default to "Default"
+	/** @brief RBData */
 	struct RBData { float mass{ 0 }, rest{ 0 }, sFric{ 0 }, dFric{ 0 }, inert{ 0 }, invInert{ 0 }; bool isTrigger{ false }; bool hasComp{ false }; };
+	/** @brief ColliderData */
 	struct ColliderData {
 		bool hasComp{ false }; Collision::ColliderType type{ Collision::ColliderType::AABB };
 		bool isTrigger{ false }; bool enabled{ true };
@@ -179,23 +184,41 @@ namespace CaptureData {
 		float radius{ 1.f }; CEVec3 min{ 0,0,0 }; CEVec3 max{ 0,0,0 }; float rotation{ 0.f };
 		std::vector<CEVec3> verts; // For Polygon
 	};
+	/** @brief ShapeData */
 	struct ShapeData { bool hasComp{ false }; ShapeComponent c; };
+	/** @brief TextData */
 	struct TextData { bool hasComp{ false }; TextComponent c; };
+	/** @brief AudioData */
 	struct AudioData { bool hasComp{ false }; AudioEmitterComponent c; };
+	/** @brief ScriptData */
 	struct ScriptData { bool hasComp{ false }; std::string scriptsJson; };
+	/** @brief ParticleData */
 	struct ParticleData { bool hasComp{ false }; ParticleComponent c; };
+	/** @brief CameraData */
 	struct CameraData { bool hasComp{ false }; CameraComponent c; };
+	/** @brief SpriteData */
 	struct SpriteData { bool hasComp{ false }; SpriteAnimatorComponent c; };
+	/** @brief KeyframeData */
 	struct KeyframeData { bool hasComp{ false }; KeyframeAnimatorComponent c; };
+	/** @brief TileMapData */
 	struct TileMapData { bool hasComp{ false }; TileMapComponent c; };
+	/** @brief ParentData */
 	struct ParentData { bool hasComp{ false }; ParentComponent c; };
+	/** @brief GuiData */
 	struct GuiData { bool hasComp{ false }; GuiComponent c; };
+	/** @brief ButtonData */
 	struct ButtonData { bool hasComp{ false }; ButtonComponent c; };
+	/** @brief InputData */
 	struct InputData { bool hasComp{ false }; TextInputComponent c; };
+	/** @brief LayoutData */
 	struct LayoutData { bool hasComp{ false }; UILayoutComponent c; };
+	/** @brief PPData */
 	struct PPData { bool hasComp{ false }; PPComponent c; };
+	/** @brief ActiveData */
 	struct ActiveData { bool hasComp{ false }; ActiveComponent c; };
+	/** @brief CheckpointData */
 	struct CheckpointData { bool hasComp{ false }; CheckpointComponent c; };
+	/** @brief TriggerData */
 	struct TriggerData { bool hasComp{ false }; TriggerComponent c; };
 }
 

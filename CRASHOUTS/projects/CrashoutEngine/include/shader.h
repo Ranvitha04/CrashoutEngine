@@ -88,6 +88,7 @@ namespace Component {
     using std::vector;
     using std::pair;
 
+    /** @brief GLSLShader */
     class GLSLShader {
         /*!
         @brief OpenGL GLSL shader program management class.

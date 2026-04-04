@@ -17,6 +17,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <random>
 
 namespace Component {
+    /** @brief UUIDComponent */
     struct UUIDComponent {
         uint64_t id;
 

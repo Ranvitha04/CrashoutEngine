@@ -1,13 +1,12 @@
 /*!
-@file		audiobindings.cpp
-@author     Mohamad Amir Akmal
-@author     mohamadamirakmal.b
-@author     Renfred Lee
-@date       19/11/2025
-@brief		Definition of audio bindings functions
+@file   audiobindings.cpp
+@author Renfred Lee (40%), mohamadamirakmal.b (21%), Mohamad Amir Akmal (39%)
+@date   19/11/2025
 
-All content © 2025 Digipen Institute of Technology Singapore.All rights reserved.
-*/
+@brief  Definition of audio bindings functions
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #include "audiobindings.h"

@@ -1,14 +1,14 @@
 /*!
-@file       messages.h
-@author     Renfred Lee
-@author     Ranvitha
-@author     tristan
-@date       19/09/2025
-@brief      Declaration for the Base class Messages, and common IDS for messages to listen to.
+@file   messages.h
+@author tristan (56%), Ranvitha (25%), Renfred Lee (19%)
+@date   19/09/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Declaration for the Base class Messages, and common IDS for messages to listen to.
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 #include <cstdint>
@@ -34,6 +34,7 @@ namespace Messaging {
 	@class Messages
 	@brief Base class to inherit from. Used to send data when Observable is emitting a message
 	*/
+	/** @brief Messages */
 	class Messages {
 	protected:
 		EventType mType;

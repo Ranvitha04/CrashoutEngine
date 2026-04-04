@@ -36,6 +36,7 @@ float Settings::SFXVolume = 1.0f;
 
 const float Settings::TARGET_ASPECT_RATIO = 16.0f / 9.0f;
 
+/** @brief SettingsLoader */
 struct SettingsLoader {
     SettingsLoader() {
         // We no longer load here because GetGameRoot() is empty at static-init time.

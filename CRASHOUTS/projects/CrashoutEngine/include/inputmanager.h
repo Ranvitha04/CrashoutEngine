@@ -24,6 +24,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 
 namespace CrashoutEngine
 {
+    /** @brief ControllerManager */
     class ControllerManager;
 }
 
@@ -33,6 +34,7 @@ namespace CrashoutEngine
 
 InputManager is a fully static class that polls GLFW and tracks state per frame
 */
+/** @brief InputManager */
 class InputManager {
 public:
     /*!
@@ -147,6 +149,7 @@ public:
     static void InjectMouseButton(Key button, bool isPressed);
 
 private:
+    /** @brief DigitalBinding */
     struct DigitalBinding
     {
         enum class Type
@@ -166,6 +169,7 @@ private:
         int direction = 1;
     };
 
+    /** @brief AxisBinding */
     struct AxisBinding
     {
         enum class Type

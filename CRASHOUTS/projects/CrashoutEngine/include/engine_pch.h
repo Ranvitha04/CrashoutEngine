@@ -1,19 +1,11 @@
 /*!
-@file       engine_pch.h
-@author     Renfred (RTIS)
-@author     Ranvitha
-@author     Renfred Lee
-@date       13/11/2025
-@brief      declaration of precompiled header for the engine
+@file   engine_pch.h
+@author Ranvitha (51%), Renfred (RTIS) (37%), Renfred Lee (12%)
+@date   13/11/2025
 
-All content � 2025 DigiPen Institute of Technology Singapore. All rights reserved.
-*/
-// This file will be precompiled
+@brief  declaration of precompiled header for the engine
 
-#pragma once
-
-/*!
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

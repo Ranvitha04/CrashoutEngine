@@ -17,6 +17,7 @@ namespace Component {
     @struct VisualScriptComponent
     @brief Stores a graph reference/path and runtime variable state for visual scripting.
     */
+    /** @brief VisualScriptComponent */
     struct VisualScriptComponent {
         bool enabled{ true };
         std::string graphPath{ "" };

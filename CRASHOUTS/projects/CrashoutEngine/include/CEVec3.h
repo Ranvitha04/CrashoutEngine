@@ -1,13 +1,12 @@
 /*!
-@file       CEVec3.h
-@author     Shahrin Idzuan
-@author     Renfred Lee
-@author     Ranvitha
-@date       05/09/2025
-@brief      3D vector type with common operations
+@file   CEVec3.h
+@author Shahrin Idzuan (46%), Renfred Lee (34%), Ranvitha (20%)
+@date   05/09/2025
 
-The file defines a 3D vector structure with basic arithmetic and comparison operations.
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.s
+@brief  3D vector type with common operations
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
+
 //__________________________________________________________________________*/
 
 #pragma once
@@ -21,6 +20,7 @@ using CE::f32;
 
 This struct represents a 3D vector and provides common vector operations such as addition, subtraction, scalar multiplication/division and comparison
 */
+/** @brief CEVec3 */
 struct CEVec3
 {
     /// The x component of the vector

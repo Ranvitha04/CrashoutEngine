@@ -16,6 +16,7 @@ All content ? 2025 Digipen Institute of Technology Singapore. All rights reserve
 namespace CrashoutsEngine { class VideoLoader; }
 
 namespace Component {
+    /** @brief VideoComponent */
     struct VideoComponent {
         std::vector<GLuint> frames;
         float frameRate = 12.0f; // Default to 12fps

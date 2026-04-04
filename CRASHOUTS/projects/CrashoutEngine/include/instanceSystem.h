@@ -49,6 +49,7 @@ namespace InstancingSystem {
     @brief Represents a single vertex of the base mesh (Quad, Triangle, etc.)
     @details Loaded into Locations 0 (Pos) and 2 (UV).
     */
+    /** @brief MeshVertex */
     struct MeshVertex {
         float x, y, z;    // Position
         float u, v;       // UV Coordinates
@@ -65,6 +66,7 @@ namespace InstancingSystem {
     7: Width    (Float)
     8: Height   (Float)
     */
+    /** @brief RectInstanceData */
     struct RectInstanceData {
         CEVec3 position;  // 3 Floats
         CEColor color;    // 4 Floats
@@ -86,6 +88,7 @@ namespace InstancingSystem {
     7: Radius   (Float) - Used for Width
     8: Radius   (Float) - Used for Height (Padding/Consistency)
     */
+    /** @brief CircleInstanceData */
     struct CircleInstanceData {
         CEVec3 position;
         CEColor color;
@@ -106,6 +109,7 @@ namespace InstancingSystem {
     6: Scale    (Float)
     7: SideLen  (Float)
     */
+    /** @brief TriInstanceData */
     struct TriInstanceData {
         CEVec3 position;
         CEColor color;
@@ -131,6 +135,7 @@ namespace InstancingSystem {
         bool additiveBlend{ false };
     };
 
+    /** @brief ParticleShaderParams */
     struct ParticleShaderParams {
         float time{ 0.0f };
         CEVec3 gravity{ 0.0f, -9.8f, 0.0f };

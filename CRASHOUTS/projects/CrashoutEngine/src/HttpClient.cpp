@@ -9,7 +9,9 @@
 
 namespace CrashoutsEngine {
     namespace {
+        /** @brief curl_slist */
         struct curl_slist* BuildHeaders(const std::vector<std::string>& headers) {
+            /** @brief curl_slist */
             struct curl_slist* curlHeaders = nullptr;
             for (const std::string& header : headers) {
                 curlHeaders = curl_slist_append(curlHeaders, header.c_str());
@@ -30,6 +32,7 @@ namespace CrashoutsEngine {
         std::string response;
         CURL* curl = curl_easy_init();
         if (!curl) return response;
+        /** @brief curl_slist */
         struct curl_slist* curlHeaders = BuildHeaders(headers);
 
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
@@ -57,6 +60,7 @@ namespace CrashoutsEngine {
 
         std::vector<std::string> combinedHeaders = headers;
         combinedHeaders.push_back("Content-Type: application/json");
+        /** @brief curl_slist */
         struct curl_slist* curlHeaders = BuildHeaders(combinedHeaders);
 
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());

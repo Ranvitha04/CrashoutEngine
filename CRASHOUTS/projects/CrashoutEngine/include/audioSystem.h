@@ -29,6 +29,7 @@ namespace CrashoutsEngine
 {
     namespace Audio
     {
+        /** @brief AudioSystem */
         class AudioSystem
         {
         public:
@@ -152,11 +153,13 @@ namespace CrashoutsEngine
                 }
             };
 
+            /** @brief CoreNoop */
             struct CoreNoop
             {
                 void operator()(FMOD::System* /*p*/) const {}
             };
 
+            /** @brief FadingChannel */
             struct FadingChannel
             {
                 FMOD::Channel* channel;
@@ -164,6 +167,7 @@ namespace CrashoutsEngine
                 float fadeRate;
             };
 
+            /** @brief DSPParameterFade */
             struct DSPParameterFade
             {
                 FMOD::DSP* dsp;
@@ -174,6 +178,7 @@ namespace CrashoutsEngine
                 float totalTime;
             };
 
+            /** @brief GroupVolumeFade */
             struct GroupVolumeFade
             {
                 FMOD::ChannelGroup* group;
@@ -183,6 +188,7 @@ namespace CrashoutsEngine
                 float totalTime;
             };
 
+            /** @brief ChannelVolumeFade */
             struct ChannelVolumeFade
             {
                 FMOD::Channel* channel;
@@ -192,6 +198,7 @@ namespace CrashoutsEngine
                 float totalTime;
             };
 
+            /** @brief BusVolumeFade */
             struct BusVolumeFade
             {
                 FMOD::Studio::Bus* bus;

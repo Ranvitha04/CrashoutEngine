@@ -1,13 +1,11 @@
 /*!
-@file       debugdefaults.cpp
-@author     Mohamad Amir Akmal
-@author     Ranvitha
-@date       25/09/2025
+@file   debugdefaults.cpp
+@author Mohamad Amir Akmal (58%), Ranvitha (42%)
+@date   25/09/2025
 
-Defines editor tuning defaults used across Debug Menu adapters
-(e.g., drag speeds, initial rigidbody values, default collider sizes).
+@brief  Accessor for shared debug defaults.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

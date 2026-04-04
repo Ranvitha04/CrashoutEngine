@@ -15,6 +15,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 /*!
 @brief Base interface for all editor commands (actions that can be undone/redone)
 */
+/** @brief EditorCommand */
 class EditorCommand
 {
 public:
@@ -26,6 +27,7 @@ public:
 /*!
 @brief Singleton Undo/Redo manager using std::deque for efficient trimming
 */
+/** @brief UndoManager */
 class UndoManager
 {
 public:

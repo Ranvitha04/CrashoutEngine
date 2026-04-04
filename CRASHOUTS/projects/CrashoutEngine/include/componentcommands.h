@@ -19,6 +19,7 @@ namespace CrashoutsEngine {
     @tparam T Component type to add.
     */
     template <typename T>
+    /** @brief AddComponentCommand */
     class AddComponentCommand : public EditorCommand {
     public:
         /*!
@@ -56,6 +57,7 @@ namespace CrashoutsEngine {
     @tparam T Component type to remove.
     */
     template <typename T>
+    /** @brief RemoveComponentCommand */
     class RemoveComponentCommand : public EditorCommand {
     public:
         /*!

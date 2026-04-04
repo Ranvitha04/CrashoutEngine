@@ -8,6 +8,7 @@
 #include <string>
 
 namespace Component {
+    /** @brief TriggerComponent */
     struct TriggerComponent {
         std::string triggerID;
         bool oneTimeUse = false;

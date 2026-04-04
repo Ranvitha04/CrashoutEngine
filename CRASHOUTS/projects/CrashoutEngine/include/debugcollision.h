@@ -1,14 +1,11 @@
 /*!
-@file       debugcollision.h
-@author     Renfred Lee
-@author     Renfred (RTIS)
-@author     Shahrin Idzuan
-@date       28/09/2025
-@brief      Collision debug visualization utilities for Crashout Engine.
-@details    This header provides functions for rendering collision-related
-            debug overlays within the engine's ImGui-based debug tools.
+@file   debugcollision.h
+@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
+@date   28/09/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Collision debug visualization utilities for Crashout Engine.
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

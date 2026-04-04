@@ -1,12 +1,11 @@
 /*!
-@file       transformentitycommand.h
-@author     Shahrin Idzuan
-@author     Afiq
-@author     Ranvitha
-@date       29/11/2025
-@brief      transformentitycommand.h file contains the declaration of TransformEntityCommand and TransformGroupCommand classes for undo/redo functionality in the CrashoutsEngine
+@file   transformentitycommand.h
+@author Ranvitha (48%), Afiq (38%), Shahrin Idzuan (14%)
+@date   29/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  transformentitycommand.h file contains the declaration of TransformEntityCommand and TransformGroupCommand classes for undo/redo functionality in the CrashoutsEngine
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -15,8 +14,10 @@ All content � 2025 Digipen Institute of Technology Singapore.All rights reserv
 #include "entitymanager.h" // for ECS access
 #include "transformcomponent.h"
 #include "hierarchycomponent.h"
+
 namespace CrashoutsEngine
 {
+	/** @brief TransformState */
 	struct TransformState
 	{
 		CEVec3 position;
@@ -51,6 +52,7 @@ namespace CrashoutsEngine
 		t->rotation = s.rotation;
 		t->size = s.scale;
 	}
+	/** @brief TransformEntityCommand */
 	class TransformEntityCommand : public EditorCommand
 	{
 		Entity mEntity;
@@ -75,6 +77,7 @@ namespace CrashoutsEngine
 		}
 	};
 
+	/** @brief TransformGroupCommand */
 	class TransformGroupCommand : public EditorCommand
 	{
 		std::vector<Entity> mEntities;

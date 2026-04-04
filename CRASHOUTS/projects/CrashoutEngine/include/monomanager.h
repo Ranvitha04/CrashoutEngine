@@ -21,6 +21,7 @@ namespace CrashoutsEngine::Bindings {
 	void RegisterDebugBindings();
 };
 
+/** @brief MonoManager */
 class MonoManager
 {
 public:

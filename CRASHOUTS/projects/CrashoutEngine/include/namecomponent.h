@@ -1,15 +1,15 @@
 /*!
 @file   namecomponent.h
-@author Renfred Lee
-@author Ranvitha
+@author Ranvitha (68%), Renfred Lee (32%)
 @date   05/09/2025
 
-@brief	This file defines the NameComponent, a simple data structure used to 
+@brief  This file defines the NameComponent, a simple data structure used to 
 		store an entity's name.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 /*                                                                   includes
@@ -24,6 +24,7 @@ namespace Component {
 	@struct	NameComponent
 	@brief	A component that provides a human-readable name for an entity.
 	*/
+	/** @brief NameComponent */
 	struct NameComponent {
 		std::string name;
 	};

@@ -71,6 +71,7 @@ All content  2025 Digipen Institute of Technology Singapore. All rights reserved
 
 namespace Component {
 
+	/** @brief DebugLine */
 	struct DebugLine {
 		CEVec3 start;
 		CEVec3 end;
@@ -79,6 +80,7 @@ namespace Component {
 		bool isWorldSpace;
 	};
 
+	/** @brief DebugCircle */
 	struct DebugCircle {
 		CEVec2 size;
 		CEVec3 position;
@@ -91,6 +93,7 @@ namespace Component {
 		int offset; // +ve brings forward, 0 = normal
 	};
 
+	/** @brief RenderItem */
 	struct RenderItem {
 		CrashoutsEngine::Entity id;
 		float depth; // final computed depth
@@ -112,6 +115,7 @@ namespace Component {
 	- Flexible vertex attribute configuration
 	- Memory-mapped buffers for optimal data streaming
 	*/
+	/** @brief Rendering */
 	class Rendering {
 	public:
 

@@ -1,14 +1,14 @@
 /*!
-@file       collider.cpp
-@author     Tristan Mira
-@author     Renfred Lee
-@author     Renfred (RTIS)
-@date       29/11/2025`
-@brief      collider class definitions and implementations
+@file   collider.cpp
+@author Renfred Lee (37%), Tristan Mira (27%), Renfred (RTIS) (36%)
+@date   29/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved
+@brief  collider class definitions and implementations
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #include "colliders.h"
 #include "CEMath.h"
 #include "CEMtx33.h"

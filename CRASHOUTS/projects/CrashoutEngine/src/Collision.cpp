@@ -1,13 +1,11 @@
 /*!
-@file       Collision.cpp
-@author     tristan
-@author     Renfred Lee
-@author     Tristan Mira
-@date       08/09/2025
-@brief      Function definitions for Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
+@file   Collision.cpp
+@author Tristan Mira (49%), Renfred Lee (23%), tristan (28%)
+@date   08/09/2025
 
-All content 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Function definitions for Basic Collision Functions and Colliders(Plane, ColliderType::AABB and Circle)
 
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -33,6 +31,7 @@ All content 2025 Digipen Institute of Technology Singapore. All rights reserved.
 /*UTILS RIGHT HERE*/
 namespace Collision {
 	namespace {
+		/** @brief ContactPairHash */
 		struct ContactPairHash {
 			size_t operator()(ContactPair const& pair) const noexcept {
 				size_t h1 = std::hash<CrashoutsEngine::Entity>{}(pair.first);
@@ -41,6 +40,7 @@ namespace Collision {
 			}
 		};
 
+		/** @brief EntityCollisionCache */
 		struct EntityCollisionCache {
 			Component::ColliderComponent* collider{ nullptr };
 			Component::TransformComponent* transform{ nullptr };
@@ -1098,9 +1098,11 @@ namespace Collision {
 
 /*MAIN UPDATE STUFF!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 namespace Collision {
+	/** @brief ThreadResult */
 	struct ThreadResult {
 		std::vector<CollisionEvent> events;
 		std::vector<ContactInformation> contacts;
+		/** @brief Msg */
 		struct Msg {
 			Messaging::EventType type;
 			CollisionManifold manifold;

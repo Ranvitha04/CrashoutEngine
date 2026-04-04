@@ -1,13 +1,12 @@
 /*!
-@file       shapescomponent.h
-@author     Renfred Lee
-@author     Renfred (RTIS)
-@author     Ranvitha
-@date       28/09/2025
-@brief	    This file defines the ShapesComponent, a simple data structure
+@file   shapescomponent.h
+@author Renfred Lee (45%), Renfred (RTIS) (33%), Ranvitha (22%)
+@date   28/09/2025
+
+@brief  This file defines the ShapesComponent, a simple data structure
             used to store an entity's shape type and variables.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -46,6 +45,7 @@ namespace Component {
      * - Shape-specific fields (used only for the corresponding ShapeType).
      * - Debug/preview toggles.
      */
+    /** @brief ShapeComponent */
     struct ShapeComponent {
         // -------------------- TextureAsset Settings --------------------
 

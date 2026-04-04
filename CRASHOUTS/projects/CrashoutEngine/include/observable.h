@@ -1,11 +1,11 @@
 /*!
-@file       observable.h
-@author     Renfred Lee
-@author     Ranvitha
-@date       19/09/2025
-@brief      Declaration for the Base class Observable. Allows other systems to inherit from this class to register Observers.
+@file   observable.h
+@author Ranvitha (68%), Renfred Lee (32%)
+@date   19/09/2025
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Declaration for the Base class Observable. Allows other systems to inherit from this class to register Observers.
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -21,6 +21,7 @@ namespace Messaging {
 	@class Observable
 	@brief Base class for Observers to watch events from.
 	*/
+	/** @brief Observable */
 	class Observable {
 		protected:
 			Observable();

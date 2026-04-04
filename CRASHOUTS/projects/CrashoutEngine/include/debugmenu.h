@@ -1,15 +1,14 @@
 /*!
-@file       debugmenu.h
-@author     Mohamad Amir Akmal
-@author     Afiq
-@author     Renfred Lee
-@date       14/09/2025
+@file   debugmenu.h
+@author Afiq (80%), Mohamad Amir Akmal (11%), Renfred Lee (9%)
+@date   14/09/2025
 
-@brief      This header defines the user interface (UI) panels and debug menu
+@brief  This header defines the user interface (UI) panels and debug menu
             functionality for Crashout Engine's ImGUI system. It provides
             declarations for initialization, shutdown, rendering, and debugging
             panels, as well as a UI state structure to manage panel toggles.
 
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -20,9 +19,11 @@
 #include <imgui.h>
 #include <vector>
 #include <string>
+/** @brief FrameProfiler */
 class FrameProfiler;
 
 namespace CrashoutsEngine {
+    /** @brief ECS */
     class ECS;
     using Entity = unsigned;
 }
@@ -78,6 +79,7 @@ namespace UI {
         Vec3
     };
 
+    /** @brief VSPin */
     struct VSPin
     {
         int id = 0;
@@ -86,6 +88,7 @@ namespace UI {
         VSDataType type = VSDataType::Exec;
     };
 
+    /** @brief VSNode */
     struct VSNode
     {
         int id = 0;
@@ -107,6 +110,7 @@ namespace UI {
         std::string variableName;
     };
 
+    /** @brief VSLink */
     struct VSLink
     {
         int fromNode = 0;
@@ -115,6 +119,7 @@ namespace UI {
         int toPin = 0;
     };
 
+    /** @brief VisualScriptingGraph */
     struct VisualScriptingGraph
     {
         std::vector<VSNode> nodes;
@@ -123,6 +128,7 @@ namespace UI {
         int nextPinId = 1;
     };
 
+    /** @brief UIState */
     struct UIState
     {
         bool lockLayout = false;

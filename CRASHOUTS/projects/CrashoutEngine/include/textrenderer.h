@@ -33,6 +33,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 @struct Character
 @brief Stores glyph information for rendering text
 */
+/** @brief Character */
 struct Character {
     /// ID handle of the glyph texture
     GLuint TextureID;
@@ -54,6 +55,7 @@ struct Character {
 
 Manages font loading character glyphs and rendering text in screen space
 */
+/** @brief TextRenderer */
 class TextRenderer {
 public:
     /// Map of loaded characters accessible by ASCII code 

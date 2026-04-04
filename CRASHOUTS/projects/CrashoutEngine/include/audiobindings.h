@@ -1,16 +1,13 @@
 /*!
-@file		audiobindings.h
-@author     Mohamad Amir Akmal
-@author     Ranvitha
-@date       19/11/2025
-@brief		Declaration of audio bindings functions
+@file   audiobindings.h
+@author Mohamad Amir Akmal (58%), Ranvitha (42%)
+@date   19/11/2025
+
+@brief  Declaration of audio bindings functions
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 */
 #pragma once
-
-/*!
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
-
-//__________________________________________________________________________*/
 
 namespace CrashoutsEngine::Bindings
 {

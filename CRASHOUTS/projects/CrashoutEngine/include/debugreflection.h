@@ -1,18 +1,14 @@
 /*!
-@file       debugreflection.h
-@author     Mohamad Amir Akmal
-@author     Ranvitha
-@author     Shahrin Idzuan
-@date       25/09/2025
+@file   debugreflection.h
+@author Mohamad Amir Akmal (48%), Ranvitha (42%), Shahrin Idzuan (10%)
+@date   25/09/2025
 
-@brief      Lightweight registry hooks for the Debug Menu. Provides:
+@brief  Lightweight registry hooks for the Debug Menu. Provides:
             - IComponentAdapter + ComponentRegistry: ECS inspectors (add/remove/edit)
             - PanelRegistry: register custom ImGui panels at runtime
             - IPhysicsProvider + PhysicsRegistry: physics debug controls
 
-These APIs let the debug UI be data-driven without hardcoding per-project UI.
-
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
@@ -28,6 +24,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 //__________________________________________________________________________*/
 
 namespace CrashoutsEngine {
+    /** @brief ECS */
     class ECS;
     using Entity = unsigned;
 }
@@ -46,6 +43,7 @@ namespace DebugReflection {
      add or remove it, and render its inspector UI. Implementations are registered
      with the `ComponentRegistry` and exposed automatically to the debug UI.
     */
+    /** @brief IComponentAdapter */
     struct IComponentAdapter {
         virtual ~IComponentAdapter() = default;
 
@@ -90,6 +88,7 @@ namespace DebugReflection {
      by the debug UI to display component inspector panels, add/remove buttons,
      and more.
     */
+    /** @brief ComponentRegistry */
     class ComponentRegistry {
     public:
         /*! @brief Returns the singleton instance. */
@@ -124,6 +123,7 @@ namespace DebugReflection {
      A panel consists of a display name, an optional toggle flag (for visibility),
      and a rendering callback.
     */
+    /** @brief Panel */
     struct Panel {
         std::string name;     //!< Display name shown in the UI.
         bool* toggleFlag;     //!< Optional toggle state pointer for visibility.
@@ -138,6 +138,7 @@ namespace DebugReflection {
      in the debug UI. If a toggle flag is provided, the panel will also
      appear in the toggles window.
     */
+    /** @brief PanelRegistry */
     class PanelRegistry {
     public:
         /*! @brief Returns the singleton instance. */
@@ -171,6 +172,7 @@ namespace DebugReflection {
      Implement this interface to expose physics-related debug UIs, such as
      global gravity control or collision system visualization.
     */
+    /** @brief IPhysicsProvider */
     struct IPhysicsProvider {
         virtual ~IPhysicsProvider() = default;
 
@@ -191,6 +193,7 @@ namespace DebugReflection {
      Manages all registered `IPhysicsProvider` implementations and exposes
      them to the debug UI.
     */
+    /** @brief PhysicsRegistry */
     class PhysicsRegistry {
     public:
         /*! @brief Returns the singleton instance. */

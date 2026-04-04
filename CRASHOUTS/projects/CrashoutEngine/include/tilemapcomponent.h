@@ -29,6 +29,7 @@ namespace Component {
 	@brief	A component that provides a some data for use with Tile-Maps in 
 		    the scene.
 	*/
+	/** @brief TileMapComponent */
 	struct TileMapComponent {
 		std::vector<std::string> tileAssetNames;				// Vector of names of the Tile Assets to be used
 		std::vector<CrashoutsEngine::Entity> segmentCache;						// For optimized LineSegments

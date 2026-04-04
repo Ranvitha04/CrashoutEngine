@@ -13,6 +13,7 @@ All content � 2025 DigiPen Institute of Technology Singapore. All rights reser
 
 namespace CrashoutsEngine {
 
+	/** @brief SceneTransition */
 	class SceneTransition {
 	public:
 		static void StartFade(float fadeOutTime = 1.0f, float fadeInTime = 1.0f);

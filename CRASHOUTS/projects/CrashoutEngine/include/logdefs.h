@@ -1,13 +1,11 @@
 /*!
-@file       logdefs.h
-@author     Mohamad Amir Akmal
-@author     Renfred Lee
-@author     Shahrin Idzuan
-@date       28/09/2025
+@file   logdefs.h
+@author Shahrin Idzuan (37%), Renfred Lee (29%), Mohamad Amir Akmal (34%)
+@date   28/09/2025
 
-@brief      Lightweight logging macro lists for Crashout Engine.
+@brief  Lightweight logging macro lists for Crashout Engine.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

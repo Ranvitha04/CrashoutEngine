@@ -1,13 +1,14 @@
 /*!
-@file       rigidbodycomponent.cs
-@author     Renfred Lee
-@author     Shahrin Idzuan
-@date       29/11/2025
-@brief      rigidbody component for physics interactions
+@file   RigidBodyComponent.cs
+@author Shahrin Idzuan (94%), Renfred Lee (6%)
+@date   29/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  rigidbody component for physics interactions
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 using System.Runtime.CompilerServices;
 
 namespace CrashoutsEngine

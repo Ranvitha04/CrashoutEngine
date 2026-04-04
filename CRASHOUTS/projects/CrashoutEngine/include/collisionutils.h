@@ -1,14 +1,14 @@
 /*!
-@file       collisionutils.h
-@author     Shahrin Idzuan
-@author     tristan
-@author     Ranvitha
-@date       29/11/2025
-@brief      Collider component to hold custom colliders for entities
+@file   collisionutils.h
+@author Shahrin Idzuan (52%), tristan (27%), Ranvitha (21%)
+@date   29/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  Collider component to hold custom colliders for entities
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 #include "entitymanager.h"
 #include "colliders.h"
@@ -18,6 +18,7 @@ namespace Collision {
 
 	using ContactPair = std::pair<CrashoutsEngine::Entity, CrashoutsEngine::Entity>;
 
+	/** @brief ContactInformation */
 	struct ContactInformation {
 		ContactPair contacts;
 		CollisionManifold colManifold;

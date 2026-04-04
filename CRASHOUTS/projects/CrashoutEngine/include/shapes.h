@@ -42,6 +42,7 @@ namespace Component {
     color and textured rendering with transformation capabilities (position, rotation, scale).
     Also includes instanced rendering for efficient batch drawing of multiple objects.
     */
+    /** @brief Shapes */
     struct Shapes {
 
         /*!

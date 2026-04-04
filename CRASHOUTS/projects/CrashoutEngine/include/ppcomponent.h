@@ -1,15 +1,14 @@
 /*!
 @file   ppcomponent.h
-@author Ranvitha
-@author Shahrin Idzuan
-@author Renfred (RTIS)
+@author Ranvitha (36%), Shahrin Idzuan (31%), Renfred (RTIS) (33%)
 @date   05/11/2025
 
 @brief  This file defines the post-processing component.
 
-All content ? 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 /*                                                                   includes
@@ -25,6 +24,7 @@ namespace Component {
     @struct  PPComponent
     @brief   A component that holds the holds modifiable data for post-processing.
     */
+    /** @brief PPComponent */
     struct PPComponent {
         // Active bool
         bool active{ true };
@@ -94,6 +94,7 @@ namespace Component {
     @struct  LightComponent
     @brief   Stores light properties for 2D lighting pass.
     */
+    /** @brief LightComponent */
     struct LightComponent {
         CEVec3 position{ 0.0f, 0.0f, 0.0f };
         CEVec3 color{ 1.0f, 1.0f, 1.0f };

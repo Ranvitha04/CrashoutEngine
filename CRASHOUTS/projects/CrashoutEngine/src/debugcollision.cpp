@@ -1,15 +1,11 @@
 /*!
-@file       debugcollision.cpp
-@author     Renfred Lee
-@author     Tristan Mira
-@author     tristan
-@date       28/09/2025
-@brief      Implements collision debug visualization for Crashout Engine.
-@details    Renders wireframe overlays for all active colliders (AABBs & spheres),
-			highlights entities participating in collisions, and draws contact
-			points and normal vectors derived from the collision manifold.
+@file   debugcollision.cpp
+@author tristan (43%), Tristan Mira (18%), Renfred Lee (39%)
+@date   28/09/2025
 
-All content © 2025 Digipen Institute of Technology Singapore. All rights reserved.
+@brief  Implements collision debug visualization for Crashout Engine.
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 

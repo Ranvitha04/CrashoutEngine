@@ -1,13 +1,14 @@
 /*!
-@file       collidereventbindings.h
-@author     Shahrin Idzuan
-@author     Ranvitha
-@date       29/11/2025
-@brief      colliderevent bindings declaration
+@file   collidereventbindings.h
+@author Ranvitha (65%), Shahrin Idzuan (35%)
+@date   29/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  colliderevent bindings declaration
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 namespace CrashoutsEngine::Bindings

@@ -1,11 +1,9 @@
 /*!
 @file   entitymanager.h
-@author Renfred Lee
-@author Renfred (RTIS)
-@author Shahrin Idzuan
+@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
 @date   05/09/2025
 
-@brief	This file contains the declaration and implementation of the 
+@brief  This file contains the declaration and implementation of the 
 		**ECS (Entity-Component-System)** framework. This file implements 
 		the core ECS classes: `ECS` (the main manager), `IComponentArray` 
 		(an abstract interface for component containers), and 
@@ -15,9 +13,10 @@
 		memory layout for performance. It also includes utility functions for
 		managing entities by both their ID and name.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 /*                                                                   includes
@@ -36,6 +35,7 @@ namespace CrashoutsEngine {
 
 	typedef uint32_t Entity;
 
+	/** @brief IComponentArray */
 	class IComponentArray;
 
 	/*!
@@ -46,6 +46,7 @@ namespace CrashoutsEngine {
 	destroying, and managing entities and their associated components. It maintains a collection
 	of component arrays, one for each component type, enabling efficient data access and manipulation.
 	*/
+	/** @brief ECS */
 	class ECS {
 	private:
 		Entity nextEntityId{ 1 };
@@ -64,6 +65,7 @@ namespace CrashoutsEngine {
 
 	public:
 		template<typename T>
+		/** @brief ComponentArray */
 		class ComponentArray;
 		
 		template<typename T>
@@ -193,6 +195,7 @@ namespace CrashoutsEngine {
 	`RemoveComponent` function for each one. There is a virtual clone component function
 	to handle cloning of components for a specific entity ID.
 	*/
+	/** @brief IComponentArray */
 	class IComponentArray {
 	public:
 		virtual	~IComponentArray() = default;
@@ -212,6 +215,7 @@ namespace CrashoutsEngine {
 	allowing for fast component access and O(1) removals.
 	*/
 	template<typename T>
+	/** @brief ECS */
 	class ECS::ComponentArray : public IComponentArray {
 	public:
 		ComponentArray() {

@@ -1,15 +1,14 @@
 /*!
 @file   fontasset.h
-@author Renfred Lee
-@author Renfred (RTIS)
-@author Shahrin Idzuan
+@author Shahrin Idzuan (50%), Renfred (RTIS) (22%), Renfred Lee (28%)
 @date   19/10/2025
 
-@brief	This file contains the declaration of the Font
+@brief  This file contains the declaration of the Font
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 //#pragma once
 //
 ///*                                                                   includes
@@ -37,6 +36,7 @@ namespace CrashoutsEngine {
         @struct Character
         @brief Stores glyph information for rendering text
         */
+        /** @brief Character */
         struct Character {
             /// ID handle of the glyph texture
             GLuint TextureID;
@@ -51,6 +51,7 @@ namespace CrashoutsEngine {
             GLuint Advance;
         };
 
+        /** @brief FontAsset */
         class FontAsset : public IAsset {
         public:
 

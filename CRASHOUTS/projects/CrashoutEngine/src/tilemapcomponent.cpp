@@ -52,6 +52,7 @@ namespace CrashoutsEngine::TileMapUtils {
 		EdgeType edge;
 	};
 
+	/** @brief PairHash */
 	struct PairHash {
 		size_t operator()(const std::pair<int, int>& p) const noexcept {
 			// Large primes reduce collisions for grid coords

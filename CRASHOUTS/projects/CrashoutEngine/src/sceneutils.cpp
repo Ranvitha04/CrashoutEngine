@@ -1250,6 +1250,7 @@ namespace Scene {
 
 		enum class RenderType { Shape, Text, Particle };
 
+		/** @brief RenderEntry */
 		struct RenderEntry {
 			Entity entity;
 			float depth;

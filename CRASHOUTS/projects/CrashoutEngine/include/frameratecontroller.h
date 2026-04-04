@@ -14,6 +14,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #include <thread>
 #include <cstdint>
 
+/** @brief FrameRateController */
 class FrameRateController
 {
 	//refer to https://en.cppreference.com/w/cpp/chrono/steady_clock

@@ -93,6 +93,7 @@ namespace Component {
     Each state contains a starting frame, frame count, frame duration, and
     whether the animation should loop or stop after finishing.
     */
+    /** @brief AnimationState */
     struct AnimationState {
         int startFrame;      
         int frameCount;      
@@ -121,6 +122,7 @@ namespace Component {
     flipping.
     */
 
+    /** @brief Animator */
     class Animator {
     public:
 

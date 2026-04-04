@@ -95,6 +95,7 @@ All content � 2025 DigiPen Institute of Technology Singapore. All rights reser
 // Forward declarations of Engine types to speed up compilation
 namespace CrashoutsEngine { class ECS; }
 namespace CrashoutsEngine::Physics { class PhysicsHandler; }
+/** @brief FrameProfiler */
 class FrameProfiler;
 
 namespace UI {
@@ -108,6 +109,7 @@ namespace UI {
 
     namespace KeyframeUnityEditor
     {
+        /** @brief Selection */
         struct Selection {
             CrashoutsEngine::Entity entity{};
             int bindingIndex = -1;

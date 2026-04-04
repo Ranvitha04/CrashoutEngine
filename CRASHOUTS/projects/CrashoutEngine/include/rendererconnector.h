@@ -12,6 +12,7 @@ All content � 2025 Digipen Institute of Technology Singapore. All rights reser
 #pragma once
 #include <memory>
 
+/** @brief TextRenderer */
 class TextRenderer;
 extern std::unique_ptr<TextRenderer> gTextRenderer;
 extern std::unique_ptr<TextRenderer> gTextRendererA;

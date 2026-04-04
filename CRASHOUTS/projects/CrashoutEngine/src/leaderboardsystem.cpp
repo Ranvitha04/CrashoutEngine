@@ -27,6 +27,7 @@ namespace {
     /*!
     @brief Tracks an outstanding asynchronous leaderboard fetch for a UI entity.
     */
+    /** @brief PendingFetch */
     struct PendingFetch {
         std::future<std::vector<CrashoutsEngine::LeaderboardEntry>> future;
     };

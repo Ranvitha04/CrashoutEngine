@@ -1,13 +1,14 @@
 /*!
-@file       entity.cs
-@author     Renfred (RTIS)
-@author     Renfred Lee
-@date       29/11/2025
-@brief      class for entity in Crashouts Engine
+@file   entity.cs
+@author Renfred Lee (69%), Renfred (RTIS) (31%)
+@date   29/11/2025
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+@brief  class for entity in Crashouts Engine
+
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 using System;
 using System.Numerics;
 using System.Reflection;

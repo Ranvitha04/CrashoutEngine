@@ -1,23 +1,16 @@
-#pragma once
-#include "CEVec2.h"      
-#include "CEVec3.h"
-#include <string>       
-#include "entitymanager.h" 
-
 /*!
-@file   spriteAnimation.h
-@author Ranvitha
-@author Afiq
-@author Renfred Lee
+@file   spritecomponent.h
+@author Ranvitha (57%), Afiq (19%), Renfred Lee (24%)
 @date   30/11/2025
+
 @brief  This file contains the declaration of sprite-related components
 
-All content � 2025 Digipen Institute of Technology Singapore.All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
 
-
 namespace Component {
+    /** @brief DuckMotionComponent */
     struct DuckMotionComponent {
         /*!
         @brief Current normalized movement direction (z unused for 2D).

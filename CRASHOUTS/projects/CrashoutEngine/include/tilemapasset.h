@@ -1,17 +1,16 @@
 /*!
 @file   tilemapasset.h
-@author Renfred (RTIS)
-@author Renfred Lee
-@author Ranvitha
+@author Ranvitha (47%), Renfred Lee (43%), Renfred (RTIS) (10%)
 @date   13/11/2025
 
-@brief	This file contains the declaration of the Tile Map Asset which stores 
+@brief  This file contains the declaration of the Tile Map Asset which stores 
         the asset name, as well as the key data which is a map of index to 
         texture name.
 
-All content � 2025 Digipen Institute of Technology Singapore. All rights reserved.
+All content (c) 2025 Digipen Institute of Technology Singapore. All rights reserved.
 
 //__________________________________________________________________________*/
+
 #pragma once
 
 /*                                                                   includes
@@ -43,12 +42,14 @@ namespace CrashoutsEngine {
             Left:       0100'0000
             Up-Left:    1000'0000
         */
+        /** @brief RuleTile */
         struct RuleTile {
             std::string texAssetName;
             Collision::ColliderType colliderType{ Collision::ColliderType::AABB };
             unsigned int ruleBitMap{ 0b0000'0000 };
         };
 
+        /** @brief TileMapAsset */
         class TileMapAsset : public IAsset {
         public:
             // Default Constructor
