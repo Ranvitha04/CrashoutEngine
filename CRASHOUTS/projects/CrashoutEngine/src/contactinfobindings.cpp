@@ -1,7 +1,6 @@
 /*!
 @file      contactinfobindings.cpp
 @author    Shahrin Idzuan
-@author    Ranvitha
 @date      30/11/2025
 @brief     Mono bindings to expose ContactInfo data to C#
 

@@ -1,7 +1,7 @@
 /*!
 @file        textureasset.cpp
-@author      Renfred Lee
-@author      Ranvitha
+@author      Ranvitha (60%)
+@author      Renfred Lee (40%)
 @author      Shahrin Idzuan
 
 @brief

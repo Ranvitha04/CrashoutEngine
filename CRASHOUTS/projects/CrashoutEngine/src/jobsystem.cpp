@@ -1,5 +1,6 @@
 /*!
 @file       jobsystem.cpp
+@author     Shahrin Idzuan
 @brief      Implementation of the JobSystem.
 */
 #include "jobsystem.h"

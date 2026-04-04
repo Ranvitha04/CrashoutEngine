@@ -1,8 +1,7 @@
 /*!
 @file   spriteAnimation.cpp
-@author Renfred Lee
-@author Ranvitha
-@author Shahrin Idzuan
+@author Renfred Lee (50%)
+@author Ranvitha (50%)
 @date   30/09/2025
 
 @brief  This file contains the implementation of the `Sprite` class within

@@ -1,5 +1,6 @@
 /*!
 @file        UndoManager.cpp
+@author     Shahrin Idzuan
 @brief       Implementation of UndoManager using std::deque
 @date        08/11/2025
 

@@ -1,6 +1,6 @@
 /*!
 @file   timebindings.cpp
-@author Shahrin Idzuan (63%), Ranvitha (0%), Renfred Lee (37%)
+@author Shahrin Idzuan 
 @date   29/11/2025
 
 @brief  bindings for Time functions

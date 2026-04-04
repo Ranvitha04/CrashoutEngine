@@ -1,6 +1,5 @@
 /*!
 @file		triggerbindings.cpp
-@author     m.biniswandi
 @author     Shahrin Idzuan
 @brief		Definition of trigger bindings functions
 */

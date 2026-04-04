@@ -1,8 +1,6 @@
 /*!
 @file       deleteentitycommand.cpp
 @author     Shahrin Idzuan
-@author     m.biniswandi
-@author     Afiq
 @date       13/01/2026
 @brief      Implementation of DeleteEntityCommand for entity deletion with undo/redo functionality.
 

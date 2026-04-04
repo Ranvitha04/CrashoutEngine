@@ -1,7 +1,5 @@
 /*!
 @file        scenebindings.cpp
-@author      Renfred Lee
-@author      Mohamad Amir Akmal
 @author      Shahrin Idzuan
 @date        23/11/2025
 @brief       Definition of scene bindings functions

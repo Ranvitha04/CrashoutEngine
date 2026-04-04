@@ -1,7 +1,6 @@
 /*!
 @file		videoloader.cpp
 @author     Shahrin Idzuan
-@author     Renfred Lee
 @date       31/01/2026
 @brief		Implementation of the VideoLoader class, responsible for loading and playing video files using FFmpeg and FMOD.
 

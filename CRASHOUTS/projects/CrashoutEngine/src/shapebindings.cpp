@@ -1,7 +1,5 @@
 /*!
 @file       shapebindings.cpp
-@author     Renfred Lee
-@author     Ranvitha
 @author     Shahrin Idzuan
 @date       16/09/2025
 @brief      definition of shape component bindings functions

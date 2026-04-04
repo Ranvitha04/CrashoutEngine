@@ -1,8 +1,6 @@
 /*!
 @file        colliderbindings.cpp
 @author     Shahrin Idzuan
-@author     Renfred Lee
-@author     m.biniswandi
 @date       06/11/2025
 @brief      Definition of collider bindings functions
 

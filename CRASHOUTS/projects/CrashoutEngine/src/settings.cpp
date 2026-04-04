@@ -1,6 +1,6 @@
 /**
 @file       settings.cpp
-@author     m.biniswandi@digipen.edu
+@author     Shahrin Idzuan
 @date       11/09/2025
 @brief      Implementation of the Settings class
 

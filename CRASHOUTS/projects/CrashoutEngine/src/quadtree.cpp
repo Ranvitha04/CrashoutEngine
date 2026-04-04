@@ -1,6 +1,6 @@
 /*!
 @file   quadtree.cpp
-@author Renfred Lee
+@author Tristan
 @date   29/11/2025
 
 @brief  quadtree function definitions

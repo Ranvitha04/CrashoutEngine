@@ -1,8 +1,6 @@
 /*!
 @file		entitybindings.cpp
 @author     Shahrin Idzuan
-@author     Renfred Lee
-@author     Afiq
 @date       06/11/2025
 @brief		Definition of entity bindings functions
 
