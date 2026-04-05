@@ -29862,7 +29862,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 1.0,
+                    "x": 192.0,
                     "y": 1.0
                 }
             },
@@ -29902,7 +29902,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Bold",
-                "text": "CONTROLS",
+                "text": "How To Play",
                 "scale": 15.0,
                 "offset": {
                     "x": 0.30000001192092898,
@@ -29939,7 +29939,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.0052083334885537628,
+                    "x": 1.0,
                     "y": 0.009259258396923542
                 },
                 "inheritColor": false,

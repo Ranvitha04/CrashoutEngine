@@ -20012,12 +20012,12 @@
                             "lightMass": 2.0,
                             "groundCheckDistance": 5.0,
                             "groundCheckWidth": 10.0,
-                            "playDialogueOnStart": false,
+                            "playDialogueOnStart": true,
                             "dialogueCooldown": 1.0,
                             "dialogueParentName": "DialogueContainer",
                             "dialoguePrefix": "PlayerDialogue_",
-                            "numberOfDialogues": 5,
-                            "isDialogueActive": false,
+                            "numberOfDialogues": 4,
+                            "isDialogueActive": true,
                             "facingRight": true,
                             "lockBookGlowToPlayer": false,
                             "CurrentEnergy": 87.5,
@@ -20206,37 +20206,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "playerFall",
-                        "wrap": 0,
-                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
-                        "spriteCols": 2,
-                        "spriteRows": 1,
-                        "useCustomSize": true,
-                        "targetWidth": 140.0,
-                        "targetHeight": 100.0,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 0.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "playerWalk",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Run\\Run spritesheet.png",
@@ -20289,7 +20258,7 @@
                         ]
                     },
                     {
-                        "name": "playerFallLight",
+                        "name": "playerFall",
                         "wrap": 0,
                         "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
                         "spriteCols": 2,
@@ -20303,14 +20272,14 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 1.0,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -20363,6 +20332,37 @@
                                     {
                                         "t": 1.0,
                                         "v": 7.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "playerFallLight",
+                        "wrap": 0,
+                        "textureAsset": "images/Character\\New Artstyle\\Fall\\Fall spritesheet.png",
+                        "spriteCols": 2,
+                        "spriteRows": 1,
+                        "useCustomSize": true,
+                        "targetWidth": 140.0,
+                        "targetHeight": 100.0,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 1.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 1.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -21030,7 +21030,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "This place is... did I make it? Is this hell?",
+                "text": "I still remember interrupting Keiran, on that fateful day.",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -21056,7 +21056,7 @@
                 "isRevealing": true,
                 "revealSpeed": 35.0,
                 "dialogueFilePath": "dialogue/tutorialdialogue.json",
-                "dialogueID": ""
+                "dialogueID": "3.1"
             },
             "gui": {
                 "uiType": 3
@@ -21148,7 +21148,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "Heh. It's less fire and brimstone than I thought.",
+                "text": "I entered the basement and saw him standing over a ritual circle, concentrating intensely.",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -21174,7 +21174,7 @@
                 "isRevealing": true,
                 "revealSpeed": 35.0,
                 "dialogueFilePath": "dialogue/tutorialdialogue.json",
-                "dialogueID": "1.2"
+                "dialogueID": "3.2"
             },
             "gui": {
                 "uiType": 3
@@ -21266,7 +21266,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "No better time than the present, I suppose.",
+                "text": "But then, hearing me come in, he got distracted, and as he turned around to face me-",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -21292,7 +21292,7 @@
                 "isRevealing": true,
                 "revealSpeed": 35.0,
                 "dialogueFilePath": "dialogue/tutorialdialogue.json",
-                "dialogueID": "1.3"
+                "dialogueID": "3.3"
             },
             "gui": {
                 "uiType": 3
@@ -21384,7 +21384,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Regular",
-                "text": "I should explore this place as much as I can.",
+                "text": "The horror on his face as the failed ritual circle opened up to swallow him whole haunts me to this day.",
                 "scale": 3.5,
                 "offset": {
                     "x": 0.0,
@@ -21410,7 +21410,7 @@
                 "isRevealing": true,
                 "revealSpeed": 35.0,
                 "dialogueFilePath": "dialogue/tutorialdialogue.json",
-                "dialogueID": "1.4"
+                "dialogueID": "3.4"
             },
             "gui": {
                 "uiType": 3
@@ -21427,124 +21427,6 @@
                 "localPos": {
                     "x": 0.0,
                     "y": 0.583699107170105,
-                    "z": 0.0
-                },
-                "localRot": 0.0,
-                "localScale": {
-                    "x": 0.699999988079071,
-                    "y": 0.5
-                },
-                "inheritColor": false,
-                "colorMul": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                }
-            },
-            "layer": {
-                "layerName": "Default",
-                "z": 0
-            }
-        },
-        {
-            "active": false,
-            "name": "PlayerDialogue_5",
-            "uuid": 8879151482939062898,
-            "tag": {
-                "tagMask": 0
-            },
-            "transform": {
-                "rotation": 0.0,
-                "position": {
-                    "x": 74.35089111328125,
-                    "y": -221.10552978515626,
-                    "z": 0.0
-                },
-                "size": {
-                    "x": -98.0,
-                    "y": 50.0
-                }
-            },
-            "shape": {
-                "useTexture": false,
-                "isWorldSpace": true,
-                "wrapModeU": 0,
-                "wrapModeV": 0,
-                "thickness": 1.0,
-                "preview": false,
-                "type": 0,
-                "textureName": "",
-                "uvSize": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "uvOffset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.3960784375667572
-                },
-                "p1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "p2": {
-                    "x": 32.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "text": {
-                "font": "AlegreyaSC-Regular",
-                "text": "I wonder, if at the end of this journey, I'll find you, Keiran?",
-                "scale": 3.5,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "centered": true,
-                "isworldspace": true,
-                "alignment": 1,
-                "verticalAlignment": 1,
-                "wrapText": true,
-                "padding": {
-                    "x": 5.0,
-                    "y": 0.0
-                },
-                "letterSpacing": 1.0,
-                "lineSpacing": 10.0,
-                "isRevealing": true,
-                "revealSpeed": 35.0,
-                "dialogueFilePath": "dialogue/tutorialdialogue.json",
-                "dialogueID": "1.5"
-            },
-            "gui": {
-                "uiType": 3
-            },
-            "uilayout": {
-                "paddingXY": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "uiLayout": 4
-            },
-            "parent": {
-                "parentUUID": 17142618762681968282,
-                "localPos": {
-                    "x": -2.0413875579833986,
-                    "y": -1.9935754537582398,
                     "z": 0.0
                 },
                 "localRot": 0.0,
@@ -26010,7 +25892,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 112,
+                            "lookAtEntity": 111,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -28776,7 +28658,7 @@
                     {
                         "className": "CameraZone",
                         "fields": {
-                            "lookAtEntity": 141,
+                            "lookAtEntity": 140,
                             "resetOnExit": true,
                             "zoneDampingY": 1.5
                         }
@@ -29236,44 +29118,6 @@
                 "playing": true,
                 "clips": [
                     {
-                        "name": "slimeWalk",
-                        "wrap": 0,
-                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
-                        "spriteCols": 4,
-                        "spriteRows": 3,
-                        "useCustomSize": true,
-                        "targetWidth": -53.0,
-                        "targetHeight": 49.29999923706055,
-                        "bindings": [
-                            {
-                                "property": 6,
-                                "keys": [
-                                    {
-                                        "t": 0.0,
-                                        "v": 5.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.25,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    },
-                                    {
-                                        "t": 0.5,
-                                        "v": 6.0,
-                                        "i": 0,
-                                        "in": 0.0,
-                                        "out": 0.0
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
                         "name": "slimePick",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\PickUp Spritesheet.png",
@@ -29326,7 +29170,7 @@
                         ]
                     },
                     {
-                        "name": "slimeStunned",
+                        "name": "slimeWalk",
                         "wrap": 0,
                         "textureAsset": "images/Monsters\\Slime spritesheet.png",
                         "spriteCols": 4,
@@ -29340,14 +29184,21 @@
                                 "keys": [
                                     {
                                         "t": 0.0,
-                                        "v": 0.0,
+                                        "v": 5.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
                                     },
                                     {
                                         "t": 0.25,
-                                        "v": 0.0,
+                                        "v": 6.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.5,
+                                        "v": 6.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -29379,6 +29230,37 @@
                                     {
                                         "t": 0.25,
                                         "v": 3.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "slimeStunned",
+                        "wrap": 0,
+                        "textureAsset": "images/Monsters\\Slime spritesheet.png",
+                        "spriteCols": 4,
+                        "spriteRows": 3,
+                        "useCustomSize": true,
+                        "targetWidth": -53.0,
+                        "targetHeight": 49.29999923706055,
+                        "bindings": [
+                            {
+                                "property": 6,
+                                "keys": [
+                                    {
+                                        "t": 0.0,
+                                        "v": 0.0,
+                                        "i": 0,
+                                        "in": 0.0,
+                                        "out": 0.0
+                                    },
+                                    {
+                                        "t": 0.25,
+                                        "v": 0.0,
                                         "i": 0,
                                         "in": 0.0,
                                         "out": 0.0
@@ -29953,7 +29835,7 @@
                     "z": 0.0
                 },
                 "size": {
-                    "x": 1.0,
+                    "x": 192.0,
                     "y": 1.0
                 }
             },
@@ -29993,7 +29875,7 @@
             },
             "text": {
                 "font": "AlegreyaSC-Bold",
-                "text": "CONTROLS",
+                "text": "How to play",
                 "scale": 15.0,
                 "offset": {
                     "x": 0.30000001192092898,
@@ -30030,7 +29912,7 @@
                 },
                 "localRot": 0.0,
                 "localScale": {
-                    "x": 0.0052083334885537628,
+                    "x": 1.0,
                     "y": 0.009259258396923542
                 },
                 "inheritColor": false,
